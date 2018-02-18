@@ -22,7 +22,7 @@
 
 
 TimeManagerUI::TimeManagerUI (const String& contentName, TimeManager* _timeManager) :
-    ShapeShifterContentComponent (contentName),
+    ShapeShifterContentComponent (contentName,"Be the master of Time"),
     timeManager (_timeManager),
     timeBar (_timeManager)
 {
@@ -67,8 +67,8 @@ TimeManagerUI::TimeManagerUI (const String& contentName, TimeManager* _timeManag
 
     //    linkNumPeers = ParameterUIFactory::createDefaultUI(timeManager->linkNumPeers);
     //    addAndMakeVisible(linkNumPeers);
-
-    setOpaque (true);
+    infoLabel.setVisible(false);
+    
 }
 
 
@@ -119,15 +119,13 @@ void TimeManagerUI::newMessage (const Parameter::ParamWithValue& pv)
 }
 
 
-void TimeManagerUI::paint (Graphics& g)
-{
-    g.fillAll (findColour (ResizableWindow::backgroundColourId));
-}
+
 
 #pragma warning(push)
 #pragma warning(disable:4244)
 void TimeManagerUI::resized()
 {
+    ShapeShifterContentComponent::resized();
 
     int width = 800;
     int gap = 2;

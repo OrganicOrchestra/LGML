@@ -36,7 +36,6 @@ def getSession():
 
 def decomposePath(path):
 	folders = []
-	path.rem
 	while 1:
 		path, folder = os.path.split(path)
 		if folder != "":
@@ -75,12 +74,26 @@ def makeDirIfNotExistent(destPath,forceCreation=False,session=None):
 
 
 def sendToOwnCloud(originPath,destPath,session=None):
-	if not '%' in destPath:
-		destPath = urllib.request.quote(destPath.strip())
-	session = getSession()
-	makeDirIfNotExistent(os.path.dirname(destPath),True,session=session)
+	localPath = os.path.expanduser("~/owncloud")
+	hasLocal  = os.path.exists(localPath)
+	if hasLocal:
+		print ("copying localy")
+		print(originPath,' >> ', destPath)
+		from shutil import copy2
+		destPath = urllib.request.unquote(destPath)
+		destPath = os.path.join(localPath,destPath)
+		if( destPath != originPath):
+			os.makedirs(os.path.dirname(destPath), exist_ok=True)
+			copy2(originPath,destPath)
+		return
+	else:
+		if not '%' in destPath:
+			destPath = urllib.request.quote(destPath.strip())
+	
 	print('sending to owncloud:')
 	print(originPath,' >> ', destPath)
+	session = getSession()
+	makeDirIfNotExistent(os.path.dirname(destPath),True,session=session)
 	with open(originPath,'rb') as fp:
 		r = session.request("PUT",baseURL+destPath,data=fp,allow_redirects=True)
 		if r.status_code not in (200, 201, 204):

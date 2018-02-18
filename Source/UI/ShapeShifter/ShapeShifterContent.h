@@ -22,11 +22,12 @@
 class ShapeShifterContent
 {
 public:
-    ShapeShifterContent (Component* contentComponent, const String& _contentName);
+    ShapeShifterContent (Component* contentComponent, const String& _contentName,const String & info);
     virtual ~ShapeShifterContent();
 
     Component* contentComponent;
     String contentName;
+    String info;
 
     bool contentIsFlexible;
 
@@ -41,8 +42,10 @@ class ShapeShifterContentComponent :
     public ShapeShifterContent
 {
 public:
-    ShapeShifterContentComponent (const String& contentName);
+    ShapeShifterContentComponent (const String& contentName,const String & info);
     virtual ~ShapeShifterContentComponent(){};
+    void resized() override;
+    Label infoLabel;
 };
 
 #endif  // SHAPESHIFTERCONTENT_H_INCLUDED

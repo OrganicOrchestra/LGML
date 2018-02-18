@@ -63,6 +63,8 @@ public:
     {
         minimumValue = min;
         maximumValue = max;
+        //  check validity of parameter
+        setValue(value,false,true);
         listeners.call (&Listener::parameterRangeChanged, this);
         var arr;
         arr.append (minimumValue);

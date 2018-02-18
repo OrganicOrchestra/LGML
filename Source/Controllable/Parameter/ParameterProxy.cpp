@@ -55,18 +55,18 @@ void ParameterProxy::setRoot (ControllableContainer* r)
     resolveAddress();
 
 }
-void ParameterProxy::tryToSetValue (const var & _value, bool silentSet, bool force )
+void ParameterProxy::tryToSetValue (const var & _value, bool silentSet, bool force,Parameter::Listener * notifier )
 {
 
     if (_value.isString())
     {
-        StringParameter::tryToSetValue (_value, silentSet, force);
+        StringParameter::tryToSetValue (_value, silentSet, force,notifier);
     }
     else if (linkedParam)
     {
         //WIP : polymorphic set value not supported
         jassertfalse;
-        linkedParam->tryToSetValue (_value, silentSet, force);
+        linkedParam->tryToSetValue (_value, silentSet, force,notifier);
     }
 };
 void ParameterProxy::setValueInternal (const var& _value)
@@ -96,11 +96,18 @@ void ParameterProxy::setValueInternal (const var& _value)
 }
 
 
-void ParameterProxy::parameterValueChanged (Parameter* p)
+void ParameterProxy::parameterValueChanged (Parameter* p,Parameter::Listener * notifier)
 {
     jassert (p == linkedParam);
     proxyListeners.call (&ParameterProxyListener::linkedParamValueChanged, this);
 }
+
+void ParameterProxy::parameterRangeChanged (Parameter* p)
+{
+    jassert (p == linkedParam);
+    proxyListeners.call (&ParameterProxyListener::linkedParamRangeChanged, this);
+}
+
 
 Parameter* ParameterProxy::get()
 {
@@ -117,6 +124,7 @@ void ParameterProxy::setParamToReferTo (Parameter* p)
     }
     else
     {
+        if(linkedParam == p) return;
         if (linkedParam != nullptr)
         {
             linkedParam->removeParameterListener (this);

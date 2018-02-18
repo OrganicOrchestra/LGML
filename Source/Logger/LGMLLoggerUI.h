@@ -20,13 +20,17 @@
 #define LGMLLOGGERUI_H_INCLUDED
 
 #include "LGMLLogger.h"
+#include "../UI/Style.h"
 #include "../UI/ShapeShifter/ShapeShifterContent.h"
 #include "../Utils/DebugHelpers.h"
+
+// no true performance gain proved atm
+#define USE_CACHED_GLYPH 1
 
 class LGMLLoggerUI : public ShapeShifterContentComponent,
     public LGMLLogger::Listener,
     public TextButton::Listener,
-    public AsyncUpdater
+    public Timer
 {
 public:
     LGMLLoggerUI (const String& contentName, LGMLLogger* l);
@@ -36,7 +40,7 @@ public:
     {
     public:
         LogList (LGMLLoggerUI* o);
-
+        virtual ~LogList(){};
         int getNumRows() override;
 
         void paintRowBackground (Graphics&,
@@ -52,9 +56,13 @@ public:
         String getCellTooltip (int /*rowNumber*/, int /*columnId*/)    override;
 
     private:
-
-
+#if USE_CACHED_GLYPH
+        HashMap<String,CachedGlyph > cachedG;
+        void cleanUnusedGlyphs();
+#endif
+        int minRow,maxRow;
         LGMLLoggerUI* owner;
+        friend class LGMLLoggerUI;
     };
 
     LGMLLogger* logger;
@@ -71,7 +79,7 @@ public:
     OwnedArray<LogElement> logElements;
     void newMessage (const String& ) override;
 private:
-    int totalLogRow;
+    Atomic<int> totalLogRow;
     void updateTotalLogRow();
     const LogElement * getElementForRow(const int r) const;
     const String& getSourceForRow  (const int r) const;
@@ -81,7 +89,10 @@ private:
     const String getTimeStringForRow (const int r) const;
     friend class LogList;
 
-    void handleAsyncUpdate()override;
+    int64 lastUpdateTime;
+    void timerCallback()override;
+
+
 
 };
 

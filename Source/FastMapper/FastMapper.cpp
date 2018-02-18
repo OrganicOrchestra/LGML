@@ -22,26 +22,49 @@
 juce_ImplementSingleton (FastMapper)
 IMPL_OBJ_TYPE (FastMapper);
 
+template<>
+void ControllableContainer::OwnedFeedbackListener<FastMapper>::controllableFeedbackUpdate (ControllableContainer* notif, Controllable*ori) {
+
+    if (auto p = Parameter::fromControllable (ori))
+    {
+        if(owner->autoAddFastMaps){
+            if(notif== ControllerManager::getInstance()){
+                auto now=Time::getMillisecondCounter();
+                jassert(now>=owner->lastFMAddedTime);
+                // debounce control changes, to avoid setting potentialOutput back
+                if (ori->isUserDefined && now-owner->lastFMAddedTime>500){
+                    owner->setPotentialInput (p);
+                }
+            }
+        }
+
+
+    }
+}
+
+
 
 FastMapper::FastMapper (StringRef name) :
 ParameterContainer (name),
 autoAddFastMaps(false),
-lastFMAddedTime(0)
+lastFMAddedTime(0),
+pSync(this)
 {
 
     nameParam->isEditable = false;
     potentialIn = addNewParameter<ParameterProxy> ("Input", "potential input for new fastMap,\nto assing :\n- move a controller in mapping mode\n- alt click on other LGML parameter\n- use this popup");
     potentialOut = addNewParameter<ParameterProxy> ("Output", "potential output for new fastMap\nto assign :\n- click on parameter in mapping mode\n- navigate through this popup");
 
-
+    potentialIn->addParameterProxyListener(this);
+    potentialOut->addParameterProxyListener(this);
     LGMLDragger::getInstance()->addSelectionListener (this);
-    auto cm = ControllerManager::getInstance();
-    cm->addControllableContainerListener(this);
+
 
     potentialIn->isSavable = false;
     potentialOut->isSavable = false;
     potentialIn->isPresettable = false;
     potentialOut->isPresettable = false;
+
 
 }
 
@@ -52,7 +75,7 @@ FastMapper::~FastMapper()
         dr->removeSelectionListener (this);
     }
     if(auto cm = ControllerManager::getInstanceWithoutCreating()){
-        cm->removeControllableContainerListener(this);
+        cm->removeControllableContainerListener(&pSync);
     }
 
     clear();
@@ -64,19 +87,18 @@ void FastMapper::setPotentialInput (Parameter* p)
 {
     if(p!=potentialIn->get()){
         potentialIn->setParamToReferTo (p);
-        createNewFromPotentials();
+
     }
 }
 void FastMapper::setPotentialOutput (Parameter* p )
 {
     if(p!=potentialOut->get()){
         potentialOut->setParamToReferTo (p);
-        createNewFromPotentials();
     }
 }
 void FastMapper::createNewFromPotentials()
 {
-    if (potentialIn->get() && potentialOut->get() && autoAddFastMaps)
+    if (potentialIn->get() && potentialOut->get() )
     {
         addFastMap();
 
@@ -101,16 +123,24 @@ FastMap* FastMapper::addFastMap()
 
     f->nameParam->isEditable = true;
 
-    //    setContainerToListen (nullptr);
+    
     f->referenceIn->setParamToReferTo (potentialIn->get());
     f->referenceOut->setParamToReferTo (potentialOut->get());
 
-    potentialIn->setParamToReferTo (nullptr);
-    potentialOut->setParamToReferTo (nullptr);
+
     if(!checkDuplicates (f)){
         addChildControllableContainer (f);
         maps.add (f);
         lastFMAddedTime = Time::getMillisecondCounter();
+
+        // avoid listener feedback
+        MessageManager::callAsync([this](){
+            if(auto dr = LGMLDragger::getInstance()){
+                dr->setSelected(nullptr,this);
+            }
+            potentialIn->setParamToReferTo (nullptr);
+            potentialOut->setParamToReferTo (nullptr);
+        });
         return f.release();
     }
     else{
@@ -160,10 +190,9 @@ void FastMapper::removeFastmap (FastMap* f)
 }
 
 
-ParameterContainer*   FastMapper::addContainerFromObject (const String& /*name*/, DynamicObject*   /*fData*/)
+ParameterContainer*   FastMapper::addContainerFromObject (const String& /*name*/, DynamicObject*   fData)
 {
     FastMap* f = addFastMap();
-
     return f;
 
 
@@ -188,27 +217,19 @@ void FastMapper::selectionChanged (Parameter* c )
 
 void FastMapper::mappingModeChanged(bool state){
     autoAddFastMaps = state;
-};
-
-
-
-void FastMapper::controllableFeedbackUpdate (ControllableContainer* notif, Controllable* ori)
-{
-    ParameterContainer::controllableFeedbackUpdate (notif, ori);
-
-    if (auto p = Parameter::fromControllable (ori))
-    {
-        if(autoAddFastMaps){
-            if(notif== ControllerManager::getInstance()){
-                auto now=Time::getMillisecondCounter();
-                jassert(now>=lastFMAddedTime);
-                // debounce control changes, to avoid setting potentialOutput back
-                if (ori->isUserDefined && now-lastFMAddedTime>500){
-                    setPotentialInput (p);
-                }
-            }
-        }
-        
-        
+    if(auto cm = ControllerManager::getInstance()){
+    if(state)
+        cm->addControllableContainerListener(&pSync);
+    else
+        cm->removeControllableContainerListener(&pSync);
     }
+
+
 };
+
+void  FastMapper::linkedParamChanged (ParameterProxy* p ) {
+    if(p== potentialIn || p== potentialOut){
+            createNewFromPotentials();
+    }
+
+}

@@ -102,7 +102,13 @@ bool NodeConnection::addAudioGraphConnection (uint32 sourceChannel, uint32 destC
 
     if (AudioProcessorGraph* g = getParentGraph())
     {
-        result = g->addConnection (getAsNodeBase (sourceNode)->getAudioNode()->nodeId, sourceChannel, getAsNodeBase (destNode)->getAudioNode()->nodeId, destChannel);
+        result = g->addConnection (AudioProcessorGraph::Connection(
+                                                                   {.nodeID=getAsNodeBase (sourceNode)->getAudioNode()->nodeID,
+                                                                    .channelIndex=(int)sourceChannel},
+                                                                   {.nodeID=getAsNodeBase (destNode)->getAudioNode()->nodeID,
+                                                                    .channelIndex=(int)destChannel}
+                                                                   )
+                                   );
     }
     else
     {
@@ -126,8 +132,11 @@ void NodeConnection::removeAudioGraphConnection (uint32 sourceChannel, uint32 de
     AudioConnection ac = AudioConnection (sourceChannel, destChannel);
 
     if (AudioProcessorGraph* g = getParentGraph())
-        g->removeConnection (getAsNodeBase (sourceNode)->getAudioNode()->nodeId, sourceChannel,
-                             getAsNodeBase (destNode)->getAudioNode()->nodeId, destChannel);
+        g->removeConnection (AudioProcessorGraph::Connection(
+                                                             {.nodeID=getAsNodeBase (sourceNode)->getAudioNode()->nodeID,
+                                                            .channelIndex=(int)sourceChannel},
+                                                             {.nodeID=getAsNodeBase (destNode)->getAudioNode()->nodeID,
+                                                            .channelIndex=(int)destChannel}));
 
 
     model.audioConnections.removeAllInstancesOf (ac);

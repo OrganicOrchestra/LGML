@@ -1,7 +1,7 @@
 # this script install JUCE in sibling directory of LGML
 set +e # ignore apt update error
 NATIVE_ARCH=`dpkg --print-architecture`
-if [ -z ${CROSS_ARCH+x} ]; then CROSS_ARCH="$NATIVE_CPU"; fi
+if [ -z ${CROSS_ARCH+x} ]; then CROSS_ARCH="$NATIVE_ARCH"; fi
 if [ "$CROSS_ARCH" != "$NATIVE_ARCH" ]; then echo "adding foreing arch $CROSS_ARCH"; dpkg --add-architecture $CROSS_ARCH;apt-get -qq update; fi
 echo "arch is set to '$CROSS_ARCH'"
 

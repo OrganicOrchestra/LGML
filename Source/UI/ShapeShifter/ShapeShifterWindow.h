@@ -17,7 +17,7 @@
 #define SHAPESHIFTERWINDOW_H_INCLUDED
 
 #include "ShapeShifterPanel.h"
-#include "../Style.h" // for JUCE_OPENGL
+#include "../Style.h" // for USE_GL
 
 
 class ShapeShifterWindow :
@@ -54,7 +54,7 @@ public:
 
 
 
-#if JUCE_OPENGL
+#if USE_GL
     OpenGLContext openGLContext;
 #endif
 

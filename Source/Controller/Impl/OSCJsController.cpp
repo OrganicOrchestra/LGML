@@ -20,7 +20,7 @@
 #include "../../Scripting/Js/JsHelpers.h"
 
 #include "../ControllerFactory.h"
-REGISTER_CONTROLLER_TYPE (OSCJsController);
+REGISTER_CONTROLLER_TYPE (OSCJsController,"OSC");
 
 OSCJsController::OSCJsController (StringRef name) :
     OSCDirectController (name),
@@ -74,7 +74,7 @@ Result OSCJsController::callForMessage (const OSCMessage& msg)
 }
 
 
-var OSCJsController::OSCArgumentToVar (OSCArgument& a)
+var OSCJsController::OSCArgumentToVar (const OSCArgument& a)
 {
     if (a.isFloat32()) { return (a.getFloat32());}
 
@@ -214,7 +214,7 @@ void OSCJsController::onContainerParameterChanged (Parameter* p)
     }
     else if (p == enabledParam)
     {
-        setEnabled (enabledParam->boolValue());
+        setScriptEnabled (enabledParam->boolValue());
     }
 };
 

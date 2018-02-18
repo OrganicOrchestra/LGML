@@ -128,7 +128,6 @@ void NodeContainerViewer::addNodeUI (ConnectableNode* node)
         NodeUIFactory::createDefaultUI (node,
                                         dynamic_cast<ConnectableNodeUIParams*>(uiParams->getControllableContainerByName(node->shortName)));
 
-
         if(nui){
             nodesUI.add (nui);
             addChildControllableContainer(nui);
@@ -395,7 +394,7 @@ void NodeContainerViewer::finishEditingConnection()
 
 }
 
-ConnectableNodeUI * getRelatedConnectableNodeUIForDrag(Component * c){
+ConnectableNodeUI * getRelatedConnectableNodeUIForDrag(Component * c,bool allowChild){
 
     // dont drag if comming from param or text editor
 
@@ -410,13 +409,16 @@ ConnectableNodeUI * getRelatedConnectableNodeUIForDrag(Component * c){
     if(auto header = dynamic_cast<ConnectableNodeHeaderUI*>(c)){
         return header->nodeUI;
     }
+
     if(auto label = dynamic_cast<Label*>(c)){
         return label->findParentComponentOfClass<ConnectableNodeUI>();
     }
+
+
     //    if(auto vumeter = dynamic_cast<VuMeter*>(c)){
     //        return vumeter->findParentComponentOfClass<ConnectableNodeUI>();
     //    }
-    return nullptr;
+    return allowChild?c->findParentComponentOfClass<ConnectableNodeUI>():nullptr;
 
 }
 //Interaction Events
@@ -463,9 +465,8 @@ void NodeContainerViewer::mouseDown (const MouseEvent& event)
     {
         hasDraggedDuringClick = false;
 
-        if(auto nui=getRelatedConnectableNodeUIForDrag(event.eventComponent)){
-
-            nui->selectThis();
+        if(auto nui=getRelatedConnectableNodeUIForDrag(event.eventComponent,true)){
+            if(!event.mods.isAltDown()){
             resultOfMouseDownSelectMethod = selectedItems.addToSelectionOnMouseDown(nui, event.mods);
             selectedInitBounds.clear();
             for(auto s: selectedItems){
@@ -474,6 +475,7 @@ void NodeContainerViewer::mouseDown (const MouseEvent& event)
                     selectedInitBounds.set(s, s->getBoundsInParent().withSize(tSize->getWidth(), tSize->getHeight()));
                 }
 
+            }
             }
         }
 
@@ -516,40 +518,41 @@ void NodeContainerViewer::mouseDrag (const MouseEvent&  e)
 
     else     {
 
-        auto nui = getRelatedConnectableNodeUIForDrag(e.eventComponent);
-        if(nui){
-            bool isResizing = dynamic_cast<ResizableCornerComponent*>(e.eventComponent)!=nullptr;
-            Point<int> diff = Point<int> (e.getPosition() - e.getMouseDownPosition());
-            if(!isResizing){
-                hasDraggedDuringClick = diff.getDistanceSquaredFromOrigin()>0;
-                for(auto s: selectedItems){
-                    if(s.get()){
-                        if(selectedInitBounds.contains(s)){
-                            Point <int> newPos = selectedInitBounds.getReference(s).getPosition() + diff;
-                            auto nodeP = s->getCurrentPositionParam();
-                            nodeP->setPoint (newPos);
-                            s->setTopLeftPosition (nodeP->getPoint());
-                        }
-                        else{
-                            jassertfalse;
-                        }
+
+
+        bool isResizing = dynamic_cast<ResizableCornerComponent*>(e.eventComponent)!=nullptr;
+        auto nui = getRelatedConnectableNodeUIForDrag(e.eventComponent,false);
+        Point<int> diff = Point<int> (e.getPosition() - e.getMouseDownPosition());
+        if(!isResizing && nui){
+            hasDraggedDuringClick = diff.getDistanceSquaredFromOrigin()>0;
+            for(auto s: selectedItems){
+                if(s.get()){
+                    if(selectedInitBounds.contains(s)){
+                        Point <int> newPos = selectedInitBounds.getReference(s).getPosition() + diff;
+                        auto nodeP = s->getCurrentPositionParam();
+                        nodeP->setPoint (newPos);
+                        s->setTopLeftPosition (nodeP->getPoint());
+                    }
+                    else{
+                        jassertfalse;
                     }
                 }
             }
-            else if( !minimizeAll->boolValue()){
-                for(auto s: selectedItems){
-                    if(s.get()){
-                        if(selectedInitBounds.contains(s)){
-                            Point <int> newSize = selectedInitBounds.getReference(s).withPosition(Point<int>(0,0)).getBottomRight() + diff;
-                            auto nodeS = s->nodeSize;
-                            nodeS->setPoint(newSize);
-                        }
-                        else{
-                            jassertfalse;
-                        }
+        }
+        else if(isResizing &&  !minimizeAll->boolValue()){
+            for(auto s: selectedItems){
+                if(s.get()){
+                    if(selectedInitBounds.contains(s)){
+                        Point <int> newSize = selectedInitBounds.getReference(s).withPosition(Point<int>(0,0)).getBottomRight() + diff;
+                        auto nodeS = s->nodeSize;
+                        nodeS->setPoint(newSize);
+                    }
+                    else{
+                        jassertfalse;
                     }
                 }
             }
+
         }
     }
 
@@ -558,20 +561,46 @@ void NodeContainerViewer::mouseDrag (const MouseEvent&  e)
 
 void NodeContainerViewer::mouseUp (const MouseEvent& e)
 {
-    
-        if (isEditingConnection())
-        {
-            finishEditingConnection();
-            return;
+
+    if (isEditingConnection())
+    {
+        finishEditingConnection();
+        return;
+    }
+
+    // select nodeviewer
+    if (e.eventComponent == this ){
+        if(getLassoSelection().getItemArray().size()==0)
+            selectThis();
+    }
+    else if(auto nui = getRelatedConnectableNodeUIForDrag(e.eventComponent,true) ){
+        if(!e.mods.isAltDown()){
+        selectedItems.addToSelectionOnMouseUp(nui,e.mods,
+                                              hasDraggedDuringClick ,
+                                              resultOfMouseDownSelectMethod);
+        // trigger selection when first and alone
+        if(Inspector::getInstance()->getCurrentComponent()!=nui &&
+           getLassoSelection().getItemArray().size()==1){
+        nui->selectThis();
+        }
         }
 
-    if (e.eventComponent == this){
-            if(getLassoSelection().getItemArray().size()==0)
-                selectThis();
     }
-    else if(auto nui = getRelatedConnectableNodeUIForDrag(e.eventComponent)){
-        selectedItems.addToSelectionOnMouseUp(nui, e.mods, hasDraggedDuringClick , resultOfMouseDownSelectMethod);
+    else {
+        for( auto i:selectedItems){
+            i->setSelected(false);
+        }
     }
+
+    selectedInitBounds.clear();
+    for(auto s: selectedItems){
+        if(s.get()){
+            Component * tSize = s->mainComponentContainer.contentContainer;
+            selectedInitBounds.set(s, s->getBoundsInParent().withSize(tSize->getWidth(), tSize->getHeight()));
+        }
+
+    }
+
 
     lassoSelectionComponent.endLasso();
 
@@ -662,7 +691,7 @@ void NodeContainerViewer::findLassoItemsInArea (Array<SelectedUIType>& itemsFoun
             itemsFound.add(n);
         }
     }
-    
+
     auto insp = Inspector::getInstance();
     if(itemsFound.size()){
         // unselect this if needed

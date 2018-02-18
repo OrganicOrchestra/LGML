@@ -52,7 +52,7 @@ public:
     };
 
     //==============================================================================
-    LatestVersionChecker();
+    LatestVersionChecker(bool force_show=false);
     ~LatestVersionChecker();
 
     static String getOSString();
@@ -67,6 +67,7 @@ public:
                                  const String& releaseNotes,
                                  URL& newVersionToDownload,
                                  const String& extraHeaders);
+    bool hasEnded;
 #if DOWNLOAD_INPLACE
     void askUserForLocationToDownload (URL& newVersionToDownload, const String& extraHeaders);
     virtual Result performUpdate (const MemoryBlock& data, File& targetFolder);
@@ -91,6 +92,7 @@ private:
 
     int statusCode;
     var jsonReply;
+    bool force_show;
     bool hasAttemptedToReadWebsite;
     String newRelativeDownloadPath;
 

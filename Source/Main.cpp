@@ -26,9 +26,60 @@
 #include "Utils/CommandLineElements.hpp"
 
 #if ENGINE_WITH_UI
-    #include "UI/LookAndFeelOO.h"
-    #include "UI/MainWindow.h"
+#include "UI/LookAndFeelOO.h"
+#include "UI/MainWindow.h"
 #endif
+
+
+
+class CrashHandler{
+public:
+    static bool saveToFile;
+    static void init(){
+        if(getCrashFile().existsAsFile()){
+            ScopedPointer<InputStream> in = getCrashFile().createInputStream();
+            if(in){
+                String bt = in->readString();
+                LOG(bt);
+                #if ENGINE_WITH_UI
+                AlertWindow aw("lgml crashed last time","error message : ",AlertWindow::AlertIconType::WarningIcon);
+                aw.addTextBlock(bt);
+                aw.addButton("Ok", 1);
+                aw.runModalLoop();
+                #endif
+            }
+            getCrashFile().deleteFile();
+        }
+    }
+
+    static File & getCrashFile(){
+        static auto exportFolder = File::getSpecialLocation(File::SpecialLocationType::tempDirectory);
+        static File crashLog =exportFolder.getChildFile("lgml_error.log");
+        if(crashLog.existsAsFile() && !crashLog.hasWriteAccess()){
+            LOG("!!! can't write to log " << crashLog.getFullPathName());
+            jassertfalse;
+
+        }
+        return crashLog;
+    }
+    static void triggerCrash(){abort();}
+
+    static void report(void *p){
+
+        auto bt = SystemStats::getStackBacktrace();
+        if(saveToFile){
+        ScopedPointer<OutputStream> out ( getCrashFile().createOutputStream());
+        if(out){
+            if(!out->writeString(bt))
+                LOG("!!! Crash Reporter can't write to file");
+        }
+        }
+        LOG(bt);
+
+
+    }
+};
+bool CrashHandler::saveToFile = true;
 
 
 //==============================================================================
@@ -53,6 +104,9 @@ public:
     //==============================================================================
     void initialise (const String& commandLine) override
     {
+        CrashHandler::init();
+        SystemStats::setApplicationCrashHandler(&CrashHandler::report);
+
         // This method is where you should put your application's initialisation code..
         auto commandLinesElements = CommandLineElements::parseCommandLine (commandLine);
 
@@ -61,126 +115,140 @@ public:
             std::cout << ProjectInfo::versionString << std::endl;
             quit();
             return;
-        }
+            }
 
-        PropertiesFile::Options options;
-        options.applicationName     = "LGML";
-        options.filenameSuffix      = "settings";
-        options.osxLibrarySubFolder = "Preferences";
+            PropertiesFile::Options options;
+            options.applicationName     = "LGML";
+            options.filenameSuffix      = "settings";
+            options.osxLibrarySubFolder = "Preferences";
 
-        appProperties = new ApplicationProperties();
-        appProperties->setStorageParameters (options);
-
-
+            appProperties = new ApplicationProperties();
+            appProperties->setStorageParameters (options);
 
 
-        Process::setPriority (Process::HighPriority);
 
-        engine = new Engine();
+
+            Process::setPriority (Process::HighPriority);
+
+            engine = new Engine();
 #if LGML_UNIT_TESTS
 
-        UnitTestRunner tstRunner;
-        CommandLineElements commandLineElements = CommandLineElements::parseCommandLine (commandLine);
+            UnitTestRunner tstRunner;
+            CommandLineElements commandLineElements = CommandLineElements::parseCommandLine (commandLine);
 
-        if (CommandLineElement elem = commandLineElements.getCommandLineElement ("t", ""))
-        {
-            Array<UnitTest*> allTests = UnitTest::getAllTests();
-            Array<UnitTest*> testsToRun ;
-
-            for (auto& tName : elem.args)
+            if (CommandLineElement elem = commandLineElements.getCommandLineElement ("t", ""))
             {
-                bool found = false;
+                Array<UnitTest*> allTests = UnitTest::getAllTests();
+                Array<UnitTest*> testsToRun ;
 
-                for (auto& t : allTests)
+                for (auto& tName : elem.args)
                 {
-                    if (tName == t->getName())
+                    bool found = false;
+
+                    for (auto& t : allTests)
                     {
-                        testsToRun.add (t);
-                        found = true;
-                        break;
+                        if (tName == t->getName())
+                        {
+                            testsToRun.add (t);
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found)
+                    {
+                        DBG ("no tests found for : " + tName);
                     }
                 }
 
-                if (!found)
-                {
-                    DBG ("no tests found for : " + tName);
-                }
+                tstRunner.runTests (testsToRun);
+            }
+            else
+            {
+                tstRunner.runAllTests();
             }
 
-            tstRunner.runTests (testsToRun);
-        }
-        else
-        {
-            tstRunner.runAllTests();
-        }
-
-        quit();
+            quit();
 #else
 
 #if ENGINE_WITH_UI
-        LookAndFeel::setDefaultLookAndFeel (lookAndFeelOO = new LookAndFeelOO);
-        mainWindow = new MainWindow (getApplicationName(), engine);
+            LookAndFeel::setDefaultLookAndFeel (lookAndFeelOO = new LookAndFeelOO);
+            mainWindow = new MainWindow (getApplicationName(), engine);
 #endif
-        engine->parseCommandline (commandLinesElements);
+            engine->parseCommandline (commandLinesElements);
 
-        if (!engine->getFile().existsAsFile())
-        {
-            engine->createNewGraph();
-            engine->setChangedFlag (false);
-        }
+            if (!engine->getFile().existsAsFile())
+            {
+                engine->createNewGraph();
+                engine->setChangedFlag (false);
+            }
 
 #endif
 
-    }
+            }
 
-    void shutdown() override
-    {
-        // Add your application's shutdown code here..
-        
+            void shutdown() override
+            {
+                // Add your application's shutdown code here..
+                CrashHandler::saveToFile = false;
 #if ENGINE_WITH_UI
-        mainWindow = nullptr; // (deletes our window)
+                mainWindow = nullptr; // (deletes our window)
 #endif
-        engine = nullptr;
-    }
+                engine = nullptr;
+            }
 
-    //==============================================================================
-    void systemRequestedQuit() override
-    {
-        // This is called when the app is being asked to quit: you can ignore this
-        // request and let the app carry on running, or call quit() to allow the app to close.
-        quit();
-    }
+            //==============================================================================
+            void systemRequestedQuit() override
+            {
+                // This is called when the app is being asked to quit: you can ignore this
+                // request and let the app carry on running, or call quit() to allow the app to close.
+                CrashHandler::saveToFile = false;
+                quit();
+            }
 
-    void anotherInstanceStarted (const String& commandLine) override
-    {
-        // When another instance of the app is launched while this one is running,
-        // this method is invoked, and the commandLine parameter tells you what
-        // the other instance's command-line arguments were.
+            void anotherInstanceStarted (const String& commandLine) override
+            {
+                // When another instance of the app is launched while this one is running,
+                // this method is invoked, and the commandLine parameter tells you what
+                // the other instance's command-line arguments were.
 
-        DBG ("Another instance started !");
-        AlertWindow("other instance started", "other instance started", juce::AlertWindow::AlertIconType::WarningIcon);
-        engine->parseCommandline (CommandLineElements::parseCommandLine (commandLine));
-
-
-    }
+                bool isMacFileCallback =
+                        commandLine.startsWithChar (File::getSeparatorChar())
+                        && File(commandLine).existsAsFile();
+                
+                
+                if(!isMacFileCallback){
+                    DBG ("Log recieved command args : "<<commandLine);
+                }
+                    engine->parseCommandline (CommandLineElements::parseCommandLine (commandLine));
+//                }
+//                else{
 
 #if ENGINE_WITH_UI
-    ScopedPointer<MainWindow> mainWindow;
-    ScopedPointer<LookAndFeel> lookAndFeelOO;
+//                    AlertWindow::showMessageBox(AlertWindow::AlertIconType::WarningIcon,"other instance started", commandLine);
+#endif
+//                }
+
+
+            }
+
+#if ENGINE_WITH_UI
+            ScopedPointer<MainWindow> mainWindow;
+            ScopedPointer<LookAndFeel> lookAndFeelOO;
 #endif
 
-};
+            };
 
 
-static LGMLApplication* getApp()                 { return dynamic_cast<LGMLApplication*> (JUCEApplication::getInstance()); }
-ApplicationCommandManager& getCommandManager()      { return getApp()->commandManager; }
-ApplicationProperties * getAppProperties()           { return getApp()->appProperties; }
-AudioDeviceManager& getAudioDeviceManager()        { return getApp()->deviceManager;}
-UndoManager& getAppUndoManager()                      { return getApp()->undoManager;}
-Engine* getEngine()                              { return getApp()->engine;}
-ThreadPool* getEngineThreadPool()                              { return &getEngine()->threadPool;}
-bool  isEngineLoadingFile()                            {if (getEngine()) {return getEngine()->isLoadingFile;} else {return false;}}
-//==============================================================================
-// This macro generates the main() routine that launches the app.
-START_JUCE_APPLICATION (LGMLApplication)
-
+            static LGMLApplication* getApp()                 { return dynamic_cast<LGMLApplication*> (JUCEApplication::getInstance()); }
+            ApplicationCommandManager& getCommandManager()      { return getApp()->commandManager; }
+            ApplicationProperties * getAppProperties()           { return getApp()->appProperties; }
+            AudioDeviceManager& getAudioDeviceManager()        { return getApp()->deviceManager;}
+            UndoManager& getAppUndoManager()                      { return getApp()->undoManager;}
+            Engine* getEngine()                              { return getApp()->engine;}
+            ThreadPool* getEngineThreadPool()                              { return &getEngine()->threadPool;}
+            bool  isEngineLoadingFile()                            {if (getEngine()) {return getEngine()->isLoadingFile;} else {return false;}}
+            //==============================================================================
+            // This macro generates the main() routine that launches the app.
+            START_JUCE_APPLICATION (LGMLApplication)
+            

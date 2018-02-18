@@ -22,10 +22,12 @@
 
 #include "../JuceHeaderUI.h"
 
-#if JUCE_ARM // remove GL for arm, just to try if it changes ui perfs
-#define USE_GL 0
-#else
-#define USE_GL 1
+#ifndef USE_GL
+    #if JUCE_ARM // remove GL for arm, seems to changes ui perfs
+        #define USE_GL 0
+    #else
+        #define USE_GL 1
+    #endif
 #endif
 
 #if USE_GL
@@ -85,28 +87,41 @@ public:
     
 };
 
-#define USE_CACHED_GLYPH 0
-#if USE_CACHED_GLYPH
-class CachedGlyph : public Component {
+
+
+
+
+class CachedGlyph {
 public:
 
-    CachedGlyph(const String &t);
-    void setGlyphBounds(const Rectangle<int>& b);
+    CachedGlyph(const String &t="",const Font & f = Font());
+    void setSize(int w, int h);
+    void setFont(const Font & );
     void setText(const String & t);
-    void paint( Graphics & g) override;
+    void paint( Graphics & g) ;
 
-class ReferenceCountedObject
+    class CachedFont : public ReferenceCountedObject{
+    public:
+        CachedFont(const Font &f);
+        ~CachedFont();
+        typedef ReferenceCountedObjectPtr<CachedFont> Ptr ;
+        Font font;
+    };
 private:
     bool isReady();
     void updateGlyph();
-    Identifier curFontName;
     Font * getCurFont();
-    
+    Rectangle<int>& getLocalBounds();
+    Rectangle<int> bounds;
+    String text;
     bool useEllipsesIfTooBig;
     Justification justificationType;
     GlyphArrangement glyphArr;
+    CachedFont::Ptr  _font;
 
-    static NamedValueSet usedFonts;
 };
-#endif
+
+
+
+
 #endif  // STYLE_H_INCLUDED

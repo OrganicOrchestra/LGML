@@ -15,6 +15,7 @@
 
 #include "Parameter.h"
 #include "../../Scripting/Js/JsHelpers.h"
+#include "../../Utils/DebugHelpers.h"
 
 
 const Identifier Parameter::valueIdentifier ("value");
@@ -28,11 +29,12 @@ Parameter::Parameter ( const String& niceName, const String& description, var in
     queuedNotifier (100),
     hasCommitedValue (false),
     isCommitableParameter (false),
-    isSettingValue (false),
+    _isSettingValue (false),
     isLocking (true),
     defaultValue (initialValue),
     value (initialValue),
-    mappingDisabled (false)
+    mappingDisabled (false),
+    alwaysNotify(false)
 {
 
 
@@ -61,35 +63,40 @@ void Parameter::setValue (const var & _value, bool silentSet, bool force)
     }
     else
     {
-        tryToSetValue (_value, silentSet, force);
+        tryToSetValue (_value, silentSet, alwaysNotify || force);
     }
+
+}
+void Parameter::setValueFrom(Listener * notifier,const var & _value, bool silentSet , bool force ){
+    jassert(!isCommitableParameter);
+     tryToSetValue (_value, silentSet, alwaysNotify || force,notifier);
 
 }
 
 bool Parameter::waitOrDeffer (const var& _value, bool silentSet, bool force )
 {
-    if (!force && isSettingValue)
+    if (!force && _isSettingValue.get())
     {
         if (isLocking)
         {
             int overflow = 1000000;
             auto startWait = Time::currentTimeMillis();
 
-            while (isSettingValue && overflow > 0)
+            while (_isSettingValue.get() && overflow > 0)
             {
                 //        Thread::sleep(1);
                 Thread::yield();
                 overflow--;
             }
 
-            if (isSettingValue && overflow <= 0)
+            if (_isSettingValue.get() && overflow <= 0)
             {
-                DBG ("locked for : " << Time::currentTimeMillis() - startWait);
+                LOG ("!!! param " << controlAddress << " locked for : " << Time::currentTimeMillis() - startWait);
             }
         }
 
         // force defering if locking too long or not locking
-        if (isSettingValue)
+        if (_isSettingValue.get())
         {
             if (auto* mm = MessageManager::getInstanceWithoutCreating())
             {
@@ -103,32 +110,23 @@ bool Parameter::waitOrDeffer (const var& _value, bool silentSet, bool force )
 
     return false;
 }
-void Parameter::tryToSetValue (const var & _value, bool silentSet, bool force )
+void Parameter::tryToSetValue (const var & _value, bool silentSet, bool force,Listener * notifier )
 {
 
     if (!force && checkValueIsTheSame (_value, value)) return;
 
     if (!waitOrDeffer (_value, silentSet, force))
     {
-        isSettingValue = true;
-
-        if (value.getDynamicObject())
-        {
-            lastValue = value.clone();
-        }
-        else
-        {
-            lastValue = var (value);
-        }
-
+        _isSettingValue = true;
+        lastValue = value.clone();
         setValueInternal (_value);
 
         if (!isOverriden && !checkValueIsTheSame (defaultValue, value)) isOverriden = true;
 
         if (!silentSet && (force || !checkValueIsTheSame (lastValue, value)))
-            notifyValueChanged (false);
+            notifyValueChanged (false,notifier);
 
-        isSettingValue = false;
+        _isSettingValue = false;
     }
 
 }
@@ -176,14 +174,16 @@ void Parameter::checkVarIsConsistentWithType()
 
 
 
-void Parameter::notifyValueChanged (bool defferIt)
+void Parameter::notifyValueChanged (bool defferIt,Listener * notifier)
 {
     if (defferIt)
         triggerAsyncUpdate();
-    else
-        listeners.call (&Listener::parameterValueChanged, this);
+    else{
+        // call all listeners as they still need to dispatch feedback
+        listeners.call (&Listener::parameterValueChanged, this,notifier);
+    }
 
-    queuedNotifier.addMessage (new ParamWithValue (this, value, false));
+    queuedNotifier.addMessage (new ParamWithValue (this, value, false,notifier));
 }
 
 
@@ -228,7 +228,7 @@ var Parameter::getVarState()
 
 void Parameter::handleAsyncUpdate()
 {
-    listeners.call (&Listener::parameterValueChanged, this);
+    listeners.call (&Listener::parameterValueChanged, this,nullptr);
 };
 
 bool Parameter::isMappable()
@@ -239,4 +239,8 @@ bool Parameter::isMappable()
 void Parameter::setStateFromVar (const var& v)
 {
     setValue (v);
+}
+
+bool Parameter::isSettingValue(){
+    return _isSettingValue.get();
 }

@@ -114,7 +114,7 @@ void SliderUI<T>::paint (Graphics& g)
 
         if (showLabel)
         {
-            text += customTextDisplayed.isNotEmpty()?customTextDisplayed:parameter->niceName;
+            text += customTextDisplayed.isNotEmpty()?customTextDisplayed:parameter.get()?parameter->niceName:"No Parameter";
 
             if (showValue) text += " : ";
         }
@@ -259,7 +259,7 @@ void SliderUI<T>::mouseUp (const MouseEvent& me)
             auto vb = getBoundsInParent();
             int w = vb.getWidth();
             if(w<vb.getHeight()){
-                vb = vb.transformedBy(AffineTransform::rotation(float_Pi/2.0,vb.getCentreX(),vb.getCentreY()));
+                vb = vb.transformedBy(AffineTransform::rotation(float_Pi/2.0f,(float)vb.getCentreX(),(float)vb.getCentreY()));
             }
             vb.setHeight(jmax<int>(vb.getHeight(),valueBox->getFont().getHeight()+3));
             valueBox->setBounds(vb);

@@ -1,16 +1,16 @@
 /* Copyright © Organic Orchestra, 2017
-*
-* This file is part of LGML.  LGML is a software to manipulate sound in realtime
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation (version 3 of the License).
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*/
+ *
+ * This file is part of LGML.  LGML is a software to manipulate sound in realtime
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation (version 3 of the License).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
 
 
 #include "SerialController.h"
@@ -19,20 +19,38 @@
 
 
 #include "../ControllerFactory.h"
-REGISTER_OBJ_TYPE_NAMED (Controller, SerialController, "t_Serial");
+REGISTER_OBJ_TYPE_NAMED (Controller, SerialController, "t_Serial","Serial");
+
+/*
+static Identifier LGMLProtocol("LGML");
+static Identifier RAWProtocol("RAW");
+class SerialProtocol : public EnumParameterModel{
+    public:
+    SerialProtocol(){
+        
+        addOption(LGMLProtocol,LGMLProtocol.toString(),true);
+        addOption(RAWProtocol,RAWProtocol.toString(),true);
+    };
 
 
+
+};
+
+static SerialProtocol serialProtocolModel;
+*/
 
 
 SerialController::SerialController (StringRef name) :
-    JsEnvironment ("controllers.serial", this),
-    Controller (name),
-    port (nullptr)
+JsEnvironment ("controllers.serial", this),
+Controller (name),
+port (nullptr)
 {
+
 
     setNamespaceName ("controllers." + shortName);
     logIncoming = addNewParameter<BoolParameter> ("logIncoming", "log Incoming midi message", false);
     selectedPort = addNewParameter<EnumParameter> ("selectedPort", "Name of the selected hardware",SerialManager::getInstance(), "");
+    //  protocol =addNewParameter<EnumParameter> ("protocol", "which serial protocol to use",&serialProtocolModel,LGMLProtocol.toString());
 
     SerialManager::getInstance()->addSerialManagerListener (this);
 }
@@ -62,6 +80,7 @@ void SerialController::setCurrentPort (SerialPort* _port)
         port->addSerialPortListener (this);
         lastOpenedPortID = port->info->port;
         sendIdentificationQuery();
+        applyProtocol();
     }
     else
     {
@@ -93,12 +112,31 @@ void SerialController::onContainerParameterChanged (Parameter* p)
         SerialPort* _port  = SerialManager::getInstance()->getPort (portHID, portName, true);
 
 
-            setCurrentPort (_port);
-        
+        setCurrentPort (_port);
+
+    }
+    else if(p==protocol){
+        applyProtocol();
     }
 
 
 };
+
+
+
+void SerialController::applyProtocol(){
+    /*
+    if(port){
+        if(protocol->getFirstSelectedId()==LGMLProtocol){
+            port->mode=SerialPort::PortMode::LINES;
+        }
+
+        else if(protocol->getFirstSelectedId()==RAWProtocol){
+            port->mode=SerialPort::PortMode::RAW;
+        }
+    }
+ */
+}
 
 void SerialController::buildLocalEnv()
 {
@@ -106,7 +144,7 @@ void SerialController::buildLocalEnv()
     DynamicObject obj;
     static const Identifier jsSendMessageIdentifier ("sendMessage");
     obj.setMethod (jsSendMessageIdentifier, sendMessageFromScript);
-//    obj.setProperty (jsPtrIdentifier, (int64)this);
+    //    obj.setProperty (jsPtrIdentifier, (int64)this);
 
 
 
@@ -133,7 +171,9 @@ void SerialController::serialDataReceived (const var& data)
 {
 
     processMessage (data.toString());
+    if(logIncoming->boolValue()){NLOG (getNiceName(),"In : "+ data.toString());}
     inActivityTrigger->trigger();
+
 }
 
 void SerialController::controllableAdded (ControllableContainer*, Controllable* c)
@@ -165,61 +205,148 @@ void SerialController::sendIdentificationQuery()
 
 void SerialController::processMessage (const String& message)
 {
-    StringArray split;
-    split.addTokens (message.removeCharacters ("\n"), true);
-    String command = split[0];
+    // if(protocol->getFirstSelectedId()==LGMLProtocol){
+        StringArray split;
+        split.addTokens (message.removeCharacters ("\n"), true);
+        String command = split[0];
 
-    if (command == "i")
-    {
-        //identification
-        deviceID = split[1];
-
-    }
-    else if (command == "a")
-    {
-        auto found = userContainer.getControllableForAddress (split[1]);
-
-        if (!found )
+        if (command == "i")
         {
-            FloatParameter* v ;
+            //identification
+            deviceID = split[1];
 
-            if (split.size() >= 4)
+        }
+        else if (command == "a")
+        {
+            auto found = userContainer.getControllableForAddress (split[1]);
+
+            if (!found )
             {
-                v = userContainer.addNewParameter<FloatParameter> (split[1], split[1],
+                //            FloatParameter* v ;
+
+                if (split.size() >= 4)
+                {
+                    userContainer.addNewParameter<FloatParameter> (split[1], split[1],
                                                                    split[2].getFloatValue(),
                                                                    split[2].getFloatValue(),
                                                                    split[3].getFloatValue());
+                }
+                else
+                {
+                    userContainer.addNewParameter<FloatParameter> (split[1], split[1], 0.f);
+                }
+
+
             }
-            else
+        }
+        else if (command == "d")
+        {
+            auto found = userContainer.getControllableForAddress (split[1]);
+
+            if (!found )
             {
-                v = userContainer.addNewParameter<FloatParameter> (split[1], split[1], 0.f);
+                userContainer.addNewParameter<BoolParameter> (split[1], split[1], false);
+
             }
-
-
         }
-    }
-    else if (command == "d")
-    {
-        auto found = userContainer.getControllableForAddress (split[1]);
-
-        if (!found )
+        else if (command == "u")
         {
-            userContainer.addNewParameter<BoolParameter> (split[1], split[1], false);
+            auto v = userContainer.getControllableForAddress (split[1]);
 
+            if (v != nullptr)
+            {
+                ((Parameter*)v)->setValue (split[2].getFloatValue());
+            }
+        }
+/*    }// use_LGMLProtocol
+    else{
+        StringArray split;
+        split.addTokens (message.removeCharacters ("\n"), true);
+        String command = split[0];
+        auto v = userContainer.getControllableForAddress (command);
+        if (v != nullptr){
+            ((Parameter*)v)->setValue (split[1].getFloatValue());
+        }
+        else if( autoAddParams){
+            MessageManager::getInstance()->callAsync ([this, split]() {checkAndAddParameterIfNeeded (split);});
         }
     }
-    else if (command == "u")
-    {
-        auto v = userContainer.getControllableForAddress (split[1]);
+*/
+}
 
-        if (v != nullptr)
-        {
-            ((Parameter*)v)->setValue (split[2].getFloatValue());
-        }
-    }
+StringArray OSCAddressToArray (const String& addr)
+{
+    StringArray addrArray;
+    addrArray.addTokens (addr, juce::StringRef ("/"), juce::StringRef ("\""));
+    addrArray.remove (0);
+    return addrArray;
 }
 
 
+void SerialController::checkAndAddParameterIfNeeded (const StringArray& split)
+{
+    if(split.size()==0)return;
+
+    String command = split[0];
+
+
+    auto* linked = Parameter::fromControllable (userContainer.getControllableForAddress (command));
+
+    if (!linked)
+    {
+
+        StringArray sa = OSCAddressToArray (command);
+        ParameterContainer* tC = &userContainer;
+
+        for ( int i = 0 ; i < sa.size() - 1 ; i++)
+        {
+            auto* c = dynamic_cast<ParameterContainer*> (tC->getControllableContainerByName (sa[i], true));
+
+            if (!c)
+            {
+                c = new ParameterContainer (sa[i]);
+                c->setUserDefined (true);
+                tC->addChildControllableContainer (c, true);
+            }
+
+            tC = c ? c : nullptr;
+        }
+
+        String pName = sa[sa.size() - 1];
+
+        if (tC)
+        {
+            if (split.size() == 1)
+            {
+                linked = tC->addNewParameter<Trigger> (pName, "entry for " + command);
+            }
+            else
+            {
+                if(split[1].containsOnly("123456789.")){
+                    linked = tC->addNewParameter<FloatParameter> (pName, "entry for " + command);
+                }
+                else if (split[1].containsOnly("10"))
+                {
+                    linked = tC->addNewParameter<BoolParameter> (pName, "entry for " + command);
+                }
+            }
+
+            if (linked)
+            {
+                ((Parameter*)linked)->setValue (split[2].getFloatValue());
+            }
+        }
+        else
+        {
+            jassertfalse;
+        }
+
+    }
+    
+    
+    
+    
+}
 
 void SerialController::portAdded (SerialPortInfo* info)
 {

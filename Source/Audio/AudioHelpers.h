@@ -85,12 +85,14 @@ public:
         return 0.0;
 
     }
-    double const getLastFade()
+    double  getLastFade() const
     {
         return lastFade;
     }
-
-    inline double const getFade (int cur, int max)
+    bool  isMuted() {
+        return (getCurrentFade()==0) && getLastFade()==0;
+    }
+    double  getFade (int cur, int max) const
     {
         if (skew == 1)return cur * 1.0 / max;
 

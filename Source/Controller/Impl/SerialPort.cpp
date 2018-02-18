@@ -206,7 +206,7 @@ void SerialReadThread::run()
                     }
 
                     queuedNotifier.addMessage(dataVar);
-                    */
+                     */
                 }
                 break;
 

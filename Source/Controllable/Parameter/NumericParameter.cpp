@@ -16,8 +16,8 @@
 #include "NumericParameter.h"
 
 #include "ParameterFactory.h"
-REGISTER_PARAM_TYPE_TEMPLATED (NumericParameter, int)
-REGISTER_PARAM_TYPE_TEMPLATED (NumericParameter, double)
+REGISTER_PARAM_TYPE_TEMPLATED (NumericParameter, int,"intParameter")
+REGISTER_PARAM_TYPE_TEMPLATED (NumericParameter, double,"doubleParameter")
 
 
 

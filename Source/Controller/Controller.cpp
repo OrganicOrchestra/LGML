@@ -84,7 +84,7 @@ void Controller::onContainerParameterChanged (Parameter* p)
         if (JsEnvironment* jsEnv = dynamic_cast<JsEnvironment*> (this))
         {
 
-            jsEnv->setEnabled (enabledParam->boolValue());
+            jsEnv->setScriptEnabled (enabledParam->boolValue());
         }
 
         // DBG("set Controller Enabled " + String(enabledParam->boolValue()));

@@ -54,6 +54,7 @@ private:
     void process (bool toReferenceOut = true);
     // inherited from proxy listener
     void linkedParamValueChanged (ParameterProxy*) override;
+    void linkedParamRangeChanged(ParameterProxy*) override;
     void linkedParamChanged (ParameterProxy*) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FastMap);

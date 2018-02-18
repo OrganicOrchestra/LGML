@@ -32,11 +32,11 @@ public:
 
     ScopedPointer<BetterStepper> slider;
 
-    void setScrollAllowed (bool );
-
     void resized() override;
 
     void setStepInterval(T i);
+
+    void mouseDown(const MouseEvent & e)override;
 protected:
     void valueChanged (const var&) override;
     virtual void rangeChanged (Parameter* p) override;

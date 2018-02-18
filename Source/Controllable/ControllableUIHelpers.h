@@ -45,7 +45,7 @@ public:
 };
 
 
-class ControllableReferenceUI : public TextButton, public ButtonListener
+class ControllableReferenceUI : public TextButton, public Button::Listener
 {
 public :
     ControllableReferenceUI (ControllableContainer* rootContainer = nullptr, Array<Controllable*> filterOut = {});
@@ -54,7 +54,7 @@ public :
     WeakReference<ControllableContainer> rootContainer;
 
     WeakReference<Controllable> currentControllable;
-    void setCurrentControllale (Controllable* c);
+    void setCurrentControllable (Controllable* c);
 
     Array<Controllable*> filterOutControllable;
 

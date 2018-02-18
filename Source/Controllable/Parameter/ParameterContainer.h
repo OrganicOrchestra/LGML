@@ -94,7 +94,7 @@ public:
     Array<WeakReference<Parameter>> getAllParameters (bool recursive = false, bool getNotExposed = false);
 
     // Inherited via Parameter::Listener
-    virtual void parameterValueChanged (Parameter* p) override;
+    virtual void parameterValueChanged (Parameter* p,Parameter::Listener * notifier=nullptr) override;
     void newMessage (const  Parameter::ParamWithValue&)override;
 
     bool canHavePresets;
@@ -115,10 +115,10 @@ public:
 
 private:
     // internal callback that a controllableContainer can override to react to any of it's parameter change
-    //@ ben this is to avoid either:
+    // this is to avoid either:
     //      adding controllableContainerListener for each implementation
     //      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)
-    //      or using dispatch feedback that triggers only exposedParams
+    //      
 
     virtual void onContainerParameterChanged (Parameter*) {};
     virtual void onContainerTriggerTriggered (Trigger*) {};

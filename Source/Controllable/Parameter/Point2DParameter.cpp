@@ -17,8 +17,8 @@
 
 #include "ParameterFactory.h"
 
-REGISTER_PARAM_TYPE_TEMPLATED (Point2DParameter, int)
-REGISTER_PARAM_TYPE_TEMPLATED (Point2DParameter, float)
+REGISTER_PARAM_TYPE_TEMPLATED (Point2DParameter, int,"Point2DInt")
+REGISTER_PARAM_TYPE_TEMPLATED (Point2DParameter, float,"Point2DFloat")
 
 
 
@@ -87,7 +87,7 @@ void Point2DParameter<T>::setValueInternal (const var& _value)
 
 }
 template<typename T>
-Point<T> Point2DParameter<T>::getPoint()
+Point<T> Point2DParameter<T>::getPoint() const
 {
     return Point<T> (getX(), getY());
 }

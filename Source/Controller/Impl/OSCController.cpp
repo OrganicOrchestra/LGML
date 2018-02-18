@@ -54,6 +54,7 @@ public:
 
 };
 
+int defaultLocalOSCPort = 11000;
 OSCController::OSCController (const String& _name) :
     Controller (_name),
     lastMessageReceived (OSCAddressPattern ("/fake")),
@@ -65,7 +66,7 @@ OSCController::OSCController (const String& _name) :
     // force init of Network Utils if not created
     NetworkUtils::getInstance();
 
-    localPortParam = addNewParameter<StringParameter> ("Local Port", "The port to bind for the controller to receive OSC from it", "11000");
+    localPortParam = addNewParameter<StringParameter> ("Local Port", "The port to bind for the controller to receive OSC from it", String(defaultLocalOSCPort++));
     remotePortParam = addNewParameter<StringParameter> ("Remote Port", "The port bound by the controller to send OSC to it", "8000");
     static OSCClientModel model;
     remoteHostParam = addNewParameter<EnumParameter> ("Remote Host", "The host's IP of the remote controller", &model, var ("localhost"), true);
@@ -84,7 +85,6 @@ OSCController::OSCController (const String& _name) :
 
     receiver.addListener (this);
     lastOSCMessageSentTime = 0;
-    numSentInARow = NUM_OSC_MSG_IN_A_ROW;
 
 
 
@@ -142,10 +142,10 @@ void OSCController::resolveHostnameIfNeeded()
                 if(resolved.hasValidPort()){
                 String resolvedPortString = String ((int)resolved.port);
 
-                if (!remotePortParam->isSettingValue && remotePortParam->stringValue() != resolvedPortString)
+                if (!remotePortParam->isSettingValue() && remotePortParam->stringValue() != resolvedPortString)
                 {
 
-                    //    enssure to not create feedback on ports
+                    //    ensure to not create feedback on ports
                     if(remoteIP == "127.0.0.1" &&
                        resolved.port == localPortParam->stringValue().getIntValue()){
                         resolvedPortString = String((int)resolved.port+1);
@@ -201,9 +201,13 @@ void OSCController::processMessage (const OSCMessage& msg)
 
     isProcessingOSC = true;
 
+    bool isPing =msg.getAddressPattern()=="/ping";
+    if(isPing){
+        sendOSC("/pong",getControlAddress());
+    }
 
-
-    Result result = processMessageInternal (msg);
+    Result result = isPing?Result::ok():processMessageInternal (msg);
+    
 
     if (autoAddParams && !result && !msg.getAddressPattern().containsWildcards())
     {
@@ -213,7 +217,7 @@ void OSCController::processMessage (const OSCMessage& msg)
         LOG("!! "+result.getErrorMessage());
     }
     isProcessingOSC = false;
-    oscListeners.call (&OSCControllerListener::messageProcessed, msg, result);
+    
 
     inActivityTrigger->trigger();
 }
@@ -379,8 +383,7 @@ void OSCController::checkAndAddParameterIfNeeded (const OSCMessage& msg)
 
 void OSCController::logMessage (const OSCMessage& msg, const String& prefix)
 {
-    String log = prefix;
-    log += msg.getAddressPattern().toString() + ":";
+    String log(prefix + msg.getAddressPattern().toString() + ":");
 
     for (int i = 0 ; i < msg.size() ; i++)
     {
@@ -405,7 +408,7 @@ void OSCController::onContainerParameterChanged (Parameter* p)
     Controller::onContainerParameterChanged (p);
 
     if (p == localPortParam) setupReceiver();
-    else if ((p == remotePortParam && !remoteHostParam->isSettingValue) || p == remoteHostParam ) setupSender();
+    else if ((p == remotePortParam && !remoteHostParam->isSettingValue()) || p == remoteHostParam ) setupSender();
     else if (p == speedLimit) {oscMessageQueue.interval = speedLimit->floatValue();}
 
 
@@ -427,6 +430,7 @@ void OSCController::oscMessageReceived (const OSCMessage& message)
 {
     //DBG("Message received !");
     processMessage (message);
+
 }
 
 void OSCController::oscBundleReceived (const OSCBundle& bundle)
@@ -537,9 +541,9 @@ void OSCController::sendAllControllableStates (ControllableContainer* c, int& se
 {
     if (c)
     {
-        for (auto& controllable : c->getAllControllables())
+        for (auto& controllable : c->getAllControllables(false))
         {
-            controllableFeedbackUpdate (c, controllable);
+            sendOSCFromParam(controllable);
             sentControllable++;
 
             if ((sentControllable % 10) == 0)
@@ -556,6 +560,53 @@ void OSCController::sendAllControllableStates (ControllableContainer* c, int& se
 
 }
 
+void OSCController::sendOSCFromParam(const Controllable *c){
+    if (c->isChildOf (&userContainer))
+    {
+        sendOSCForAddress (c, c->getControlAddress (&userContainer));
+    }
+    else
+    {
+        sendOSCForAddress (c, c->controlAddress);
+    }
+}
+
+void OSCController::sendOSCForAddress (const Controllable* c, const String& cAddress)
+{
+
+
+    if (const Parameter* p = Parameter::fromControllable (c))
+    {
+        auto  targetType = p->getFactoryTypeId();
+
+        if (targetType == ParameterProxy::_factoryType) targetType = ((ParameterProxy*)c)->linkedParam->getFactoryTypeId();
+
+        if (targetType == Trigger::_factoryType) {sendOSC (cAddress);}
+        else if (targetType == BoolParameter::_factoryType) {sendOSC (cAddress, p->intValue());}
+        else if (targetType == FloatParameter::_factoryType) {sendOSC (cAddress, p->floatValue());}
+        else if (targetType == IntParameter::_factoryType) {sendOSC (cAddress, p->intValue());}
+        else if (targetType == StringParameter::_factoryType) {sendOSC (cAddress, p->stringValue());}
+        else if (targetType == EnumParameter::_factoryType) {sendOSC (cAddress, p->stringValue());}
+        else if (targetType == Point2DParameter<int>::_factoryType) {
+            auto point = static_cast<const Point2DParameter<int> *>(p);
+            sendOSC (cAddress, point->getX(),point->getY());
+        }
+        else if (targetType == Point2DParameter<float>::_factoryType) {
+            auto point = static_cast<const Point2DParameter<float> *>(p);
+            sendOSC (cAddress, point->getX(),point->getY());
+        }
+        else
+        {
+            DBG ("Type not supported " << targetType.toString());
+            jassertfalse;
+        }
+
+    }
+    else
+    {
+        jassertfalse;
+    }
+}
 
 
 ////////////////////////
@@ -565,7 +616,9 @@ OSCController::OSCMessageQueue::OSCMessageQueue (OSCController* o):
     owner (o),
     aFifo (OSC_QUEUE_LENGTH),
     interval (1)
-{messages.resize (OSC_QUEUE_LENGTH);}
+{
+//    messages.resize (OSC_QUEUE_LENGTH);
+}
 
 void OSCController::OSCMessageQueue::add (OSCMessage* m)
 {
@@ -573,23 +626,33 @@ void OSCController::OSCMessageQueue::add (OSCMessage* m)
     aFifo.prepareToWrite (1, startIndex1, blockSize1, startIndex2, blockSize2);
     int numWritten = 0;
 
+    // fifo is full : we can drop message
+    while (blockSize1 == 0)
+    {
+        aFifo.finishedRead (1);
+        aFifo.prepareToWrite (1, startIndex1, blockSize1, startIndex2, blockSize2);
+        NLOG (owner->getNiceName(), "!!! still flooding OSC");
+    }
     if (blockSize1 > 0)
     {
-        messages.set (startIndex1, m);
+        if(messages.size()<OSC_QUEUE_LENGTH){
+            jassert(startIndex1 == messages.size());
+            messages.add(m);
+        }
+        else
+            messages.set (startIndex1, m);
         numWritten ++;
     }
     else if (blockSize2 > 0)
     {
+        jassertfalse;
         messages.set (startIndex2, m);
         numWritten ++;
     }
     else
     {
-        aFifo.finishedWrite (numWritten);
-        numWritten = 0;
-        timerCallback();
-        NLOG (owner->getNiceName(), "!!! still flooding OSC");
-        delete m;
+        jassertfalse;
+
     }
 
     aFifo.finishedWrite (numWritten);
@@ -610,7 +673,6 @@ void OSCController::OSCMessageQueue::timerCallback()
             for ( ; numRead < blockSize1 ; numRead++ )
             {
                 owner->sendOSCInternal (*messages[startIndex1 + numRead]);
-                delete messages[startIndex1 + numRead];
             }
         }
 
@@ -619,7 +681,6 @@ void OSCController::OSCMessageQueue::timerCallback()
             for (int i = 0 ; i < blockSize2 ; i++ )
             {
                 owner->sendOSCInternal (*messages[startIndex2 + i]);
-                delete messages[startIndex2 + i];
                 numRead++;
             }
         }

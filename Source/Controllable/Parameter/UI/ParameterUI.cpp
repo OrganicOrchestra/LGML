@@ -21,14 +21,17 @@
 
 //==============================================================================
 ParameterUI::ParameterUI (Parameter* _parameter) :
+    InspectableComponent(_parameter,"ParameterUI"),
     parameter (_parameter),
     showLabel (true),
     showValue (true),
     customTextDisplayed (String::empty),
     isMappingDest (false),
     isDraggable (true),
-    isSelected (false)
+    isSelected (false),
+    wasShowing(true)
 {
+    setBufferedToImage(true);
     if (parameter.get())
     {
         parameter->addAsyncCoalescedListener (this);
@@ -48,13 +51,15 @@ ParameterUI::ParameterUI (Parameter* _parameter) :
     setMappingState (LGMLDragger::getInstance()->isMappingActive);
     
     
-
+    
 
 }
 
 ParameterUI::~ParameterUI()
 {
-    LGMLDragger::getInstance()->unRegisterDragCandidate (this);
+    if(auto * draggerI = LGMLDragger::getInstanceWithoutCreating()){
+        draggerI->unRegisterDragCandidate (this);
+    }
 
     if (parameter.get())
     {
@@ -144,6 +149,33 @@ String ParameterUI::getTooltip(){
     return parameter->description + "\nControl Address : " + parameter->controlAddress;//"\nValue : "+parameter->value.toString();
 }
 
+void ParameterUI::visibilityChanged(){
+    bool _isShowing = isShowing();
+    // do nothing if already in appropriate state
+    if(_isShowing==wasShowing) return;
+    // do nothing if detached
+    if(getParentComponent()==nullptr) return;
+    if (parameter.get()){
+        if(_isShowing){
+            parameter->addAsyncCoalescedListener (this);
+            parameter->addParameterListener (this);
+            parameter->addControllableListener (this);
+            // don't trigger
+            if(!dynamic_cast<Trigger*>(parameter.get()))
+               valueChanged(parameter->value);
+        }
+        else{
+            parameter->removeAsyncParameterListener (this);
+            parameter->removeParameterListener (this);
+            parameter->removeControllableListener (this);
+        }
+    }
+    wasShowing =_isShowing;
+
+}
+void ParameterUI::parentHierarchyChanged(){
+    visibilityChanged();
+};
 
 class MapEffect : public ImageEffectFilter
 {
@@ -226,9 +258,18 @@ void  ParameterUI::setMappingState (const bool  b)
         }
     }
 
-    if (b)
+
+    mappingState = s;
+    updateOverlayEffect();
+
+}
+
+void ParameterUI::updateOverlayEffect(){
+    if (mappingState!=NOMAP)
     {
-        mapEffect  = new MapEffect (isMappingDest ? Colours::red : Colours::blue, 50, getName());
+        Colour c =isMappingDest ? Colours::red : Colours::blue;
+        if (isSelected) c = Colours::green;
+        mapEffect  = new MapEffect (c, isSelected? 100:50, getName());
     }
     else
     {
@@ -236,12 +277,9 @@ void  ParameterUI::setMappingState (const bool  b)
     }
 
     setComponentEffect (mapEffect);
-    mappingState = s;
     repaint();
+
 }
-
-
-
 
 void ParameterUI::setMappingDest (bool _isMappingDest)
 {
@@ -328,4 +366,10 @@ void NamedParameterUI::labelTextChanged (Label* labelThatHasChanged)
         ownedParameterUI->parameter->setNiceName (labelThatHasChanged->getText());
     }
 };
+
+void  NamedParameterUI::controllableControlAddressChanged (Controllable* c){
+    if(c && c==parameter){
+    controllableLabel.setText (parameter->niceName, dontSendNotification);
+    }
+}
 

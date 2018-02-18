@@ -246,13 +246,14 @@ public:
 
                         if (FD_ISSET (jj->second, &readfds) )
                         {
-
-                            if ((DNSServiceProcessResult (jj->first) != 0))
+                            auto res=DNSServiceProcessResult (jj->first) ;
+                            if (res!= 0)
                             {
                                 // should happen only at the deletion of Pimpl
                                 if (threadShouldExit())return;
+                                
+                                LOG("!!! DNS service failed with error : "<<res);
 
-                                jassertfalse;
                             }
 
                             if ( ++count > 10 )

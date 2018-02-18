@@ -22,6 +22,7 @@
 
 #include "Node/Impl/AudioDeviceInNode.h"
 #include "Node/Impl/AudioDeviceOutNode.h"
+#include "Controller/Impl/OSCJsController.h"
 
 #include "JuceHeader.h" // for project info
 
@@ -40,7 +41,7 @@
 ApplicationProperties* getAppProperties();
 
 AudioDeviceManager& getAudioDeviceManager();
- String lastFileListKey ("lastFileList");
+String lastFileListKey ("lastFileList");
 
 String Engine::getDocumentTitle()
 {
@@ -70,9 +71,10 @@ void Engine::createNewGraph()
 
 
     node = NodeManager::getInstance()->addNode (NodeFactory::createFromTypeID ( AudioDeviceOutNode::typeId()));
+
     setFile (File());
     isLoadingFile = false;
-    
+
     handleAsyncUpdate();
 
 }
@@ -81,7 +83,7 @@ Result Engine::loadDocument (const File& file)
 {
     if (isLoadingFile)
     {
-//        TODO handle quick reloading of file
+        //        TODO handle quick reloading of file
         return Result::fail ("engine already loading");
     }
 
@@ -182,16 +184,26 @@ void Engine::handleAsyncUpdate()
 
     isLoadingFile = false;
 
-    if (getFile().exists())
-    {
-        setLastDocumentOpened (getFile());
-    }
 
     //  graphPlayer.setProcessor(NodeManager::getInstance()->getAudioGraph());
     //  suspendAudio(false);
     auto timeForLoading  =  getElapsedMillis() - loadingStartTime;
     suspendAudio (false);
-    
+    if(hasDefaultOSCControl){
+        auto controllers = ControllerManager::getInstance()->getContainersOfType<OSCJsController>(false);
+        OSCJsController *mainC(nullptr);
+        for(auto & c:controllers){
+            if(c->fullSync->boolValue()){
+                mainC = c;
+                break;
+            }
+        }
+        if(!mainC){
+            mainC = (OSCJsController*)ControllerFactory::createFromTypeID(OSCJsController::typeId());
+            mainC->fullSync->setValue(true);
+            ControllerManager::getInstance()->addController(mainC);
+        }
+    }
     engineListeners.call (&EngineListener::endLoadFile);
     NLOG ("Engine", "Session loaded in " << timeForLoading / 1000.0 << "s");
 }
@@ -202,12 +214,14 @@ Result Engine::saveDocument (const File& file)
     var data = getObject();
 
     if (file.exists()) file.deleteFile();
-
-    ScopedPointer<OutputStream> os ( file.createOutputStream());
-    JSON::writeToStream (*os, data);
-    os->flush();
+    {
+        ScopedPointer<OutputStream> os ( file.createOutputStream());
+        JSON::writeToStream (*os, data);
+        os->flush();
+    }
 
     setLastDocumentOpened (file);
+    saveSession->setValueFrom(this, getFile().getFullPathName());
     return Result::ok();
 }
 
@@ -298,7 +312,7 @@ void Engine::loadJSONData (const var& data, ProgressTask* loadingTask)
 
     presetTask->end();
     nodeManagerTask->start();
-    
+
     if (d->hasProperty ("nodeManager")) NodeManager::getInstance()->configureFromObject (d->getProperty ("nodeManager").getDynamicObject());
 
 #if ENGINE_WITH_UI
@@ -310,8 +324,8 @@ void Engine::loadJSONData (const var& data, ProgressTask* loadingTask)
             p = new ParameterContainer("NodesUI");
             addChildControllableContainer(p);
         }
-            p->configureFromObject(d->getProperty("NodesUI").getDynamicObject());
-    
+        p->configureFromObject(d->getProperty("NodesUI").getDynamicObject());
+
     }
 #endif
 
@@ -376,7 +390,7 @@ File Engine::getCurrentProjectFolder()
     if (!getFile().exists())
     {
 #if !LGML_UNIT_TESTS
-        LOG ("!! current session not saved, script will have an absolute path");
+        LOG ("!! current session not saved, related files will have an absolute path");
         //    jassertfalse;
 #endif
         return File();
@@ -402,7 +416,7 @@ String Engine::getNormalizedFilePath (const File& f)
 File Engine::getFileAtNormalizedPath (const String& path)
 {
     bool isRelative = path.length() > 0 && (path[0] != File::getSeparatorChar() || path[0] == '.');
-
+    
     if (isRelative)
     {
         return getCurrentProjectFolder().getChildFile (path);

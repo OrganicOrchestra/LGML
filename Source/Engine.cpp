@@ -54,19 +54,29 @@ void initDefaultUserSettings(){
 }
 
 Engine::Engine(): FileBasedDocument (filenameSuffix,
-                                         filenameWildcard,
-                                         "Load a filter graph",
-                                         "Save a filter graph"),
-    ParameterContainer ("root"),
-    threadPool (4),
-    isLoadingFile(false),
-    engineStartTime(Time::currentTimeMillis())
+                                     filenameWildcard,
+                                     "Load a filter graph",
+                                     "Save a filter graph"),
+ParameterContainer ("root"),
+threadPool (4),
+isLoadingFile(false),
+engineStartTime(Time::currentTimeMillis()),
+hasDefaultOSCControl(false)
 
 {
     nameParam->isEditable = false;
     ControllableContainer::globalRoot = this;
     ParameterFactory::logAllTypes();
-    
+    saveSession = addNewParameter<StringParameter>("save", "save current session");
+    saveSession->alwaysNotify = true;
+    saveSession->isHidenInEditor = true;
+    loadSession = addNewParameter<StringParameter>("load", "load a given session");
+    loadSession->alwaysNotify = true;
+    loadSession->isHidenInEditor = true;
+    closeEngine = addNewParameter<Trigger>("close","close engine");
+    closeEngine->isHidenInEditor = true;
+    addChildControllableContainer(engineStats=new EngineStats(this));
+
     loadingStartTime = 0;
     initAudio();
     Logger::setCurrentLogger (LGMLLogger::getInstance());
@@ -84,7 +94,7 @@ Engine::Engine(): FileBasedDocument (filenameSuffix,
 
     DBG ("max recording time : " << std::numeric_limits<sample_clk_t>().max() / (44100.0 * 60.0 * 60.0) << "hours @ 44.1kHz");
     initDefaultUserSettings();
-    
+
 }
 
 
@@ -96,9 +106,9 @@ Engine::~Engine()
 
 
     closeAudio();
-    
+
     threadPool.removeAllJobs(true, -1);
-    
+
     NodeManager::deleteInstance();
     PresetManager::deleteInstance();
     FastMapper::deleteInstance();
@@ -133,31 +143,44 @@ Engine::~Engine()
 
 }
 
+void Engine::onContainerParameterChanged (Parameter* p) {
+    if(p==saveSession){
+        File fileToLoad (loadSession->stringValue());
+        MessageManager::callAsync([this,fileToLoad](){saveAs(File(saveSession->stringValue()),false, false,true);});
+    }
+    else if( p==loadSession){
+        File fileToLoad (loadSession->stringValue());
+        MessageManager::callAsync([this,fileToLoad](){loadFrom(fileToLoad,true);});
+    }
+
+};
+void Engine::onContainerTriggerTriggered(Trigger *t){
+    if(t==closeEngine){
+        JUCEApplication::getInstance()->systemRequestedQuit();
+    }
+}
+
 void Engine::parseCommandline (const CommandLineElements& commandLine)
 {
 
+    File fileToLoad = File();
     for (auto& c : commandLine)
     {
         if (c.command == "f" || c.command == "")
         {
             if (c.args.size() == 0)
             {
-                LOG ("no file provided for command : " + c.command);
+                LOG ("!!! no file provided for command : " + c.command);
                 jassertfalse;
                 continue;
             }
 
             String fileArg = c.args[0];
+            fileToLoad = File (fileArg);
 
-            if (File::isAbsolutePath (fileArg))
-            {
-                File f (fileArg);
+            if( !(File::isAbsolutePath (fileArg) && fileToLoad.existsAsFile())){
 
-                if (f.existsAsFile()) loadDocument (f);
-            }
-            else
-            {
-                NLOG ("Engine", "File : " << fileArg << " not found.");
+                NLOG ("!!! Engine", "File : " << fileArg << " not found.");
             }
         }
         else if(c.command=="p"){
@@ -170,22 +193,26 @@ void Engine::parseCommandline (const CommandLineElements& commandLine)
 
 
             if(c.args.size()==0 || c.args.size()%2!=0){
-                LOG("unable to parse parameter : " << c.args.joinIntoString(":"));
+                LOG("!!! unable to parse parameter : " << c.args.joinIntoString(":"));
                 jassertfalse;
                 continue;
             }
             for( int i = 0 ; i < c.args.size()-1 ; i+=2){
                 if (!getAppProperties()->getUserSettings()->containsKey(c.args[i])){
-                    LOG("unknown parameter : " << c.args[i]);
+                    LOG("!!! unknown parameter : " << c.args[i]);
                     jassertfalse;
                     continue;
                 }
                 getAppProperties()->getUserSettings()->setValue(c.args[i], c.args[i+1]);
             }
         }
+        else if (c.command=="remote"){
+            getEngine()->hasDefaultOSCControl = true;
+        }
 
     }
 
+    if (fileToLoad.existsAsFile()) loadFrom (fileToLoad,true);
 
 }
 
@@ -269,7 +296,7 @@ void Engine::clear()
 
     NodeManager::getInstance()->clear();
 
-    
+
     //graphPlayer.setProcessor(NodeManager::getInstance()->getAudioGraph());
 
 
@@ -381,6 +408,112 @@ const int Engine::getElapsedMillis()const {
     int64 res =Time::currentTimeMillis() -engineStartTime;
     jassert(res>=0);
     return (int)res;
+}
+
+
+/////////////
+//Engine Stats
+/////////
+
+Engine::EngineStats::EngineStats(Engine * e):
+engine(e),
+ParameterContainer("stats"),
+isListeningGlobal(false),
+timerTicks(0){
+    audioCpu = addNewParameter<Point2DParameter<float>>("audioCpu",
+                                                        "cpu percentage used by Audio",
+                                                        0,0);
+    audioCpu->isEditable = false;
+    audioCpu->isSavable = false;
+    startTimer(300);
+//TODO implement UI Monitoring tool
+//    activateGlobalStats(true);
+
+}
+void Engine::EngineStats::timerCallback(){
+    timerTicks++;
+    auto time = engine->getElapsedMillis();
+
+    audioCpu->setPoint(getAudioDeviceManager().getCpuUsage() * 100.0f,time);
+    if(isListeningGlobal){
+        //        const ScopedLock lk(modCounts.getLock());
+        CountMapType::Iterator i (modCounts);
+
+        typedef std::pair<String, int> UsagePoint;
+        Array<UsagePoint> paramUsage;
+        while (i.next())
+        {
+            int usage = i.getValue().size();
+            String pName = i.getKey();
+            struct EComp{
+                int compareElements( const UsagePoint & a,const UsagePoint & b){return a.second-b.second;};
+            };
+            static EComp eComp;
+            paramUsage.addSorted(eComp,UsagePoint(pName,usage));
+
+        }
+
+        int toPrint = jmin(3,paramUsage.size());
+        for (int i = 0 ; i < toPrint ; i++){
+            auto u = paramUsage[i];
+            DBG(u.first << ":" << String(u.second));
+        }
+//        int curtime = engine->getElapsedMillis();
+        // clean old
+        i.reset();
+        Array<String> toRemove;
+        while (i.next())
+        {
+
+            String addr = i.getKey();
+            Array<int> tl =  i.getValue();
+            int i = 0;
+            while(i < tl.size()){
+//                auto t = tl[i];
+                //                if(t<curtime-3000){
+                tl.remove(i);
+                //                }
+                //                else{
+                //                    i++;
+                //                }
+            }
+            if(tl.size()==0){
+                toRemove.add(addr);
+            }
+
+
+        }
+
+        for(auto a:toRemove){
+            modCounts.remove(a);
+        }
+        //        modCounts.clear();
+
+
+    }
+}
+
+float Engine::EngineStats::getAudioCPU() const{
+    return audioCpu->getX();
+}
+template<>
+void Engine::EngineStats::GlobalListener::controllableFeedbackUpdate(ControllableContainer * notif,Controllable * c ){
+    if(c&& c->parentContainer!=owner){
+        const int  t = getEngine()->getElapsedMillis();
+        owner->modCounts.getReference(c->controlAddress).add(t);
+    }
+}
+
+void Engine::EngineStats::activateGlobalStats(bool s){
+    isListeningGlobal = s;
+    if(s){
+        globalListener = new GlobalListener(this);
+        engine->addControllableContainerListener(globalListener);
+    }
+    else{
+        engine->removeControllableContainerListener(globalListener);
+        globalListener = nullptr;
+    }
 }
 
 

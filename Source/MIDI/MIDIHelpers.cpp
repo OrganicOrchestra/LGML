@@ -108,19 +108,15 @@ namespace MIDIHelpers{
                 removeOption(mc->getNiceName(), true);
             }
         };
-        void parameterValueChanged (Parameter* p) override{
-            auto c = p->parentContainer;
+        void parameterValueChanged (Parameter* p,Parameter::Listener * notifier=nullptr) override{
+            auto c = p->parentContainer.get();
             if(auto cont = dynamic_cast<MIDIController*>(c)){
                 jassert(p==cont->nameParam);
                 const var v = MCToValue(cont);
-                auto k = getIdForValue(v);
-                if(k){
-                    removeOption(*k, true);
-                    addOption(c->getNiceName(), v, true);
-                }
-                else{
-                    jassertfalse;
-                }
+                auto & k = getIdForValue(v);
+                removeOption(k, true);
+                addOption(c->getNiceName(), v, true);
+
             }
 
         };

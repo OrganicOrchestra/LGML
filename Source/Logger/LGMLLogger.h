@@ -34,7 +34,7 @@ public :
 
     juce_DeclareSingleton (LGMLLogger, true);
 
-    LGMLLogger(): notifier (100)
+    LGMLLogger(): notifier (5000)
     {
 #if USE_FILE_LOGGER
         addLogListener (&fileWriter);

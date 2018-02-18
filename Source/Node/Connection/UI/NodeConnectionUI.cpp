@@ -19,6 +19,7 @@
 
 //==============================================================================
 NodeConnectionUI::NodeConnectionUI (NodeConnection* connection, Connector* sourceConnector, Connector* destConnector) :
+    InspectableComponent("NodeConnectionUI"),
     candidateDropConnector (nullptr),
     connection (connection),
     sourceConnector (nullptr),

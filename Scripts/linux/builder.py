@@ -61,7 +61,7 @@ class LinuxBuilder (BuilderBase):
 
   def packageApp(self,exportpath = None):
     exportFile = exportpath or self.localExportPath
-    exportFile= os.path.join(exportFile,self.getNameWithVersion()+"_"+self.cfg["arch"]+'.tar.gz')
+    exportFile= os.path.join(exportFile,self.getNameWithVersion()+"_"+self.cfg["arch"]+"_"+self.cfg["build_cfg_name"]+'.tar.gz')
     sh('tar -zcvf "'+exportFile+'" --directory="'+self.localExportPath+'" '+self.cfg["appName"])
     return exportFile
 

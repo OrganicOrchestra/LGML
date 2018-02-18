@@ -26,6 +26,7 @@
 
 MainContentComponent* createMainContentComponent (Engine* e);
 MainWindow::~MainWindow(){
+    LGMLDragger::deleteInstance();
     stopTimer();
     latestVChecker = nullptr;
 }
@@ -60,7 +61,7 @@ MainWindow::MainWindow (String name, Engine* e)  :
     setMenuBar (mainComponent);
 #endif
 
-#if JUCE_OPENGL
+#if USE_GL
     openGLContext.setContinuousRepainting (false);
     openGLContext.attachTo (*getTopLevelComponent());
 #endif
@@ -92,7 +93,7 @@ MainWindow::MainWindow (String name, Engine* e)  :
     LGMLDragger::getInstance()->setMainComponent (mainComponent);
 
 
-    startTimer (10000);
+    startTimer (4000);
 
 
 }
@@ -137,7 +138,7 @@ void MainWindow::closeButtonPressed()
     getAppProperties()->getCommonSettings (true)->saveIfNeeded();
 
 
-#if JUCE_OPENGL
+#if USE_GL
     openGLContext.detach();
 #endif
     JUCEApplication::getInstance()->systemRequestedQuit();
@@ -156,7 +157,7 @@ void MainWindow::timerCallback()
     }
     setName (getEngine()->getDocumentTitle() + " : LGML "
              + String (ProjectInfo::versionString) + String (" (CPU : ") +
-             String ((int) (getAudioDeviceManager().getCpuUsage() * 100)) + String ("%)"));
+             String ((int) getEngine()->engineStats->getAudioCPU()) + String ("%)"));
 }
 
 

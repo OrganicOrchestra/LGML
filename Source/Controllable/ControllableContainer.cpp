@@ -34,7 +34,8 @@ const Identifier ControllableContainer::childContainerId ("/");
 const Identifier ControllableContainer::controllablesId ("parameters");
 
 
-ControllableContainer::ControllableContainer (StringRef niceName) :
+// TODO fix use of niceName
+ControllableContainer::ControllableContainer (StringRef /*niceName*/) :
 parentContainer (nullptr),
 numContainerIndexed (0),
 localIndexedPosition (-1),
@@ -167,7 +168,7 @@ Controllable* ControllableContainer::getControllableByName (const String& _name,
     ScopedLock lk (controllables.getLock());
     for (auto& c : controllables)
     {
-        if (c->shortName == name || (searchNiceNameToo && c->niceName == _name)) return c;
+        if ((c->shortName.compareIgnoreCase(name)==0) || (searchNiceNameToo && c->niceName == _name)) return c;
     }
 
     return nullptr;
@@ -272,7 +273,7 @@ ControllableContainer* ControllableContainer::getControllableContainerByName (co
 
     for (auto& cc : controllableContainers)
     {
-        if (cc.get() && (cc->shortName == name || (searchNiceNameToo && cc->getNiceName() == _name))) return cc;
+        if (cc.get() && ((cc->shortName.compareIgnoreCase(name)==0) || (searchNiceNameToo && cc->getNiceName() == _name))) return cc;
     }
 
     return nullptr;
@@ -323,7 +324,7 @@ ControllableContainer* ControllableContainer::getControllableContainerForAddress
 
         for (auto& cc : controllableContainers)
         {
-            bool validName = cc->shortName == addressSplit[0];
+            bool validName = cc->shortName.compareIgnoreCase(addressSplit[0])==0;
 
 
             if( validName){
@@ -349,16 +350,16 @@ ControllableContainer* ControllableContainer::getControllableContainerForAddress
 }
 
 
-String ControllableContainer::getControlAddress (ControllableContainer* relativeTo)
+String ControllableContainer::getControlAddress (const ControllableContainer* relativeTo) const
 {
     StringArray addressArray(getControlAddressArray(relativeTo));
     if (addressArray.size() == 0)return "";
     else return "/" + addressArray.joinIntoString ("/");
 }
 
-StringArray ControllableContainer::getControlAddressArray (ControllableContainer* relativeTo){
+StringArray ControllableContainer::getControlAddressArray (const ControllableContainer* relativeTo) const{
     StringArray addressArray;
-    ControllableContainer* pc = this;
+   const ControllableContainer* pc = this;
 
     while (pc != relativeTo && pc->parentContainer != nullptr)
     {
@@ -471,7 +472,7 @@ Controllable* ControllableContainer::getControllableForAddress (StringArray addr
 
         for (auto& c : controllables)
         {
-            if (c->shortName == addressSplit[0])
+            if (c->shortName.compareIgnoreCase( addressSplit[0])==0)
             {
                 //DBG(c->shortName);
                 if (c->isControllableExposed || getNotExposed) return c;
@@ -489,7 +490,7 @@ Controllable* ControllableContainer::getControllableForAddress (StringArray addr
             if (cc.get())
             {
 
-                if (cc->shortName == addressSplit[0])
+                if (cc->shortName.compareIgnoreCase(addressSplit[0])==0)
                 {
                     addressSplit.remove (0);
                     return cc->getControllableForAddress (addressSplit, recursive, getNotExposed);
@@ -561,11 +562,11 @@ Array<Controllable*> ControllableContainer::getControllablesForExtendedAddress (
 }
 
 
-bool ControllableContainer::containsControllable (Controllable* c, int maxSearchLevels)
+bool ControllableContainer::containsControllable (const Controllable* c, int maxSearchLevels)
 {
     if (c == nullptr) return false;
 
-    ControllableContainer* pc = c->parentContainer;
+    const ControllableContainer* pc = c->parentContainer;
 
     if (pc == nullptr) return false;
 
@@ -592,7 +593,7 @@ void ControllableContainer::dispatchFeedback (Controllable* c)
 
     if (parentContainer != nullptr) { parentContainer->dispatchFeedback (c); }
 
-    controllableContainerListeners.call (&Listener::controllableFeedbackUpdate, this, c);
+    controllableContainerFBListeners.call (&FeedbackListener::controllableFeedbackUpdate, this, c);
 
 }
 

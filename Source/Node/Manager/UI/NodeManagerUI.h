@@ -34,7 +34,8 @@ class UISync;
 class NodeManagerUI :
     public juce::Component,
     public NodeManager::NodeManagerListener,
-    public ParameterContainer
+    public ParameterContainer,
+    private DeletedAtShutdown 
 {
 public:
     juce_DeclareSingleton(NodeManagerUI, false);
@@ -86,10 +87,10 @@ public:
 class NodeManagerUIViewport :
     public ShapeShifterContentComponent,
     public NodeManagerUI::NodeManagerUIListener,
-    public ButtonListener
+    public Button::Listener
 {
 public :
-    NodeManagerUIViewport (const String& contentName, NodeManagerUI* _nmui): nmui (_nmui), ShapeShifterContentComponent (contentName)
+    NodeManagerUIViewport (const String& contentName, NodeManagerUI* _nmui): nmui (_nmui), ShapeShifterContentComponent (contentName,"Patch your Audio here")
     {
         vp.setViewedComponent (nmui, false);
         vp.setScrollBarsShown (true, true);
@@ -159,8 +160,8 @@ public :
 
     void paint (Graphics& g) override
     {
-        g.setColour (findColour (ResizableWindow::backgroundColourId).darker (.2f));
-        g.fillRect (getLocalBounds().removeFromTop (30));
+//        g.setColour (findColour (ResizableWindow::backgroundColourId).darker (.2f));
+//        g.fillRect (getLocalBounds().removeFromTop (30));
         const int grid = 100;
         auto area = vp.getViewArea();
         g.setColour (Colours::white.withAlpha (0.03f));
@@ -181,7 +182,7 @@ public :
 
     void resized() override
     {
-
+        ShapeShifterContentComponent::resized();
         Rectangle<int> r = getLocalBounds();
 
         Rectangle<int> buttonR = r.removeFromTop (30).reduced (5);
@@ -207,12 +208,19 @@ public :
     {
         reconstructViewerPath();
         
-        
+        hideInfoLabelIfNeeded();
 
         //nmui->setBounds(getLocalBounds().withTop(30));
         resized();
 
 
+    }
+    void hideInfoLabelIfNeeded(){
+        if( nmui->currentViewer){
+            NodeContainer* c = nmui->currentViewer->nodeContainer;
+            if(c){infoLabel.setVisible( c->getNumNodes()<=2);}
+            else{jassertfalse;}
+        }
     }
 
     void buttonClicked (Button* b)override

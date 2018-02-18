@@ -37,7 +37,7 @@ public:
 class FastMapperUI :
     public juce::Component,
     private ControllableContainerListener,
-    private ButtonListener,
+    private Button::Listener,
     private Inspector::InspectorListener,
     private LGMLDragger::Listener
 {
@@ -99,59 +99,23 @@ private:
 class FastMapperViewport :
     public ShapeShifterContentComponent,
     public FastMapperUIListener,
-    private ButtonListener
+    private Button::Listener
 {
 public:
-    FastMapperViewport (const String& contentName, FastMapperUI* _fastMapperUI) :
-        fastMapperUI (_fastMapperUI),
-        ShapeShifterContentComponent (contentName)
-    {
-        vp.setViewedComponent (fastMapperUI, true);
-        vp.setScrollBarsShown (true, false);
-        vp.setScrollOnDragEnabled (false);
-        addAndMakeVisible (vp);
-        addAndMakeVisible (addFastMapButton);
-        addFastMapButton.addListener (this);
-        addFastMapButton.setTooltip ("Add FastMap");
-        vp.setScrollBarThickness (10);
-        contentIsFlexible = true;
-        fastMapperUI->addFastMapperUIListener (this);
-    }
-
-    virtual ~FastMapperViewport()
-    {
-        fastMapperUI->removeFastMapperUIListener (this);
-    }
+    FastMapperViewport (const String& contentName, FastMapperUI* _fastMapperUI) ;
 
 
-    void resized() override
-    {
-        vp.setBounds (getLocalBounds());
-        int th = jmax<int> (fastMapperUI->getContentHeight(), getHeight());
-        Rectangle<int> targetBounds = getLocalBounds().withPosition (fastMapperUI->getPosition()).withHeight (th);
-        targetBounds.removeFromRight (vp.getScrollBarThickness());
-        fastMapperUI->setBounds (targetBounds);
-        if(fastMapperUI->mapsUI.size()==0){
-            int side = (int)( jmin(getWidth(),getHeight()) * .5);
-            addFastMapButton.setBounds(getLocalBounds().withSizeKeepingCentre(side,side));
-        }
-        else{
-            addFastMapButton.setFromParentBounds (getLocalBounds());
-        }
-    }
+    virtual ~FastMapperViewport();
 
-    void fastMapperContentChanged (FastMapperUI*)override
-    {
-        resized();
-    }
-
+    void resized() override;
+    void fastMapperContentChanged (FastMapperUI*)override;
     void buttonClicked (Button* b)override;
 
 
     Viewport vp;
     FastMapperUI* fastMapperUI;
     AddElementButton addFastMapButton;
-
+    
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FastMapperViewport)
 };

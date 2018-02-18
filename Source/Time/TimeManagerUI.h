@@ -36,7 +36,7 @@ public :
     TimeManagerUI (const String& contentName, TimeManager* _timeManager);
     ~TimeManagerUI();
 
-    void paint (Graphics& g) override;
+    
     void resized()override;
 
     void newMessage (const Parameter::ParamWithValue& pv) override;

@@ -1,12 +1,12 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    TooltipShifter.h
-    Created: 3 Nov 2017 10:44:48am
-    Author:  Martin Hermant
+ TooltipShifter.h
+ Created: 3 Nov 2017 10:44:48am
+ Author:  Martin Hermant
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #pragma once
 
@@ -14,7 +14,7 @@ class TooltipPanel :
 public ShapeShifterContentComponent,
 private Timer{
 public:
-    TooltipPanel(const String & n):ShapeShifterContentComponent(n),comp(nullptr){
+    TooltipPanel(const String & n):ShapeShifterContentComponent(n,"See whats under your mouse"),comp(nullptr){
         addAndMakeVisible(label);
         startTimer(50);
         label.setReadOnly(true);
@@ -23,17 +23,18 @@ public:
 
 
     }
-     void timerCallback() override{
-         auto& desktop = Desktop::getInstance();
-         auto mouseSource = desktop.getMainMouseSource();
-         auto* newComp = mouseSource.isTouch() ? nullptr : mouseSource.getComponentUnderMouse();
+    void timerCallback() override{
+        auto& desktop = Desktop::getInstance();
+        auto mouseSource = desktop.getMainMouseSource();
+        auto* newComp = mouseSource.isTouch() ? nullptr : mouseSource.getComponentUnderMouse();
 
-         if( newComp!=comp.get() && newComp!=&label){
-             TooltipClient* tc = dynamic_cast<TooltipClient*>(newComp);
-             if(!tc) tc = findParentComponentOfClass<TooltipClient>();
+        if( newComp!=comp.get() && newComp!=&label){
+            TooltipClient* tc = dynamic_cast<TooltipClient*>(newComp);
+            if(!tc) tc = findParentComponentOfClass<TooltipClient>();
             if(tc) updateLabel(tc);
-             comp = newComp;
-         }
+            comp = newComp;
+            infoLabel.setVisible(false);
+        }
     }
 
     void updateLabel(TooltipClient* tc){
@@ -42,10 +43,11 @@ public:
             label.setText(newTT, dontSendNotification);
         }
         else{
-//            jassertfalse;
+            //            jassertfalse;
         }
     }
     void resized()override{
+        ShapeShifterContentComponent::resized();
         label.setBounds(getLocalBounds());
     }
 

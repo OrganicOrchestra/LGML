@@ -69,6 +69,7 @@ public:
 
         ScopedPointer<ParameterUI> muteButton;
         ScopedPointer<ParameterUI> soloButton;
+        ScopedPointer<ParameterUI> selectMeButton;
         ScopedPointer<EnumParameterUI> sampleChoiceDDL;
 
 

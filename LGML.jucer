@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT bundleIdentifier="org.anic.orchestra.LGML" companyName="Organic Orchestra"
-              companyWebsite="http://www.organic-orchestra.com" cppLanguageStandard="11"
+              companyWebsite="http://www.organic-orchestra.com" cppLanguageStandard="14"
               displaySplashScreen="1" id="a1hJPO" includeBinaryInAppConfig="1"
-              jucerVersion="5.2.0" name="LGML" projectType="guiapp" reportAppUsage="1"
-              splashScreenColour="Dark" version="1.2.6" companyCopyright="Organic Orchestra">
+              jucerVersion="5.2.1" name="LGML" projectType="guiapp" reportAppUsage="1"
+              splashScreenColour="Dark" version="1.2.7" companyCopyright="Organic Orchestra">
   <MAINGROUP id="RYpQgZ" name="LGML">
     <GROUP id="{C4A5CA13-B090-453E-F1E3-DE9F74C715E2}" name="Assets">
       <FILE compile="0" file="Resources/little-red-riding-hood-md.png" id="SL4b92"
@@ -720,15 +720,14 @@
         <CONFIGURATION binaryPath="" cppLanguageStandard="c++11" cppLibType="libc++"
                        headerPath="" isDebug="0" linkTimeOptimisation="1" name="Release"
                        optimisation="3" osxArchitecture="32BitUniversal" osxCompatibility="10.8 SDK"
-                       osxSDK="default" targetName="LGML" enablePluginBinaryCopyStep="1"/>
+                       targetName="LGML" enablePluginBinaryCopyStep="1"/>
         <CONFIGURATION cppLanguageStandard="c++11" cppLibType="libc++" customXcodeFlags="ONLY_ACTIVE_ARCH=1, GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE"
                        defines="" headerPath="" isDebug="1" name="Debug" osxArchitecture="32BitUniversal"
-                       osxCompatibility="10.7 SDK" osxSDK="default" targetName="LGML"
-                       enablePluginBinaryCopyStep="1"/>
+                       osxCompatibility="10.7 SDK" targetName="LGML" enablePluginBinaryCopyStep="1"/>
         <CONFIGURATION cppLanguageStandard="c++11" cppLibType="libc++" customXcodeFlags="ONLY_ACTIVE_ARCH=1"
                        defines="LGML_UNIT_TESTS=1&#10;" headerPath="../../Source" isDebug="1"
                        name="Test" osxArchitecture="32BitUniversal" osxCompatibility="10.7 SDK"
-                       osxSDK="default" targetName="LGML_Debug" enablePluginBinaryCopyStep="1"/>
+                       targetName="LGML_Debug" enablePluginBinaryCopyStep="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../JUCE/modules"/>
@@ -745,8 +744,39 @@
         <MODULEPATH id="juce_audio_processors" path="../JUCE/modules"/>
         <MODULEPATH id="juce_audio_utils" path="../JUCE/modules"/>
         <MODULEPATH id="juce_osc" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="../JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
+    <XCODE_IPHONE targetFolder="Builds/iOS" iosScreenOrientation="portraitlandscape"
+                  iPadScreenOrientation="portraitlandscape" iosDeviceFamily="1,2"
+                  vst3Folder="third_party/VST3_SDK" extraCompilerFlags="-Wno-reorder&#10;-I../../third_party/serial/include&#10;-I../../third_party/rubberband/&#10;-I../../third_party/link/include/&#10;-I../../third_party/link/modules/asio-standalone/asio/include"
+                  extraLinkerFlags="../../third_party/rubberband/lib/librubberband.a"
+                  extraDefs="LINK_PLATFORM_IOS=1&#10;" microphonePermissionNeeded="1"
+                  iosBackgroundAudio="1" iosBackgroundBle="1" extraFrameworks=" IOKit">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" enablePluginBinaryCopyStep="1" isDebug="1" optimisation="1"
+                       linkTimeOptimisation="0" targetName="LGML"/>
+        <CONFIGURATION name="Release" enablePluginBinaryCopyStep="1" isDebug="0" optimisation="3"
+                       linkTimeOptimisation="1" targetName="LGML"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_osc" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_cryptography" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="../JUCE/modules"/>
+      </MODULEPATHS>
+    </XCODE_IPHONE>
     <VS2015 bigIcon="SL4b92" externalLibraries="setupapi.lib&#10;rubberband-library.lib"
             extraDefs="LINK_PLATFORM_WINDOWS=1" smallIcon="SL4b92" targetFolder="Builds/VisualStudio2015"
             vst3Folder="third_party/VST3_SDK" vstFolder="D:\Documents\Ressources\SDKs\VST3 SDK"
@@ -788,6 +818,7 @@
         <MODULEPATH id="juce_audio_processors" path="../JUCE/modules"/>
         <MODULEPATH id="juce_audio_utils" path="../JUCE/modules"/>
         <MODULEPATH id="juce_osc" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="../JUCE/modules"/>
       </MODULEPATHS>
     </VS2015>
     <LINUX_MAKE bigIcon="SL4b92" cppLanguageStandard="-std=c++11" externalLibraries="rubberband&#10;dns_sd"
@@ -817,6 +848,7 @@
         <MODULEPATH id="juce_audio_formats" path="../JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../JUCE/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="../JUCE/modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
     <CLION targetFolder="Builds/CLion" clionXcodeEnabled="1" clionMakefileEnabled="1">
@@ -835,6 +867,7 @@
         <MODULEPATH id="juce_audio_formats" path="../JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../JUCE/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="../JUCE/modules"/>
       </MODULEPATHS>
     </CLION>
     <VS2017 targetFolder="Builds/VisualStudio2017" vst3Folder="third_party/VST3_SDK"
@@ -877,6 +910,7 @@
         <MODULEPATH id="juce_audio_formats" path="../JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../JUCE/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="../JUCE/modules"/>
       </MODULEPATHS>
     </VS2017>
   </EXPORTFORMATS>
@@ -889,6 +923,7 @@
     <MODULE id="juce_core" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_cryptography" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_dsp" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_events" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0"/>
@@ -896,13 +931,12 @@
     <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_osc" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
-  <JUCEOPTIONS JUCE_ALSA="enabled" JUCE_ASIO="enabled" JUCE_DIRECTSOUND="enabled"
-               JUCE_JACK="enabled" JUCE_LOG_ASSERTIONS="enabled" JUCE_PLUGINHOST_AU="enabled"
-               JUCE_PLUGINHOST_VST="enabled" JUCE_PLUGINHOST_VST3="enabled"
-               JUCE_USE_CDBURNER="disabled" JUCE_USE_CDREADER="disabled" JUCE_USE_FLAC="enabled"
-               JUCE_USE_LAME_AUDIO_FORMAT="enabled" JUCE_USE_MP3AUDIOFORMAT="enabled"
-               JUCE_USE_OGGVORBIS="enabled" JUCE_USE_WINDOWS_MEDIA_FORMAT="enabled"
-               JUCE_WASAPI="enabled" JUCE_WEB_BROWSER="disabled"/>
+  <JUCEOPTIONS JUCE_ALSA="1" JUCE_ASIO="1" JUCE_DIRECTSOUND="1" JUCE_JACK="1"
+               JUCE_LOG_ASSERTIONS="1" JUCE_PLUGINHOST_AU="1" JUCE_PLUGINHOST_VST="1"
+               JUCE_PLUGINHOST_VST3="1" JUCE_USE_CDBURNER="0" JUCE_USE_CDREADER="0"
+               JUCE_USE_FLAC="1" JUCE_USE_LAME_AUDIO_FORMAT="1" JUCE_USE_MP3AUDIOFORMAT="1"
+               JUCE_USE_OGGVORBIS="1" JUCE_USE_WINDOWS_MEDIA_FORMAT="1" JUCE_WASAPI="1"
+               JUCE_WEB_BROWSER="0"/>
   <LIVE_SETTINGS>
     <WINDOWS headerPath="..\..\External\serial\include"/>
     <OSX/>

@@ -31,7 +31,7 @@ LooperNode::LooperNode (StringRef name) :
 {
 
     numberOfTracks = addNewParameter<IntParameter> ("numberOfTracks", "number of tracks in this looper", 8, 1, MAX_NUM_TRACKS);
-    numberOfAudioChannelsIn = addNewParameter<IntParameter> ("numberOfChannelsPerTrack", "number of channels on each audioTrack in local folder LGML_audio/LooperName/LGML_Loop_trackNum_index.wav", 2, 1, 2);
+    numberOfAudioChannelsIn = addNewParameter<IntParameter> ("numberOfChannelsPerTrack", "number of channels on each audioTrack in local folder LGML_audio/LooperName/LGML_Loop_trackNum_index.wav", 1, 1, 2);
     exportAudio =  addNewParameter<Trigger> ("exportAudio", "export audio of all recorded Tracks");
     selectAllTrig =  addNewParameter<Trigger> ("Select All", "Select All tracks, for all clear or main volume for instance");
     selectTrack = addNewParameter<IntParameter> ("Select track", "set track selected", 0, -1, 0);
@@ -65,11 +65,11 @@ LooperNode::LooperNode (StringRef name) :
     trackGroup.setNumTracks (numberOfTracks->intValue());
 
     selectTrack->setValue (0, false, true);
-    setPlayConfigDetails (2, 2, 44100, 256);
+    setPlayConfigDetails (1, 1, 44100, 256);
     TimeManager::getInstance()->playState->addParameterListener (this);
     TimeManager::getInstance()->BPM->addParameterListener (this);
-    setPreferedNumAudioInput (2);
-    setPreferedNumAudioOutput (2);
+    setPreferedNumAudioInput (1);
+    setPreferedNumAudioOutput (1);
     TimeManager::getInstance()->addTimeManagerListener (this);
 #if !BUFFER_CAN_STRETCH
     TimeManager::getInstance()->BPM->isEditable = false;
@@ -278,7 +278,7 @@ bool LooperNode::askForBeingAbleToPlayNow (LooperTrack* _t)
 
     if ( _t->getQuantization() == 0)return true;
 
-    if (TimeManager::getInstance()->playTrigger->isSettingValue) return true;
+    if (TimeManager::getInstance()->playTrigger->isSettingValue()) return true;
 
     if (!_t->isMasterTempoTrack()) return false;
 
@@ -750,7 +750,7 @@ void LooperNode::setAllTimeRatios(){
                 if (std::isnormal (ratio))
                 {
 //                    bool wasPlaying = t->trackState==LooperTrack::PLAYING;
-                    t->playableBuffer.setTimeRatio (ratio);
+                    t->playableBuffer.setTimeRatio (ratio,false);
 //                    if(wasPlaying)
 //                        t->play();
 

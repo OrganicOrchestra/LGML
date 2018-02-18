@@ -58,7 +58,7 @@ NodeManagerUI::NodeManagerUI (NodeManager* _nodeManager) :
     currentViewer (nullptr),
 ParameterContainer("NodeManagerUI"),isMiniMode(false)
 {
-
+    
     
     uiSync = new UISync("UI",nodeManager,this);
     auto p =getRoot(true)->getControllableContainerByName("NodesUI");
@@ -88,6 +88,9 @@ NodeManagerUI::~NodeManagerUI()
         p->removeChildControllableContainer(this);
     }
     else jassertfalse;
+
+
+    clearSingletonInstance();
 }
 
 void NodeManagerUI::clear()
@@ -158,6 +161,7 @@ void NodeManagerUI::setCurrentViewedContainer (NodeContainer* c)
         }
         currentViewer = new NodeContainerViewer (c,p);
         currentViewer->minimizeAll->setValue(isMiniMode);
+        
         addAndMakeVisible (currentViewer);
         currentViewer->setMouseCursor(MouseCursor::CrosshairCursor);
         currentViewer->setTopLeftPosition (0, 0);

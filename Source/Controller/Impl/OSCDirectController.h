@@ -18,6 +18,7 @@
 
 #include "OSCController.h"
 
+
 class OSCDirectController : public OSCController
 {
 public:
@@ -25,44 +26,21 @@ public:
     OSCDirectController (StringRef name);
     virtual ~OSCDirectController();
 
-    BoolParameter* sendTimeInfo;
+    BoolParameter* sendTimeInfo,*fullSync;
 
 
     virtual Result processMessageInternal (const OSCMessage& msg) override;
 
 
 
-
-    // Inherited via Listener
-    virtual void controllableAdded (ControllableContainer*, Controllable* c) override;
-    virtual void controllableRemoved (ControllableContainer*, Controllable* c) override;
-    virtual void controllableContainerAdded (ControllableContainer*, ControllableContainer* cc) override;
-    virtual void controllableContainerRemoved (ControllableContainer*, ControllableContainer* cc) override;
-
-    virtual void controllableFeedbackUpdate (ControllableContainer* originContainer, Controllable* c) override;
-
     virtual void onContainerParameterChanged (Parameter* p) override;
 
-
-
-
-    //Listener
-    class  OSCDirectListener
-    {
-    public:
-        /** Destructor. */
-        virtual ~OSCDirectListener() {}
-        virtual void messageProcessed (const OSCMessage& msg, Result success) = 0;
-    };
-
-    ListenerList<OSCDirectListener> oscDirectlisteners;
-    void addOSCDirectParameterListener (OSCDirectListener* newListener) { oscDirectlisteners.add (newListener); }
-    void removeOSCDirectParameterListener (OSCDirectListener* listener) { oscDirectlisteners.remove (listener); }
+    OwnedFeedbackListener<OSCDirectController> pSync;
 
 
 
 private:
-    void sendOSCForAddress (Controllable*, const String& address);
+
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OSCDirectController)
 

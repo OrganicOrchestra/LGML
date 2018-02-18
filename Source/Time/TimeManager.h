@@ -181,10 +181,6 @@ public :
         virtual void BPMChanged (double /*BPM*/) {};
         virtual void timeJumped (sample_clk_t /*time*/) {};
         virtual void playStop (bool /*playStop*/) {};
-
-
-        // prevent link and other timejumps (while recording track for example)
-        //    virtual bool lockTimeJump()=0;
         // info for stopping manager if needed;
         virtual bool isBoundToTime() = 0;
 

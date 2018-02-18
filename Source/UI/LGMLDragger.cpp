@@ -50,7 +50,7 @@ public:
     }
 
 
-    ParameterUI* originComp;
+    WeakReference<ParameterUI> originComp;
     Image draggedImage;
     bool isDragging;
     void mouseDrag (const MouseEvent& e)override
@@ -72,7 +72,8 @@ public:
 
             if (!contains (e.getEventRelativeTo (this).getPosition()))
             {
-                originComp->repaint();
+                if(originComp.get())
+                    originComp->repaint();
                 LGMLDragger::getInstance()->endDraggingComponent (this, e);
             }
         }
@@ -89,7 +90,9 @@ public:
         }
 
         isDragging = false;
-        originComp->repaint();
+        if(originComp.get())
+            originComp->repaint();
+
         LGMLDragger::getInstance()->unRegisterDragCandidate (originComp);
 
     }
@@ -97,7 +100,8 @@ public:
     {
         g.drawImage ( draggedImage, getLocalBounds().toFloat());
         g.setColour (Colours::white);
-        g.drawFittedText (originComp->getName(), getLocalBounds(), Justification::centred, 2);
+        if(originComp.get())
+            g.drawFittedText (originComp->getName(), getLocalBounds(), Justification::centred, 2);
     }
     void paintOverChildren (Graphics& g) override
     {
@@ -135,6 +139,7 @@ void LGMLDragger::setMainComponent (Component* c)
     mainComp = c;
 
     mainComp->addMouseListener (this, true);
+
     setMappingActive (false);
 }
 
@@ -151,7 +156,7 @@ void LGMLDragger::registerDragCandidate (ParameterUI* c)
 
 }
 
-void LGMLDragger::unRegisterDragCandidate (ParameterUI* c)
+void LGMLDragger::unRegisterDragCandidate (ParameterUI* /*c*/)
 {
     dragCandidate = nullptr;
 
@@ -206,6 +211,7 @@ void LGMLDragger::mouseUp (const MouseEvent& e)
         if (i == selectedSSContent)
         {
             setSelected (nullptr);
+            break;
         }
 
         i = i->getParentComponent();
@@ -266,9 +272,11 @@ void LGMLDragger::setMappingActive (bool b)
     if (!b)
     {
         unRegisterDragCandidate (nullptr);
+        mainComp->removeKeyListener(this);
     }
     else
     {
+        mainComp->addKeyListener(this);
         MouseInputSource mainMouse = Desktop::getInstance().getMainMouseSource();
 
         if (auto c = dynamic_cast<ParameterUI*> (mainMouse.getComponentUnderMouse()))
@@ -288,7 +296,14 @@ void LGMLDragger::toggleMappingMode()
 }
 
 
-
+bool LGMLDragger::keyPressed (const KeyPress& key,
+                              Component* originatingComponent){
+    if(key==KeyPress::escapeKey && isMappingActive){
+        setMappingActive(false);
+        return true;
+    }
+    return false;
+}
 
 void LGMLDragger::startDraggingComponent (Component* const componentToDrag, const MouseEvent& e)
 {
@@ -360,14 +375,14 @@ void LGMLDragger::endDraggingComponent (Component*   componentToDrag, const Mous
     else
     {
 
-        auto* c = dragCandidate ? dragCandidate->originComp : nullptr;
+        auto* c = (dragCandidate && e.getDistanceFromDragStart()==0)? dragCandidate->originComp.get() : nullptr;
         setSelected (c);
     }
 
     unRegisterDragCandidate (nullptr);
 }
 
-void LGMLDragger::setSelected (ParameterUI* c)
+void LGMLDragger::setSelected (ParameterUI* c,LGMLDragger::Listener * from)
 {
 
     if (c)
@@ -394,7 +409,7 @@ void LGMLDragger::setSelected (ParameterUI* c)
         if (selected.get())
         {
             selected->isSelected = false;
-            selected->repaint();
+            selected->updateOverlayEffect();
         }
 
         selected = c;
@@ -402,11 +417,11 @@ void LGMLDragger::setSelected (ParameterUI* c)
         if (selected.get())
         {
             selected->isSelected = true;
-            selected->repaint();
+            selected->updateOverlayEffect();
 
         }
 
-        listeners.call (&Listener::selectionChanged, c ? c->parameter : nullptr);
+        listeners.callExcluding(from, &Listener::selectionChanged, c ? c->parameter : nullptr);
 
     }
 }

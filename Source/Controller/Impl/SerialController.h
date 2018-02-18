@@ -39,7 +39,7 @@ public:
 
 //    StringParameter* selectedHardwareID;
     SerialPort* port;
-
+    EnumParameter * protocol;
 
     
     void controllableAdded (ControllableContainer*, Controllable*) override;
@@ -80,7 +80,8 @@ public:
 
 private:
     void setCurrentPort (SerialPort* port);
-
+    void checkAndAddParameterIfNeeded (const StringArray& msg);
+    void applyProtocol();
 };
 
 

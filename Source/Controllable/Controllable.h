@@ -61,7 +61,7 @@ public:
     String controlAddress;
 
 
-    ControllableContainer* parentContainer;
+    WeakReference<ControllableContainer> parentContainer;
 
     void setNiceName (const String& _niceName);
     
@@ -70,10 +70,10 @@ public:
     void setEnabled (bool value, bool silentSet = false, bool force = false);
 
     void setParentContainer (ControllableContainer* container);
-    bool isChildOf (ControllableContainer* p);
+    bool isChildOf (const ControllableContainer* p) const;
     void updateControlAddress();
 
-    String getControlAddress (ControllableContainer* relativeTo = nullptr);
+    String getControlAddress (const ControllableContainer* relativeTo = nullptr) const;
 
 
     virtual bool isMappable();
@@ -119,6 +119,7 @@ private:
 
     typename WeakReference<Controllable >::Master masterReference;
     friend class WeakReference<Controllable >;
+    
 
 
 

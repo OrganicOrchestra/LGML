@@ -21,7 +21,7 @@
 
 #define MULTITHREADED_LOADING
 
-#pragma warning (disable : 4100)
+
 
 #include "MIDI/MIDIManager.h"
 #include "Controller/ControllerManager.h"
@@ -54,8 +54,27 @@ public:
     void clear();
     void initAudio();
     void closeAudio();
-
-
+    Parameter * saveSession,*loadSession,*closeEngine;
+    class EngineStats : public ParameterContainer ,public Timer{
+    public:
+        EngineStats(Engine *);
+        void activateGlobalStats(bool);
+        float getAudioCPU() const;
+        Point2DParameter<float> * audioCpu;
+        bool isListeningGlobal;
+        typedef OwnedFeedbackListener<EngineStats> GlobalListener;
+        typedef HashMap<String, Array<int>,DefaultHashFunctions,CriticalSection> CountMapType;
+         CountMapType modCounts;
+    private:
+        void timerCallback()override;
+        Engine * engine;
+        int timerTicks;
+        ScopedPointer< GlobalListener > globalListener;
+    };
+    ScopedPointer< EngineStats> engineStats;
+    bool hasDefaultOSCControl;
+    void onContainerParameterChanged(Parameter *)override;
+    void onContainerTriggerTriggered(Trigger *t)override;
     void suspendAudio (bool shouldSuspend);
 
     void parseCommandline (const CommandLineElements& );
@@ -65,6 +84,7 @@ public:
 
     //  inherited from FileBasedDocument
     String getDocumentTitle()override ;
+    // do not call this, call loadFrom instead (empowers FileBasedDocument behaviour)
     Result loadDocument (const File& file)override;
     Result saveDocument (const File& file)override;
     File getLastDocumentOpened() override;

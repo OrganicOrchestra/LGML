@@ -72,6 +72,7 @@ public:
     void removeInspectorListener (InspectorListener* listener) { listeners.remove (listener); }
 
 private:
+    void parentHierarchyChanged() override;
     WeakReference<InspectableComponent> currentComponent;
 
     ScopedPointer<InspectorEditor> currentEditor;
@@ -87,49 +88,11 @@ private:
 class InspectorViewport : public ShapeShifterContentComponent, public Inspector::InspectorListener
 {
 public:
-    InspectorViewport (const String& contentName, Inspector* _inspector) : inspector (_inspector), ShapeShifterContentComponent (contentName)
-    {
-        vp.setViewedComponent (inspector, false);
-        vp.setScrollBarsShown (true, false);
-        vp.setScrollOnDragEnabled (false);
-        contentIsFlexible = false;
-        addAndMakeVisible (vp);
-        vp.setScrollBarThickness (10);
+    InspectorViewport (const String& contentName, Inspector* _inspector);
 
-        inspector->addInspectorListener (this);
+    virtual ~InspectorViewport();
 
-    }
-
-    virtual ~InspectorViewport()
-    {
-        
-        inspector->removeInspectorListener(this);
-    }
-
-    void resized() override
-    {
-        
-        Rectangle<int> r = getLocalBounds();
-
-        vp.setBounds (r);
-
-        r.removeFromRight (vp.getScrollBarThickness());
-
-        if (inspector->getCurrentEditor() == nullptr) inspector->setBounds (r);
-        else
-        {
-            int cH = r.getHeight();
-            if(auto ed = inspector->getCurrentEditor()){
-                if(int tH = ed->getContentHeight())
-                    cH = tH;
-            }
-
-
-
-
-            inspector->setBounds (r.withPosition (inspector->getPosition()).withHeight (cH));
-        }
-    }
+    void resized() override;
     Viewport vp;
     Inspector* inspector;
 

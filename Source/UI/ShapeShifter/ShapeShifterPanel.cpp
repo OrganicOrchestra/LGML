@@ -63,6 +63,7 @@ ShapeShifterPanel::~ShapeShifterPanel()
 void ShapeShifterPanel::setCurrentContent (ShapeShifterContent* _content)
 {
     if (_content == currentContent){
+//        jassert(!_content ||  !_content->contentComponent ||  _content->contentComponent->isShowing());
         return;
     }
 
@@ -73,6 +74,7 @@ void ShapeShifterPanel::setCurrentContent (ShapeShifterContent* _content)
         if (tab != nullptr) tab->setSelected (false);
 
         removeChildComponent (currentContent->contentComponent);
+        currentContent->contentComponent->setVisible(false);
         currentContent->contentIsShown = false;
     }
 
@@ -84,7 +86,7 @@ void ShapeShifterPanel::setCurrentContent (ShapeShifterContent* _content)
         ShapeShifterPanelTab* tab = header.getTabForContent (currentContent);
 
         if (tab != nullptr) tab->setSelected (true);
-
+        currentContent->contentComponent->setVisible(true);
         addAndMakeVisible (currentContent->contentComponent);
 
         currentContent->contentIsShown = true;
@@ -98,6 +100,7 @@ void ShapeShifterPanel::setCurrentContent (const String& name)
     ShapeShifterContent* c = getContentForName (name);
 
     if (c != nullptr) setCurrentContent (c);
+    else jassertfalse;
 }
 
 void ShapeShifterPanel::setTargetMode (bool value)
@@ -110,7 +113,7 @@ void ShapeShifterPanel::setTargetMode (bool value)
 
 void ShapeShifterPanel::paint (Graphics& g)
 {
-    g.setColour (findColour (ResizableWindow::backgroundColourId).withAlpha (transparentBackground ? .3f : 1));
+    g.setColour (findColour (ResizableWindow::backgroundColourId).withAlpha (transparentBackground ? .15f : 1.f));
     g.fillRect (getLocalBounds().withTrimmedTop (headerHeight));
 }
 
@@ -181,7 +184,7 @@ void ShapeShifterPanel::resized()
 void ShapeShifterPanel::setTransparentBackground (bool value)
 {
     if (transparentBackground == value) return;
-
+    setOpaque(!value);
     transparentBackground = value;
     repaint();
 }
@@ -221,6 +224,10 @@ void ShapeShifterPanel::detachTab (ShapeShifterPanelTab* tab, bool createNewPane
         if (contents.size() > 0)
         {
             setCurrentContent (contents[juce::jlimit<int> (0, contents.size() - 1, contents.indexOf (content))]);
+
+            if(auto c = content->contentComponent){
+                c->setVisible(true);
+            }
         }
         else
         {
@@ -228,6 +235,8 @@ void ShapeShifterPanel::detachTab (ShapeShifterPanelTab* tab, bool createNewPane
             listeners.call (&Listener::panelEmptied, this);
         }
     }
+
+
 
 }
 
@@ -423,8 +432,8 @@ void ShapeShifterPanel::loadLayoutInternal (var layout)
     {
         for (auto& tData : *tabData)
         {
-            String t = tData.getDynamicObject()->getProperty ("name").toString();
-            ShapeShifterContent* c = ShapeShifterFactory::createContentForName (tData.getDynamicObject()->getProperty ("name"));
+            const String t ( tData.getDynamicObject()->getProperty ("name").toString());
+            ShapeShifterContent* c = ShapeShifterFactory::createContentForName (t);
             addContent (c);
         }
     }

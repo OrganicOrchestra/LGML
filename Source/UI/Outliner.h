@@ -32,7 +32,9 @@ class OutlinerItemComponent :
 public  InspectableComponent,
 public SettableTooltipClient,
 private Button::Listener,
-private Label::Listener
+private Label::Listener,
+private Controllable::Listener, // for name of controllables
+private Parameter::AsyncListener // for nameParam(container)
 {
 public:
     OutlinerItemComponent (OutlinerItem* item);
@@ -47,6 +49,11 @@ public:
     void resized()override;
     void buttonClicked (Button*) override;
     void labelTextChanged (Label* labelThatHasChanged) override;
+    // ControllableListener
+    void controllableNameChanged (Controllable* ) override;
+    // ParamListener
+    void newMessage(const Parameter::ParamWithValue &pv)override;
+
 };
 
 class OutlinerItem : public TreeViewItem,ControllableContainer::Listener
@@ -71,6 +78,7 @@ public:
     void itemSelectionChanged (bool isNowSelected) override;
     Component* createItemComponent() override;
 
+
 private:
     friend class WeakReference<OutlinerItem>;
     WeakReference<OutlinerItem>::Master masterReference;
@@ -80,15 +88,17 @@ private:
 
 class Outliner : public ShapeShifterContentComponent,
 private ControllableContainerListener, AsyncUpdater,
-TextEditorListener,
+TextEditor::Listener,
 Button::Listener,
 Inspector::InspectorListener
+
 {
 public:
 
     Outliner (const String& contentName,ParameterContainer* root=nullptr,bool showFilterText = true);
     ~Outliner();
     void clear();
+
 
     TreeView treeView;
     ScopedPointer<OutlinerItem> rootItem;
@@ -115,6 +125,7 @@ public:
     void setRoot(ParameterContainer * );
     bool showUserContainer;
 private:
+
     void currentComponentChanged (Inspector *)override;
     void buttonClicked(Button *b) override;
     void saveCurrentOpenChilds();

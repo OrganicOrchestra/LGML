@@ -31,7 +31,7 @@ public:
 
     void setNormalizedValue (const float  normalizedValue, bool silentSet = false, bool force = false);
 
-    float getNormalizedValue() ;
+    float getNormalizedValue() const;
 
     DECLARE_OBJ_TYPE (NumericParameter)
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NumericParameter)
@@ -43,7 +43,7 @@ typedef NumericParameter<double> FloatParameter;
 // template implementation
 
 template<class T>
-float NumericParameter<T>::getNormalizedValue()
+float NumericParameter<T>::getNormalizedValue() const
 {
     if ((T)minimumValue == (T)maximumValue)
     {

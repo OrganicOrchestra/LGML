@@ -134,7 +134,7 @@ void AudioMixerNodeUI::numAudioOutputChangedUI (ConnectableNode*, int newNum)
 };
 
 
-void AudioMixerNodeUI::parameterValueChanged (Parameter* p)
+void AudioMixerNodeUI::parameterValueChanged (Parameter* p,Parameter::Listener * notifier)
 {
     if (p == mixerNode->oneToOne)postCommandMessage (0);
 };

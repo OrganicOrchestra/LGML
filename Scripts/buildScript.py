@@ -1,6 +1,6 @@
 
 import os,platform;
-from PyUtils import *
+from PyUtils import gitUtils,ProJucerUtils
 import json
 
 
@@ -26,18 +26,18 @@ def getSavedConfig():
 	print ('no config found')
 	return None
 
+
 def exportToOwncloud(builder):
 	from PyUtils import OwncloudUtils
 
-	# send binaryies
+	# send binaries
 	exportedPath = builder.cfg["packaged_path"]
-	basePath = "DEVSPECTACLES/Tools/LGML/App-Dev/dist/bleedingEdge/"#+ProJucerUtils.getXmlVersion()
+	basePath = "DEVSPECTACLES/Tools/LGML/App-Dev/dist/bleedingEdge/"+ProJucerUtils.getXmlVersion()
 	exportedFile = os.path.basename(exportedPath)
-	ownCloudPath = os.path.join(basePath,exportedFile)
-
-	#send opt
-	OwncloudUtils.sendToOwnCloud(exportedPath,ownCloudPath)
+	ownCloudPath = basePath + "/" + exportedFile
 	
+	OwncloudUtils.sendToOwnCloud(exportedPath,ownCloudPath)
+	#send opt
 	OwncloudUtils.sendToOwnCloud(configPath,ownCloudPath+".cfg")
 	
 	preprocessor = builder.getPreprocessor()
@@ -73,6 +73,7 @@ if __name__ == "__main__":
 
 
 	parser.add_argument('--os',help='os to use : osx, linux', default=None)
+	parser.add_argument('--packagesuffix',help='suffix to add', default=None)
 	parser.add_argument('--exportpath',help='path where to put binary', default=None)
 	parser.add_argument('--configuration',help='build configuration name ', default=None)
 	parser.add_argument('--version','-v',help='return current version ', action='store_true',default=False)
@@ -95,7 +96,8 @@ if __name__ == "__main__":
 	"version" : ProJucerUtils.getXmlVersion(),
 	"git_sha" : gitUtils.getGitSha(),
 	"arch" : args.arch,
-	"binary_path" : None
+	"binary_path" : None,
+	"packagesuffix" : args.packagesuffix
 	}
 
 	if not args.configure:
@@ -107,8 +109,9 @@ if __name__ == "__main__":
 					if defaultCfg[k] is not None and k in savedCfg and defaultCfg[k]!=savedCfg[k]:
 						raise NameError("config changed %s : was %s, is now %s)"%(k,savedCfg[k],defaultCfg[k]))
 			defaultCfg = savedCfg
+			defaultCfg["git_sha"] = gitUtils.getGitSha()
 
-	# default Release
+	# default to Release config
 	if defaultCfg["build_cfg_name"] is None:
 		defaultCfg["build_cfg_name"] = "Release"
 	# auto detect os if not provided
@@ -131,7 +134,7 @@ if __name__ == "__main__":
 		import linux;
 		builder=  linux.LinuxBuilder(cfg = defaultCfg)
 
-	# hack for windows
+	# hack for exporting windows builds
 	elif defaultCfg["build_os"] == 'windows':
 		from PyUtils.builderBase import BuilderBase;
 		builder=  BuilderBase(cfg = defaultCfg)
@@ -162,9 +165,26 @@ if __name__ == "__main__":
 	# package
 	if args.package:
 		ep = builder.cfg["export_path"]
-		if ( ep is not None ) and ( not os.path.exists(ep)):
+		if  ep is not None :
+			ep = ep.strip('\'" ')
+			if  not os.path.exists(ep):
 				os.makedirs(ep)
-		builder.cfg["packaged_path"] = builder.packageApp(ep)
+
+		pkgPath = builder.packageApp(ep)
+		suffix = builder.cfg["packagesuffix"]
+		if suffix:
+			suffix = suffix.strip('\'" ')
+			if pkgPath.endswith(".tar.gz"):
+				splitExt = [pkgPath[:-7], ".tar.gz"]
+			else:
+				psplit = pkgPath.split('.')
+				splitExt = ['.'.join(psplit[:-1]),psplit[-1]]
+
+			newP = splitExt[0]+"_"+suffix+splitExt[1]
+			print("applying suffix : "+newP)
+			os.rename(pkgPath,newP)
+			pkgPath = newP;
+		builder.cfg["packaged_path"]=pkgPath
 		saveConfig(builder.cfg)
 
 	#export

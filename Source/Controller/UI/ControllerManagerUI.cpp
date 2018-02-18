@@ -179,6 +179,55 @@ void ControllerManagerUI::mouseDown (const MouseEvent& event)
 }
 
 
+ControllerManagerUIViewport::ControllerManagerUIViewport (const String& contentName, ControllerManagerUI* _UI) :
+controllerManagerUI (_UI),
+ShapeShifterContentComponent (contentName,
+                              "Communicate with the real world\nAdd your controllers here\n OSC / MIDI / Serial")
+{
+    vp.setViewedComponent (controllerManagerUI, true);
+    vp.setScrollBarsShown (true, false);
+    vp.setScrollOnDragEnabled (false);
+    addAndMakeVisible (vp);
+    vp.setScrollBarThickness (10);
+    addAndMakeVisible (addControllerBt);
+    addControllerBt.setTooltip ("Add controller");
+    addControllerBt.addListener (this);
+
+}
+
+ControllerManagerUIViewport::~ControllerManagerUIViewport()
+{
+
+}
+
+void ControllerManagerUIViewport::resized()
+{
+    ShapeShifterContentComponent::resized();
+    vp.setBounds (getLocalBounds());
+    int th = jmax<int> (controllerManagerUI->getContentHeight(), getHeight());
+    Rectangle<int> targetBounds = getLocalBounds().withPosition (controllerManagerUI->getPosition()).withHeight (th);
+
+    targetBounds.removeFromRight (vp.getScrollBarThickness());
+    bool needResize = controllerManagerUI->getHeight()==th;
+
+    controllerManagerUI->setBounds (targetBounds);
+    // resize not called if no change in heights, but internal state yes
+    if(needResize) {controllerManagerUI->resized();}
+
+    if(controllerManagerUI->controllersUI.size()==0){
+        int side = (int)( jmin(getWidth(),getHeight()) * .5);
+        addControllerBt.setBounds(getLocalBounds().withSizeKeepingCentre(side,side));
+        infoLabel.setVisible(true);
+        auto labelR =getLocalBounds().withBottom(addControllerBt.getY());
+        labelR=labelR.withSizeKeepingCentre(jmax(250,getWidth()),labelR.getHeight());
+        infoLabel.setBounds(labelR);
+    }
+    else{
+        infoLabel.setVisible(false);
+        addControllerBt.setFromParentBounds (getLocalBounds());
+    }
+}
+
 void ControllerManagerUIViewport::buttonClicked (Button* b )
 {
     if (b == &addControllerBt)

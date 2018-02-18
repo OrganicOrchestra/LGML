@@ -20,7 +20,7 @@
 #include "../../Controllable/Parameter/UI/GenericParameterContainerEditor.h"
 
 class ControllerEditor : public InspectorEditor,
-    public ButtonListener
+    public Button::Listener
 {
 public:
     ControllerEditor (Controller* controller, bool generateEditorFromParameters = true);

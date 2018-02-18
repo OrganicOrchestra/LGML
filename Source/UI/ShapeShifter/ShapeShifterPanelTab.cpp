@@ -41,6 +41,7 @@ ShapeShifterPanelTab::ShapeShifterPanelTab (ShapeShifterContent* _content) : con
 
     setSize (getLabelWidth(), 20);
     setOpaque (true);
+    setTooltip(content->info);
 
 }
 
@@ -79,3 +80,4 @@ void ShapeShifterPanelTab::buttonClicked (Button* b)
 {
     if (b == &closePanelBT) tabListeners.call (&TabListener::askForRemoveTab, this);
 }
+

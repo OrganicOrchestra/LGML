@@ -24,14 +24,14 @@ const Identifier ParameterContainer::uidIdentifier ("uid");
 
 IMPL_OBJ_TYPE (ParameterContainer)
 ParameterContainer::ParameterContainer (StringRef niceName):
-    ControllableContainer (niceName),
-    currentPreset (nullptr),
-    isHidenInEditor(false)
+ControllableContainer (niceName),
+currentPreset (nullptr),
+isHidenInEditor(false)
 {
 
 
 
-    nameParam = addNewParameter<StringParameter> ("Name", "Set the visible name of the node.", "");
+    nameParam = addNewParameter<StringParameter> ("Name", "Set the visible name", "");
     nameParam->isPresettable = false;
 
 
@@ -172,6 +172,7 @@ Parameter*   ParameterContainer::addParameter (Parameter* p)
 
 void ParameterContainer::newMessage (const Parameter::ParamWithValue& pv)
 {
+    
     if (pv.parameter == currentPresetName)
     {
         loadPresetWithName (pv.parameter->stringValue());
@@ -183,36 +184,39 @@ void ParameterContainer::newMessage (const Parameter::ParamWithValue& pv)
     }
 }
 
-void ParameterContainer::parameterValueChanged (Parameter* p)
+void ParameterContainer::parameterValueChanged (Parameter* p,Parameter::Listener * notifier)
 {
-    if (p == nameParam)
-    {
-        if (parentContainer)
+    if(notifier!=this){
+        if (p == nameParam)
         {
-            String oN = nameParam->stringValue();
-            String tN = parentContainer->getUniqueNameInContainer (oN, 0, this);
-
-            if (tN != oN)
+            if (parentContainer)
             {
-                nameParam->setValue (tN, false, true);
+                String oN = nameParam->stringValue();
+                String tN = parentContainer->getUniqueNameInContainer (oN, 0, this);
+
+                if (tN != oN)
+                {
+                    nameParam->setValue (tN, false, true);
+                }
             }
+
+            setAutoShortName();
+        }
+        else   if (p == savePresetTrigger)
+        {
+            saveCurrentPreset();
+
         }
 
-         setAutoShortName();
-    }
-    else   if (p == savePresetTrigger)
-    {
-        saveCurrentPreset();
 
-    }
-
-    if (p && p->getFactoryTypeId() == Trigger::_factoryType)
-    {
-        onContainerTriggerTriggered ((Trigger*)p);
-    }
-    else
-    {
-        onContainerParameterChanged (p);
+        if (p && p->getFactoryTypeId() == Trigger::_factoryType)
+        {
+            onContainerTriggerTriggered ((Trigger*)p);
+        }
+        else
+        {
+            onContainerParameterChanged (p);
+        }
     }
 
     if ( (p != nullptr && p->parentContainer == this && p->isControllableExposed ) ) dispatchFeedback (p);
@@ -357,7 +361,10 @@ bool ParameterContainer::loadPresetWithName (const String& name)
 
     PresetManager::Preset* preset = PresetManager::getInstance()->getPreset (getPresetFilter(), name);
 
-    if (preset == nullptr) {isLoadingPreset = false; currentPresetName->setValue ("", true, true); return false;}
+    if (preset == nullptr) {
+        isLoadingPreset = false;
+        currentPresetName->setValue ("", true, true);
+        return false;}
 
     bool hasLoaded = loadPreset (preset);
     isLoadingPreset = false;
@@ -458,7 +465,7 @@ bool ParameterContainer::resetFromPreset()
 var ParameterContainer::getPresetValueFor (Parameter* p)
 {
     if (currentPreset == nullptr) return var();
-
+    
     return currentPreset->getPresetValue (p->getControlAddress (this));
 }
 
@@ -466,9 +473,9 @@ var ParameterContainer::getPresetValueFor (Parameter* p)
 void ParameterContainer::cleanUpPresets()
 {
     PresetManager* pm = PresetManager::getInstanceWithoutCreating();
-
+    
     if (pm != nullptr) pm->deletePresetsForContainer (this, true);
-
+    
 }
 
 String ParameterContainer::getPresetFilter()
@@ -481,6 +488,6 @@ void ParameterContainer::setUserDefined (bool v)
 {
     ControllableContainer::setUserDefined (v);
     nameParam->isEditable = v;
-
+    
 }
 

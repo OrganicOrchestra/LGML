@@ -50,8 +50,10 @@ public:
 
     bool isDraggable;
     bool isSelected;
+    void updateOverlayEffect();
 
-
+    void visibilityChanged() override;
+    void parentHierarchyChanged()override;
 
 protected:
 
@@ -74,7 +76,7 @@ private:
     virtual void newMessage (const Parameter::ParamWithValue& p) override;
 
     // never change this as value can be changed from other threads
-    void parameterValueChanged (Parameter* ) override {};
+    void parameterValueChanged (Parameter* ,Parameter::Listener * /*notifier=nullptr*/) override {};
     void parameterRangeChanged (Parameter* )override {};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ParameterUI)
@@ -95,7 +97,7 @@ private:
     WeakReference<ParameterUI>::Master masterReference;
     friend class WeakReference<ParameterUI>;
 
-
+    bool wasShowing;
 
 
 };
@@ -113,6 +115,9 @@ public:
     Label controllableLabel;
     int labelWidth;
     ScopedPointer <ParameterUI > ownedParameterUI;
+    void controllableControlAddressChanged (Controllable*)override;
+
+    
 };
 
 

@@ -12,7 +12,7 @@ namespace BinaryData
     const int            littleredridinghoodmd_pngSize = 51582;
 
     extern const char*   default_lgmllayout;
-    const int            default_lgmllayoutSize = 2426;
+    const int            default_lgmllayoutSize = 2167;
 
     extern const char*   removeBT_png;
     const int            removeBT_pngSize = 58335;

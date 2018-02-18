@@ -296,6 +296,58 @@ void FastMapperUI::mappingModeChanged(bool){
 // FastMapperViewport
 //////////
 
+
+FastMapperViewport::FastMapperViewport (const String& contentName, FastMapperUI* _fastMapperUI) :
+fastMapperUI (_fastMapperUI),
+ShapeShifterContentComponent (contentName,
+"Link parameters together\nAdd FastMap here\nCmd+m toggles mapping mode")
+{
+    vp.setViewedComponent (fastMapperUI, true);
+    vp.setScrollBarsShown (true, false);
+    vp.setScrollOnDragEnabled (false);
+    addAndMakeVisible (vp);
+    addAndMakeVisible (addFastMapButton);
+    addFastMapButton.addListener (this);
+    addFastMapButton.setTooltip ("Add FastMap");
+    vp.setScrollBarThickness (10);
+    contentIsFlexible = true;
+    fastMapperUI->addFastMapperUIListener (this);
+
+}
+
+ FastMapperViewport::~FastMapperViewport()
+{
+    fastMapperUI->removeFastMapperUIListener (this);
+}
+
+
+void FastMapperViewport::resized()
+{
+    ShapeShifterContentComponent::resized();
+    vp.setBounds (getLocalBounds());
+    int th = jmax<int> (fastMapperUI->getContentHeight(), getHeight());
+    Rectangle<int> targetBounds = getLocalBounds().withPosition (fastMapperUI->getPosition()).withHeight (th);
+    targetBounds.removeFromRight (vp.getScrollBarThickness());
+    fastMapperUI->setBounds (targetBounds);
+    if(fastMapperUI->mapsUI.size()==0){
+        int side = (int)( jmin(getWidth(),getHeight()) * .5);
+        addFastMapButton.setBounds(getLocalBounds().withSizeKeepingCentre(side,side));
+        infoLabel.setVisible(true);
+        auto labelR =getLocalBounds().withBottom(addFastMapButton.getY()+35);
+        labelR=labelR.withSizeKeepingCentre(jmax(300,getWidth()),labelR.getHeight());
+        infoLabel.setBounds(labelR);
+    }
+    else{
+        infoLabel.setVisible(false);
+        addFastMapButton.setFromParentBounds (getLocalBounds());
+    }
+}
+
+void FastMapperViewport::fastMapperContentChanged (FastMapperUI*)
+{
+    resized();
+}
+
 void FastMapperViewport::buttonClicked (Button* b)
 {
     if (b == &addFastMapButton )

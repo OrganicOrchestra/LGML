@@ -36,7 +36,11 @@ void BufferBlockList::allocateSamples (int numChannels, int numSamples)
     {
         for (int i = 0 ; i < size() ; i++)
         {
-            OwnedArray::getUnchecked (i)->setSize (numChannels, bufferBlockSize);
+            OwnedArray::getUnchecked (i)->setSize (numChannels, bufferBlockSize,
+                                                   true // keep existing content
+                                                   ,true // zero extra space
+                                                   ,true // avoid reallocating);
+                                                   );
         }
     }
 
@@ -63,7 +67,11 @@ void BufferBlockList::setNumChannels (int numChannels)
 {
     for (auto c : *this)
     {
-        c->setSize (numChannels, bufferBlockSize);
+        c->setSize (numChannels, bufferBlockSize,
+                    true // keep existing content
+                    ,true // zero extra space
+                    ,true // avoid reallocating
+                    );
     }
 }
 void BufferBlockList::setNumSample (int numSamples)

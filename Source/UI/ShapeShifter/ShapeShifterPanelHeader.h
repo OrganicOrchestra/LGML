@@ -22,7 +22,7 @@
 class ShapeShifterPanelHeader :
     public juce::Component,
     public ShapeShifterPanelTab::TabListener,
-    public ButtonListener
+    public Button::Listener
 {
 public:
     ShapeShifterPanelHeader();

@@ -21,7 +21,6 @@
 #pragma once
 
 #include "../Node/NodeBase.h"
-#include "Style.h"//keep
 #include "../Audio/AudioHelpers.h"
 
 //TODO, move to more common place for use in other components
@@ -52,6 +51,7 @@ public:
         colorLow = Colours::lightgreen;
         isActive = true;
         setOpaque (true);
+        setInterceptsMouseClicks(false, false);
     }
 
 

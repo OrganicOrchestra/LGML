@@ -21,7 +21,7 @@
 //// code adapted from projucer
 
 #include "AutoUpdater.h"
-
+#include "DebugHelpers.h"
 
 #include "JuceHeader.h" // for project Info
 
@@ -256,6 +256,8 @@ public:
 #if !DOWNLOAD_INPLACE
         hasOverwriteButton=false;
 #endif
+        LatestVersionChecker::LGMLVersionTriple currentVersion (ProjectInfo::versionNumber);
+
         addAndMakeVisible (titleLabel = new Label ("Title Label",
                                                    TRANS ("Download \"123\" version 456?").replace ("123", productName)
                                                    .replace ("456", version.toString())));
@@ -275,9 +277,6 @@ public:
         okButton->setButtonText (TRANS(hasOverwriteButton ? "Choose Another Folder..." : "OK"));
         okButton->addListener (this);
 
-        addAndMakeVisible (cancelButton = new TextButton ("Cancel Button"));
-        cancelButton->setButtonText (TRANS("Cancel"));
-        cancelButton->addListener (this);
 
         addAndMakeVisible(dontBotherMeCheck = new TextButton("StopBothering"));
         dontBotherMeCheck->setButtonText (TRANS("Don't check"));
@@ -285,7 +284,16 @@ public:
         dontBotherMeCheck->addListener (this);
 
 
+        addAndMakeVisible (cancelButton = new TextButton ("Cancel Button"));
+        cancelButton->setButtonText (TRANS("Cancel"));
+        cancelButton->addListener (this);
 
+
+
+        if(!(version>currentVersion)){
+            titleLabel->setText(String("you have the latest version : 123 re-download it?").replace("123", version.toString()), dontSendNotification);
+            contentLabel->setText("", dontSendNotification);
+        }
         addAndMakeVisible (changeLogLabel = new Label ("Change Log Label",
                                                        TRANS("Release Notes:")));
         changeLogLabel->setFont (Font (15.00f, Font::plain));
@@ -349,7 +357,7 @@ public:
 
         if (juceIcon != nullptr)
             juceIcon->drawWithin (g, Rectangle<float> (20, 17, 64, 64),
-                                  RectanglePlacement::stretchToFit, 1.000f);
+                                  RectanglePlacement::centred, 1.000f);
     }
 
     void resized() override
@@ -401,8 +409,8 @@ public:
                                                                            releaseNotes, overwritePath), true);
 
         DialogWindow::LaunchOptions lo;
-        lo.dialogTitle = TRANS ("Download \"123\" version 456?").replace ("456", version.toString())
-        .replace ("123", productName);
+        lo.dialogTitle = "LGML version checker";//TRANS ("Download \"123\" version 456?").replace ("456", version.toString())
+//        .replace ("123", productName);
 //        lo.dialogBackgroundColour = userDialog->findColour (backgroundColourId);
         lo.content = userDialog;
         lo.componentToCentreAround = nullptr;
@@ -497,9 +505,11 @@ private:
 
 
  //==============================================================================
- LatestVersionChecker::LatestVersionChecker()  : Thread ("Updater"),
+ LatestVersionChecker::LatestVersionChecker(bool force)  : Thread ("Updater"),
  statusCode (-1),
- hasAttemptedToReadWebsite (false)
+ hasAttemptedToReadWebsite (false),
+ force_show(force),
+    hasEnded(false)
  {
  startTimer (2000);
  }
@@ -661,12 +671,19 @@ bool LatestVersionChecker::processResult (const var& reply, const String& downlo
             if (LGMLVersionTriple::fromString (versionString, version))
             {
                 String extraHeaders;
+#if DOWNLOAD_INPLACE
+
                 String _path = downloadPath;
                 if (statusCode==200){
                     _path = versionString <<'/'<< getOSString()<< '/'<<"LGML.zip";
                 }
 
                 URL newVersionToDownload = getLatestVersionURL (extraHeaders, _path);
+#else
+                String urlPage = reply.getProperty("download_page",
+                                                    "http://organic-orchestra.com/forum/d/6-lgml-telechargements").toString();
+                URL newVersionToDownload (urlPage);
+#endif
                 return askUserAboutNewVersion (version, releaseNotes, newVersionToDownload, extraHeaders);
 
             }
@@ -707,7 +724,7 @@ bool LatestVersionChecker::askUserAboutNewVersion (const LatestVersionChecker::L
 {
     LGMLVersionTriple currentVersion (getProductVersionNumber());
 
-    if (version > currentVersion)
+    if (force_show || (version > currentVersion))
     {
         File appParentFolder (File::getSpecialLocation (File::currentApplicationFile).getParentDirectory());
         DialogWindow* modalDialog = nullptr;
@@ -750,10 +767,11 @@ void LatestVersionChecker::modalStateFinished (int result,
         else
             askUserForLocationToDownload (newVersionToDownload, extraHeaders);
 #else
-        const String link("http://organic-orchestra.com/forum/d/6-lgml-telechargements");
+        const String link(newVersionToDownload.toString(false));
         Process::openDocument(link, "");
 #endif
     }
+
 }
 #if DOWNLOAD_INPLACE
 void LatestVersionChecker::askUserForLocationToDownload (URL& newVersionToDownload, const String& extraHeaders)
@@ -786,14 +804,16 @@ void LatestVersionChecker::timerCallback()
         bool restartTimer = true;
         if (jsonReply.isObject()){
             restartTimer = processResult (jsonReply, newRelativeDownloadPath);
+            hasEnded = true;
             jassert(!restartTimer);
-            DBG("has checked for new version");
+            LOG("has checked for new version");
         }
         
         hasAttemptedToReadWebsite = false;
         
         if (restartTimer){
-            DBG("can't check for new version");
+            LOG("!!! can't check for new version are you offline?");
+            hasEnded = true;
             if(statusCode!=0)startTimer(500);
             else stopTimer();
         }

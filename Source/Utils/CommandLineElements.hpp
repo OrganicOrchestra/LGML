@@ -100,13 +100,15 @@ public:
 
             if (isParameter)
             {
-                command = args[parsingIdx].substring (1, args[parsingIdx].length());
-                parsingIdx++;
+                bool isLongParameter = args[parsingIdx].startsWith ("--");
+                command = args[parsingIdx].substring (isLongParameter?2:1, args[parsingIdx].length());
+                parsingIdx+=1;
                 res.add (CommandLineElement (command));
 
                 // handles command only args
                 if (parsingIdx >= args.size()) {break;}
             }
+            else{
 
             String argument = args[parsingIdx].removeCharacters (juce::StringRef ("\""));
 
@@ -117,6 +119,7 @@ public:
             //DBG("parsing commandline, command : " << command << ", argument :" << argument << " / parsingIdx : " << parsingIdx);
 
             parsingIdx++;
+            }
         }
 
         return res;

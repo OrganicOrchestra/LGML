@@ -23,6 +23,18 @@
 
 #include "../../Controllable/Parameter/UI/ParameterUIFactory.h"
 
+
+InspectableComponent::InspectableComponent (const String& _inspectableType ):
+inspectableType (_inspectableType),
+relatedParameterContainer (nullptr),
+relatedParameter(nullptr),
+recursiveInspectionLevel (0),
+canInspectChildContainersBeyondRecursion (true),
+isSelected (false),
+paintBordersWhenSelected (true),
+bringToFrontOnSelect (true){
+
+}
 InspectableComponent::InspectableComponent (ParameterContainer* _relatedContainer, const String& _inspectableType) :
 inspectableType (_inspectableType),
 relatedParameterContainer (_relatedContainer),
