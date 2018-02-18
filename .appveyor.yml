@@ -42,6 +42,6 @@ artifacts:
   - path: '*.zip'
 
 build:
-  project: Builds/VisualStudio2015/LGML.sln
+  project: Builds/VisualStudio2017/LGML.sln
   verbosity: minimal
   parallel: true
