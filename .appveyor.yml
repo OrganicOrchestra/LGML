@@ -7,7 +7,7 @@ branches:
 
 environment:
   ASIOSDK: C:\projects\ASIOSDK2.3
-  image: Visual Studio 2015
+  image: Visual Studio 2017
   matrix:
     - platform: Win32
       configuration: Release_32
