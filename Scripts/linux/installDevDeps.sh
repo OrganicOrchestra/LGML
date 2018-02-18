@@ -1,4 +1,9 @@
-# this script install JUCE in sibling directory of LGML
+# this script install deps needed to compile LGML from source :
+# ** /!\ /!\ /!\ /!\ gcc-5 will be installed for c++14 support /!\ /!\ /!\ /!\  (on ubuntu <16 for example)
+# ** JUCE is downloaded in a sibling directory of LGML
+# ** JUCE deps also
+# this script support cross-compiling setting the CROSS_ARCH flag to armhf (see circleci config.yml)
+
 set +e # ignore apt update error
 NATIVE_ARCH=`dpkg --print-architecture`
 if [ -z ${CROSS_ARCH+x} ]; then CROSS_ARCH="$NATIVE_ARCH"; fi
@@ -25,6 +30,20 @@ apt-get -y -q --assume-yes install ladspa-sdk:$CROSS_ARCH
 # libavahi-compat-libdnssd libfreetype6 libx11 libxinerama libxrandr libxcursor mesa-common libasound2 freeglut3 libxcomposite libjack libcurl4-openssl
 
 apt-get -y -q --assume-yes install curl
+
+GCCVERSIONGTEQ5 := $(shell expr `gcc -dumpversion | cut -f1 -d.` \>= 5)
+
+
+# we are using c++14 features now
+ifeq "$(GCCVERSIONGTEQ5)" "0"
+  echo "gcc version is too low, 5 minimum for c++14 support, trying to install one now"
+  add-apt-repository ppa:ubuntu-toolchain-r/test
+  apt-get update
+  apt-get install gcc-5 g++-5
+  update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5
+endif
+
+
 
 SCRIPTPATH=`pwd`/$(dirname "$0") 
 cd $SCRIPTPATH
