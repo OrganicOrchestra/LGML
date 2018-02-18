@@ -57,7 +57,9 @@ ParameterUI::ParameterUI (Parameter* _parameter) :
 
 ParameterUI::~ParameterUI()
 {
-    LGMLDragger::getInstance()->unRegisterDragCandidate (this);
+    if(auto * draggerI = LGMLDragger::getInstanceWithoutCreating()){
+        draggerI->unRegisterDragCandidate (this);
+    }
 
     if (parameter.get())
     {

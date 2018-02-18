@@ -45,7 +45,7 @@ public:
 };
 
 
-class ControllableReferenceUI : public TextButton, public ButtonListener
+class ControllableReferenceUI : public TextButton, public Button::Listener
 {
 public :
     ControllableReferenceUI (ControllableContainer* rootContainer = nullptr, Array<Controllable*> filterOut = {});

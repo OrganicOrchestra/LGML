@@ -22,7 +22,7 @@
 
 class NodeContainerContentUI :
     public ConnectableNodeContentUI,
-    public ButtonListener,
+    public Button::Listener,
     public NodeContainerListener
 {
 public :

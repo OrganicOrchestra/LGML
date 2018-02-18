@@ -26,7 +26,7 @@ class GenericParameterContainerEditor;
 class CCInnerContainerUI :
     public juce::Component,
     private ControllableContainer::Listener,
-    public ButtonListener
+    public Button::Listener
 {
 public:
     class CCLinkBT : public TextButton
@@ -86,7 +86,7 @@ public:
 };
 
 
-class GenericParameterContainerEditor : public InspectorEditor, public ButtonListener, private ControllableContainer::Listener, Timer
+class GenericParameterContainerEditor : public InspectorEditor, public Button::Listener, private ControllableContainer::Listener, Timer
 {
 public :
     GenericParameterContainerEditor (ParameterContainer* sourceComponent);
