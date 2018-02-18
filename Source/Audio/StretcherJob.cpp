@@ -27,7 +27,10 @@ using namespace RubberBand;
 
 
 extern ThreadPool* getEngineThreadPool();
-constexpr int process_blocksize = 10*44100;//4096;
+
+//short block size to avoid stalling if pitch varies fast
+constexpr int process_blocksize = 64; //44100;//4096;
+
 int count = 0;
 StretcherJob::StretcherJob (PlayableBuffer* pb, double _ratio):
 ThreadPoolJob (String(count)),
@@ -44,14 +47,14 @@ tmpStretchBuf (1, 44100, process_blocksize)
         }
     }
     count++;
-    
+
 };
 
 StretcherJob::~StretcherJob (){
 
     ScopedLock lk (jobLock);
     masterReference.clear();
-    
+
 };
 
 
@@ -123,54 +126,41 @@ ThreadPoolJob::JobStatus StretcherJob::runJob()
 
     }
 
+    if(shouldExit()) return jobHasFinished;
+
     ScopedLock lk (jobLock);
     if (!shouldExit() )
     {
 
+        int targetNumSamples = originNumSamples * ratio;
+        jassert (targetNumSamples != 0);
 
-//        if (lk.isLocked())
-//        {
+        int diffSample = abs (produced - targetNumSamples);
 
-            int targetNumSamples = originNumSamples * ratio;
-            jassert (targetNumSamples != 0);
-
-            int diffSample = abs (produced - targetNumSamples);
-
-            if (diffSample > 128)
-            {
-                jassertfalse;
-            }
+        if (diffSample > 128)   {   jassertfalse;   }
 
 
-            double actualRatio = produced * 1.0 / originNumSamples;
-            jassert (fabs (ratio - actualRatio) < 0.01 );
-            tmpStretchBuf.setNumSample (targetNumSamples);
-            jassert (owner->isStretchReady == false);
-            std::vector<int> tp = stretcher->getExactTimePoints();
-            owner->onsetSamples.clear() ;
-            int inc = stretcher->getInputIncrement();
+        double actualRatio = produced * 1.0 / originNumSamples;
+        jassert (fabs (ratio - actualRatio) < 0.01 );
+        tmpStretchBuf.setNumSample (targetNumSamples);
+        jassert (owner->isStretchReady == false);
+        std::vector<int> tp = stretcher->getExactTimePoints();
+        owner->onsetSamples.clear() ;
+        int inc = stretcher->getInputIncrement();
 
-            for (size_t i = 0 ; i < tp.size(); i++)
-            {
-                owner->onsetSamples.add (tp[i]*inc);
-            }
-            owner->onsetSamples.sort();
+        for (size_t i = 0 ; i < tp.size(); i++)
+        {
+            owner->onsetSamples.add (tp[i]*inc);
+        }
+        owner->onsetSamples.sort();
 
-            //      std::swap(owner->tmpBufferBlockList, tmpStretchBuf);
-            owner->tmpBufferStretch.setSize (tmpStretchBuf.getAllocatedNumChannels(), tmpStretchBuf.getNumSamples());
-            tmpStretchBuf.copyTo (owner->tmpBufferStretch, 0);
-            owner->isStretchReady = true;
-            owner->appliedRatio = ratio;
+        //      std::swap(owner->tmpBufferBlockList, tmpStretchBuf);
+        owner->tmpBufferStretch.setSize (tmpStretchBuf.getAllocatedNumChannels(), tmpStretchBuf.getNumSamples());
+        tmpStretchBuf.copyTo (owner->tmpBufferStretch, 0);
+        owner->isStretchReady = true;
+        owner->appliedRatio = ratio;
 
 
-            //    int dbg =stretcher->getSamplesRequired();
-            //    jassert(dbg<=0);
-
-            //    owner->fadeInOut(owner->fadeSamples, 0);
-
-//            int dbg = stretcher->available();
-//            jassert (dbg <= 0);
-//        }
     }
 
     return jobHasFinished;

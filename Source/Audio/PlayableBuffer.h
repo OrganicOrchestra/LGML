@@ -88,6 +88,7 @@ public :
 
     void startRecord();
     inline void startPlay();
+    void clear();
 
 
 
@@ -170,6 +171,8 @@ private:
     
 #if BUFFER_CAN_STRETCH
     friend class StretcherJob;
+    void cancelStretchJob(bool waitForIt);
+    bool isStretchJobPending();
     WeakReference<StretcherJob> stretchJob;
     AudioSampleBuffer tmpBufferStretch;
     bool isStretchReady;
