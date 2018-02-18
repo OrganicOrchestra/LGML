@@ -26,6 +26,7 @@
 
 MainContentComponent* createMainContentComponent (Engine* e);
 MainWindow::~MainWindow(){
+    LGMLDragger::deleteInstance();
     stopTimer();
     latestVChecker = nullptr;
 }

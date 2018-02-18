@@ -88,7 +88,7 @@ private:
 
 class Outliner : public ShapeShifterContentComponent,
 private ControllableContainerListener, AsyncUpdater,
-TextEditorListener,
+TextEditor::Listener,
 Button::Listener,
 Inspector::InspectorListener
 

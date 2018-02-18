@@ -19,7 +19,7 @@
 #include "ShapeShifterContent.h"//keep
 class ShapeShifterPanelTab :
     public juce::Component,
-    public ButtonListener,
+    public Button::Listener,
     public SettableTooltipClient
 {
 public:
