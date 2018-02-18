@@ -34,6 +34,9 @@ if [ ! -d "JUCE" ]; then
   curl -L https://github.com/julianstorer/JUCE/archive/master.tar.gz > JUCE.tar.gz
   tar -xf JUCE.tar.gz
   mv JUCE-master/ JUCE
+  echo "downloading JUCE"
+else
+  echo "using system JUCE"
 fi
 
 apt-get -y -q --assume-yes install python3
