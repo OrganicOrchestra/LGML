@@ -56,8 +56,14 @@ public:
         }
 
     }
-    static String typeToNiceName (const String& t)
+    static String typeToNiceName (const  String& t)
     {
+        auto & snm = getShortNamesMap();
+        if(snm.contains(t)){
+            return snm.getReference(t);
+        }
+
+        jassertfalse; //
         if (t.length() > 2 && t[0] == 't' && t[1] == '_')
         {
             return t.substring (2);
@@ -69,6 +75,14 @@ public:
     }
     static String niceToTypeName (const  String& t)
     {
+
+        auto it=getShortNamesMap().begin();
+        auto end =getShortNamesMap().end();
+        while(it!=end){
+            if(it.getValue()==t)return it.getKey();
+            it.next();
+
+        }
         if (t.length() < 2 || (t[0] != 't' && t[1] != '_'))
         {
             return "t_" + t;
@@ -97,10 +111,11 @@ public:
 
 
     template<typename T>
-    static Identifier registerType (const String& ID)
+    static Identifier registerType (const String& ID,const String& shortName)
     {
         jassert (!getFactory().contains (ID));
         jassert (ID[0] == 't' && ID[1] == '_');
+        getShortNamesMap().set(ID,shortName);
         getFactory().set (ID, Entry (createFromObject<T>));
         return Identifier(ID);
     }
@@ -153,6 +168,11 @@ private:
 
     typedef CreatorFunc Entry;
 
+    static  HashMap<String, String> & getShortNamesMap(){
+        static HashMap<String, String> shortNamesMap; // readable class names (without suffixes)
+        return shortNamesMap;
+    }
+
     static  HashMap< String, Entry >& getFactory()
     {
         static HashMap< String, Entry > factory;
@@ -162,12 +182,12 @@ private:
 };
 
 
-#define REGISTER_OBJ_TYPE_NAMED(FACTORY,T,NAME) const Identifier T::_factoryType = FactoryBase<FACTORY>::registerType<T>(NAME);
+#define REGISTER_OBJ_TYPE_NAMED(FACTORY,T,NAME,NICENAME) const Identifier T::_factoryType = FactoryBase<FACTORY>::registerType<T>(NAME,NICENAME);
 
-#define REGISTER_OBJ_TYPE(FACTORY,T) REGISTER_OBJ_TYPE_NAMED(FACTORY,T,"t_" #T)
+#define REGISTER_OBJ_TYPE(FACTORY,T,NICENAME) REGISTER_OBJ_TYPE_NAMED(FACTORY,T,"t_" #T,NICENAME)
 
 
-#define REGISTER_OBJ_TYPE_TEMPLATED(FACTORY,T,TT) template<> const Identifier T<TT>::_factoryType  = FactoryBase<FACTORY>::registerType< T<TT> >("t_" #T "_" #TT);
+#define REGISTER_OBJ_TYPE_TEMPLATED(FACTORY,T,TT,NICENAME) template<> const Identifier T<TT>::_factoryType  = FactoryBase<FACTORY>::registerType< T<TT> >("t_" #T "_" #TT,NICENAME);
 
 
 

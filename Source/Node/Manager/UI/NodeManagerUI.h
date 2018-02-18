@@ -34,7 +34,8 @@ class UISync;
 class NodeManagerUI :
     public juce::Component,
     public NodeManager::NodeManagerListener,
-    public ParameterContainer
+    public ParameterContainer,
+    private DeletedAtShutdown 
 {
 public:
     juce_DeclareSingleton(NodeManagerUI, false);
@@ -86,7 +87,7 @@ public:
 class NodeManagerUIViewport :
     public ShapeShifterContentComponent,
     public NodeManagerUI::NodeManagerUIListener,
-    public ButtonListener
+    public Button::Listener
 {
 public :
     NodeManagerUIViewport (const String& contentName, NodeManagerUI* _nmui): nmui (_nmui), ShapeShifterContentComponent (contentName,"Patch your Audio here")

@@ -24,7 +24,7 @@
 class StringParameterUI;
 class Outliner;
 
-class ControllerUI : public InspectableComponent, public ButtonListener
+class ControllerUI : public InspectableComponent, public Button::Listener
 {
 public:
     ControllerUI (Controller* controller);

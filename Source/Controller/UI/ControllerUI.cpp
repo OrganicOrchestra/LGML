@@ -37,7 +37,7 @@ static DrawableButton* getArrowButton(const String& name){
         downArrow.setPath(dp);
         hoverArrow.setPath(p);
         hoverDownArrow .setPath(dp);
-        Colour hoverColour = arrow.getFill().fill.colour.contrasting(.8f);
+        Colour hoverColour = arrow.getFill().colour.contrasting(.8f);
         hoverArrow.setFill(hoverColour);
         hoverDownArrow.setFill(hoverColour);
         inited = true;

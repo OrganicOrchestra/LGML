@@ -24,7 +24,7 @@ class Controller;
 typedef FactoryBase<Controller> ControllerFactory;
 
 
-#define REGISTER_CONTROLLER_TYPE(T)  REGISTER_OBJ_TYPE(Controller,T);
+#define REGISTER_CONTROLLER_TYPE(T,NICENAME)  REGISTER_OBJ_TYPE(Controller,T,NICENAME);
 
 //#define REGISTER_CONTROLLER_TYPE_TEMPLATED(T,TT) REGISTER_OBJ_TYPE_TEMPLATED(NodeBase,T,TT);
 

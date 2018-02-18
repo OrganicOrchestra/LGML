@@ -88,6 +88,9 @@ NodeManagerUI::~NodeManagerUI()
         p->removeChildControllableContainer(this);
     }
     else jassertfalse;
+
+
+    clearSingletonInstance();
 }
 
 void NodeManagerUI::clear()

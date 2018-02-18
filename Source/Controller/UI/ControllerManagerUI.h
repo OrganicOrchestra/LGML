@@ -61,7 +61,7 @@ private:
 
 class ControllerManagerUIViewport :
     public ShapeShifterContentComponent,
-    private ButtonListener
+    private Button::Listener
 {
 public:
     ControllerManagerUIViewport (const String& contentName, ControllerManagerUI* _UI) ;

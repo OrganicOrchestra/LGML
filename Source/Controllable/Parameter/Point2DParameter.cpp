@@ -17,8 +17,8 @@
 
 #include "ParameterFactory.h"
 
-REGISTER_PARAM_TYPE_TEMPLATED (Point2DParameter, int)
-REGISTER_PARAM_TYPE_TEMPLATED (Point2DParameter, float)
+REGISTER_PARAM_TYPE_TEMPLATED (Point2DParameter, int,"Point2DInt")
+REGISTER_PARAM_TYPE_TEMPLATED (Point2DParameter, float,"Point2DFloat")
 
 
 

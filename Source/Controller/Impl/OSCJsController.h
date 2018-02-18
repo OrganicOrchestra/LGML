@@ -47,7 +47,7 @@ public:
     static var createJsOSCListener (const var::NativeFunctionArgs& a);
     OwnedArray<JsOSCListener, CriticalSection> jsOSCListeners;
 
-    static var OSCArgumentToVar (OSCArgument& a);
+    static var OSCArgumentToVar (const OSCArgument& a);
 
 
 private:

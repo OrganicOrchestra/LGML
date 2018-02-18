@@ -867,12 +867,10 @@ void LooperTrack::setTrackState (TrackState newState)
 
             if (sampleChoice->selectionIsNotEmpty())
             {
-
                 sampleChoice->unselectAll();
-
-
             }
         }
+        playableBuffer.clear();
 
 
     }

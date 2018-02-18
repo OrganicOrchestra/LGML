@@ -28,7 +28,7 @@
 class FastMapUI :
     public InspectableComponent,
     private  ControllableReferenceUI::Listener,
-    private ButtonListener,
+    private Button::Listener,
     private ParameterProxy::ParameterProxyListener
 
 {

@@ -37,7 +37,7 @@ public:
 class FastMapperUI :
     public juce::Component,
     private ControllableContainerListener,
-    private ButtonListener,
+    private Button::Listener,
     private Inspector::InspectorListener,
     private LGMLDragger::Listener
 {
@@ -99,7 +99,7 @@ private:
 class FastMapperViewport :
     public ShapeShifterContentComponent,
     public FastMapperUIListener,
-    private ButtonListener
+    private Button::Listener
 {
 public:
     FastMapperViewport (const String& contentName, FastMapperUI* _fastMapperUI) ;

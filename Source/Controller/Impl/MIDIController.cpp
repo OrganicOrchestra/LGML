@@ -22,7 +22,7 @@
 extern AudioDeviceManager&   getAudioDeviceManager();
 
 #include "../ControllerFactory.h"
-REGISTER_CONTROLLER_TYPE (MIDIController);
+REGISTER_CONTROLLER_TYPE (MIDIController,"MIDI");
 
 MIDIController::MIDIController (StringRef name) :
     Controller (name), JsEnvironment ("controllers.MIDI", this),
