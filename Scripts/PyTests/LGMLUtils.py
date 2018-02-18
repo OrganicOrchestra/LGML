@@ -53,6 +53,7 @@ class LGMLSession:
     self.dispatcher = dispatcher.Dispatcher()
     self.dispatcher.map("/pong", self.pong)
     self.dispatcher.map("/*", self.anyMessage)
+    self.dispatcher.map("/stats/*",self.stats)
     self.udpFB = osc_server.ThreadingOSCUDPServer(
       (self.LGMLIP, self.OSCInPort), self.dispatcher)
     self.udpFB_thread = Thread(target = self.udpFB.serve_forever)
@@ -60,6 +61,8 @@ class LGMLSession:
     self.lgml_thread = None
     self.stdout_filep = None 
     self.print_oscIn = True
+    self.stats = {}
+    self.startTime = time.time()*1000.0
 
   def __enter__(self):
     self.udpFB_thread.start()
@@ -91,14 +94,20 @@ class LGMLSession:
     self.lgml_thread = start_thread(self.lgmlExecPath + " -f "+self.path+ " --remote ",stdout = stdout_filep);
 
     self.wait()
+    
 
   def getPIDCMD(self):
     def getinfo(process_name):
-      return [item.split() for item in os.popen('ps -Ax').read().splitlines() if process_name in item]
+      return [item.split() for item in os.popen('ps -A -o pid  -o state -o command').read().splitlines() if process_name in item]
     info = getinfo('LGML.app')
+    
     if info and len(info)>0:
-      ii = info[0]
-      return (ii[0],'"'+' '.join(ii[3:])+'"')
+      i = 0;
+      while i<len(info):
+        ii = info[i]
+        if(ii[1] not in ['U','Z']):
+          return (ii[0],'"'+' '.join(ii[2:])+'"')
+        i+=1
     return None
 
   def close(self):
@@ -139,10 +148,25 @@ class LGMLSession:
         return False
     return self.lastMessage
 
-  def pong(self,p,name,*a):
-    print("gotPong "+str(p)+" : "+str(name))
+  def pong(self,addr,name,*a):
+    print("gotPong "+str(addr)+" : "+str(name))
     self.controllerAddress=name
+    # if not self.connected:
+    #   self.startTime = time.time()*1000.0
     self.connected = True
+
+  def stats(self,addr,*a):
+    if not self.connected:
+      return
+    statName = addr[7:]
+    timeOfEvent = time.time()*1000.0- self.startTime 
+    event = a[0]
+    engineTime = a[1]
+    
+    print("got stats : %s , %s at %.2f (%.2f)"%(statName,event,timeOfEvent,engineTime))
+    if not statName in self.stats:
+      self.stats[statName] = []
+    self.stats[statName]+=[(timeOfEvent,event,engineTime)]
 
   
 
@@ -178,11 +202,29 @@ class LGMLSession:
   def send_osc(self,a,m):
     self.udp.send_message(a,m)
 
-  def set_blockfeedback(self,v):
-    self.udp.send_message(self.controllerAddress+"/blockfeedback",v)
+  def set_controller_param(self,name,v):
+    self.udp.send_message(self.controllerAddress+"/"+name,v)
 
-  def set_logoutgoingosc(self,v):
-    self.udp.send_message(self.controllerAddress+"/logoutgoingosc",v)
+def graph_stats(stats):
+  import matplotlib.pyplot as plt
+  for k,v in stats.items():
+    localTime = [t[0] for t in v]
+    engineTime = [t[2] for t in v]
+    y = [t[1] for t in v]
+    errorTime = [localTime[i] - engineTime[i] for i in range(len(v))]
+    minError = errorTime[0]
+    print(minError,errorTime)
+    errorTime = [x - minError for x in errorTime]
+    meanError = sum(errorTime)/len(errorTime)
+    stall = [engineTime[i] -engineTime[i-1] - 300 for i in range(1,len(v))]
+    meanStall = sum(stall)/len(stall)
+    maxStall = max(stall)
+    plt.plot(localTime,y,'o-',label=k+" (%.2f,%2.f,%.2f)"%(meanError,meanStall,maxStall))
+    for t in range(len(localTime)):
+      plt.plot((localTime[t],localTime[t]-errorTime[t]),(y[t],0),color='r')
+    # plt.errorbar(localTime,y,fmt='o-',xerr=[[0 for _ in v],errorTime],label=k)
+  plt.legend(loc='lower right')
+  plt.show()
 
 if __name__ == "__main__":
   sessionPath = "/Users/Tintamar/Documents/lgml.lgml"

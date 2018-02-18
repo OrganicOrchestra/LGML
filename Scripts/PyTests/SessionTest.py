@@ -7,6 +7,7 @@ import time
 
 class SessionTest(unittest.TestCase):
   logout = os.path.join(os.path.dirname(__file__),"tst.log")
+  statsFile = os.path.join(os.path.dirname(__file__),"stats.log")
   def session_consistency(self,path):
     with LGMLSession(path) as s:
       ori = s.read()
@@ -17,15 +18,17 @@ class SessionTest(unittest.TestCase):
       print('ended')
 
   def osc_flood(self,session,log):
-    session.set_blockfeedback(False)
-    session.set_logoutgoingosc(True)
+    session.set_controller_param("blockfeedback",False)
+    session.set_controller_param("logoutgoingosc",True)
+    session.set_controller_param("logincomingosc",True)
+    session.set_controller_param("syncallparameters",True)
     i =1;
     volParam = LGMLParam("/node/audiodeviceinnode/volume1")
     freq = 1
     sleep_time = 0.#00001
     max_time = 2
-    max_iter = 1000 if(sleep_time==0) else max_time/sleep_time
-    max_iter = 100000
+    max_iter = 10000 if(sleep_time==0) else max_time/sleep_time
+    
     session.print_oscIn = False;
     while i < max_iter:
       msg = (volParam.address,(i*freq)%max_iter*1.0/max_iter)
@@ -51,12 +54,14 @@ def create_test (path):
     # self.session_consistency(path)
       with LGMLSession(path) as s:
         with open(self.logout,'w') as log:
-          log.write("init")
-          log.flush()
           s.run(stdout_filep=log)
           print('start osc flood test')
           self.osc_flood(s,log)
           print('end test')
+        stats = s.stats
+      graph_stats(stats)
+      with open(self.statsFile,'w') as stat:
+          json.dump(stats,stat);
   return do_test
 
 scriptPath = os.path.dirname(os.path.abspath(__file__));
