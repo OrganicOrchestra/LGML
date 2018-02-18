@@ -150,10 +150,10 @@ jobs:
           command: |
             git submodule update --init --recursive
             sh Scripts/osx/installDevDeps.sh 
+            sh Scripts/osx/installExportDeps.sh
       - run:
           name: build and package LGML OSX
           command: |
-            sh Scripts/osx/installExportDeps.sh
             python3 Scripts/buildScript.py --configure --exportpath=/tmp/buildOSX/ --os=osx --configuration=Release 
             python3 Scripts/buildScript.py --build --package --export
       - store_artifacts:
