@@ -45,7 +45,11 @@ public:
                 AlertWindow aw("lgml crashed last time","error message : ",AlertWindow::AlertIconType::WarningIcon);
                 aw.addTextBlock(bt);
                 aw.addButton("Ok", 1);
-                aw.runModalLoop();
+                aw.addButton("Copy to clipboard", 2);
+                auto res = aw.runModalLoop();
+                if(res==2){
+                    SystemClipboard::copyTextToClipboard(bt);
+                }
                 #endif
             }
             getCrashFile().deleteFile();
