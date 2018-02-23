@@ -31,7 +31,7 @@ apt-get -y -q --assume-yes install ladspa-sdk:$CROSS_ARCH
 
 apt-get -y -q --assume-yes install curl
 
-GCCVERSIONGTEQ5 := $(shell expr `gcc -dumpversion | cut -f1 -d.` \>= 5)
+GCCVERSIONGTEQ5=$(expr `gcc -dumpversion | cut -f1 -d.` \>= 5)
 
 
 # we are using c++14 features now
