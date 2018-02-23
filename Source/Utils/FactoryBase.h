@@ -109,6 +109,11 @@ public:
         return i->getFactoryTypeId().toString();
     };
 
+    static const String getFactoryNiceNameForInstance (CLASSNAME* i )
+    {
+        return typeToNiceName(i->getFactoryTypeId().toString());
+    };
+
 
     template<typename T>
     static Identifier registerType (const String& ID,const String& shortName)
@@ -116,6 +121,7 @@ public:
         jassert (!getFactory().contains (ID));
         jassert (ID[0] == 't' && ID[1] == '_');
         getShortNamesMap().set(ID,shortName);
+        // DBG("registering "+ID+"::"+shortName);
         getFactory().set (ID, Entry (createFromObject<T>));
         return Identifier(ID);
     }
