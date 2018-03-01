@@ -35,13 +35,13 @@ GCCVERSIONGTEQ5=$(expr `gcc -dumpversion | cut -f1 -d.` \>= 5)
 
 
 # we are using c++14 features now
-ifeq "$(GCCVERSIONGTEQ5)" "0"
+if [ $GCCVERSIONGTEQ5 -eq "0" ] ; then
   echo "gcc version is too low, 5 minimum for c++14 support, trying to install one now"
   add-apt-repository ppa:ubuntu-toolchain-r/test
   apt-get update
   apt-get install gcc-5 g++-5
   update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5
-endif
+fi
 
 
 
