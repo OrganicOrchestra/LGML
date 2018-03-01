@@ -31,20 +31,43 @@ ladspa-sdk:$CROSS_ARCH
 
 apt-get -y -q --assume-yes install curl
 
-set +e 
+
 echo "checking if gcc5"
+# Compare multipoint versions
+function check_min_version {
+  local BASE=$1
+  local MIN=$2
 
-GCCVERSIONGTEQ5="$(expr `gcc -dumpversion | cut -f1 -d.` \>= 5)"
+  # Break apart the versions into an array of semantic parts
+  local BASEPARTS=(${BASE//./ })
+  local MINPARTS=(${MIN//./ })
 
-echo "gcc need update $GCCVERSIONGTEQ5"
+  # Ensure there are 3 parts (semantic versioning)
+  if [[ ${#BASEPARTS[@]} -lt 3 ]] || [[ ${#MINPARTS[@]} -lt 3 ]]; then
+    VERSION_CHECK_ERROR="Please provide version numbers in semantic format MAJOR.MINOR.PATCH."
+    return
+  fi
 
+  # Compare the parts
+  if [[ ${BASEPARTS[0]} -lt ${MINPARTS[0]} ]] || [[ ${BASEPARTS[0]} -eq ${MINPARTS[0]} && ${BASEPARTS[1]} -lt ${MINPARTS[1]} ]] || [[ ${BASEPARTS[0]} -eq ${MINPARTS[0]} && ${BASEPARTS[1]} -eq ${MINPARTS[1]} && ${BASEPARTS[2]} -lt ${MINPARTS[2]} ]]; then
+    VERSION_CHECK_ERROR="Minimum version required is $MIN.  Your's is $BASE."
+  fi
+}
+
+set +e 
 # we are using c++14 features now
-if [ "$GCCVERSIONGTEQ5" -eq "0" ] ; then
-  echo "gcc version is too low, 5 minimum for c++14 support, trying to install one now"
+check_min_version `gcc -dumpversion` "4.9.0"
+
+if [[ -n "$VERSION_CHECK_ERROR" ]]; then
+  echo -e "$VERSION_CHECK_ERROR"
+  echo "gcc version is too low, JUCE for c++14 support"
+  # modifying gcc is likely to break things
+  echo `gcc -dumpversion`
+  exit 1
   #add-apt-repository ppa:ubuntu-toolchain-r/test
   echo "deb http://ftp.us.debian.org/debian unstable main contrib non-free" >> /etc/apt/sources.list.d/unstable.list
   apt-get update
-  apt-get install -y --assume-yes -t unstable gcc-5 g++-5
+  apt-get install -y --force-yes -t unstable gcc-5 g++-5
   update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5
 fi
 
