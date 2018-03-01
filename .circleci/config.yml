@@ -123,7 +123,7 @@ jobs:
           name: build and package LGMLRasp
           command: |
             set -x
-            export CXX=arm-linux-gnueabihf-g++
+            export CXX=arm-linux-gnueabihf-g++-5
             sh Scripts/linux/installExportDeps.sh
             export ARCH_FLAGS=$ARCH_FLAGS_PI3
             $BUILDLGML_CMD_BASE --configuration=Release --packagesuffix=Rpi3
