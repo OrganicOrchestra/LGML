@@ -31,11 +31,13 @@ apt-get -y -q --assume-yes install ladspa-sdk:$CROSS_ARCH
 
 apt-get -y -q --assume-yes install curl
 
+echo "checking if gcc5"
 GCCVERSIONGTEQ5=$(expr `gcc -dumpversion | cut -f1 -d.` \>= 5)
 
+echo $GCCVERSIONGTEQ5
 
 # we are using c++14 features now
-if [ $GCCVERSIONGTEQ5 -eq "0" ] ; then
+if [ "$GCCVERSIONGTEQ5" -eq "0" ] ; then
   echo "gcc version is too low, 5 minimum for c++14 support, trying to install one now"
   add-apt-repository ppa:ubuntu-toolchain-r/test
   apt-get update
