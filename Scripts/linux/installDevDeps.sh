@@ -32,19 +32,19 @@ apt-get -y -q --assume-yes install ladspa-sdk:$CROSS_ARCH
 apt-get -y -q --assume-yes install curl
 
 echo "checking if gcc5"
-GCCVERSIONGTEQ5=$(expr `gcc -dumpversion | cut -f1 -d.` \>= 5)
+GCCVERSIONGTEQ5="$(expr `gcc -dumpversion | cut -f1 -d.` \>= 5)"
 
-echo $GCCVERSIONGTEQ5
+echo "$GCCVERSIONGTEQ5"
 
 # we are using c++14 features now
 if [ "$GCCVERSIONGTEQ5" -eq "0" ] ; then
   echo "gcc version is too low, 5 minimum for c++14 support, trying to install one now"
-  add-apt-repository ppa:ubuntu-toolchain-r/test
+  #add-apt-repository ppa:ubuntu-toolchain-r/test
+  echo "deb http://ftp.us.debian.org/debian unstable main contrib non-free" >> /etc/apt/sources.list.d/unstable.list
   apt-get update
-  apt-get install gcc-5 g++-5
+  apt-get install -y -t unstable gcc-5 g++-5
   update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5
 fi
-
 
 
 SCRIPTPATH=`pwd`/$(dirname "$0") 
