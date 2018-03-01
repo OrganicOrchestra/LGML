@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # this script install deps needed to compile LGML from source :
 # ** /!\ /!\ /!\ /!\ gcc-5 will be installed for c++14 support /!\ /!\ /!\ /!\  (on ubuntu <16 for example)
 # ** JUCE is downloaded in a sibling directory of LGML
