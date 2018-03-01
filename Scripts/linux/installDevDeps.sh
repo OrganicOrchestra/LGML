@@ -34,35 +34,18 @@ ladspa-sdk:$CROSS_ARCH
 apt-get -y -q --assume-yes install curl
 
 
-echo "checking if gcc5"
-# Compare multipoint versions
-check_min_version () {
-  local BASE=$1
-  local MIN=$2
-
-  # Break apart the versions into an array of semantic parts
-  local BASEPARTS=(${BASE//./ })
-  local MINPARTS=(${MIN//./ })
-
-  # Ensure there are 3 parts (semantic versioning)
-  if [[ ${#BASEPARTS[@]} -lt 3 ]] || [[ ${#MINPARTS[@]} -lt 3 ]]; then
-    VERSION_CHECK_ERROR="Please provide version numbers in semantic format MAJOR.MINOR.PATCH."
-    return
-  fi
-
-  # Compare the parts
-  if [[ ${BASEPARTS[0]} -lt ${MINPARTS[0]} ]] || [[ ${BASEPARTS[0]} -eq ${MINPARTS[0]} && ${BASEPARTS[1]} -lt ${MINPARTS[1]} ]] || [[ ${BASEPARTS[0]} -eq ${MINPARTS[0]} && ${BASEPARTS[1]} -eq ${MINPARTS[1]} && ${BASEPARTS[2]} -lt ${MINPARTS[2]} ]]; then
-    VERSION_CHECK_ERROR="Minimum version required is $MIN.  Your's is $BASE."
-  fi
+echo "checking if gcc>4.8"
+vlte () {
+dpkg --compare-versions "$1" "lt" "$2"
 }
 
-set +e 
-# we are using c++14 features now
-check_min_version `gcc -dumpversion` "4.9.0"
 
-if [[ -n "$VERSION_CHECK_ERROR" ]]; then
-  echo -e "$VERSION_CHECK_ERROR"
-  echo "gcc version is too low, JUCE for c++14 support"
+vlte "4.8.0" `gcc -dumpversion` && echo "...ok" || VERSION_CHECK_ERROR="gcc version is too low, JUCE for c++14 support"
+
+set +e
+
+if [ -n "$VERSION_CHECK_ERROR" ]; then
+  echo "$VERSION_CHECK_ERROR"
   # modifying gcc is likely to break things
   echo `gcc -dumpversion`
   exit 1

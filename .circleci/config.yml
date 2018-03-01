@@ -16,9 +16,9 @@ jobs:
           name: install LGML dependencies
           command: |
             apt-get -qq update
+            sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh
             apt-get install -y git
             git submodule update --init --recursive
-            sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh
 
       - run:
           name: build and package LGML
@@ -45,9 +45,9 @@ jobs:
           name: install LGML dependencies
           command: |
             apt-get -qq update
+            sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh
             apt-get install -y git
             git submodule update --init --recursive
-            sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh
 
       - run:
           name: build and package LGML
@@ -76,9 +76,10 @@ jobs:
           name: install LGML32 dependencies
           command: |
             apt-get -qq update
+            sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh 
             apt-get install -y git
             git submodule update --init --recursive
-            sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh 
+
       - run:
           name: build and package LGML32
           command: |
@@ -110,14 +111,14 @@ jobs:
           name: install LGMLRasp dependencies
           command: |
             set -x
-            apt-get -qq update
-            apt-get install -y git
-            git submodule update --init --recursive
             apt-get install -y g++-5-arm-linux-gnueabihf pkg-config
             . /etc/lsb-release
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports $DISTRIB_CODENAME main universe" >> /etc/apt/sources.list
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports $DISTRIB_CODENAME-updates main universe" >> /etc/apt/sources.list
             sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh
+            apt-get -qq update
+            apt-get install -y git
+            git submodule update --init --recursive
 
       - run:
           name: build and package LGMLRasp
@@ -148,9 +149,9 @@ jobs:
       - run:
           name: install LGML OSX dependencies
           command: |
-            git submodule update --init --recursive
             sh Scripts/osx/installDevDeps.sh 
             sh Scripts/osx/installExportDeps.sh
+            git submodule update --init --recursive
       - run:
           name: build and package LGML OSX
           command: |
