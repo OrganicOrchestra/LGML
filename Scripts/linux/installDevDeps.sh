@@ -14,27 +14,29 @@ set -e # un-ignore apt update error
 
 ## these are devloper libs needed for JUCE,   not sure wich are needed in released version...
 # from Makefile alsa freetype2 libcurl x11 xext xinerama
-apt-get -y --assume-yes install libfreetype6-dev:$CROSS_ARCH 
-apt-get -y --assume-yes install libx11-dev:$CROSS_ARCH
-apt-get -y --assume-yes install libxinerama-dev:$CROSS_ARCH
-apt-get -y --assume-yes install libxrandr-dev:$CROSS_ARCH
-apt-get -y --assume-yes install libxcursor-dev:$CROSS_ARCH
-apt-get -y --assume-yes install mesa-common-dev:$CROSS_ARCH
-apt-get -y --assume-yes install libasound2-dev:$CROSS_ARCH
-apt-get -y --assume-yes install freeglut3-dev:$CROSS_ARCH
-apt-get -y --assume-yes install libxcomposite-dev:$CROSS_ARCH
-apt-get -y --assume-yes install libjack-dev:$CROSS_ARCH
-apt-get -y -q --assume-yes install libcurl4-openssl-dev:$CROSS_ARCH
-apt-get -y -q --assume-yes install ladspa-sdk:$CROSS_ARCH
+apt-get -y --assume-yes install libfreetype6-dev:$CROSS_ARCH \
+libx11-dev:$CROSS_ARCH        \
+libxinerama-dev:$CROSS_ARCH    \
+libxrandr-dev:$CROSS_ARCH      \
+libxcursor-dev:$CROSS_ARCH     \
+mesa-common-dev:$CROSS_ARCH     \
+libasound2-dev:$CROSS_ARCH      \
+freeglut3-dev:$CROSS_ARCH      \
+libxcomposite-dev:$CROSS_ARCH   \
+libjack-dev:$CROSS_ARCH          \
+libcurl4-openssl-dev:$CROSS_ARCH \
+ladspa-sdk:$CROSS_ARCH
 
 # libavahi-compat-libdnssd libfreetype6 libx11 libxinerama libxrandr libxcursor mesa-common libasound2 freeglut3 libxcomposite libjack libcurl4-openssl
 
 apt-get -y -q --assume-yes install curl
 
+set +e 
 echo "checking if gcc5"
+
 GCCVERSIONGTEQ5="$(expr `gcc -dumpversion | cut -f1 -d.` \>= 5)"
 
-echo "$GCCVERSIONGTEQ5"
+echo "gcc need update $GCCVERSIONGTEQ5"
 
 # we are using c++14 features now
 if [ "$GCCVERSIONGTEQ5" -eq "0" ] ; then
@@ -45,6 +47,8 @@ if [ "$GCCVERSIONGTEQ5" -eq "0" ] ; then
   apt-get install -y -t unstable gcc-5 g++-5
   update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5
 fi
+
+set -e
 
 
 SCRIPTPATH=`pwd`/$(dirname "$0") 
