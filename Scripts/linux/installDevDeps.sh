@@ -44,7 +44,7 @@ if [ "$GCCVERSIONGTEQ5" -eq "0" ] ; then
   #add-apt-repository ppa:ubuntu-toolchain-r/test
   echo "deb http://ftp.us.debian.org/debian unstable main contrib non-free" >> /etc/apt/sources.list.d/unstable.list
   apt-get update
-  apt-get install -y -t unstable gcc-5 g++-5
+  apt-get install -y --assume-yes -t unstable gcc-5 g++-5
   update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5
 fi
 
