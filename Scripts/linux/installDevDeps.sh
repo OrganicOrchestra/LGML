@@ -34,7 +34,7 @@ apt-get -y -q --assume-yes install curl
 
 echo "checking if gcc5"
 # Compare multipoint versions
-function check_min_version {
+check_min_version () {
   local BASE=$1
   local MIN=$2
 
