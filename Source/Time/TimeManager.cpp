@@ -390,7 +390,7 @@ void TimeManager::audioDeviceIOCallback (const float** /*inputChannelData*/,
             double cFade = clickFader->getCurrentFade();
 
             double env = cVol * cFade * jmax (0.0, h); //*exp(1.0-h));
-            jassert(env < 1.0);
+                                                       // jassert(env < 1.0);
             float res = ( env * (sin (2.0 * M_PI * carg ) + 0.1 * sin (2.0 * M_PI * 4.0 * carg )));
 
             for (int c = 0 ; c < numOutputChannels ; c++ ) {outputChannelData[c][i] = res;}
@@ -731,6 +731,7 @@ sample_clk_t TimeManager::getNextTimeInSample()
     if (desiredTimeState.isJumping)return desiredTimeState.nextTime;
     else return  timeState.nextTime;
 }
+
 bool  TimeManager::willRestart()
 {
     return (timeState.nextTime != 0) && (desiredTimeState.nextTime == 0);
