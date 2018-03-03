@@ -879,7 +879,7 @@
     <VS2017 targetFolder="Builds/VisualStudio2017" vst3Folder="third_party/VST3_SDK"
             windowsTargetPlatformVersion="10.0.16299.0" extraDefs="LINK_PLATFORM_WINDOWS=1"
             externalLibraries="setupapi.lib&#10;rubberband-library.lib" smallIcon="SL4b92"
-            bigIcon="SL4b92">
+            bigIcon="SL4b92" toolset="v141">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"

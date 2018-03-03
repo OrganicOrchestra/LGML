@@ -7,7 +7,7 @@ branches:
 
 environment:
   ASIOSDK: C:\projects\ASIOSDK2.3
-  image: Visual Studio 2017
+  image: Visual Studio 2015
   matrix:
     - platform: Win32
       configuration: Release_32
@@ -42,6 +42,6 @@ artifacts:
   - path: '*.zip'
 
 build:
-  project: Builds/VisualStudio2017/LGML.sln
+  project: Builds/VisualStudio2015/LGML.sln
   verbosity: minimal
   parallel: true
