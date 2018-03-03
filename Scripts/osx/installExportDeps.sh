@@ -9,7 +9,7 @@ if ! (command -v python3 &>/dev/null); then
     fi
 
 brew update >/dev/null
-brew install python3
+brew install -U python3
 else
 echo Python 3 is installed
 fi
