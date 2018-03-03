@@ -102,6 +102,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/RangeParameter_69c98879.o \
   $(JUCE_OBJDIR)/StringParameter_567a2b75.o \
   $(JUCE_OBJDIR)/Trigger_3deda295.o \
+  $(JUCE_OBJDIR)/KeyboardController_eec7dbc8.o \
   $(JUCE_OBJDIR)/MIDIController_748f162.o \
   $(JUCE_OBJDIR)/OSCController_58078380.o \
   $(JUCE_OBJDIR)/OSCDirectController_56470089.o \
@@ -124,6 +125,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/FastMapUI_2c6d8f8b.o \
   $(JUCE_OBJDIR)/LGMLLogger_3757e54a.o \
   $(JUCE_OBJDIR)/LGMLLoggerUI_1f4349e.o \
+  $(JUCE_OBJDIR)/MIDIClock_db23ffe8.o \
   $(JUCE_OBJDIR)/MIDIHelpers_9da2819f.o \
   $(JUCE_OBJDIR)/MIDIListener_a0441724.o \
   $(JUCE_OBJDIR)/MIDIManager_1adad6c7.o \
@@ -416,6 +418,11 @@ $(JUCE_OBJDIR)/Trigger_3deda295.o: ../../Source/Controllable/Parameter/Trigger.c
 	@echo "Compiling Trigger.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/KeyboardController_eec7dbc8.o: ../../Source/Controller/Impl/KeyboardController.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling KeyboardController.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/MIDIController_748f162.o: ../../Source/Controller/Impl/MIDIController.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling MIDIController.cpp"
@@ -524,6 +531,11 @@ $(JUCE_OBJDIR)/LGMLLogger_3757e54a.o: ../../Source/Logger/LGMLLogger.cpp
 $(JUCE_OBJDIR)/LGMLLoggerUI_1f4349e.o: ../../Source/Logger/LGMLLoggerUI.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling LGMLLoggerUI.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/MIDIClock_db23ffe8.o: ../../Source/MIDI/MIDIClock.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling MIDIClock.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/MIDIHelpers_9da2819f.o: ../../Source/MIDI/MIDIHelpers.cpp

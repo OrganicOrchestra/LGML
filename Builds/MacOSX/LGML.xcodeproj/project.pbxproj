@@ -56,6 +56,7 @@
 		812F235BC044E15756CE6D77 = {isa = PBXBuildFile; fileRef = F29959C38C67C38D4E6EEBD2; };
 		C338A1B4889F0F8D0581EE33 = {isa = PBXBuildFile; fileRef = 3036D3D07A04DCA132352478; };
 		EF92D253D39D60DD050C20AC = {isa = PBXBuildFile; fileRef = 760503F720F1D394144CFD33; };
+		6C7A370D0A54E99D2023D4B9 = {isa = PBXBuildFile; fileRef = D16DCBD5CC0B23A47A4EB2A9; };
 		057F7EA5EDBF71D850423750 = {isa = PBXBuildFile; fileRef = C1B8B21B604308DEE23C5913; };
 		E87616244D1A20F3370F8BFC = {isa = PBXBuildFile; fileRef = 038F0FFB660771632FAEE05A; };
 		F6B54DD0228A7E421300EEF4 = {isa = PBXBuildFile; fileRef = 92B6C96E48370F8406AC2802; };
@@ -78,6 +79,7 @@
 		0EA2462743D69A6CD2FECCCF = {isa = PBXBuildFile; fileRef = 9998FB792A4C41223BBB27E2; };
 		F64889C4C6A543D0EA274B3F = {isa = PBXBuildFile; fileRef = 5B5C6F6E64FB76AA88C579FD; };
 		0D974ADF061B38B822937DB0 = {isa = PBXBuildFile; fileRef = 765EF851992D1504E4B95CFB; };
+		A1DFF584DC8169014D693445 = {isa = PBXBuildFile; fileRef = 57ECE26E6572B4813DCA2AB0; };
 		20500235BB41EDA0E58E9912 = {isa = PBXBuildFile; fileRef = 569C5460F274ABF0A8F21293; };
 		7489B09B4A20BE010E5DFD48 = {isa = PBXBuildFile; fileRef = F957D85A7EA8E0A7CBA2875A; };
 		5D14D101B975B72D36A91B15 = {isa = PBXBuildFile; fileRef = FBAC0DDED62B008C4B090953; };
@@ -304,6 +306,7 @@
 		4A73468FA72761B011211F2A = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ConnectableNodeHeaderUI.h; path = ../../Source/Node/UI/ConnectableNodeHeaderUI.h; sourceTree = "SOURCE_ROOT"; };
 		4B18E0AD503F51590F1441DE = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JuceHeaderAudio.h; path = ../../Source/JuceHeaderAudio.h; sourceTree = "SOURCE_ROOT"; };
 		4B5358963354CEDC5E33A76D = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NodeBase.cpp; path = ../../Source/Node/NodeBase.cpp; sourceTree = "SOURCE_ROOT"; };
+		4BDB89884A65B7BD5E88246D = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KeyboardController.h; path = ../../Source/Controller/Impl/KeyboardController.h; sourceTree = "SOURCE_ROOT"; };
 		4D5AACA8CEB22306569DAE48 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = AudioDebugCrack.cpp; path = ../../Source/Utils/AudioDebugCrack.cpp; sourceTree = "SOURCE_ROOT"; };
 		4E208C91441CEC3BFAEC6CDB = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = "include_juce_audio_devices.mm"; path = "../../JuceLibraryCode/include_juce_audio_devices.mm"; sourceTree = "SOURCE_ROOT"; };
 		4F5B8C4652003546229904F3 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ParameterUI.cpp; path = ../../Source/Controllable/Parameter/UI/ParameterUI.cpp; sourceTree = "SOURCE_ROOT"; };
@@ -315,6 +318,7 @@
 		565F13E36871AC907D101C92 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JuceHeaderUI.h; path = ../../Source/JuceHeaderUI.h; sourceTree = "SOURCE_ROOT"; };
 		5682710C643EDF24E9E8A151 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AudioDebugPipe.h; path = ../../Source/Utils/AudioDebugPipe.h; sourceTree = "SOURCE_ROOT"; };
 		569C5460F274ABF0A8F21293 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MIDIHelpers.cpp; path = ../../Source/MIDI/MIDIHelpers.cpp; sourceTree = "SOURCE_ROOT"; };
+		57ECE26E6572B4813DCA2AB0 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MIDIClock.cpp; path = ../../Source/MIDI/MIDIClock.cpp; sourceTree = "SOURCE_ROOT"; };
 		596A09C4ADFEB7E51E61D502 = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		598B2F3906E20063AB83E0F4 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ControllableContainer.h; path = ../../Source/Controllable/ControllableContainer.h; sourceTree = "SOURCE_ROOT"; };
 		59AD637EBC01DE0167C23164 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = GenericParameterContainerEditor.cpp; path = ../../Source/Controllable/Parameter/UI/GenericParameterContainerEditor.cpp; sourceTree = "SOURCE_ROOT"; };
@@ -480,6 +484,7 @@
 		CE9A0E17F5B705C3AB98284E = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AudioMixerNode.h; path = ../../Source/Node/Impl/AudioMixerNode.h; sourceTree = "SOURCE_ROOT"; };
 		CEF31A6C8C73F197343E9221 = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = System/Library/Frameworks/CoreMIDI.framework; sourceTree = SDKROOT; };
 		CF8F304DC41B3C1128ED10AB = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RangeParameterUI.h; path = ../../Source/Controllable/Parameter/UI/RangeParameterUI.h; sourceTree = "SOURCE_ROOT"; };
+		D16DCBD5CC0B23A47A4EB2A9 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = KeyboardController.cpp; path = ../../Source/Controller/Impl/KeyboardController.cpp; sourceTree = "SOURCE_ROOT"; };
 		D262AA9DD7A9FB6A67851865 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Spat2DNode.cpp; path = ../../Source/Node/Impl/Spat2DNode.cpp; sourceTree = "SOURCE_ROOT"; };
 		D57E6545A660EDCA1328ECEA = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ShapeShifterPanelTab.h; path = ../../Source/UI/ShapeShifter/ShapeShifterPanelTab.h; sourceTree = "SOURCE_ROOT"; };
 		D58F93F26B076D58CA21C760 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AudioConfig.h; path = ../../Source/Audio/AudioConfig.h; sourceTree = "SOURCE_ROOT"; };
@@ -499,6 +504,7 @@
 		DCF4461C9330AE94613C288A = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LGMLLoggerUI.h; path = ../../Source/Logger/LGMLLoggerUI.h; sourceTree = "SOURCE_ROOT"; };
 		DD182F75EF99A6211E1DD13E = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NumericParameter.h; path = ../../Source/Controllable/Parameter/NumericParameter.h; sourceTree = "SOURCE_ROOT"; };
 		DD7408D8B569439655E72F50 = {isa = PBXFileReference; lastKnownFileType = image.png; name = removeBT.png; path = ../../Resources/removeBT.png; sourceTree = "SOURCE_ROOT"; };
+		DD9C8B91A57C69EE785849FF = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MIDIClock.h; path = ../../Source/MIDI/MIDIClock.h; sourceTree = "SOURCE_ROOT"; };
 		DE2F7C50E505DC6B5D961366 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NodeConnectionUI.h; path = ../../Source/Node/Connection/UI/NodeConnectionUI.h; sourceTree = "SOURCE_ROOT"; };
 		DEE1093ABCE13FBD9176210A = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JuceHeaderCore.h; path = ../../Source/JuceHeaderCore.h; sourceTree = "SOURCE_ROOT"; };
 		DEFCE8C923EC489CB8ED7DE7 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = InspectorEditor.cpp; path = ../../Source/UI/Inspector/InspectorEditor.cpp; sourceTree = "SOURCE_ROOT"; };
@@ -639,6 +645,8 @@
 					9F42746B0F32F5A07EE4E226,
 					9E74F7F77F049833AA1283EA, ); name = Controllable; sourceTree = "<group>"; };
 		40694BFAD9D8D8E3444B102B = {isa = PBXGroup; children = (
+					D16DCBD5CC0B23A47A4EB2A9,
+					4BDB89884A65B7BD5E88246D,
 					C1B8B21B604308DEE23C5913,
 					926945DC4327623558F75DAC,
 					038F0FFB660771632FAEE05A,
@@ -694,6 +702,8 @@
 					765EF851992D1504E4B95CFB,
 					DCF4461C9330AE94613C288A, ); name = Logger; sourceTree = "<group>"; };
 		338090C6523BC08FA6BE8225 = {isa = PBXGroup; children = (
+					57ECE26E6572B4813DCA2AB0,
+					DD9C8B91A57C69EE785849FF,
 					569C5460F274ABF0A8F21293,
 					41AE48119E004A3C40BB3004,
 					F957D85A7EA8E0A7CBA2875A,
@@ -1284,6 +1294,7 @@
 					812F235BC044E15756CE6D77,
 					C338A1B4889F0F8D0581EE33,
 					EF92D253D39D60DD050C20AC,
+					6C7A370D0A54E99D2023D4B9,
 					057F7EA5EDBF71D850423750,
 					E87616244D1A20F3370F8BFC,
 					F6B54DD0228A7E421300EEF4,
@@ -1306,6 +1317,7 @@
 					0EA2462743D69A6CD2FECCCF,
 					F64889C4C6A543D0EA274B3F,
 					0D974ADF061B38B822937DB0,
+					A1DFF584DC8169014D693445,
 					20500235BB41EDA0E58E9912,
 					7489B09B4A20BE010E5DFD48,
 					5D14D101B975B72D36A91B15,

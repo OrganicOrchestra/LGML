@@ -67,16 +67,16 @@ public :
     void callJs (const MidiMessage& message);
     void newJsFileLoaded()override;
 
-    class MIDIControllerListener
-    {
-    public:
-        virtual ~MIDIControllerListener() {}
-        virtual void midiMessageReceived (const MidiMessage&) {}
-    };
-
-    ListenerList<MIDIControllerListener> midiControllerListeners;
-    void addMIDIControllerListener (MIDIControllerListener* newListener) { midiControllerListeners.add (newListener); }
-    void removeMIDIControllerListener (MIDIControllerListener* listener) { midiControllerListeners.remove (listener); }
+//    class MIDIControllerListener
+//    {
+//    public:
+//        virtual ~MIDIControllerListener() {}
+//        virtual void midiMessageReceived (const MidiMessage&) {}
+//    };
+//
+//    ListenerList<MIDIControllerListener> midiControllerListeners;
+//    void addMIDIControllerListener (MIDIControllerListener* newListener) { midiControllerListeners.add (newListener); }
+//    void removeMIDIControllerListener (MIDIControllerListener* listener) { midiControllerListeners.remove (listener); }
 
 
     static var createJsNoteListener (const var::NativeFunctionArgs&);

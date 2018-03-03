@@ -323,6 +323,7 @@
     <ClCompile Include="..\..\Source\Controllable\Parameter\RangeParameter.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\StringParameter.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\Trigger.cpp"/>
+    <ClCompile Include="..\..\Source\Controller\Impl\KeyboardController.cpp"/>
     <ClCompile Include="..\..\Source\Controller\Impl\MIDIController.cpp"/>
     <ClCompile Include="..\..\Source\Controller\Impl\OSCController.cpp"/>
     <ClCompile Include="..\..\Source\Controller\Impl\OSCDirectController.cpp"/>
@@ -345,6 +346,7 @@
     <ClCompile Include="..\..\Source\FastMapper\FastMapUI.cpp"/>
     <ClCompile Include="..\..\Source\Logger\LGMLLogger.cpp"/>
     <ClCompile Include="..\..\Source\Logger\LGMLLoggerUI.cpp"/>
+    <ClCompile Include="..\..\Source\MIDI\MIDIClock.cpp"/>
     <ClCompile Include="..\..\Source\MIDI\MIDIHelpers.cpp"/>
     <ClCompile Include="..\..\Source\MIDI\MIDIListener.cpp"/>
     <ClCompile Include="..\..\Source\MIDI\MIDIManager.cpp"/>
@@ -2196,6 +2198,7 @@
     <ClInclude Include="..\..\Source\Controllable\Parameter\RangeParameter.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\StringParameter.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\Trigger.h"/>
+    <ClInclude Include="..\..\Source\Controller\Impl\KeyboardController.h"/>
     <ClInclude Include="..\..\Source\Controller\Impl\MIDIController.h"/>
     <ClInclude Include="..\..\Source\Controller\Impl\OSCController.h"/>
     <ClInclude Include="..\..\Source\Controller\Impl\OSCDirectController.h"/>
@@ -2219,6 +2222,7 @@
     <ClInclude Include="..\..\Source\FastMapper\FastMapUI.h"/>
     <ClInclude Include="..\..\Source\Logger\LGMLLogger.h"/>
     <ClInclude Include="..\..\Source\Logger\LGMLLoggerUI.h"/>
+    <ClInclude Include="..\..\Source\MIDI\MIDIClock.h"/>
     <ClInclude Include="..\..\Source\MIDI\MIDIHelpers.h"/>
     <ClInclude Include="..\..\Source\MIDI\MIDIListener.h"/>
     <ClInclude Include="..\..\Source\MIDI\MIDIManager.h"/>

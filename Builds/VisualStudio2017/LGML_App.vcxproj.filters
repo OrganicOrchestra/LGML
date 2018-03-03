@@ -604,6 +604,9 @@
     <ClCompile Include="..\..\Source\Controllable\Parameter\Trigger.cpp">
       <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Controller\Impl\KeyboardController.cpp">
+      <Filter>LGML\Source\Controller\Impl</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Controller\Impl\MIDIController.cpp">
       <Filter>LGML\Source\Controller\Impl</Filter>
     </ClCompile>
@@ -669,6 +672,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Logger\LGMLLoggerUI.cpp">
       <Filter>LGML\Source\Logger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\MIDI\MIDIClock.cpp">
+      <Filter>LGML\Source\MIDI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\MIDI\MIDIHelpers.cpp">
       <Filter>LGML\Source\MIDI</Filter>
@@ -2937,6 +2943,9 @@
     <ClInclude Include="..\..\Source\Controllable\Parameter\Trigger.h">
       <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Controller\Impl\KeyboardController.h">
+      <Filter>LGML\Source\Controller\Impl</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Controller\Impl\MIDIController.h">
       <Filter>LGML\Source\Controller\Impl</Filter>
     </ClInclude>
@@ -3005,6 +3014,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Logger\LGMLLoggerUI.h">
       <Filter>LGML\Source\Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\MIDI\MIDIClock.h">
+      <Filter>LGML\Source\MIDI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\MIDI\MIDIHelpers.h">
       <Filter>LGML\Source\MIDI</Filter>

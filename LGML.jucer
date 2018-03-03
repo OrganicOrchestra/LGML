@@ -175,6 +175,10 @@
       </GROUP>
       <GROUP id="{425F36E7-B164-8711-1CD8-33AD246A21F4}" name="Controller">
         <GROUP id="{865F397A-4E13-425D-CB67-29BA8CAAEB5C}" name="Impl">
+          <FILE id="NH0r1m" name="KeyboardController.cpp" compile="1" resource="0"
+                file="Source/Controller/Impl/KeyboardController.cpp"/>
+          <FILE id="cAgaN1" name="KeyboardController.h" compile="0" resource="0"
+                file="Source/Controller/Impl/KeyboardController.h"/>
           <FILE compile="1" file="Source/Controller/Impl/MIDIController.cpp"
                 id="tr7GNk" name="MIDIController.cpp" resource="0"/>
           <FILE compile="0" file="Source/Controller/Impl/MIDIController.h" id="xcmTdk"
@@ -278,6 +282,8 @@
               resource="0"/>
       </GROUP>
       <GROUP id="{BABE227E-3F55-4167-4753-EF3FDC471CBC}" name="MIDI">
+        <FILE id="par2aL" name="MIDIClock.cpp" compile="1" resource="0" file="Source/MIDI/MIDIClock.cpp"/>
+        <FILE id="RtFlEj" name="MIDIClock.h" compile="0" resource="0" file="Source/MIDI/MIDIClock.h"/>
         <FILE compile="1" file="Source/MIDI/MIDIHelpers.cpp" id="uGWAOY" name="MIDIHelpers.cpp"
               resource="0"/>
         <FILE compile="0" file="Source/MIDI/MIDIHelpers.h" id="MahA84" name="MIDIHelpers.h"
