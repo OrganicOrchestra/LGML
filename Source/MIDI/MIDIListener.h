@@ -45,7 +45,7 @@ public :
     void sendNoteOff (int channel, int pitch, int velocity);
     void sendCC (int channel, int number, int value);
     void sendSysEx (uint8* data, int dataCount);
-
+    void sendMessage(const MidiMessage & msg);
     virtual void midiMessageSent(){};
     virtual void midiInputAdded (String& s) override;
     virtual void midiInputRemoved (String& s) override;

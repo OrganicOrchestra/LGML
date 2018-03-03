@@ -24,18 +24,22 @@ extern AudioDeviceManager&   getAudioDeviceManager();
 #include "../ControllerFactory.h"
 REGISTER_CONTROLLER_TYPE (MIDIController,"MIDI");
 
+
 MIDIController::MIDIController (StringRef name) :
     Controller (name), JsEnvironment ("controllers.MIDI", this),
 midiChooser(this,true,false)
 {
+
     setNamespaceName ("controllers." + shortName);
 
     logIncoming = addNewParameter<BoolParameter> ("logIncoming", "log Incoming midi message", false);
     logIncoming->isSavable = false;
     logIncoming->isPresettable =false;
 
+    sendMIDIClock = addNewParameter<BoolParameter> ("send MIDI Clock", "send MIDI Clock",false);
+    midiClockOffset = addNewParameter<IntParameter>("MIDI clock offset", "offset to apply to midiclock",0, -300,300);
     channelFilter = addNewParameter<IntParameter> ("Channel", "Channel to filter message (0 = accept all channels)", 0, 0, 16);
-
+    midiClock.setOutput(this);
 }
 
 MIDIController::~MIDIController()
@@ -189,9 +193,37 @@ void MIDIController::onContainerParameterChanged (Parameter* p)
         auto selId = ep->getFirstSelectedId();
         bool connected = ep->getModel()->isValidId(selId);
         isConnected->setValue(connected);
+        startMidiClockIfNeeded();
+
+    }
+    if(p==isConnected){
+        startMidiClockIfNeeded();
+    }
+    if(p==sendMIDIClock){
+        startMidiClockIfNeeded();
+    }
+    if(p==midiClockOffset){
+        midiClock.delta = midiClockOffset->intValue();
+        midiClock.reset();
     }
 }
-
+void MIDIController::startMidiClockIfNeeded(){
+    if(isConnected->boolValue()){
+        if(sendMIDIClock->boolValue()){
+            if(!midiClock.isThreadRunning())
+                midiClock.start();
+            else{
+                midiClock.reset();
+            }
+        }
+        else{
+            midiClock.stop();
+        }
+    }
+    else{
+        midiClock.stop();
+    }
+}
 void MIDIController::midiMessageSent(){
     outActivityTrigger->trigger();
 

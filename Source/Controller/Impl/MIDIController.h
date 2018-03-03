@@ -20,6 +20,7 @@
 #include "../../MIDI/MIDIListener.h"
 #include "../../Scripting/Js/JsEnvironment.h"
 #include "../../MIDI/MIDIHelpers.h"
+#include "../../MIDI/MIDIClock.h"
 
 
 class JsMIDIMessageListener;
@@ -48,6 +49,8 @@ public :
 
     BoolParameter* logIncoming;
     IntParameter* channelFilter;
+    BoolParameter *sendMIDIClock;
+    IntParameter * midiClockOffset;
 
 
 
@@ -89,8 +92,8 @@ public :
     MIDIHelpers::MIDIIOChooser midiChooser;
 private:
 
-
-
+    void startMidiClockIfNeeded();
+    MIDIClock midiClock;
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MIDIController)

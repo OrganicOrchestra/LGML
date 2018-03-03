@@ -48,9 +48,10 @@ void MIDIListener::setCurrentDevice (const String& deviceName)
         return;
     }
     auto mm = MIDIManager::getInstance();
-    mm->updateLists();
+
     if (deviceName.isNotEmpty())
     {
+        mm->updateLists();
         if (mm->inputDevices.indexOf (deviceName) == -1)
         {
             ghostPortName = deviceName;
@@ -112,6 +113,17 @@ void MIDIListener::sendNoteOff (int channel, int pitch, int velocity)
 
 
     MidiMessage msg = MidiMessage::noteOff (channel, pitch, (uint8)velocity);
+    midiOutDevice->sendMessageNow (msg);
+    midiMessageSent();
+}
+
+void MIDIListener::sendMessage(const MidiMessage & msg){
+    if (midiOutDevice == nullptr)
+    {
+        LOG ("!! MIDI Out is null");
+        return;
+    }
+
     midiOutDevice->sendMessageNow (msg);
     midiMessageSent();
 }
