@@ -147,7 +147,10 @@ FastMapUI* FastMapperUI::getUIForFastMap (FastMap* f)
 }
 
  int getTargetHeight(){
-    return LGMLDragger::getInstance()->isMappingActive? 80: 21;
+     if(auto ld = LGMLDragger::getInstanceWithoutCreating() )
+         return ld->isMappingActive? 80: 21;
+     
+     return 0;
 }
 constexpr int linkBtHeight = 21;
 int FastMapperUI::getContentHeight() const
