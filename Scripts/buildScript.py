@@ -41,6 +41,8 @@ def exportToOwncloud(builder):
 	zp = builder.cfg["zipped_path"]
 	if zp is not None:
 		OwncloudUtils.sendToOwnCloud(zp,basePath+"/"+os.path.basename(zp))
+	else:
+		raise NameError("no zip provided")
 
 
 	#send opt
@@ -142,7 +144,7 @@ if __name__ == "__main__":
 		import linux;
 		builder=  linux.LinuxBuilder(cfg = defaultCfg)
 
-	# hack for exporting windows builds
+	# fake builder for windows (see appveyor.yml)
 	elif defaultCfg["build_os"] == 'windows':
 		import windows
 		builder=  windows.WindowsBuilder(cfg = defaultCfg)
@@ -157,10 +159,11 @@ if __name__ == "__main__":
 		saveConfig(builder.cfg)
 
 	print("config")
-	print (json.dumps(builder.cfg,sort_keys=True,indent=4)) 
-
 	builder.cfg["build_version_uid"] = builder.getShortUID();
 	
+	print (json.dumps(builder.cfg,sort_keys=True,indent=4)) 
+
+
 	# clean
 	if args.clean:
 		saveConfig({})

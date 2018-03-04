@@ -125,7 +125,7 @@ def deployBins():
 
   for k,c in allCfgs.items():
     copy2(c["local_bin"],os.path.join(vpublicFolder,os.path.basename(c["local_bin"])))
-    copy2(c["local_zip"],os.path.join(vpublicFolder,c["build_version_uid"]))
+    copy2(c["local_zip"],os.path.join(vpublicFolder,"LGML_v"+desiredVersion+'_'+c["build_version_uid"]+".zip"))
 
 
 
