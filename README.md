@@ -44,6 +44,20 @@ see Scripts/yourplatform/ for platform specific setup
 * installDevDeps : install dependency for compiling the project
 * installDeps : install dependency in production
 
+## Installation instruction 
+
+no dependencies on Windows and macOS 
+  -> launching the executable is sufficient
+
+on linux two library are needed : 
+  * rubberband (audio stretching)
+  * dns(allow auto network discovery)
+```
+# rubberband
+apt-get -y --assume-yes install librubberband2
+# for dns utility
+apt-get -y --assume-yes install libavahi-compat-libdnssd1
+```
 
 ## License
 
@@ -52,8 +66,8 @@ read gpl-3.0.txt
 
 ## Documentation
 
-Developer documentation : located in the 'doc' directory.
-User documentation : work in progress... stay tuned
+* Developer documentation : located in the 'doc' directory (still poor...).
+* User documentation : work in progress... stay tuned
 
 
 ## Third party software
@@ -67,6 +81,8 @@ LGML rely on some awesome libraries :
  * ASIO (Windows) : www.steinberg.net
  * Jack (Linux) : www.linuxmao.org/Jack
 
+## Contribution guidelines
+Pull requests / remarks are welcome!!!
 
 --
 This software is OSI Certified Open Source Software.
