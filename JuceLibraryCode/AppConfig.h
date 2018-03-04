@@ -30,8 +30,15 @@
 #define DO_PRAGMA(x) _Pragma (#x)
 #define TODO(x) DO_PRAGMA(message ("TODO - " #x));
 
+
+// TODO support simd for other platforms when truely needed
+#if JUCE_MAC
+#define JUCE_USE_SIMD 1
+
 // useless for now , (it breaks arm rasp builds...)
-#if defined (__ARM_NEON__) || defined (__ARM_NEON) || defined (__arm64__) || defined (__aarch64__)
+//#elseif defined (__ARM_NEON__) || defined (__ARM_NEON) || defined (__arm64__) || defined (__aarch64__)
+//    #define JUCE_USE_SIMD 0
+#else
     #define JUCE_USE_SIMD 0
 #endif
 
