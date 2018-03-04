@@ -6,6 +6,7 @@ import zipfile
 import gzip
 import tempfile 
 
+raiseErrorOnDifferentSha = False;
 distPath = os.path.expanduser("~/owncloud/DEVSPECTACLES/Tools/LGML/App-Dev/dist/")
 desiredVersion = "1.2.7"
 lastVPath = os.path.join(distPath,"bleedingEdge",desiredVersion)
@@ -24,7 +25,7 @@ for c in glob.glob(lastVPath+"/*.cfg"):
 
 currentSha = gitUtils.getGitSha()
 
-def checkIntegrity():
+def checkIntegrity(errorOnWrongSha=True):
   global currentSha
   sha = currentSha
   if( not os.path.exists(readmePath)):
@@ -39,25 +40,30 @@ def checkIntegrity():
       print ("warning sha is not current : %s vs %s"%(v,currentSha))
       break;
 
+  
   for k,v in shas.items():
     currentSha = sha
     if sha!= v:
-      raise NameError("mismatching sha for %s: %s vs %s"%(k,sha,v))
+      err = "mismatching sha for %s: %s vs %s"%(k,sha,v)
+      if errorOnWrongSha:
+        raise NameError(err)
+      else:
+        print (err)
 
 
-  bins = {k:os.path.join(lastVPath,k[:-4]) for k in allCfgs.keys()}
+  bins = {k:os.path.join(lastVPath,os.path.basename(allCfgs[k]["packaged_path"])) for k in allCfgs.keys()}
   for b in bins.values():
     if not os.path.exists(b):
       raise NameError("not found bin for cfg : %s"%b)
 
-  zips = {k:os.path.join(lastVPath,os.path.basename(allCfgs["zipped_file"])) for k in allCfgs.keys()}
+  zips = {k:os.path.join(lastVPath,k+".zip") for k in allCfgs.keys()}
   for z in zips.values():
     if not os.path.exists(z):
       raise NameError("not found zip for cfg : %s"%z)
 
   return bins,zips
 
-bins,zips = checkIntegrity()
+bins,zips = checkIntegrity(raiseErrorOnDifferentSha)
 with open(changeLogPath,'r') as fp:
   notes = ''.join(fp.readlines())
 

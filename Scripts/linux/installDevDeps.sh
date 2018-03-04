@@ -17,12 +17,12 @@ echo "arch is set to '$CROSS_ARCH'"
 set -e # un-ignore apt update error
 
 apt-get install -y --assume-yes  build-essential
-echo "checking if gcc>4.8"
+echo "checking if gcc>4.9"
 vlte () {
 dpkg --compare-versions "$1" "lt" "$2"
 }
 
-vlte "4.8.0" `gcc -dumpversion` && echo "...ok" || VERSION_CHECK_ERROR="gcc version is too low, JUCE for c++14 support"
+vlte "4.9.0" `gcc -dumpversion` && echo "...ok" || VERSION_CHECK_ERROR="gcc version is too low, JUCE for c++14 support"
 
 set +e
 

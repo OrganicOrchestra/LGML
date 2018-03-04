@@ -193,6 +193,7 @@ if __name__ == "__main__":
 			os.rename(pkgPath,newP)
 			pkgPath = newP;
 		builder.cfg["packaged_path"]=pkgPath
+		builder.cfg["packaged_name"]=os.path.basename(pkgPath)
 		if (ep is not None):
 			builder.cfg["zipped_path"] = builder.zipApp(ep);
 		saveConfig(builder.cfg)
