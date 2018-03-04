@@ -13,9 +13,9 @@ from PyUtils import *
 from PyUtils.builderBase import BuilderBase
 
 class OSXBuilder (BuilderBase):
-	rootPath=os.path.abspath(os.path.join(__file__,os.pardir,os.pardir,os.pardir))
-	xcodeProjPath = os.path.join(rootPath,"Builds/MacOSX/")
-	localExportPath = os.path.abspath(os.path.join(rootPath,'Builds/MacOSX/build/'))+'/'
+	
+	xcodeProjPath = os.path.join(BuilderBase.rootPath,"Builds/MacOSX/")
+	localExportPath = os.path.abspath(os.path.join(BuilderBase.rootPath,'Builds/MacOSX/build/'))+'/'
 	# default configuration
 	default_cfg  = {
 	"arch" : "i386",
