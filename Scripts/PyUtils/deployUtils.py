@@ -51,15 +51,27 @@ def checkIntegrity(errorOnWrongSha=True):
         print (err)
 
 
-  bins = {k:os.path.join(lastVPath,os.path.basename(allCfgs[k]["packaged_path"])) for k in allCfgs.keys()}
-  for b in bins.values():
+  bins = {k:os.path.join(lastVPath,os.path.basename(allCfgs[k]["packaged_name"])) for k in allCfgs.keys()}
+  for k,b in bins.items():
     if not os.path.exists(b):
       raise NameError("not found bin for cfg : %s"%b)
+    allCfgs[k]["local_bin"] = b;
 
-  zips = {k:os.path.join(lastVPath,k+".zip") for k in allCfgs.keys()}
-  for z in zips.values():
+  zips = {k:os.path.join(lastVPath,k[:-4]+".zip") for k in allCfgs.keys()}
+  for k,z in zips.items():
     if not os.path.exists(z):
       raise NameError("not found zip for cfg : %s"%z)
+    allCfgs[k]["local_zip"] = z;
+
+  exported_zips = {}
+  for k,v in allCfgs.items():
+    print(k)
+    bid= v["build_version_uid"]
+    cf = v["build_cfg_name"]
+    if "Release" in cf:
+      if bid in exported_zips.keys():
+        raise NameError("duplicate build")
+      exported_zips[bid] = cf
 
   return bins,zips
 
@@ -73,7 +85,8 @@ def createJSON(destFolder,bins,zips):
       "notes":notes,
       "version":desiredVersion,
       "download_page" : "http://organic-orchestra.com/forum/d/6-lgml-telechargements",
-      "zip_link" : zips}
+      "zip_link" : {k:os.path.basename(zips[k]) for k in zips.keys()}
+      }
   vf = os.path.join(destFolder,"version.json")
   with open(vf,'w') as fp:
     json.dump(v,fp,indent=4)
@@ -103,15 +116,17 @@ def printReleaseMessage():
 
 def deployBins():
 
-  global bins,zips
+  global allCfgs
   vpublicFolder = os.path.join(publicFolder,desiredVersion)
   if not os.path.exists(vpublicFolder):
     os.makedirs(vpublicFolder)
   jsonF = createJSON(vpublicFolder,bins,zips);
   copy2(changeLogPath,vpublicFolder)
 
-  for b in bins.values():
-    copy2(b,os.path.join(vpublicFolder,os.path.basename(b)))
+  for k,c in allCfgs.items():
+    copy2(c["local_bin"],os.path.join(vpublicFolder,os.path.basename(c["local_bin"])))
+    copy2(c["local_zip"],os.path.join(vpublicFolder,c["build_version_uid"]))
+
 
 
 

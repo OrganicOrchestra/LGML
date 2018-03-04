@@ -159,6 +159,8 @@ if __name__ == "__main__":
 	print("config")
 	print (json.dumps(builder.cfg,sort_keys=True,indent=4)) 
 
+	builder.cfg["build_version_uid"] = builder.getShortUID();
+	
 	# clean
 	if args.clean:
 		saveConfig({})
@@ -168,7 +170,7 @@ if __name__ == "__main__":
 	if args.build:
 		builder.fillVersionInfo();
 		builder.cfg["binary_path"] = builder.buildApp();
-		builder.cfg["build_version_uid"] = builder.getShortUID();
+		
 
 	# package
 	if args.package:
@@ -179,20 +181,6 @@ if __name__ == "__main__":
 				os.makedirs(ep)
 
 		pkgPath = builder.packageApp(ep)
-		# suffix = builder.cfg["packagesuffix"]
-		# if suffix:
-		# 	suffix = suffix.strip('\'" ')
-		# 	if pkgPath.endswith(".tar.gz"):
-		# 		splitExt = [pkgPath[:-7], ".tar.gz"]
-		# 	else:
-		# 		psplit = pkgPath.split('.')
-		# 		splitExt = ['.'.join(psplit[:-1]),psplit[-1]]
-
-		# 	if not suffix in splitExt[0]:
-		# 		newP = 
-		# 		print("applying suffix : "+newP)
-		# 		os.rename(pkgPath,newP)
-		# 		pkgPath = newP;
 		builder.cfg["packaged_path"]=pkgPath
 		builder.cfg["packaged_name"]=os.path.basename(pkgPath)
 		if (ep is not None):
