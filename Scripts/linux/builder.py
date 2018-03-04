@@ -60,13 +60,17 @@ class LinuxBuilder (BuilderBase):
     sh('cd '+self.localMakePath+' && '+makeCmd)
 
   def packageApp(self,exportpath = None):
+    self.getReadmePath()
     exportFile = exportpath or self.localExportPath
-    exportFile= os.path.join(exportFile,self.getNameWithVersion()+"_"+self.cfg["arch"]+"_"+self.cfg["build_cfg_name"]+'.tar.gz')
+    exportFile= os.path.join(exportFile,self.getUID()+'.tar.gz')
     sh('tar -zcvf "'+exportFile+'" --directory="'+self.localExportPath+'" '+self.cfg["appName"])
     return exportFile
 
   def getBinaryPath(self):
     return self.localExportPath+self.cfg["appName"]
+
+  def getPlatformName(self):
+    return "linux"
 
   def makeCmd(self):
     makeCmd = 'make CONFIG='+self.cfg["build_cfg_name"]+' -j'+str(self.cfg["njobs"])

@@ -6,6 +6,8 @@
 # ** JUCE deps also
 # this script support cross-compiling setting the CROSS_ARCH flag to armhf (see circleci config.yml)
 
+
+
 set +e # ignore apt update error
 NATIVE_ARCH=`dpkg --print-architecture`
 if [ -z ${CROSS_ARCH+x} ]; then CROSS_ARCH="$NATIVE_ARCH"; fi
@@ -13,6 +15,29 @@ if [ "$CROSS_ARCH" != "$NATIVE_ARCH" ]; then echo "adding foreing arch $CROSS_AR
 echo "arch is set to '$CROSS_ARCH'"
 
 set -e # un-ignore apt update error
+
+
+echo "checking if gcc>4.8"
+vlte () {
+dpkg --compare-versions "$1" "lt" "$2"
+}
+
+vlte "4.8.0" `gcc -dumpversion` && echo "...ok" || VERSION_CHECK_ERROR="gcc version is too low, JUCE for c++14 support"
+
+set +e
+
+if [ -n "$VERSION_CHECK_ERROR" ]; then
+  echo "$VERSION_CHECK_ERROR"
+  # modifying gcc is likely to break things up
+  echo `gcc -dumpversion`
+  exit 1
+  ###add-apt-repository ppa:ubuntu-toolchain-r/test
+  #echo "deb http://ftp.us.debian.org/debian unstable main contrib non-free" >> /etc/apt/sources.list.d/unstable.list
+  #apt-get update && apt-get install -y --force-yes -t unstable gcc-5 g++-5 && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5
+fi
+
+set -e
+
 
 ## these are devloper libs needed for JUCE,   not sure wich are needed in released version...
 # from Makefile alsa freetype2 libcurl x11 xext xinerama
@@ -34,29 +59,7 @@ ladspa-sdk:$CROSS_ARCH
 apt-get -y -q --assume-yes install curl
 
 
-echo "checking if gcc>4.8"
-vlte () {
-dpkg --compare-versions "$1" "lt" "$2"
-}
 
-
-vlte "4.8.0" `gcc -dumpversion` && echo "...ok" || VERSION_CHECK_ERROR="gcc version is too low, JUCE for c++14 support"
-
-set +e
-
-if [ -n "$VERSION_CHECK_ERROR" ]; then
-  echo "$VERSION_CHECK_ERROR"
-  # modifying gcc is likely to break things
-  echo `gcc -dumpversion`
-  exit 1
-  #add-apt-repository ppa:ubuntu-toolchain-r/test
-  echo "deb http://ftp.us.debian.org/debian unstable main contrib non-free" >> /etc/apt/sources.list.d/unstable.list
-  apt-get update
-  apt-get install -y --force-yes -t unstable gcc-5 g++-5
-  update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5
-fi
-
-set -e
 
 
 SCRIPTPATH=`pwd`/$(dirname "$0") 

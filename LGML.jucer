@@ -677,6 +677,7 @@
       <FILE id="RhPCNk" name="JuceHeaderUI.h" compile="0" resource="0" file="Source/JuceHeaderUI.h"/>
       <FILE compile="1" file="Source/Main.cpp" id="zO82Cw" name="Main.cpp"
             resource="0"/>
+      <FILE id="Czij22" name="Version.h" compile="0" resource="0" file="Source/Version.h"/>
     </GROUP>
     <GROUP id="{4ECB17E4-3FE1-7FC4-41D8-E3545696264E}" name="third_party">
       <GROUP id="{ECEFEFCB-D0B9-57BA-D46A-FD221094E9C7}" name="serial">

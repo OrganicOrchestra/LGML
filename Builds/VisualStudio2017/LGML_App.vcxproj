@@ -2318,6 +2318,7 @@
     <ClInclude Include="..\..\Source\JuceHeaderAudio.h"/>
     <ClInclude Include="..\..\Source\JuceHeaderCore.h"/>
     <ClInclude Include="..\..\Source\JuceHeaderUI.h"/>
+    <ClInclude Include="..\..\Source\Version.h"/>
     <ClInclude Include="..\..\third_party\serial\include\serial\impl\unix.h"/>
     <ClInclude Include="..\..\third_party\serial\include\serial\impl\win.h"/>
     <ClInclude Include="..\..\third_party\serial\include\serial\serial.h"/>

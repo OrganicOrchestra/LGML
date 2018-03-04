@@ -1,12 +1,21 @@
 import os, glob, json
 
 import gitUtils
-from shutil import copy2
+from shutil import copy2 , copyfileobj
+import zipfile
+import gzip
+import tempfile 
 
 distPath = os.path.expanduser("~/owncloud/DEVSPECTACLES/Tools/LGML/App-Dev/dist/")
-desiredVersion = "1.2.6"
+desiredVersion = "1.2.7"
 lastVPath = os.path.join(distPath,"bleedingEdge",desiredVersion)
-publicFolder = '/Volumes/sshfs/owncloud/tools/LGML/'
+# publicFolder = '/Volumes/sshfs/owncloud/tools/LGML/'
+publicFolder = '/tmp/LGML/dist'
+changeLogPath  = os.path.join(lastVPath,"CHANGELOG.md")
+
+readmePath = os.path.dirname(os.path.abspath(__file__));
+readmePath = os.path.join(readmePath,"../../README.md");
+
 
 allCfgs={}
 for c in glob.glob(lastVPath+"/*.cfg"):
@@ -18,6 +27,11 @@ currentSha = gitUtils.getGitSha()
 def checkIntegrity():
   global currentSha
   sha = currentSha
+  if( not os.path.exists(readmePath)):
+    raise NameError("can't find README")
+  if( not os.path.exists(changeLogPath)):
+    raise NameError("can't find CHANGELOG")
+
   shas = { k:v["git_sha"] for k,v in allCfgs.items()}
   print (shas)
   for k,v in shas.items():
@@ -35,21 +49,29 @@ def checkIntegrity():
   for b in bins.values():
     if not os.path.exists(b):
       raise NameError("not found bin for cfg : %s"%b)
-  
-  return bins
 
-bins = checkIntegrity()
-with open(os.path.join(lastVPath,"CHANGELOG.md"),'r') as fp:
+  zips = {k:os.path.join(lastVPath,os.path.basename(allCfgs["zipped_file"])) for k in allCfgs.keys()}
+  for z in zips.values():
+    if not os.path.exists(z):
+      raise NameError("not found zip for cfg : %s"%z)
+
+  return bins,zips
+
+bins,zips = checkIntegrity()
+with open(changeLogPath,'r') as fp:
   notes = ''.join(fp.readlines())
 
-def createJSON():
+def createJSON(destFolder,bins,zips):
+  destFolder = destFolder
   v = {"git_sha":currentSha,
       "notes":notes,
       "version":desiredVersion,
-      "download_page" : "http://organic-orchestra.com/forum/d/6-lgml-telechargements"}
-  vf = os.path.join(publicFolder,"version.tmp.json")
+      "download_page" : "http://organic-orchestra.com/forum/d/6-lgml-telechargements",
+      "zip_link" : zips}
+  vf = os.path.join(destFolder,"version.json")
   with open(vf,'w') as fp:
     json.dump(v,fp,indent=4)
+  return vf
 
 
 def printReleaseMessage():
@@ -73,17 +95,24 @@ def printReleaseMessage():
   print (msg)
 
 
-def sendBins():
-  global bins
-  publicFolder = os.path.join(publicFolder,desiredVersion)
-  if not os.path.exists(publicFolder):
-    os.makedirs(publicFolder)
+def deployBins():
+
+  global bins,zips
+  vpublicFolder = os.path.join(publicFolder,desiredVersion)
+  if not os.path.exists(vpublicFolder):
+    os.makedirs(vpublicFolder)
+  jsonF = createJSON(vpublicFolder,bins,zips);
+  copy2(changeLogPath,vpublicFolder)
+
   for b in bins.values():
-    copy2(b,os.path.join(publicFolder,os.path.basename(b)))
+    copy2(b,os.path.join(vpublicFolder,os.path.basename(b)))
+
+
 
 
 if __name__ == '__main__':
-  # sendBins()
-  # createJSON()
+  
+  
   printReleaseMessage()
+  deployBins()
   

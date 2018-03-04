@@ -38,10 +38,17 @@
 // useless for now , (it breaks arm rasp builds...)
 #if defined (__ARM_NEON__) || defined (__ARM_NEON) || defined (__arm64__) || defined (__aarch64__)
     #define JUCE_USE_SIMD 0
-#else if defined (_WIN32) || defined (_WIN64)
+#elif defined (_WIN32) || defined (_WIN64)
+    #define JUCE_USE_SIMD 0
+#elif __cpluplus < 201402L
     #define JUCE_USE_SIMD 0
 #endif
 
+#if DEBUG
+#define ONLY_DBG
+#else
+#define ONLY_DBG #error
+#endif
 // [END_USER_CODE_SECTION]
 
 /*

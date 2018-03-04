@@ -3297,6 +3297,9 @@
     <ClInclude Include="..\..\Source\JuceHeaderUI.h">
       <Filter>LGML\Source</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Version.h">
+      <Filter>LGML\Source</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\third_party\serial\include\serial\impl\unix.h">
       <Filter>LGML\third_party\serial\include\serial\impl</Filter>
     </ClInclude>

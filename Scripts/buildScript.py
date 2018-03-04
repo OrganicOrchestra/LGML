@@ -2,11 +2,11 @@
 import os,platform;
 from PyUtils import gitUtils,ProJucerUtils
 import json
+import zipfile
+import tempfile
 
-
-
-
-configPath = os.path.abspath(os.path.join(__file__,os.pardir,'lgml_build_cfg.json'))
+rootLGMLPath = os.path.abspath(os.path.join(__file__,os.pardir,os.pardir)) 
+configPath = os.path.abspath(os.path.join(rootLGMLPath,"Scripts",'lgml_build_cfg.json'))
 
 
 def saveConfig(cfg):
@@ -37,15 +37,22 @@ def exportToOwncloud(builder):
 	ownCloudPath = basePath + "/" + exportedFile
 	
 	OwncloudUtils.sendToOwnCloud(exportedPath,ownCloudPath)
+	# send zip
+	zp = builder.cfg["zipped_path"]
+	if zp is not None:
+		OwncloudUtils.sendToOwnCloud(zp,basePath+"/"+os.path.basename(zp))
+
+
 	#send opt
-	OwncloudUtils.sendToOwnCloud(configPath,ownCloudPath+".cfg")
-	
+	OwncloudUtils.sendToOwnCloud(configPath,basePath+"/"+builder.getUID()+".cfg")
+
 	preprocessor = builder.getPreprocessor()
 	if preprocessor:
 		with open(configPath+".preprocessor",'w') as preFp:
 			preFp.write(preprocessor);
 		OwncloudUtils.sendToOwnCloud(configPath+".preprocessor",ownCloudPath+".preprocessor")
 
+	
 
 
 
@@ -72,7 +79,7 @@ if __name__ == "__main__":
 											action='store_true', default=False)
 
 
-	parser.add_argument('--os',help='os to use : osx, linux', default=None)
+	parser.add_argument('--os',help='os to use : osx, linux, windows', default=None)
 	parser.add_argument('--packagesuffix',help='suffix to add', default=None)
 	parser.add_argument('--exportpath',help='path where to put binary', default=None)
 	parser.add_argument('--configuration',help='build configuration name ', default=None)
@@ -97,6 +104,7 @@ if __name__ == "__main__":
 	"git_sha" : gitUtils.getGitSha(),
 	"arch" : args.arch,
 	"binary_path" : None,
+	"zipped_path" : None,
 	"packagesuffix" : args.packagesuffix
 	}
 
@@ -107,7 +115,7 @@ if __name__ == "__main__":
 			if not args.build and (args.package or args.export):
 				for k in defaultCfg :
 					if defaultCfg[k] is not None and k in savedCfg and defaultCfg[k]!=savedCfg[k]:
-						raise NameError("config changed %s : was %s, is now %s)"%(k,savedCfg[k],defaultCfg[k]))
+						raise NameError("config changed %s : was %s, is now %s : please rebuild the project)"%(k,savedCfg[k],defaultCfg[k]))
 			defaultCfg = savedCfg
 			defaultCfg["git_sha"] = gitUtils.getGitSha()
 
@@ -136,13 +144,11 @@ if __name__ == "__main__":
 
 	# hack for exporting windows builds
 	elif defaultCfg["build_os"] == 'windows':
-		from PyUtils.builderBase import BuilderBase;
-		builder=  BuilderBase(cfg = defaultCfg)
+		import windows
+		builder=  windows.WindowsBuilder(cfg = defaultCfg)
 		if( args.build):
-			raise NameError("does'nt support windows building")
-		cfg= builder.cfg
-		builder.cfg["binary_path"] = os.path.join(cfg["lgml_root_path"],"Builds","VisualStudio2015",cfg["arch"],cfg["build_cfg_name"],"App","LGML.exe");
-	
+			raise NotImplementedError("does'nt support windows building")
+
 	else:
 		raise NameError('no builder found for os :'+defaultCfg["build_os"])
 
@@ -160,7 +166,9 @@ if __name__ == "__main__":
 
 	#build
 	if args.build:
+		builder.fillVersionInfo();
 		builder.cfg["binary_path"] = builder.buildApp();
+		builder.cfg["build_version_uid"] = builder.getShortUID();
 
 	# package
 	if args.package:
@@ -185,7 +193,10 @@ if __name__ == "__main__":
 			os.rename(pkgPath,newP)
 			pkgPath = newP;
 		builder.cfg["packaged_path"]=pkgPath
+		if (ep is not None):
+			builder.cfg["zipped_path"] = builder.zipApp(ep);
 		saveConfig(builder.cfg)
+
 
 	#export
 	if args.export:

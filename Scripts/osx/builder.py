@@ -25,7 +25,8 @@ class OSXBuilder (BuilderBase):
 		BuilderBase.__init__(self,cfg)
 		self.applyCfg(self.default_cfg)
 
-
+	def getPlatformName(self):
+		return "osx"
 
 	def cleanApp(self):
 		self.removeOldApp()

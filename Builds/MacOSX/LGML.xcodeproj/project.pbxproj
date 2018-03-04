@@ -359,6 +359,7 @@
 		736A7885BD75C2BA38838725 = {isa = PBXFileReference; lastKnownFileType = file; name = "juce_events"; path = "../../../JUCE/modules/juce_events"; sourceTree = "SOURCE_ROOT"; };
 		737E26A3FFBB6FF8F522EB00 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ControllerManager.h; path = ../../Source/Controller/ControllerManager.h; sourceTree = "SOURCE_ROOT"; };
 		73DB3A45D1E095C4DFA33F54 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = FastMapperUI.h; path = ../../Source/FastMapper/FastMapperUI.h; sourceTree = "SOURCE_ROOT"; };
+		74865F1BD52DB64493EAED8A = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Version.h; path = ../../Source/Version.h; sourceTree = "SOURCE_ROOT"; };
 		75184A90B2455E22924A0CA1 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DataProcessorGraph.h; path = ../../Source/Data/DataProcessorGraph.h; sourceTree = "SOURCE_ROOT"; };
 		760503F720F1D394144CFD33 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Trigger.cpp; path = ../../Source/Controllable/Parameter/Trigger.cpp; sourceTree = "SOURCE_ROOT"; };
 		765EF851992D1504E4B95CFB = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = LGMLLoggerUI.cpp; path = ../../Source/Logger/LGMLLoggerUI.cpp; sourceTree = "SOURCE_ROOT"; };
@@ -930,7 +931,8 @@
 					4B18E0AD503F51590F1441DE,
 					DEE1093ABCE13FBD9176210A,
 					565F13E36871AC907D101C92,
-					D63FE7B556B29ECE2209954C, ); name = Source; sourceTree = "<group>"; };
+					D63FE7B556B29ECE2209954C,
+					74865F1BD52DB64493EAED8A, ); name = Source; sourceTree = "<group>"; };
 		EECB296FF0CF297E485A53C7 = {isa = PBXGroup; children = (
 					B474AC8A0CC1A4128A03EEB2,
 					8BB158BA1FDFAB7FA73C017A, ); name = impl; sourceTree = "<group>"; };
