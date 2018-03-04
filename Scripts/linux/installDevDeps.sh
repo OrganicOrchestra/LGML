@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # this script install deps needed to compile LGML from source :
-# ** /!\ /!\ /!\ /!\ gcc-5 will be installed for c++14 support /!\ /!\ /!\ /!\  (on ubuntu <16 for example)
+# ** /!\ /!\ /!\ /!\ if gcc < 4.8 c++14 may break the build /!\ /!\ /!\ /!\  (on ubuntu <16 for example)
 # ** JUCE is downloaded in a sibling directory of LGML
 # ** JUCE deps also
 # this script support cross-compiling setting the CROSS_ARCH flag to armhf (see circleci config.yml)
@@ -16,7 +16,7 @@ echo "arch is set to '$CROSS_ARCH'"
 
 set -e # un-ignore apt update error
 
-
+apt-get install -y --assume-yes  build-essential
 echo "checking if gcc>4.8"
 vlte () {
 dpkg --compare-versions "$1" "lt" "$2"
@@ -30,7 +30,7 @@ if [ -n "$VERSION_CHECK_ERROR" ]; then
   echo "$VERSION_CHECK_ERROR"
   # modifying gcc is likely to break things up
   echo `gcc -dumpversion`
-  exit 1
+  # exit 1
   ###add-apt-repository ppa:ubuntu-toolchain-r/test
   #echo "deb http://ftp.us.debian.org/debian unstable main contrib non-free" >> /etc/apt/sources.list.d/unstable.list
   #apt-get update && apt-get install -y --force-yes -t unstable gcc-5 g++-5 && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5
