@@ -96,6 +96,7 @@ class LinuxBuilder (BuilderBase):
     if (gccvnum[0]<5 and ((len(gccvnum)<=1) or gccvnum[1]<9 ) ):
       print ("patching makefile : to use c++11 (experiemental)")
       patchMakeFile("c++14","c++11")
+      patchMakeFile("-flto","")
 
 
 
