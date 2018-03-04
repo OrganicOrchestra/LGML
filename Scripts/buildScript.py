@@ -179,19 +179,20 @@ if __name__ == "__main__":
 				os.makedirs(ep)
 
 		pkgPath = builder.packageApp(ep)
-		suffix = builder.cfg["packagesuffix"]
-		if suffix:
-			suffix = suffix.strip('\'" ')
-			if pkgPath.endswith(".tar.gz"):
-				splitExt = [pkgPath[:-7], ".tar.gz"]
-			else:
-				psplit = pkgPath.split('.')
-				splitExt = ['.'.join(psplit[:-1]),psplit[-1]]
+		# suffix = builder.cfg["packagesuffix"]
+		# if suffix:
+		# 	suffix = suffix.strip('\'" ')
+		# 	if pkgPath.endswith(".tar.gz"):
+		# 		splitExt = [pkgPath[:-7], ".tar.gz"]
+		# 	else:
+		# 		psplit = pkgPath.split('.')
+		# 		splitExt = ['.'.join(psplit[:-1]),psplit[-1]]
 
-			newP = splitExt[0]+"_"+suffix+splitExt[1]
-			print("applying suffix : "+newP)
-			os.rename(pkgPath,newP)
-			pkgPath = newP;
+		# 	if not suffix in splitExt[0]:
+		# 		newP = 
+		# 		print("applying suffix : "+newP)
+		# 		os.rename(pkgPath,newP)
+		# 		pkgPath = newP;
 		builder.cfg["packaged_path"]=pkgPath
 		builder.cfg["packaged_name"]=os.path.basename(pkgPath)
 		if (ep is not None):
