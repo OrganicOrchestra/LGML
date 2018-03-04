@@ -93,7 +93,7 @@ class LinuxBuilder (BuilderBase):
     gccv = sh("gcc -dumpversion")
     gccvnum  =list( map(lambda x:int(x),gccv.split('.')))
     print ("gcc version : %i,%i"%(gccvnum[0],gccvnum[1]))
-    if (gccvnum[0]<5 and (len(gccvnum<=1) or gccvnum[1]<9 ) ):
+    if (gccvnum[0]<5 and ((len(gccvnum)<=1) or gccvnum[1]<9 ) ):
       print ("patching makefile : to use c++11 (experiemental)")
       patchMakeFile("c++14","c++11")
 
