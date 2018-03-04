@@ -121,7 +121,7 @@ void AddElementButton::paintButton (Graphics& g,
     g.drawEllipse (area.toFloat().reduced (stroke / 2), stroke);
     g.setColour (findColour (TextButton::textColourOffId));
     const float hw = stroke;//area.getHeight()/18.0;
-    const float offset = area.getWidth() / 4.0 ;
+    const float offset = area.getWidth() / 4.0f ;
 
     const float corner = hw;
 
@@ -154,7 +154,7 @@ void RemoveElementButton::paintButton (Graphics& g,
                                        bool isMouseOverButton,
                                        bool isButtonDown)
 {
-    g.addTransform(AffineTransform::rotation(float_Pi/4.0,getWidth()/2.0,getHeight()/2.0));
+    g.addTransform(AffineTransform::rotation(float_Pi/4.0f,getWidth()/2.0f,getHeight()/2.0f));
 
     auto area = getLocalBounds();
     auto bgColor = findColour (TextButton::buttonColourId);

@@ -40,9 +40,10 @@
 #include "../../Data/DataInNode.h"
 #include "../../Data/DataInNodeUI.h"
 
-
+#if JUCE_DEBUG
 #include "../Impl/DummyNode.h"
 #include "../Impl/DummyNodeContentUI.h"
+#endif
 
 #include "../Impl/LooperNode.h"
 #include "../Impl/LooperNodeUI.h"
@@ -66,8 +67,10 @@ ConnectableNodeUI* NodeUIFactory::createDefaultUI (ConnectableNode* t,Connectabl
     CHKNRETURN (t, JsNode, new JsNodeUI);
 
     CHKNRETURN (t, DataInNode, new DataInNodeContentUI);
-
+#if JUCE_DEBUG
     CHKNRETURN (t, DummyNode, new DummyNodeContentUI);
+#endif
+
     CHKNRETURN (t, LooperNode, new LooperNodeContentUI); //ui->recursiveInspectionLevel = 2; ui->canInspectChildContainersBeyondRecursion = false;
     CHKNRETURN (t, NodeContainer, new NodeContainerContentUI); // recursiveInspectionLevel = 1; canInspectChildContainersBeyondRecursion = true;
     CHKNRETURN (t, Spat2DNode, new Spat2DNodeContentUI);

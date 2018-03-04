@@ -14,7 +14,7 @@
 
 
 #include "NodeManager.h"
-#include "../Impl/DummyNode.h"
+
 #include "../NodeContainer/NodeContainer.h"
 
 REGISTER_OBJ_TYPE(NodeBase,NodeManager,"NodeManager");

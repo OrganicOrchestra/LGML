@@ -437,14 +437,14 @@ void Engine::EngineStats::timerCallback(){
     audioCpu->setPoint(getAudioDeviceManager().getCpuUsage() * 100.0f,time);
     if(isListeningGlobal){
         //        const ScopedLock lk(modCounts.getLock());
-        CountMapType::Iterator i (modCounts);
+        CountMapType::Iterator it (modCounts);
 
         typedef std::pair<String, int> UsagePoint;
         Array<UsagePoint> paramUsage;
-        while (i.next())
+        while (it.next())
         {
-            int usage = i.getValue().size();
-            String pName = i.getKey();
+            int usage = it.getValue().size();
+            String pName = it.getKey();
             struct EComp{
                 int compareElements( const UsagePoint & a,const UsagePoint & b){return a.second-b.second;};
             };
@@ -460,13 +460,13 @@ void Engine::EngineStats::timerCallback(){
         }
 //        int curtime = engine->getElapsedMillis();
         // clean old
-        i.reset();
+        it.reset();
         Array<String> toRemove;
-        while (i.next())
+        while (it.next())
         {
 
-            String addr = i.getKey();
-            Array<int> tl =  i.getValue();
+            String addr = it.getKey();
+            Array<int> tl =  it.getValue();
             int i = 0;
             while(i < tl.size()){
 //                auto t = tl[i];

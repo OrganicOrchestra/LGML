@@ -103,10 +103,10 @@ bool NodeConnection::addAudioGraphConnection (uint32 sourceChannel, uint32 destC
     if (AudioProcessorGraph* g = getParentGraph())
     {
         result = g->addConnection (AudioProcessorGraph::Connection(
-                                                                   {.nodeID=getAsNodeBase (sourceNode)->getAudioNode()->nodeID,
-                                                                    .channelIndex=(int)sourceChannel},
-                                                                   {.nodeID=getAsNodeBase (destNode)->getAudioNode()->nodeID,
-                                                                    .channelIndex=(int)destChannel}
+                                                                   {getAsNodeBase (sourceNode)->getAudioNode()->nodeID,
+                                                                    (int)sourceChannel},
+                                                                   {getAsNodeBase (destNode)->getAudioNode()->nodeID,
+                                                                    (int)destChannel}
                                                                    )
                                    );
     }
@@ -133,10 +133,10 @@ void NodeConnection::removeAudioGraphConnection (uint32 sourceChannel, uint32 de
 
     if (AudioProcessorGraph* g = getParentGraph())
         g->removeConnection (AudioProcessorGraph::Connection(
-                                                             {.nodeID=getAsNodeBase (sourceNode)->getAudioNode()->nodeID,
-                                                            .channelIndex=(int)sourceChannel},
-                                                             {.nodeID=getAsNodeBase (destNode)->getAudioNode()->nodeID,
-                                                            .channelIndex=(int)destChannel}));
+                                                             {getAsNodeBase (sourceNode)->getAudioNode()->nodeID,
+                                                            (int)sourceChannel},
+                                                             {getAsNodeBase (destNode)->getAudioNode()->nodeID,
+                                                            (int)destChannel}));
 
 
     model.audioConnections.removeAllInstancesOf (ac);

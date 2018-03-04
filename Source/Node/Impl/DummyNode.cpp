@@ -15,6 +15,7 @@
 
 #include "DummyNode.h"
 
+#if JUCE_DEBUG
 
 #include "../../Time/TimeManager.h"
 
@@ -217,3 +218,4 @@ inline void DummyNode::processInputDataChanged (Data* d)
 }
 
 
+#endif // JUCE DEBGUG

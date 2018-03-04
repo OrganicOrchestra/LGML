@@ -17,6 +17,7 @@
 #define DUMMYNODE_H_INCLUDED
 
 #include "../NodeBase.h"
+#if JUCE_DEBUG
 #include "../../Controllable/Parameter/EnumParameter.h"
 
 class DummyNode : public NodeBase
@@ -64,5 +65,6 @@ public:
 };
 
 
+#endif // JUCE DEBGUG
 
 #endif  // DUMMYNODE_H_INCLUDED

@@ -23,6 +23,7 @@
 
 #include "../../Controllable/Parameter/UI/EnumParameterUI.h"
 
+#if JUCE_DEBUG
 class DummyNodeContentUI : public ConnectableNodeContentUI
 {
 public:
@@ -47,3 +48,4 @@ public:
 
 
 #endif  // DUMMYNODECONTENTUI_H_INCLUDED
+#endif // JUCE_DEBUG
