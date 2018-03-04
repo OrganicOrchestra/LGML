@@ -49,6 +49,7 @@ class LinuxBuilder (BuilderBase):
     return self.cfg["ARCH_FLAGS"]
 
   def buildApp(self):
+    self.patchMakeFileIfNeeded();
     makeCmd = self.makeCmd()
     sh('cd '+self.localMakePath+' && '+makeCmd)
     localAppFile = self.getBinaryPath()
@@ -79,7 +80,22 @@ class LinuxBuilder (BuilderBase):
     return makeCmd
 
 
+  def patchMakeFileIfNeeded(self):
 
+    def patchMakeFile(ori,rpl):
+      makeFile = BuilderBase.rootPath+"/Builds/LinuxMakefile/Makefile"
+      with open(makeFile,'r') as fp:
+        lines = fp.readlines()
+      lines = map(lambda l:l.replace(ori,rpl),lines);
+      with open(makeFile,'w') as fp:
+        fp.writelines(lines)
+
+    gccv = sh("gcc -dumpversion")
+    gccvnum  =list( map(lambda x:int(x),gccv.split('.')))
+    print ("gcc version : %i,%i,%i"%(gccvnum[0],gccvnum[1],gccvnum[2]))
+    if (gccvnum[0]<5 and gccvnum[1]<9 ):
+      print ("patching makefile : to use c++11 (experiemental)")
+      patchMakeFile("c++14","c++11")
 
 
 
@@ -231,10 +247,14 @@ def copy_source_dist(fileListPath=None):
 
 
 if __name__ == '__main__':
+  
+  
   # get_upstream_source_package();
   # copy_source_dist()
   
   builder = LinuxBuilder({"arch":"native","ARCH_FLAGS":"-ffast-math"});
+  builder.patchMakeFileIfNeeded();
+  exit();
   # builder.buildApp()
 
   print( builder.getPreprocessor())
