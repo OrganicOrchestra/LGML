@@ -62,6 +62,7 @@ def checkIntegrity(errorOnWrongSha=True):
     if not os.path.exists(z):
       raise NameError("not found zip for cfg : %s"%z)
     allCfgs[k]["local_zip"] = z;
+    allCfgs[k]["dst_zip_name"] = "LGML_v"+desiredVersion+'_'allCfgs[k]["build_version_uid"]+".zip"
 
   exported_zips = {}
   for k,v in allCfgs.items():
@@ -79,13 +80,14 @@ bins,zips = checkIntegrity(raiseErrorOnDifferentSha)
 with open(changeLogPath,'r') as fp:
   notes = ''.join(fp.readlines())
 
-def createJSON(destFolder,bins,zips):
+def createJSON(destFolder):
+  global allCfgs
   destFolder = destFolder
   v = {"git_sha":currentSha,
       "notes":notes,
       "version":desiredVersion,
       "download_page" : "http://organic-orchestra.com/forum/d/6-lgml-telechargements",
-      "zip_link" : {k:os.path.basename(zips[k]) for k in zips.keys()}
+      "zip_link" : {k:allCfgs[k]["dst_zip_name"] for k in allCfgs.keys()}
       }
   vf = os.path.join(destFolder,"version.json")
   with open(vf,'w') as fp:
@@ -125,7 +127,7 @@ def deployBins():
 
   for k,c in allCfgs.items():
     copy2(c["local_bin"],os.path.join(vpublicFolder,os.path.basename(c["local_bin"])))
-    copy2(c["local_zip"],os.path.join(vpublicFolder,"LGML_v"+desiredVersion+'_'+c["build_version_uid"]+".zip"))
+    copy2(c["local_zip"],os.path.join(vpublicFolder,c["dst_zip_name"]))
 
 
 

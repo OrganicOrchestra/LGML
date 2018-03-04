@@ -80,7 +80,7 @@ class BuilderBase:
     zipname = self.getUID()+".zip"
     zipPath = os.path.join(export_path,zipname)
     if(os.path.isfile(source)):
-      with ZipFile(zipPath,'w') as z:
+      with zipfile.ZipFile(zipPath,'w') as z:
         z.write(source,arcname=os.path.basename(source))
     else:
       zipf = zipfile.ZipFile(zipPath, 'w', zipfile.ZIP_DEFLATED)
