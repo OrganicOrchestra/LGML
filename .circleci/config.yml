@@ -169,7 +169,6 @@ workflows:
       - buildOSX
       - build_rasp
       - buildu16
-      - buildu14
       - build32
 
 
