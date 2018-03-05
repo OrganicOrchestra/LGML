@@ -140,7 +140,7 @@ namespace{
             else{
                 bt->setAlpha(1);
                 stopTimer();
-                latestVChecker = nullptr;
+                //latestVChecker = nullptr;
             }
 
         }
