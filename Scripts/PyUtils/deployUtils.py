@@ -10,26 +10,21 @@ raiseErrorOnDifferentSha = False;
 distPath = os.path.expanduser("~/owncloud/DEVSPECTACLES/Tools/LGML/App-Dev/dist/")
 desiredVersion = "1.2.7"
 lastVPath = os.path.join(distPath,"bleedingEdge",desiredVersion)
-# publicFolder = '/Volumes/sshfs/owncloud/tools/LGML/'
-publicFolder = '/tmp/LGML/dist'
+publicFolder = '/Volumes/sshfs/owncloud/tools/LGML/'
+# publicFolder = '/tmp/LGML/dist'
 changeLogPath  = os.path.join(lastVPath,"CHANGELOG.md")
-
-readmePath = os.path.dirname(os.path.abspath(__file__));
-readmePath = os.path.join(readmePath,"../../README.md");
 
 
 allCfgs={}
 for c in glob.glob(lastVPath+"/*.cfg"):
   with open(c,'r') as fp:
-    allCfgs [os.path.basename(c)]=json.load(fp)
+    allCfgs [os.path.basename(c)[:-4]]=json.load(fp)
 
 currentSha = gitUtils.getGitSha()
 
 def checkIntegrity(errorOnWrongSha=True):
   global currentSha
   sha = currentSha
-  if( not os.path.exists(readmePath)):
-    raise NameError("can't find README")
   if( not os.path.exists(changeLogPath)):
     raise NameError("can't find CHANGELOG")
 
@@ -57,12 +52,12 @@ def checkIntegrity(errorOnWrongSha=True):
       raise NameError("not found bin for cfg : %s"%b)
     allCfgs[k]["local_bin"] = b;
 
-  zips = {k:os.path.join(lastVPath,k[:-4]+".zip") for k in allCfgs.keys()}
+  zips = {k:os.path.join(lastVPath,k+".zip") for k in allCfgs.keys()}
   for k,z in zips.items():
     if not os.path.exists(z):
       raise NameError("not found zip for cfg : %s"%z)
     allCfgs[k]["local_zip"] = z;
-    allCfgs[k]["dst_zip_name"] = "LGML_v"+desiredVersion+'_'allCfgs[k]["build_version_uid"]+".zip"
+    allCfgs[k]["dst_zip_name"] = "LGML_v"+desiredVersion+'_'+allCfgs[k]["build_version_uid"]+".zip"
 
   exported_zips = {}
   for k,v in allCfgs.items():
@@ -87,7 +82,7 @@ def createJSON(destFolder):
       "notes":notes,
       "version":desiredVersion,
       "download_page" : "http://organic-orchestra.com/forum/d/6-lgml-telechargements",
-      "zip_link" : {k:allCfgs[k]["dst_zip_name"] for k in allCfgs.keys()}
+      "zip_link" : {v["build_version_uid"]:v["dst_zip_name"] for v in allCfgs.values()}
       }
   vf = os.path.join(destFolder,"version.json")
   with open(vf,'w') as fp:
@@ -107,11 +102,11 @@ def printReleaseMessage():
       typ = "Raspberry"
     if(not typ in builds):
       builds[typ] = []
-    builds[typ]+=[c]
+    builds[typ]+=[os.path.basename(v["packaged_name"])]
   for k,v in builds.items():
     msg+=k+" : \n"
     for bn in v:
-      msg+=baseLink+bn[:-4]+'\n'
+      msg+=baseLink+bn+'\n'
     msg+='\n'
   print (msg)
 
@@ -122,10 +117,11 @@ def deployBins():
   vpublicFolder = os.path.join(publicFolder,desiredVersion)
   if not os.path.exists(vpublicFolder):
     os.makedirs(vpublicFolder)
-  jsonF = createJSON(vpublicFolder,bins,zips);
+  jsonF = createJSON(vpublicFolder);
   copy2(changeLogPath,vpublicFolder)
 
   for k,c in allCfgs.items():
+    print("copying : %s"%k)
     copy2(c["local_bin"],os.path.join(vpublicFolder,os.path.basename(c["local_bin"])))
     copy2(c["local_zip"],os.path.join(vpublicFolder,c["dst_zip_name"]))
 

@@ -19,7 +19,7 @@
 #pragma once
 
 #include "../JuceHeaderCore.h"
-#define DOWNLOAD_INPLACE 0 // fancy auto downloading, not activated for now
+
 
 class UpdaterDialogModalCallback;
 
@@ -66,12 +66,13 @@ public:
     bool askUserAboutNewVersion (const LGMLVersionTriple& version,
                                  const String& releaseNotes,
                                  URL& newVersionToDownload,
-                                 const String& extraHeaders);
+                                 const String& extraHeaders,
+                                 bool hasDirectDownload);
     bool hasEnded;
-#if DOWNLOAD_INPLACE
+
     void askUserForLocationToDownload (URL& newVersionToDownload, const String& extraHeaders);
     virtual Result performUpdate (const MemoryBlock& data, File& targetFolder);
-#endif
+
 protected:
     const LGMLServerLocationsAndKeys& getLGMLServerURLsAndKeys() const;
     int getProductVersionNumber() const;
