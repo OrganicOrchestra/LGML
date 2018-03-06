@@ -123,7 +123,7 @@ ConnectableNode* NodeContainer::addNode (ConnectableNode* n, const String& nodeN
 
     if (nodeData) n->configureFromObject (nodeData);
 
-
+    
     nodeChangeNotifier.addMessage (new NodeChangeMessage (n, true));
     //  nodeContainerListeners.call(&NodeContainerListener::nodeAdded, n);
     return n;

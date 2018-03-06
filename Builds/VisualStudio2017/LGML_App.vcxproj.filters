@@ -529,6 +529,9 @@
     <ClCompile Include="..\..\Source\Controllable\ControllableIndexedContainer.cpp">
       <Filter>LGML\Source\Controllable</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UndoableHelper.cpp">
+      <Filter>LGML\Source\Controllable\Parameter</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Controllable\Parameter\ParameterContainerSync.cpp">
       <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClCompile>
@@ -2864,6 +2867,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Controllable\ControllableIndexedContainer.h">
       <Filter>LGML\Source\Controllable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UndoableHelper.h">
+      <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Controllable\Parameter\ParameterContainerSync.h">
       <Filter>LGML\Source\Controllable\Parameter</Filter>

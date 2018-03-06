@@ -25,6 +25,7 @@
 
 
 #include "../Manager/UI/NodeManagerUI.h"
+#include "../../Controllable/Parameter/UndoableHelper.h"
 
 
 ConnectableNodeUIParams::ConnectableNodeUIParams(ConnectableNodeUIParams * _origin):origin(_origin){
@@ -154,7 +155,15 @@ Point2DParameter<int>* ConnectableNodeUI::getCurrentPositionParam(){
 void ConnectableNodeUI::moved()
 {
     isDraggingFromUI = true;
-    getCurrentPositionParam()->setPoint (getPosition());
+    auto p = getPosition();
+    auto pp = getCurrentPositionParam();
+    if(pp){
+        auto stp=pp->getPoint();
+        if(stp!=p){
+            Array<var> v  ({p.x,p.y});
+            UndoableHelpers::setValueUndoable(getCurrentPositionParam(),v);
+        }
+    }
     isDraggingFromUI = false;
 }
 

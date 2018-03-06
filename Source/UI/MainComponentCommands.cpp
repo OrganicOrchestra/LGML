@@ -26,28 +26,32 @@
 
 #include "../Node/NodeContainer/UI/NodeContainerViewer.h"// for copy paste
 
+extern UndoManager & getAppUndoManager();
+
 namespace CommandIDs
 {
-static const int open                   = 0x30000;
-static const int save                   = 0x30001;
-static const int saveAs                 = 0x30002;
-static const int newFile                = 0x30003;
-static const int openLastDocument       = 0x30004;
-static const int playPause              = 0x30010;
-static const int copySelection          = 0x30020;
-static const int cutSelection           = 0x30021;
-static const int pasteSelection         = 0x30022;
-static const int showPluginListEditor   = 0x30100;
-static const int showAppSettings        = 0x30200;
-static const int showAudioSettings      = 0x30201;
-static const int aboutBox               = 0x30300;
-static const int allWindowsForward      = 0x30400;
-//static const int unused               = 0x30500;
-//static const int stimulateCPU           = 0x30600;
-static const int toggleMappingMode      = 0x30700;
+    static const int open                   = 0x30000;
+    static const int save                   = 0x30001;
+    static const int saveAs                 = 0x30002;
+    static const int newFile                = 0x30003;
+    static const int openLastDocument       = 0x30004;
+    static const int playPause              = 0x30010;
+    static const int copySelection          = 0x30020;
+    static const int cutSelection           = 0x30021;
+    static const int pasteSelection         = 0x30022;
+    static const int undo                   = 0x30023;
+    static const int redo                   = 0x30024;
+    static const int showPluginListEditor   = 0x30100;
+    static const int showAppSettings        = 0x30200;
+    static const int showAudioSettings      = 0x30201;
+    static const int aboutBox               = 0x30300;
+    static const int allWindowsForward      = 0x30400;
+    //static const int unused               = 0x30500;
+    //static const int stimulateCPU           = 0x30600;
+    static const int toggleMappingMode      = 0x30700;
 
-// range ids
-static const int lastFileStartID        = 100; // 100 to 200 max
+    // range ids
+    static const int lastFileStartID        = 100; // 100 to 200 max
 
 }
 
@@ -136,7 +140,15 @@ void MainContentComponent::getCommandInfo (CommandID commandID, ApplicationComma
             result.addDefaultKeypress ('v', ModifierKeys::commandModifier);
             break;
 
+        case CommandIDs::undo:
+            result.setInfo ("Undo", "Undo last action", category, 0);
+            result.addDefaultKeypress ('z', ModifierKeys::commandModifier);
+            break;
 
+        case CommandIDs::redo:
+            result.setInfo ("Redo", "Redo last undo", category, 0);
+            result.addDefaultKeypress ('z', ModifierKeys::commandModifier | ModifierKeys::shiftModifier);
+            break;
 
         default:
             break;
@@ -163,6 +175,8 @@ void MainContentComponent::getAllCommands (Array<CommandID>& commands)
         CommandIDs::copySelection,
         CommandIDs::cutSelection,
         CommandIDs::pasteSelection,
+        CommandIDs::undo,
+        CommandIDs::redo,
         CommandIDs::toggleMappingMode
     };
 
@@ -201,6 +215,9 @@ PopupMenu MainContentComponent::getMenuForIndex (int /*topLevelMenuIndex*/, cons
     }
     else if (menuName == "Edit")
     {
+        menu.addCommandItem (commandManager, CommandIDs::undo);
+        menu.addCommandItem (commandManager, CommandIDs::redo);
+        menu.addSeparator();
         menu.addCommandItem (commandManager, CommandIDs::playPause);
         menu.addSeparator();
         menu.addCommandItem (commandManager, CommandIDs::copySelection);
@@ -247,7 +264,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
 
             }
         }
-        break;
+            break;
 
         case CommandIDs::open:
         {
@@ -260,11 +277,11 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                 engine->loadFromUserSpecifiedFile (true);
             }
         }
-        break;
+            break;
 
         case CommandIDs::openLastDocument:
         {
-            // TODO implement the JUCE version calling change every time something is made (maybe todo with undomanager)
+            // TODO implement the JUCE version calling change every time something is made (maybe todo with getAppmanager)
             //            int result = engine->saveIfNeededAndUserAgrees();
             int result = AlertWindow::showYesNoCancelBox (AlertWindow::QuestionIcon, juce::translate("Save document"), "Do you want to save the document before opening the last one ?");
 
@@ -275,7 +292,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                 engine->loadFrom (engine->getLastDocumentOpened(), true);
             }
         }
-        break;
+            break;
 
         case CommandIDs::save:
             engine->save (true, true);
@@ -345,29 +362,36 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                     data.getDynamicObject()->setProperty ("type", ic->inspectableType);
                     data.getDynamicObject()->setProperty ("data", cc->getObject());
                     if(auto relatedComponent =Inspector::getInstance()->getCurrentComponent()){
-                    
-                    NodeContainerViewer *  ncv = dynamic_cast<NodeContainerViewer*>(relatedComponent);
-                    if(!ncv)ncv=relatedComponent->findParentComponentOfClass<NodeContainerViewer>();
-                    if(ncv && ncv->uiParams){
-                        auto nodeUIParams = ncv->uiParams->getControllableContainerByName(cc->shortName);
-                        data.getDynamicObject()->setProperty ("uiData",nodeUIParams->getObject());
-                    }
 
-                    if (info.commandID == CommandIDs::cutSelection)
-                    {
-                        if (ic->inspectableType == "node") ((ConnectableNode*)cc)->remove();
-                        else if (ic->inspectableType == "controller") ((Controller*)cc)->remove();
+                        NodeContainerViewer *  ncv = dynamic_cast<NodeContainerViewer*>(relatedComponent);
+                        if(!ncv)ncv=relatedComponent->findParentComponentOfClass<NodeContainerViewer>();
+                        if(ncv && ncv->uiParams){
+                            auto nodeUIParams = ncv->uiParams->getControllableContainerByName(cc->shortName);
+                            data.getDynamicObject()->setProperty ("uiData",nodeUIParams->getObject());
+                        }
 
-                        //            else if (ic->inspectableType == "fastMap") ((FastMap *)cc)->remove();
-                    }
+                        if (info.commandID == CommandIDs::cutSelection)
+                        {
+                            if (ic->inspectableType == "node") ((ConnectableNode*)cc)->remove();
+                            else if (ic->inspectableType == "controller") ((Controller*)cc)->remove();
 
-                    SystemClipboard::copyTextToClipboard (JSON::toString (data));
+                            //            else if (ic->inspectableType == "fastMap") ((FastMap *)cc)->remove();
+                        }
+
+                        SystemClipboard::copyTextToClipboard (JSON::toString (data));
                     }
                 }
             }
         }
-        break;
-
+            break;
+        case CommandIDs::undo:
+            getAppUndoManager().undo();
+            break;
+        case CommandIDs::redo:
+        {
+            getAppUndoManager().redo();
+        }
+            break;
         case CommandIDs::pasteSelection:
         {
             String clipboard = SystemClipboard::getTextFromClipboard();
@@ -390,7 +414,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                         {
                             ConnectableNode* cn = dynamic_cast<ConnectableNode*> (relatedComponent->getRelatedParameterContainer());
                             NodeContainer* container = (dynamic_cast<NodeContainer*> (cn)) ? dynamic_cast<NodeContainer*> (cn) : cn->getParentNodeContainer();
-                            
+
                             if (cn != nullptr)
                             {
                                 ConnectableNode* n = container->addNodeFromJSONData (d->getProperty ("data").getDynamicObject());
@@ -402,19 +426,19 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                                     NodeContainerViewer *  ncv = dynamic_cast<NodeContainerViewer*>(relatedComponent);
                                     if(!ncv)ncv=Inspector::getInstance()->getCurrentComponent()->findParentComponentOfClass<NodeContainerViewer>();
                                     if(ncv){
-                                    auto nodeUI = ncv->getUIForNode(n);
-                                    if(nodeUI){
-                                        if(auto o = d->getProperty ("uiData").getDynamicObject()){
-                                            auto nodeUIParams = dynamic_cast<ParameterContainer*>(ncv->uiParams->getControllableContainerByName(n->shortName));
-                                            nodeUIParams->configureFromObject(o);
+                                        auto nodeUI = ncv->getUIForNode(n);
+                                        if(nodeUI){
+                                            if(auto o = d->getProperty ("uiData").getDynamicObject()){
+                                                auto nodeUIParams = dynamic_cast<ParameterContainer*>(ncv->uiParams->getControllableContainerByName(n->shortName));
+                                                nodeUIParams->configureFromObject(o);
+                                            }
+                                            nodeUI->uid=Uuid();
+                                            nodeUI->nodePosition->setPoint (ncv->getMouseXYRelative());
+                                            nodeUI->nodeMinimizedPosition->setPoint (ncv->getMouseXYRelative());
                                         }
-                                        nodeUI->uid=Uuid();
-                                        nodeUI->nodePosition->setPoint (ncv->getMouseXYRelative());
-                                        nodeUI->nodeMinimizedPosition->setPoint (ncv->getMouseXYRelative());
-                                    }
-                                    else{
-                                        jassertfalse;
-                                    }
+                                        else{
+                                            jassertfalse;
+                                        }
                                     }
                                     else{
                                         jassertfalse;
@@ -426,21 +450,21 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                 }
             }
         }
-        break;
-
+            break;
+            
         default:
             DBG ("no command found");
             return false;
     }
-
+    
     return true;
 }
 
 void MainContentComponent::menuItemSelected (int menuItemID, int topLevelMenuIndex)
 {
-
+    
     String menuName = getMenuBarNames()[topLevelMenuIndex ];
-
+    
     if (menuName == "Windows")
     {
         ShapeShifterManager::getInstance()->handleMenuPanelCommand (menuItemID);

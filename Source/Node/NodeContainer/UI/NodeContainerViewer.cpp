@@ -530,8 +530,8 @@ void NodeContainerViewer::mouseDrag (const MouseEvent&  e)
                     if(selectedInitBounds.contains(s)){
                         Point <int> newPos = selectedInitBounds.getReference(s).getPosition() + diff;
                         auto nodeP = s->getCurrentPositionParam();
-                        nodeP->setPoint (newPos);
-                        s->setTopLeftPosition (nodeP->getPoint());
+//                        nodeP->setPoint (newPos);
+                        s->setTopLeftPosition (newPos);//nodeP->getPoint());
                     }
                     else{
                         jassertfalse;

@@ -97,7 +97,7 @@ void InspectableComponent::setSelected (bool value)
         if(bringToFrontOnSelect)
             toFront (true);
         if(auto i = Inspector::getInstanceWithoutCreating()){
-            if(i->getCurrentComponent()!=this){
+            if(i->getCurrentComponent()){ // keep that for multi selection
                 selectThis();
             }
         }

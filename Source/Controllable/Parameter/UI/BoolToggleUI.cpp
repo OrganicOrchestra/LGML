@@ -16,6 +16,7 @@
 #include "BoolToggleUI.h"
 #include "../../../UI/Style.h"
 #include "../BoolParameter.h"
+#include "../UndoableHelper.h"
 
 //==============================================================================
 BoolToggleUI::BoolToggleUI (Parameter* parameter) :
@@ -92,7 +93,10 @@ void BoolToggleUI::mouseDown (const MouseEvent& e)
 
     if (e.mods.isLeftButtonDown() && !e.mods.isAnyModifierKeyDown())
     {
-        parameter->setValue (!parameter->boolValue());
+//        UndoableHelpers::startNewTransaction(parameter);
+        UndoableHelpers::setValueUndoable(parameter, !parameter->boolValue());
+        //parameter->setValue (!parameter->boolValue());
+        
     }
 }
 
