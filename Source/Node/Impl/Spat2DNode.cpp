@@ -21,12 +21,14 @@ Spat2DNode::Spat2DNode (StringRef name) :
     numSpatInputs (nullptr), numSpatOutputs (nullptr), spatMode (nullptr), shapeMode (nullptr)
 {
     spatMode = addNewParameter<EnumParameter> ("Mode", "Spatialization Mode (2D/3D, Beam/Proxy)");
+    spatMode->isEditable=false;
     spatMode->addOption ("Beam", BEAM);
     spatMode->addOption ("Proxy", PROXY);
 
     spatMode->setValue ("Proxy");
 
     shapeMode = addNewParameter<EnumParameter> ("Shape", "Predefined shape or free positioning");
+    shapeMode->isEditable=false;
     shapeMode->addOption ("Circle", ShapeMode::CIRCLE);
     shapeMode->addOption ("Free", ShapeMode::FREE);
     shapeMode->setValue ("Free");
