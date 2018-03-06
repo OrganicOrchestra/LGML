@@ -27,7 +27,8 @@ REGISTER_CONTROLLER_TYPE (MIDIController,"MIDI");
 
 MIDIController::MIDIController (StringRef name) :
     Controller (name), JsEnvironment ("controllers.MIDI", this),
-midiChooser(this,true,false)
+midiChooser(this,true,false),
+midiClock(false)
 {
 
     setNamespaceName ("controllers." + shortName);

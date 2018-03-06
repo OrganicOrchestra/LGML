@@ -55,7 +55,7 @@ pSync(this)
 
 
     sendTimeInfo = addNewParameter<BoolParameter> ("sendTimeInfo", "send time information", false);
-    fullSync = addNewParameter<BoolParameter> ("syncAllParameters", "sync every parameter", false);
+    fullSync = addNewParameter<BoolParameter> ("syncAllParameters", "sync every parameter like stats/NodesUI/FastMap...(useful for test and hacking things around)", false);
 
     if(fullSync->boolValue()){
         ParameterContainer::getRoot(true)->addControllableContainerListener(&pSync);
