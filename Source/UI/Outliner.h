@@ -126,6 +126,7 @@ public:
 
     void setRoot(ParameterContainer * );
     bool showUserContainer;
+
 private:
 
     void currentComponentChanged (Inspector *)override;
@@ -134,6 +135,8 @@ private:
     void restoreCurrentOpenChilds();
     // we should be using RAII like scoped pointer, but hashmap accessors, cant contains Scoped
     HashMap<WeakReference<ParameterContainer>,XmlElement*> opennessStates;
+    static Identifier blockSelectionPropagationId;
+    friend class OutlinerItem;
 
 
 };

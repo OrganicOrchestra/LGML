@@ -22,7 +22,7 @@
 #include "../Controllable/Parameter/UI/ParameterUIFactory.h"
 //#include "../Controllable/UI/ParameterEditor.h"
 
-
+Identifier Outliner::blockSelectionPropagationId("blockSelectionPropagation");
 
 Outliner::Outliner (const String& contentName,ParameterContainer * _root,bool showFilterText) : ShapeShifterContentComponent (contentName,"Search Parameters in here"),
 baseRoot(_root),
@@ -274,8 +274,11 @@ void Outliner::currentComponentChanged (Inspector * i ){
             return;
 
 
-        if(auto sel = i->getCurrentContainerSelected())
+        if(auto sel = i->getCurrentContainerSelected()){
+            treeView.getProperties().set(blockSelectionPropagationId, true);
             setRoot(sel);
+            treeView.getProperties().set(blockSelectionPropagationId, false);
+        }
     }
 };
 
@@ -422,6 +425,12 @@ String OutlinerItem::getUniqueName() const
 
 
 void OutlinerItem::itemSelectionChanged (bool isNowSelected){
+    auto owner = getOwnerView();
+    if(owner){
+        var *v =owner->getProperties().getVarPointer(Outliner::blockSelectionPropagationId);
+        if(v!=nullptr && *v)
+            return;
+    }
     if(auto c= static_cast<OutlinerItemComponent*>(currentDisplayedComponent.get())){
         auto* insp = Inspector::getInstance();
         if(insp->getCurrentComponent()!=c){
