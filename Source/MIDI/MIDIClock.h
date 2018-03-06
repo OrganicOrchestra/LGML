@@ -59,7 +59,7 @@ private:
 
 
     
-    double getBeatWithDelta(int multiplier);
+    double getPPQWithDelta(int multiplier);
 
     void sendOneMsg(const MidiMessage & msg);
     void sendClocks(const int num);

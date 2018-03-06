@@ -52,8 +52,7 @@ bool MIDIClock::setOutput(MIDIListener * _midiOut)
 
 bool MIDIClock::start()
 {
-    startThread(6);
-
+    startThread(realtimeAudioPriority);
     if(!midiOut)
         return false;
 
@@ -72,7 +71,7 @@ void MIDIClock::stop()
 void MIDIClock::run()
 {
 
-    state.ppqn = getBeatWithDelta(24);
+    state.ppqn = getPPQWithDelta(24);
 
     int st1,st2,bs1,bs2,i;
     while (! threadShouldExit())
@@ -94,7 +93,7 @@ void MIDIClock::run()
 
 
 
-double MIDIClock::getBeatWithDelta(int multiplier){
+double MIDIClock::getPPQWithDelta(int multiplier){
     auto tm = TimeManager::getInstance();
     return (tm->getBeat()+ delta*1.0*tm->BPM->doubleValue()/60000.0)*1.0*multiplier ;
 }
@@ -102,7 +101,7 @@ double MIDIClock::getBeatWithDelta(int multiplier){
 
 void MIDIClock::addClockIfNeeded(){
     if(!TimeManager::getInstance()->isPlaying() || TimeManager::getInstance()->isSettingTempo->boolValue())return;
-    int newT = getBeatWithDelta(24);
+    int newT = getPPQWithDelta(24);
 
 
 
@@ -131,7 +130,7 @@ void MIDIClock::addClockIfNeeded(){
 void MIDIClock::sendCurrentSPP(){
     if(sendSPP){
         jassert(!state.isPlaying);
-        //        int64 MIDIBeat = (int64)getBeatWithDelta(4);
+        //        int64 MIDIBeat = (int64)getPPQWithDelta(4);
         auto tm = TimeManager::getInstance();
         int MIDIBeat = (tm->getBeat() )*4.0;
         if(MIDIBeat<0){
@@ -147,7 +146,9 @@ void MIDIClock::sendCurrentSPP(){
 
 
 void MIDIClock::reset()
-{}
+{
+    playStop(false);
+}
 
 
 
@@ -166,7 +167,7 @@ void MIDIClock::playStop (bool playStop) {
 
     if(playStop){
 
-        state.ppqn = getBeatWithDelta(24);
+        state.ppqn = getPPQWithDelta(24);
         if(state.ppqn<0){sendClocks(-state.ppqn);}
 
 
