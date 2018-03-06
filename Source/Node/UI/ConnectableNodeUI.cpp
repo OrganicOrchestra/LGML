@@ -124,7 +124,7 @@ isDraggingFromUI (false)
     notifyFromParams();
 
     connectableNode->addConnectableNodeListener (this);
-
+    
 
 
 
@@ -144,6 +144,7 @@ ConnectableNodeUI::~ConnectableNodeUI()
     connectableNode->removeConnectableNodeListener (this);
     masterReference.clear();
 }
+
 
 Point2DParameter<int>* ConnectableNodeUI::getCurrentPositionParam(){
     auto ncv = findParentComponentOfClass<NodeContainerViewer>();

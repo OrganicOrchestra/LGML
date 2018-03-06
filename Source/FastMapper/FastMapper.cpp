@@ -172,7 +172,7 @@ bool FastMapper::checkDuplicates (FastMap* f)
 
         if (dup)
         {
-            LOG ("!!! can't duplicate fastMap");
+            LOGE("can't duplicate fastMap");
             removeFastmap (f);
             return true;
 

@@ -43,7 +43,7 @@ showUserContainer(true)
         filterTextEditor.setTextToShowWhenEmpty ("search", Colours::grey);
         addAndMakeVisible (filterTextEditor);
         filterTextEditor.addListener (this);
-        linkToSelected.setTooltip("link viewed to selected node/controller");
+        linkToSelected.setTooltip(juce::translate("link viewed to selected node/controller"));
         linkToSelected.setButtonText("L");
         addAndMakeVisible(linkToSelected);
         linkToSelected.addListener(this);
@@ -185,7 +185,16 @@ void Outliner::childStructureChanged (ControllableContainer* notif, Controllable
     }
 
 }
+void  Outliner::containerWillClear (ControllableContainer* origin) {
+    setRoot(nullptr);
+    if (!AsyncUpdater::isUpdatePending())
+    {
 
+            triggerAsyncUpdate();
+        
+    }
+
+}
 
 void Outliner::handleAsyncUpdate()
 {
@@ -313,11 +322,13 @@ OutlinerItem::~OutlinerItem(){
         }
     }
     else{
+        if(parameter.get()){
         if(auto p = parameter->parentContainer){
             p->removeControllableContainerListener(this);
         }
         else{
 //            jassertfalse;
+        }
         }
     }
     masterReference.clear();
@@ -440,7 +451,7 @@ paramUI (nullptr)
         InspectableComponent::relatedParameter = _item->parameter;
         InspectableComponent::relatedParameterContainer = nullptr;
     }
-    setTooltip (item->isContainer ? item->container->getControlAddress() : item->parameter->description + "\nControl Address : " + item->parameter->controlAddress);
+    setTooltip (item->isContainer ? item->container->getControlAddress() : juce::translate(item->parameter->description) + "\n"+juce::translate("Control Address")+" : "  + item->parameter->controlAddress);
     bool isNameEditable = !item->isContainer && item->parameter->isUserDefined;
     if(item->isContainer)
         isNameEditable|=item->container->nameParam->isEditable;
@@ -480,6 +491,13 @@ paramUI (nullptr)
     }
 
     addAndMakeVisible (paramUI);
+}
+
+OutlinerItemComponent::~OutlinerItemComponent(){
+    if(paramUI && paramUI->parameter.get()){
+        paramUI->parameter->removeControllableListener(this);
+        paramUI->parameter->removeAsyncParameterListener(this);
+    }
 }
 void OutlinerItemComponent::resized()
 {

@@ -31,7 +31,7 @@ JsEnvironment ("controllers.Keyboard", this)
     }
     else{
         isConnected->setValue(false);
-        LOG("!!! can't find component for keyboard controller ");
+        LOGE("can't find component for keyboard controller ");
     }
 };
 KeyboardController::~KeyboardController(){

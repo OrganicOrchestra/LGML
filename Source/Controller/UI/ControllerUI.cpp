@@ -102,7 +102,7 @@ ControllerUI::ControllerUI (Controller* controller) :
 
     showUserParams = getArrowButton("showParams");
     addAndMakeVisible(showUserParams);
-    showUserParams->setTooltip("show this controller registered parameters");
+    showUserParams->setTooltip(juce::translate("show this controller registered parameters"));
     showUserParams->setToggleState(false, dontSendNotification);
     showUserParams->addListener(this);
     showUserParams->setClickingTogglesState(true);

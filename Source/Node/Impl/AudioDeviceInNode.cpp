@@ -94,7 +94,7 @@ void AudioDeviceInNode::setParentNodeContainer (NodeContainer* parent)
 {
     NodeBase::setParentNodeContainer (parent);
     if(parent != NodeManager::getInstance()){
-        LOG("!!! avoid creating AudioDeviceIn/Out in container, unstable behaviour");
+        LOGE("avoid creating AudioDeviceIn/Out in container, unstable behaviour");
         jassertfalse;
     }
     AudioGraphIOProcessor::setRateAndBufferSizeDetails (NodeBase::getSampleRate(), NodeBase::getBlockSize());

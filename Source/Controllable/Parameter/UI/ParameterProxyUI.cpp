@@ -31,7 +31,7 @@ ParameterProxyUI::ParameterProxyUI (ParameterProxy* proxy) :
 
     if(paramProxy){
         paramProxy->addParameterProxyListener (this);
-        chooser.setTooltip(paramProxy->description);
+        chooser.setTooltip(juce::translate(paramProxy->description));
         setLinkedParamUI (paramProxy->linkedParam);
     }
     else{

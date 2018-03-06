@@ -64,7 +64,7 @@ public:
 
     ControllableContainer* getRoot();
 
-    DECLARE_OBJ_TYPE (ParameterProxy)
+    DECLARE_OBJ_TYPE (ParameterProxy,"proxy parameter (can become any given parameter)")
 private:
     void controllableAdded (ControllableContainer*, Controllable* /*notifier*/) override;
     void controllableRemoved (Controllable* ) override;

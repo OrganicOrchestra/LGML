@@ -491,3 +491,18 @@ void NodeConnectionUI::connectionAudioLinkRemoved (const std::pair<int, int>&)
 {
     postCommandMessage (0);
 }
+
+String NodeConnectionUI::getTooltip() {
+    String tt;
+    if(connection){
+        tt+=connection->getFactoryInfo()+"\n("+String(connection->model.audioConnections.size())+ " connections)\n";
+    if(sourceConnector)
+        if(auto nb = sourceConnector->getNodeBase())
+             tt+="in : " + String(nb->getTotalNumOutputChannels());
+    if(destConnector)
+        if(auto nb = sourceConnector->getNodeBase())
+            tt+="out : " + String(nb->getTotalNumOutputChannels())+"\n";
+
+    }
+    return tt;
+    }

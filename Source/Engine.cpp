@@ -16,10 +16,6 @@
  ==============================================================================
  */
 
-
-
-
-
 #include "Engine.h"
 
 #include "Controller/Impl/SerialManager.h"
@@ -39,6 +35,7 @@
 const char* const filenameSuffix = ".lgml";
 const char* const filenameWildcard = "*.lgml";
 
+
 void setDefault(PropertiesFile *f, const String & n, const var & d)
 {
     if(!f->containsKey(n))
@@ -49,6 +46,7 @@ void initDefaultUserSettings(){
     auto settings = getAppProperties()->getUserSettings();
     setDefault(settings,"multiThreadedLoading",false);
     setDefault(settings,"check for updates",true);
+    setDefault(settings,"language","english");
 
     settings->saveIfNeeded();
 }
@@ -81,6 +79,8 @@ hasDefaultOSCControl(false)
     initAudio();
     Logger::setCurrentLogger (LGMLLogger::getInstance());
 
+
+
     MIDIManager::getInstance()->init();
     SerialManager::getInstance()->init();
     NodeManager::getInstance()->addNodeManagerListener (this);
@@ -94,6 +94,7 @@ hasDefaultOSCControl(false)
 
     DBG ("max recording time : " << std::numeric_limits<sample_clk_t>().max() / (44100.0 * 60.0 * 60.0) << "hours @ 44.1kHz");
     initDefaultUserSettings();
+    setLanguage(getAppProperties()->getUserSettings()->getValue("language"));
 
 }
 
@@ -170,7 +171,7 @@ void Engine::parseCommandline (const CommandLineElements& commandLine)
         {
             if (c.args.size() == 0)
             {
-                LOG ("!!! no file provided for command : " + c.command);
+                LOGE("no file provided for command : " + c.command);
                 jassertfalse;
                 continue;
             }
@@ -180,7 +181,7 @@ void Engine::parseCommandline (const CommandLineElements& commandLine)
 
             if( !(File::isAbsolutePath (fileArg) && fileToLoad.existsAsFile())){
 
-                NLOG ("!!! Engine", "File : " << fileArg << " not found.");
+                NLOGE("Engine", "File : " << fileArg << " not found.");
             }
         }
         else if(c.command=="p"){
@@ -193,13 +194,13 @@ void Engine::parseCommandline (const CommandLineElements& commandLine)
 
 
             if(c.args.size()==0 || c.args.size()%2!=0){
-                LOG("!!! unable to parse parameter : " << c.args.joinIntoString(":"));
+                LOGE("unable to parse parameter : " << c.args.joinIntoString(":"));
                 jassertfalse;
                 continue;
             }
             for( int i = 0 ; i < c.args.size()-1 ; i+=2){
                 if (!getAppProperties()->getUserSettings()->containsKey(c.args[i])){
-                    LOG("!!! unknown parameter : " << c.args[i]);
+                    LOGE("unknown parameter : " << c.args[i]);
                     jassertfalse;
                     continue;
                 }
@@ -254,7 +255,7 @@ void Engine::suspendAudio (bool shouldBeSuspended)
             else
             {
                 // if no audio device are present initialize it (if not, inner graph is void)
-                NLOG ("Engine", "!!! no audio device available !!!");
+                NLOGE("Engine", "no audio device available");
                 ap->prepareToPlay (44100, 1024);
             }
         }
@@ -411,6 +412,42 @@ const int Engine::getElapsedMillis()const {
 }
 
 
+File& getTranslationFolder(){
+static File tf = File::getSpecialLocation(File::userDocumentsDirectory).getChildFile("LGML").getChildFile("translations");
+    return tf;
+}
+void Engine::setLanguage(const String & s){
+
+    if(s=="english"){
+        juce::LocalisedStrings::setCurrentMappings(nullptr);
+        return;
+    }
+    auto translationsFolder = getTranslationFolder();
+    String fname = s.toLowerCase()+".txt";
+    File curF = translationsFolder.getChildFile(fname);
+    if(curF.exists()){
+        juce::LocalisedStrings::setCurrentMappings(new LocalisedStrings(curF,true));
+    }
+    else{
+        // no translation found
+        // jassertfalse;
+    }
+}
+StringArray  Engine::getAvailableLanguages(){
+    auto tf = getTranslationFolder();
+    Array<File> tfs ;
+    tf.findChildFiles(tfs, File::findFiles, false,"*.txt");
+    StringArray res = {"english"};
+    for(auto& r:tfs){
+        res.add(r.getFileNameWithoutExtension());
+    }
+    return res;
+
+
+}
+
+
+
 /////////////
 //Engine Stats
 /////////
@@ -515,5 +552,7 @@ void Engine::EngineStats::activateGlobalStats(bool s){
         globalListener = nullptr;
     }
 }
+
+
 
 

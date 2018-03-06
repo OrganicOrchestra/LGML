@@ -23,13 +23,14 @@ class SessionTest(unittest.TestCase):
     session.set_controller_param("logincomingosc",True)
     session.set_controller_param("syncallparameters",True)
     i =1;
-    volParam = LGMLParam("/node/audiodeviceinnode/volume1")
+    volParam = LGMLParam("/node/audiodevicein/volume1")
     freq = 1
-    sleep_time = 0.#00001
+    sleep_time = 1/1000.0
     max_time = 2
     max_iter = 10000 if(sleep_time==0) else max_time/sleep_time
     
     session.print_oscIn = False;
+    startTime = time.clock()
     while i < max_iter:
       msg = (volParam.address,(i*freq)%max_iter*1.0/max_iter)
       log.write(str(msg)+'\n')
@@ -40,6 +41,8 @@ class SessionTest(unittest.TestCase):
       time.sleep(sleep_time)
     msg = (volParam.address,0.0)
     log.write(str(msg)+'\n')
+    timeTaken = time.clock()-startTime
+    print('sent : %i msgs in %s : (%.2f msg/s)\n'%(i,timeTaken,i*1.0/timeTaken))
     session.send_osc(*msg)
     log.flush();
     session.save(block=True)
@@ -57,6 +60,7 @@ def create_test (path):
           s.run(stdout_filep=log)
           print('start osc flood test')
           self.osc_flood(s,log)
+          #time.sleep(3)
           print('end test')
         stats = s.stats
       graph_stats(stats)

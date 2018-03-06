@@ -35,12 +35,21 @@ public:
     DynamicObject* getObject() override;
     var getVarState() override;
 
-
+    int64 lastTime;
 
     static const var triggerVar;
     void trigger()
     {
         setValue (triggerVar);
+    }
+
+    void triggerDebounced( const uint32_t debounceMillis)
+    {
+        auto cT = juce::Time::currentTimeMillis();
+        if(cT - lastTime > debounceMillis){
+            setValue (triggerVar);
+            lastTime = cT;
+        }
     }
     void tryToSetValue (const var & _value, bool silentSet, bool force,Listener * notifier=nullptr) override
     {
@@ -62,7 +71,7 @@ public:
 
     }
 
-    DECLARE_OBJ_TYPE (Trigger)
+    DECLARE_OBJ_TYPE (Trigger,"trigger parameter")
 
 
 

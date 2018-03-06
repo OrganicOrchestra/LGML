@@ -25,8 +25,8 @@ FastMapperUI::FastMapperUI (FastMapper* _fastMapper, ControllableContainer* _vie
 {
     fastMapper->addControllableContainerListener (this);
 
-    linkToSelection.setButtonText ("Show from selected");
-    linkToSelection.setTooltip ("Filter viewed fastmap to currently selected element :\n- Node\n- Controller\n- Parameter\n- ...");
+    linkToSelection.setButtonText (juce::translate("Show from selected"));
+    linkToSelection.setTooltip (juce::translate("Filter viewed fastmap to currently selected element :\n- Node\n- Controller\n- Parameter\n- ..."));
     linkToSelection.setClickingTogglesState (true);
     linkToSelection.addListener (this);
     addAndMakeVisible (linkToSelection);
@@ -311,7 +311,7 @@ ShapeShifterContentComponent (contentName,
     addAndMakeVisible (vp);
     addAndMakeVisible (addFastMapButton);
     addFastMapButton.addListener (this);
-    addFastMapButton.setTooltip ("Add FastMap");
+    addFastMapButton.setTooltip (juce::translate("Add FastMap"));
     vp.setScrollBarThickness (10);
     contentIsFlexible = true;
     fastMapperUI->addFastMapperUIListener (this);

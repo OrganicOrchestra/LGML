@@ -201,6 +201,9 @@ public:
     ThreadPool threadPool;
     RecentlyOpenedFilesList getLastOpenedFileList();
 
+    static void setLanguage(const String & l);
+    static StringArray getAvailableLanguages();
+
 };
 
 

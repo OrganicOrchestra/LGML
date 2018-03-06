@@ -23,7 +23,7 @@ NodeConnectionEditorLink::NodeConnectionEditorLink (NodeConnectionEditorDataSlot
     outSlot (outSlot), inSlot (inSlot), candidateDropSlot (nullptr), isSelected (false)
 {
     isEditing = (outSlot != nullptr && inSlot == nullptr) || (outSlot == nullptr && inSlot != nullptr);
-    setTooltip ("Double click to delete");
+    setTooltip (juce::translate("Double click to delete"));
     setWantsKeyboardFocus (true);
 }
 

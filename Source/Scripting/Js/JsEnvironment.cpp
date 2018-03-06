@@ -119,7 +119,7 @@ var getLocal(const juce::var::NativeFunctionArgs &a){
     }
     else
     {
-        LOG ("!!!unknown controllable set from js");
+        LOGE("unknown controllable set from js");
         jassertfalse;
     }
 
@@ -274,7 +274,7 @@ Result JsEnvironment::loadScriptContent (const String& content)
         _hasValidJsFile = false;
         //        jsEngine = nullptr;
         // NLOG(localNamespace,printAllNamespace());
-        NLOG (localNamespace, "!!!" + r.getErrorMessage());
+        NLOGE (localNamespace, r.getErrorMessage());
     }
     else
     {
@@ -291,7 +291,7 @@ Result JsEnvironment::loadScriptContent (const String& content)
         }
         else
         {
-            NLOG (localNamespace, "!!!" << r.getErrorMessage());
+            NLOGE (localNamespace,  r.getErrorMessage());
         }
     }
 
@@ -356,7 +356,7 @@ var JsEnvironment::callFunction (const String& function, const Array<var>& args,
 
         if (result != nullptr)result->fail (noFunctionLogIdentifier.toString());
 
-        if(logResult) NLOG (localNamespace, "!!!" << noFunctionLogIdentifier.toString());
+        if(logResult) NLOGE (localNamespace, noFunctionLogIdentifier.toString());
 
         return var::undefined();
     }
@@ -371,7 +371,7 @@ var JsEnvironment::callFunction (const String& function, const var& args, bool l
     {
         if (result != nullptr)result->fail (noFunctionLogIdentifier.toString());
 
-        if (logResult)NLOG (localNamespace, "!!!" << noFunctionLogIdentifier.toString());
+        if (logResult)NLOGE (localNamespace, noFunctionLogIdentifier.toString());
 
         return var::undefined();
     }
@@ -432,13 +432,13 @@ var JsEnvironment::callFunctionFromIdentifier (const Identifier& function, const
         else
         {
             //      jassertfalse;
-            NLOG (localNamespace, "!!! jsEngine is Locked");
+            NLOGE (localNamespace, "jsEngine is Locked");
         }
     }
 
     if (logResult && result->failed())
     {
-        NLOG (localNamespace, "!!!" << result->getErrorMessage());
+        NLOGE(localNamespace, result->getErrorMessage());
     }
 
     if (resOwned)
@@ -894,7 +894,7 @@ void JSEnvContainer::onContainerTriggerTriggered (Trigger* p)
                     if(! scriptFile.exists()){
                         auto r = scriptFile.create();
                         if(!r){
-                            LOG("!!! Can't create script : " <<scriptFile.getFullPathName() << "("<< r.getErrorMessage()<<")");
+                            LOGE("Can't create script : " <<scriptFile.getFullPathName() << "("<< r.getErrorMessage()<<")");
                         }
                     }
                     else{

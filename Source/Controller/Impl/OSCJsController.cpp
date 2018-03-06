@@ -151,7 +151,7 @@ var OSCJsController::sendOSCFromJS (const juce::var::NativeFunctionArgs& a)
 
     if ( !a.arguments[0].isString() )
     {
-        LOG ("!!jsOSC send first argument must be an address string");
+        LOGW("jsOSC send first argument must be an address string");
         return var::undefined();
     }
 
@@ -159,7 +159,7 @@ var OSCJsController::sendOSCFromJS (const juce::var::NativeFunctionArgs& a)
 
     if (!address.startsWithChar ('/') )
     {
-        LOG ("!!!address should start with / ");
+        LOGE("address should start with / ");
         return var::undefined();
     }
 

@@ -46,10 +46,10 @@
                 "type": 0,
                 "width": 1348,
                 "height": 273,
-                "currentContent": "Tooltip",
+                "currentContent": "Help",
                 "tabs": [
                   {
-                    "name": "Tooltip"
+                    "name": "Help"
                   }
                 ]
               }

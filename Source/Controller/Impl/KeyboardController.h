@@ -31,7 +31,7 @@ private KeyListener
 {
 public :
     
-    DECLARE_OBJ_TYPE_DEFAULTNAME (KeyboardController, "Keyboard");
+    DECLARE_OBJ_TYPE_DEFAULTNAME (KeyboardController, "Keyboard","use your computer keyboard to control LGML");
     virtual ~KeyboardController();
 
     // should be implemented to build localenv

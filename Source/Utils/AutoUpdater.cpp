@@ -135,6 +135,8 @@ struct RelaunchTimer  : private Timer
             app.startAsProcess();
         }
 
+
+
         delete this;
     }
 
@@ -230,7 +232,7 @@ public:
 
                 total += written;
 
-                setStatusMessage (String (TRANS ("Downloading...  (123)"))
+                setStatusMessage (String (juce::translate("Downloading...  (123)"))
                                   .replace ("123", File::descriptionOfSizeInBytes (total)));
             }
 
@@ -265,7 +267,7 @@ public:
         LatestVersionChecker::LGMLVersionTriple currentVersion (ProjectInfo::versionNumber);
 
         addAndMakeVisible (titleLabel = new Label ("Title Label",
-                                                   TRANS ("Download \"123\" version 456?").replace ("123", productName)
+                                                   juce::translate("Download 123 version 456?").replace ("123", productName)
                                                    .replace ("456", version.toString())));
 
         titleLabel->setFont (Font (15.00f, Font::bold));
@@ -273,30 +275,30 @@ public:
         titleLabel->setEditable (false, false, false);
 
         addAndMakeVisible (contentLabel = new Label ("Content Label",
-                                                     TRANS ("A new version of \"123\" is available - would you like to download it?")
+                                                     juce::translate("A new version of 123 is available - would you like to download it?")
                                                      .replace ("123", productName)));
         contentLabel->setFont (Font (15.00f, Font::plain));
         contentLabel->setJustificationType (Justification::topLeft);
         contentLabel->setEditable (false, false, false);
 
         addAndMakeVisible (okButton = new TextButton ("OK Button"));
-        okButton->setButtonText (TRANS("Download page"));
+        okButton->setButtonText (juce::translate("Download page"));
         okButton->addListener (this);
 
         if(hasDirectDownload){
             addAndMakeVisible (dlButton = new TextButton ("DL Button"));
-            dlButton->setButtonText (TRANS("Download now"));
+            dlButton->setButtonText (juce::translate("Download now"));
             dlButton->addListener (this);
         }
 
         addAndMakeVisible(dontBotherMeCheck = new TextButton("StopBothering"));
-        dontBotherMeCheck->setButtonText (TRANS("Don't check"));
+        dontBotherMeCheck->setButtonText (juce::translate("Don't check"));
         dontBotherMeCheck->setClickingTogglesState(true);
         dontBotherMeCheck->addListener (this);
 
 
         addAndMakeVisible (cancelButton = new TextButton ("Cancel Button"));
-        cancelButton->setButtonText (TRANS("Cancel"));
+        cancelButton->setButtonText (juce::translate("Cancel"));
         cancelButton->addListener (this);
 
 
@@ -306,7 +308,7 @@ public:
             contentLabel->setText("", dontSendNotification);
         }
         addAndMakeVisible (changeLogLabel = new Label ("Change Log Label",
-                                                       TRANS("Release Notes:")));
+                                                       juce::translate("Release Notes:")));
         changeLogLabel->setFont (Font (15.00f, Font::plain));
         changeLogLabel->setJustificationType (Justification::topLeft);
         changeLogLabel->setEditable (false, false, false);
@@ -397,9 +399,8 @@ public:
                                                                            releaseNotes, overwritePath,hasDirectDownload), true);
 
         DialogWindow::LaunchOptions lo;
-        lo.dialogTitle = "LGML version checker";//TRANS ("Download \"123\" version 456?").replace ("456", version.toString())
-                                                //        .replace ("123", productName);
-                                                //        lo.dialogBackgroundColour = userDialog->findColour (backgroundColourId);
+        lo.dialogTitle = "LGML version checker";
+        
         lo.content = userDialog;
         lo.componentToCentreAround = nullptr;
         lo.escapeKeyTriggersCloseButton = true;
@@ -514,9 +515,9 @@ String LatestVersionChecker::getOSString()
 {
     SystemStats::OperatingSystemType osType = SystemStats::getOperatingSystemType();
 
-    if      ((osType & SystemStats::MacOSX)  != 0) return "OSX";
-    else if ((osType & SystemStats::Windows) != 0) return "Windows";
-    else if ((osType & SystemStats::Linux)   != 0) return "Linux";
+    if      ((osType & SystemStats::MacOSX)  != 0) return "osx";
+    else if ((osType & SystemStats::Windows) != 0) return "windows";
+    else if ((osType & SystemStats::Linux)   != 0) return "linux";
     else return SystemStats::getOperatingSystemName();
 }
 
@@ -704,7 +705,7 @@ bool LatestVersionChecker::processResult (const var& reply, const String& downlo
             if (message.isNotEmpty())
             {
                 AlertWindow::showMessageBox (AlertWindow::WarningIcon,
-                                             TRANS("JUCE Updater"),
+                                             juce::translate("LGML Updater"),
                                              message);
 
                 return false;
@@ -758,20 +759,19 @@ void LatestVersionChecker::modalStateFinished (int result,
                                                File appParentFolder)
 {
 
-    if (result == 1 || result == 2)
-    {
 
 
         if(result==1){
             const String link(newVersionToDownload.toString(false));
             Process::openDocument(link, "");
         }
-        else if (result == 2)
+        else if (result == 2){
             DownloadNewVersionThread::performDownload (*this, newVersionToDownload, extraHeaders, appParentFolder);
+        }
         //        else
         //            askUserForLocationToDownload (newVersionToDownload, extraHeaders);
 
-    }
+
 
 }
 
@@ -796,7 +796,7 @@ void LatestVersionChecker::timerCallback()
         hasAttemptedToReadWebsite = false;
         
         if (restartTimer){
-            LOG("!!! can't check for new version are you offline?");
+            LOGE("can't check for new version are you offline?");
             hasEnded = true;
             if(statusCode!=0)startTimer(500);
             else stopTimer();

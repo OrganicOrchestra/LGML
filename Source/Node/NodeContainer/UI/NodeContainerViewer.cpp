@@ -37,7 +37,7 @@ ParameterContainer(container->getNiceName())
 
     canInspectChildContainersBeyondRecursion = false;
 
-    minimizeAll = addNewParameter<BoolParameter>("minimizeAll", "minimize all visible nodes", false);
+    minimizeAll = addNewParameter<BoolParameter>("minimize all", "minimize all visible nodes", false);
 
     addAndMakeVisible(nodesLayer);
     nodesLayer.setInterceptsMouseClicks(false,true);

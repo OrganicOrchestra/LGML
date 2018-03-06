@@ -32,7 +32,7 @@ class NodeManager:
 {
 
 public:
-    DECLARE_OBJ_TYPE (NodeManager)
+    DECLARE_OBJ_TYPE (NodeManager,"Where to create any fancy audio graphs wanted")
     ~NodeManager();
 
     juce_DeclareSingleton (NodeManager, true);

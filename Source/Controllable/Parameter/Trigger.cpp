@@ -30,6 +30,7 @@ Trigger::Trigger (const String& niceName, const String& description = "", bool e
 {
     isPresettable = false;
     Controllable::isSavable = false;
+    lastTime = 0;
 }
 
 

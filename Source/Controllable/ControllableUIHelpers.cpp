@@ -106,13 +106,13 @@ void ControllableReferenceUI::setCurrentControllable (Controllable* c)
 
     if (c != nullptr)
     {
-        setTooltip ("Current Controllable :" + c->niceName + String ("\n") + c->controlAddress);
+        setTooltip (juce::translate("Current Controllable :") + c->niceName + String ("\n") + c->controlAddress);
         setButtonText (c->niceName);
     }
     else
     {
-        setTooltip ("Choose a controllable");
-        setButtonText ("Target");
+        setTooltip (juce::translate("Choose a controllable"));
+        setButtonText (juce::translate("Target"));
     }
 
 

@@ -91,7 +91,7 @@ class NodeContainer :
 {
 public:
     NodeContainer(StringRef name,bool isRoot);
-    DECLARE_OBJ_TYPE (NodeContainer);
+    DECLARE_OBJ_TYPE (NodeContainer,"holds sub graph of audio");
     virtual ~NodeContainer();
 
     //Keep value of containerIn RMS and containerOutRMS to dispatch in one time
@@ -229,7 +229,7 @@ public:
             if(interval < 2000){
                 curRebuildTime-=interval;
                 if(curRebuildTime<=0){
-                    LOG("!!! internal node loading error");
+                    LOGE("internal node loading error");
                     jassertfalse;
                     stopTimer();
                 }

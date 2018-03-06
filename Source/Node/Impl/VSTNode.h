@@ -31,7 +31,7 @@ class VSTNode :
 {
 
 public:
-    DECLARE_OBJ_TYPE (VSTNode)
+    DECLARE_OBJ_TYPE (VSTNode,"plug any plugin in!")
     ~VSTNode();
 
     StringParameter*   identifierString;

@@ -39,13 +39,16 @@ String fullPath = String(__FILE__);\
 tempDbgBuf << fullPath.substring (fullPath.lastIndexOfChar (File::getSeparatorChar()) + 1 ,fullPath.lastIndexOfChar('.') ) << logSplitter <<  textToWrite;\
 juce::Logger::writeToLog(tempDbgBuf);)
 
-
+#define LOGW(t) LOG("!! " << t)
+#define LOGE(t) LOG("!!! " << t)
 // named version where source name is user defined
 
 #define NLOG(__name,textToWrite) JUCE_BLOCK_WITH_FORCED_SEMICOLON (juce::String tempDbgBuf;\
 tempDbgBuf << __name << logSplitter << textToWrite;\
 juce::Logger::writeToLog(tempDbgBuf);)
 
+#define NLOGW(n,t) NLOG(n,"!! " << t)
+#define NLOGE(n,t) NLOG(n,"!!! " << t)
 
 
 inline String getLogSource (const String& logString)

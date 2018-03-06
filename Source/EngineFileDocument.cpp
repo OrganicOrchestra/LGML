@@ -390,7 +390,7 @@ File Engine::getCurrentProjectFolder()
     if (!getFile().exists())
     {
 #if !LGML_UNIT_TESTS
-        LOG ("!! current session not saved, related files will have an absolute path");
+        LOGW("current session not saved, related files will have an absolute path");
         //    jassertfalse;
 #endif
         return File();

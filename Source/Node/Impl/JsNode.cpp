@@ -80,7 +80,7 @@ var JsNode::addIntParameter (const var::NativeFunctionArgs& a)
 
     if (a.numArguments < 5)
     {
-        LOG ("!!! wrong number of arg for addIntParameter");
+        LOGE("wrong number of arg for addIntParameter");
         return var::undefined();
     };
 
@@ -96,7 +96,7 @@ var JsNode::addFloatParameter (const var::NativeFunctionArgs& a)
 
     if (a.numArguments < 5)
     {
-        LOG ("!!! wrong number of arg for addFloatParameter");
+        LOGE("wrong number of arg for addFloatParameter");
         return var::undefined();
     };
 
@@ -112,7 +112,7 @@ var JsNode::addStringParameter (const var::NativeFunctionArgs& a)
 
     if (a.numArguments < 3)
     {
-        LOG ("!!! wrong number of arg for addStringParameter");
+        LOGE("wrong number of arg for addStringParameter");
         return var::undefined();
     };
 
@@ -128,7 +128,7 @@ var JsNode::addBoolParameter (const var::NativeFunctionArgs& a)
 
     if (a.numArguments < 3)
     {
-        LOG ("!!! wrong number of arg for addStringParameter");
+        LOGE("wrong number of arg for addStringParameter");
         return var::undefined();
     };
 
@@ -144,7 +144,7 @@ var JsNode::addTriggerParameter (const var::NativeFunctionArgs& a)
 
     if (a.numArguments < 2)
     {
-        LOG ("!!! wrong number of arg for addTrigger");
+        LOGE("wrong number of arg for addTrigger");
         return var::undefined();
     };
 

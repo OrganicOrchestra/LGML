@@ -111,7 +111,7 @@ void MainWindow::closeButtonPressed()
     // whatever you need.
 
     //@martin added but commented for testing (relou behavior)
-    int result = AlertWindow::showYesNoCancelBox (AlertWindow::QuestionIcon, "Save document", "Do you want to save the document before quitting ?");
+    int result = AlertWindow::showYesNoCancelBox (AlertWindow::QuestionIcon, juce::translate("Save document"), juce::translate("Do you want to save the document before quitting ?"));
 
     if (result == 0)  return; //prevent exit
 

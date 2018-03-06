@@ -47,7 +47,7 @@ public:
     NodeConnection getCopy();
     virtual ~NodeConnection();
 
-    DECLARE_OBJ_TYPE (NodeConnection)
+    DECLARE_OBJ_TYPE (NodeConnection,"connect nodes together")
     ConnectionType connectionType;
 
     bool isAudio() { return connectionType == ConnectionType::AUDIO; }

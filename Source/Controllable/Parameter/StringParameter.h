@@ -32,7 +32,7 @@ public:
     void setValueInternal (const var&)override;
 
     bool isMappable() override;
-    DECLARE_OBJ_TYPE (StringParameter)
+    DECLARE_OBJ_TYPE (StringParameter,"String parameter")
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (StringParameter)
 };
 

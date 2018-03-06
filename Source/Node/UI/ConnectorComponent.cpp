@@ -31,7 +31,7 @@ ConnectorComponent::ConnectorComponent (ConnectorIOType _ioType, NodeConnection:
     boxColor =  findColour ((dataType == NodeConnection::ConnectionType::AUDIO) ? LGMLColors::audioColor : LGMLColors::dataColor);
     setSize (10, 10);
 
-
+    generateToolTip();
     postCommandMessage (0);
 }
 
@@ -52,8 +52,9 @@ NodeBase* ConnectorComponent::getNodeBase()
 
 void ConnectorComponent::generateToolTip()
 {
-    String tooltip;
-    tooltip += dataType == NodeConnection::ConnectionType::AUDIO ? "Audio\n" : "Data\n";
+    String tooltip("Connector : \n");
+    tooltip += dataType == NodeConnection::ConnectionType::AUDIO ? juce::translate("Audio"):juce::translate("Data");
+    tooltip+="\n";
 
     if (dataType == NodeConnection::ConnectionType::AUDIO)
     {
@@ -63,11 +64,12 @@ void ConnectorComponent::generateToolTip()
         if (tAudioNode != nullptr)
         {
             tooltip += isInput ? tAudioNode->getTotalNumInputChannels() : tAudioNode->getTotalNumOutputChannels();
-            tooltip += " channels";
+            tooltip += " ";
+            tooltip += juce::translate("channels");
         }
         else
         {
-            tooltip = "[Error accessing audio processor]";
+            tooltip = juce::translate("[Error accessing audio processor]");
         }
     }
     else

@@ -48,8 +48,6 @@ void ControllableContainer::OwnedFeedbackListener<OSCDirectController>::controll
 }
 
 
-//REGISTER_OBJ_TYPE_NAMED (Controller, OSCDirectController, "t_OSC");
-
 OSCDirectController::OSCDirectController (StringRef name):
 OSCController (name),
 pSync(this)

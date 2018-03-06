@@ -544,6 +544,6 @@ void CCInnerContainerUI::buttonClicked (Button* b)
 
 CCInnerContainerUI::CCLinkBT::CCLinkBT (ParameterContainer* _targetContainer) :
     targetContainer (_targetContainer),
-    TextButton ("[ Inspect " + _targetContainer->getNiceName() + " >> ]")
+    TextButton ("[ "+juce::translate("Inspect")+" " + _targetContainer->getNiceName() + " >> ]")
 {
 }

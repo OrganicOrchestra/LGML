@@ -38,7 +38,8 @@ private Parameter::AsyncListener // for nameParam(container)
 {
 public:
     OutlinerItemComponent (OutlinerItem* item);
-    OutlinerItem* item;
+    ~OutlinerItemComponent();
+    WeakReference<OutlinerItem> item;
 
     Label label;
     ScopedPointer<ParameterUI> paramUI;
@@ -119,6 +120,7 @@ public:
     void buildTree (OutlinerItem* parentItem, ParameterContainer* parentContainer, bool shouldFilter = true);
 
     void childStructureChanged (ControllableContainer*, ControllableContainer*,bool isAdded) override;
+    void containerWillClear (ControllableContainer* origin) override;
     void handleAsyncUpdate()override;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Outliner)
 

@@ -67,9 +67,8 @@ public:
         auto& desktop = Desktop::getInstance();
         auto mouseSource = desktop.getMainMouseSource();
         auto* newComp = mouseSource.isTouch() ? nullptr : mouseSource.getComponentUnderMouse();
-        TooltipClient* tc = getItOrParent<TooltipClient>(newComp);
-
-        if( newComp!=comp.get() && newComp!=&label && tc){
+//        TooltipClient* tc = getItOrParent<TooltipClient>(newComp);
+        if( newComp!=comp.get() && newComp!=&label ){
 
 
 //            if(auto pc = getItOrParent<ConnectableNodeUI>(newComp)){
@@ -93,7 +92,7 @@ public:
             descriptionLabel.setVisible(true);
             auto descCompName = descriptionParameter->parentContainer->getNiceName();
             auto typeName =NodeFactory::getFactoryNiceNameForInstance(dynamic_cast<NodeBase*>(descriptionParameter->parentContainer.get()));
-            descriptionLabel.setText("User Description : "+ descCompName+"("+typeName+")", dontSendNotification);
+            descriptionLabel.setText(juce::translate("User Description")+" : "+ descCompName+"("+typeName+")", dontSendNotification);
         }
         else{
             userDescription.setVisible(false);
@@ -101,16 +100,23 @@ public:
         }
 
         TooltipClient* tc = getItOrParent<TooltipClient>(comp);
+
         String newTT = tc?tc->getTooltip():String::empty;
+        if(newTT.isEmpty()){
+            InspectableComponent* ic = getItOrParent<InspectableComponent>(comp);
+            newTT=ic?ic->getTooltip():String::empty;
+        }
+        auto hs  = juce::translate("Help");
         if(newTT.isNotEmpty()){
             if(auto *pui = dynamic_cast<ParameterUI*>(tc)){
-                helpLabel.setText("Help : "+pui->parameter->niceName + "("+FactoryBase<Parameter>::getFactoryNiceNameForInstance(pui->parameter.get())+")", dontSendNotification);
+                hs+=" : "+pui->parameter->niceName + "("+FactoryBase<Parameter>::getFactoryNiceNameForInstance(pui->parameter.get())+")";
             }
-            label.setText(newTT, dontSendNotification);
         }
         else{
             //            jassertfalse;
         }
+        helpLabel.setText(hs,dontSendNotification);
+        label.setText(newTT, dontSendNotification);
         resized();
     }
 

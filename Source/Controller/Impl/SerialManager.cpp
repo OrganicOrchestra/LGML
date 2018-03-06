@@ -151,7 +151,7 @@ SerialPort* SerialManager::getPort (SerialPortInfo* portInfo, bool createIfNotTh
             else if(auto* ee = dynamic_cast<const serial::SerialException*>(&e)){
                 error = ee->what();
             }
-            LOG("!!! cannot open serial port "
+            LOGE("cannot open serial port "
                 <<portInfo->port.toStdString()
                 <<" :\n"+String(e.what()));
             return nullptr;

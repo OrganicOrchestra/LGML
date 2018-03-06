@@ -258,7 +258,7 @@ void VSTNode::generatePluginFromDescription (PluginDescription* desc)
         innerPluginTotalNumInputChannels = 0;
         innerPluginTotalNumOutputChannels = 0;
         innerPlugin = nullptr;
-        LOG ("!!!" << errorMessage);
+        LOGE(errorMessage);
         jassertfalse;
     }
 }
@@ -269,7 +269,7 @@ void VSTNode::audioProcessorChanged (juce::AudioProcessor* p )
     
     if (innerPlugin->getNumParameters() != VSTParameters.size())
     {
-        NLOG ("! VSTNode : " + innerPlugin->getName(), "rebuildingParameters");
+        NLOG("VSTNode : " + innerPlugin->getName(), "rebuildingParameters");
         initParametersFromProcessor (innerPlugin);
     }
     else
@@ -314,12 +314,12 @@ void VSTNode::audioProcessorParameterChanged (AudioProcessor* p,
         }
         else
         {
-            NLOG ("VSTNode", "!! oldParam update");
+            NLOGW("VSTNode", "oldParam update");
         }
     }
     else
     {
-        NLOG ("VSTNode", "!! oldplugin update");
+        NLOGW("VSTNode", "oldplugin update");
     }
 }
 

@@ -115,12 +115,14 @@ public:
     };
 
 
+
     template<typename T>
     static Identifier registerType (const String& ID,const String& shortName)
     {
         jassert (!getFactory().contains (ID));
         jassert (ID[0] == 't' && ID[1] == '_');
         getShortNamesMap().set(ID,shortName);
+//        getInfoMap().set(ID,info);
         // DBG("registering "+ID+"::"+shortName);
         getFactory().set (ID, Entry (createFromObject<T>));
         return Identifier(ID);
@@ -178,6 +180,11 @@ private:
         static HashMap<String, String> shortNamesMap; // readable class names (without suffixes)
         return shortNamesMap;
     }
+
+//    static  HashMap<String, String> & getInfoMap(){
+//        static HashMap<String, String> infoMap; // class info
+//        return infoMap;
+//    }
 
     static  HashMap< String, Entry >& getFactory()
     {

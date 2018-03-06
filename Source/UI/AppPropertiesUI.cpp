@@ -1,9 +1,17 @@
 /*
  ==============================================================================
 
- AppPropertiesUI.cpp
- Created: 2 Oct 2017 2:00:38pm
- Author:  Martin Hermant
+ Copyright © Organic Orchestra, 2017
+
+ This file is part of LGML. LGML is a software to manipulate sound in realtime
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation (version 3 of the License).
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
  ==============================================================================
  */
@@ -26,26 +34,71 @@ String AppPropertiesUI::PluginsPageName("Plugins");
 
 class BoolPropUI : public BooleanPropertyComponent{
 public:
-    BoolPropUI(const String & _name):BooleanPropertyComponent(_name,"1","0"){
-        jassert(getAppProperties()->getUserSettings()->containsKey(_name));
-
+    BoolPropUI(const String & _name):BooleanPropertyComponent(juce::translate(_name),"1","0"),name(_name){
+        jassert(getAppProperties()->getUserSettings()->containsKey(name));
     }
     bool getState() const override{
-        return  getAppProperties()->getUserSettings()->getBoolValue(getName());
+        return  getAppProperties()->getUserSettings()->getBoolValue(name);
 
     }
     void setState(bool b)  override{
         BooleanPropertyComponent::setState(b);
-        getAppProperties()->getUserSettings()->setValue(getName(),b);
+        getAppProperties()->getUserSettings()->setValue(name,b);
         refresh();
     }
+    String name ;
+};
 
+
+class EnumPropUI : public ChoicePropertyComponent{
+public:
+    typedef std::function<void(const String &)> CBType;
+    EnumPropUI(const String & _name,const StringArray & _choices,CBType _cb,const String & suffix=String::empty):
+    ChoicePropertyComponent(juce::translate(_name)+(suffix.isEmpty()?"":" "+juce::translate(suffix))),
+    name(_name),
+    cb(_cb),
+    nonTranslatedChoices (_choices)
+    {
+
+
+        for(auto &s:nonTranslatedChoices){
+            ChoicePropertyComponent::choices.add(juce::translate(s));
+        }
+        auto cVal = getAppProperties()->getUserSettings()->getValue(name);
+        si =-1;
+        for(int i = 0 ; i < nonTranslatedChoices.size() ; i++){
+            if(nonTranslatedChoices[i]==cVal){
+                si=i;
+                setIndex(i);
+            }
+        }
+
+    }
+
+    void setIndex (int newIndex)override{
+        int newI = jmin(getChoices().size()-1,jmax(0,newIndex));
+
+        if(newI!=si){
+
+            getAppProperties()->getUserSettings()->setValue(name,nonTranslatedChoices[newI]);
+            if(cb!=nullptr)
+                cb(nonTranslatedChoices[newI]);
+        }
+        si = newI;
+        refresh();
+    };
+
+    virtual int getIndex() const override{return si;};
+    CBType cb;
+    StringArray nonTranslatedChoices;
+    int si ;
+    String name ;
 };
 
 template<class FunctionType>
 class BoolUnsavedPropUI : public BooleanPropertyComponent{
 public:
-    BoolUnsavedPropUI(const String & _name,FunctionType f,bool defaultV = false):BooleanPropertyComponent(_name,"1","0"),internalState(defaultV),func(f){
+    BoolUnsavedPropUI(const String & _name,FunctionType f,bool defaultV = false):BooleanPropertyComponent(juce::translate(_name),"1","0"),internalState(defaultV),func(f){
 
 
     }
@@ -61,18 +114,17 @@ public:
     }
     bool internalState;
     FunctionType func;
-
 };
 
 template<class FunctionType>
 class ActionPropUI : public ButtonPropertyComponent{
 public:
-    ActionPropUI(const String & name,FunctionType f):ButtonPropertyComponent(name,true),func(f){};
+    ActionPropUI(const String & name,FunctionType f):ButtonPropertyComponent(juce::translate(name),true),func(f){};
     void buttonClicked() override{
         func(this);
     }
     String getButtonText() const override{
-        return getName();
+        return juce::translate(getName());
     };
 
     FunctionType func;
@@ -94,13 +146,13 @@ namespace{
     }
 
     void resetPreferences(ButtonPropertyComponent * ){
-        AlertWindow aw("reset preferences",
-                       "Are you sure you want to delete your prefs?",
+        AlertWindow aw(juce::translate("reset preferences"),
+                       juce::translate("Are you sure you want to delete your prefs?"),
                        AlertWindow::AlertIconType::WarningIcon);
-        aw.addButton("Ok", 1);
-        aw.addButton("Cancel", 2);
+        aw.addButton(juce::translate("Ok"), 1);
+        aw.addButton(juce::translate("Cancel"), 2);
         if(aw.runModalLoop()==1){
-            LOG("!! reseted user preferences");
+            LOGW("reseted user preferences");
             auto fl = {getAppProperties()->getUserSettings()->getFile()};
             for(auto f:fl){
                 if(f.exists()){
@@ -155,21 +207,24 @@ namespace{
 
 
     }
+
+
 }
 
 class PrefPanel : public PreferencesPanel{
     Component* createComponentForPage (const String& pageName)override{
-        if(pageName==AppPropertiesUI::GeneralPageName){
+        if(pageName==juce::translate(AppPropertiesUI::GeneralPageName)){
             auto res =  new PropertyPanel();
             res->addProperties(
                                {
                                    new BoolPropUI("check for updates"),
-                                   createActionProp("check for updates now",checkUpdatesNow)
+                                   createActionProp("check for updates now",checkUpdatesNow),
+                                   new EnumPropUI("language",Engine::getAvailableLanguages(),&Engine::setLanguage,"(restart needed)")
 
                                } );
             return res;
         }
-        else if (pageName==AppPropertiesUI::AudioPageName){
+        else if (pageName==juce::translate(AppPropertiesUI::AudioPageName)){
             auto* audioSettingsComp = new AudioDeviceSelectorComponent (getAudioDeviceManager(),
                                                                         0, 256,
                                                                         0, 256,
@@ -179,7 +234,7 @@ class PrefPanel : public PreferencesPanel{
 
         }
 
-        else if(pageName==AppPropertiesUI::AdvancedPageName){
+        else if(pageName==juce::translate(AppPropertiesUI::AdvancedPageName)){
             auto res =  new PropertyPanel();
             res->addProperties(
                                {new BoolPropUI("multiThreadedLoading"),
@@ -190,7 +245,7 @@ class PrefPanel : public PreferencesPanel{
             return res;
         }
 
-        else if(pageName==AppPropertiesUI::PluginsPageName){
+        else if(pageName==juce::translate(AppPropertiesUI::PluginsPageName)){
             auto vm = VSTManager::getInstance();
             if(vm){
                 auto appProps = getAppProperties()?getAppProperties()->getUserSettings():nullptr;
@@ -245,14 +300,14 @@ class PrefPanel : public PreferencesPanel{
                 void createForPageName(const String & pageName,PrefPanel * prefPanel){
                     const int normalColorId = TextButton::ColourIds::textColourOffId;
                     const int hoverColorId = TextButton::ColourIds::buttonOnColourId;
-                    prefPanel->addSettingsPage(pageName,
+                    prefPanel->addSettingsPage(juce::translate(pageName),
                                                createIcon(pageName,prefPanel,normalColorId) ,
                                                createIcon(pageName,prefPanel,hoverColorId) ,
                                                nullptr//createIcon(GeneralPageName,prefPanel,downColorId)
                                                );
                 }
 
-                AppPropertiesUI::AppPropertiesUI():ResizableWindow("Settings",true){
+                AppPropertiesUI::AppPropertiesUI():ResizableWindow(juce::translate("Settings"),true){
 
 
                     prefPanel = new PrefPanel();

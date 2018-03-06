@@ -20,7 +20,7 @@ ShapeShifterContent::ShapeShifterContent (Component* _contentComponent, const St
     contentName (_contentName),
     contentIsShown (false),
     contentComponent (_contentComponent),
-    info(_info)
+    info(juce::translate(_info))
 {
 
 }
@@ -32,7 +32,7 @@ ShapeShifterContent::~ShapeShifterContent()
 
 ShapeShifterContentComponent::ShapeShifterContentComponent (const String& contentName,const String & _info) :
     ShapeShifterContent (this, contentName,_info),
-    infoLabel("info",_info)
+    infoLabel("info",juce::translate(_info))
 {
     addAndMakeVisible(infoLabel);
     infoLabel.setAlpha(0.5);

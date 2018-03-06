@@ -24,7 +24,7 @@ class NodeContainer;
 class ContainerOutNode : public NodeBase, public AudioProcessorGraph::AudioGraphIOProcessor
 {
 public:
-    DECLARE_OBJ_TYPE (ContainerOutNode)
+    DECLARE_OBJ_TYPE (ContainerOutNode,"output of the current container")
     ~ContainerOutNode();
 
 

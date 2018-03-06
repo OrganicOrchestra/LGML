@@ -38,12 +38,13 @@ class ParameterContainer: public ControllableContainer,
     protected FactoryObject
 {
 public:
-    DECLARE_OBJ_TYPE (ParameterContainer)
+    DECLARE_OBJ_TYPE (ParameterContainer,"Parameter Container")
     virtual ~ParameterContainer();
 
     template<class T, class... Args>
     T* addNewParameter (const String& _niceName, const String& desc, Args...args);
     StringParameter* nameParam;
+    String info;
     String const getNiceName() override;
     String setNiceName (const String& _niceName) override;
     

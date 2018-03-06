@@ -33,7 +33,7 @@ class LooperNode :
 {
 
 public:
-    DECLARE_OBJ_TYPE (LooperNode)
+    DECLARE_OBJ_TYPE (LooperNode,"loop your sounds to mash the place up!")
     virtual ~LooperNode();
 
 

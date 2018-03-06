@@ -190,7 +190,7 @@ ShapeShifterContentComponent (contentName,
     addAndMakeVisible (vp);
     vp.setScrollBarThickness (10);
     addAndMakeVisible (addControllerBt);
-    addControllerBt.setTooltip ("Add controller");
+    addControllerBt.setTooltip (juce::translate("Add controller"));
     addControllerBt.addListener (this);
 
 }

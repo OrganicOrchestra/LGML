@@ -56,7 +56,7 @@ public:
 
     //
     void paintOverChildren (juce::Graphics& g) override;
-
+    String getTooltip() ;
 
 protected:
     ParameterContainer* relatedParameterContainer;

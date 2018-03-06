@@ -95,19 +95,22 @@ void MIDIClock::run()
 }
 
 void MIDIClock::syncPendingBeat(){
-    if(syncNextBeat){
+    if(syncNextBeat ){
         auto tm = TimeManager::getInstance();
         float newT = tm->getBeat();//getBeatWithDelta(1);
         if(newT>nextBeat){
             syncNextBeat = false;
-            float drift =(newT-nextBeat)*60000.0/TimeManager::getInstance()->BPM->doubleValue();
-            DBG("MIDI drift :  "<< drift);
+            //float drift =(newT-nextBeat)*60000.0/TimeManager::getInstance()->BPM->doubleValue();
+            //DBG("MIDI drift :  "<< drift);
             // jassert(fabs(drift)<10);
             //int numR = midiFifo.getNumReady();
             //midiFifo.finishedRead(numR);
+
             playStop(false);
             sendSPPIfNeeded();
-            midiContinue();
+            playStop(true);
+
+
 
         }
 
@@ -174,12 +177,12 @@ void MIDIClock::sendSPPIfNeeded(){
 
         //        int64 MIDIBeat = (int64)getBeatWithDelta(4);
         auto tm = TimeManager::getInstance();
-        int64 MIDIBeat = (int64)((tm->getBeat()  - delta*tm->BPM->doubleValue()/60000.0 )*4.0);
+        int MIDIBeat = (tm->getBeat()  - delta*tm->BPM->doubleValue()/60000.0 )*4.0;
         if(MIDIBeat<0){
             jassertfalse;
         }
         // SPP Msg
-        MidiMessage msg(0xF2,(int)(MIDIBeat & 0x7F),(int)((MIDIBeat>>7) & 0x7F));
+        MidiMessage msg = MidiMessage::songPositionPointer(MIDIBeat);
         int st1,st2,bs1,bs2;
         midiFifo.prepareToWrite(1, st1, bs1, st2,bs2);
         if(bs1>0)
@@ -218,7 +221,7 @@ void MIDIClock::playStop (bool playStop) {
             //lastppqn =tm->getBeat()*24;
             lastppqn = getBeatWithDelta(24);
 
-            if(tm->getBeat()==0 && delta==0){
+            if((tm->getBeat()==0 && delta==0) || !sendSPP){
                 messagesToSend[st1] = MidiMessage::midiStart();
             }
             else{
@@ -242,9 +245,4 @@ void MIDIClock::playStop (bool playStop) {
     midiFifo.finishedWrite(1);
 }
 
-void MIDIClock::midiContinue () {
-    int st1,bs1,st2,bs2;
-    midiFifo.prepareToWrite(1, st1, bs1, st2, bs2);
-    if(bs1 >0){messagesToSend[st1] = MidiMessage::midiContinue();}
-    midiFifo.finishedWrite(1);
-}
+

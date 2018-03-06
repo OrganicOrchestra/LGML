@@ -24,7 +24,7 @@
 class JsNode : public NodeBase, public JsEnvironment
 {
 public :
-    DECLARE_OBJ_TYPE (JsNode);
+    DECLARE_OBJ_TYPE (JsNode,"let's you write some script in lgml");
     JsNode();
     
 

@@ -105,7 +105,7 @@ public :
         nmui->setWantsKeyboardFocus (true);
         addAndMakeVisible (addNodeBt);
         addNodeBt.addListener (this);
-        addNodeBt.setTooltip ("Add Node");
+        addNodeBt.setTooltip (juce::translate("Add Node"));
         //    setOpaque(true);
         vp.setScrollOnDragEnabled (false);
 

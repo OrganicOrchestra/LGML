@@ -37,7 +37,7 @@ class FastMapper :
 {
 public:
     juce_DeclareSingleton (FastMapper, true)
-    DECLARE_OBJ_TYPE (FastMapper)
+    DECLARE_OBJ_TYPE (FastMapper,"map all parameters together in LGML")
 
 
     virtual ~FastMapper();

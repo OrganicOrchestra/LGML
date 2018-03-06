@@ -170,7 +170,7 @@ void LooperNodeContentUI::trackNumChanged (int num)
 ////////////////
 
 
-LooperNodeContentUI::TrackUI::TrackUI (LooperTrack* track) : track (track),
+LooperNodeContentUI::TrackUI::TrackUI (LooperTrack* track) :InspectableComponent(track), track (track),
     isSelected (false), timeStateUI (track)
 {
     recPlayButton = ParameterUIFactory::createDefaultUI (track->recPlayTrig);
@@ -212,6 +212,7 @@ void LooperNodeContentUI::TrackUI::paint (Graphics& g)
 {
     g.setColour (findColour (ResizableWindow::backgroundColourId).brighter().withAlpha (0.5f));
     g.fillRoundedRectangle (getLocalBounds().toFloat(), 2.f);
+
 }
 
 void LooperNodeContentUI::TrackUI::paintOverChildren (Graphics& g)
@@ -238,7 +239,7 @@ void LooperNodeContentUI::TrackUI::resized()
 
     selectMeButton->setBounds(r.withBottom(timeUISize));
     timeStateUI.setBounds (r.removeFromTop (timeUISize).withSize (timeUISize, timeUISize).reduced (2)); //header
-    sampleChoiceDDL->setBounds (r.removeFromTop (15).reduced (1));
+    sampleChoiceDDL->setBounds (r.removeFromTop (20).reduced (1));
 
     volumeSlider->setBounds (r.removeFromRight (r.getWidth() / 3).reduced (1));
     r.reduce (4, 0);
@@ -271,6 +272,7 @@ LooperNodeContentUI::TrackUI::TimeStateUI::TimeStateUI (LooperTrack* _track): tr
     track->addTrackListener (this);
     setTrackTimeUpdateRateHz (10);
     trackStateChangedAsync (_track->trackState);
+    
 }
 LooperNodeContentUI::TrackUI::TimeStateUI::~TimeStateUI()
 {

@@ -49,6 +49,7 @@ class ConnectableNodeUI :
     public InspectableComponent,
     public ConnectableNode::ConnectableNodeListener,
     public ConnectableNodeUIParams
+    
 {
 public:
     ConnectableNodeUI (ConnectableNode* cn, ConnectableNodeUIParams* params ,ConnectableNodeContentUI* contentUI = nullptr, ConnectableNodeHeaderUI* headerUI = nullptr);
@@ -154,6 +155,7 @@ public:
 
     //Need to clean out and decide whether there can be more than 1 data connector / audio connector on nodes
     ConnectorComponent* getFirstConnector (NodeConnection::ConnectionType connectionType, ConnectorComponent::ConnectorIOType ioType);
+
 
 private:
 

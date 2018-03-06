@@ -36,6 +36,7 @@ ParameterUI::ParameterUI (Parameter* _parameter) :
     {
         parameter->addAsyncCoalescedListener (this);
         parameter->addParameterListener (this);
+        controllableStateChanged (parameter.get());
         
     }
     else
@@ -49,7 +50,7 @@ ParameterUI::ParameterUI (Parameter* _parameter) :
     parameter->addControllableListener (this);
     mappingState = NOMAP;
     setMappingState (LGMLDragger::getInstance()->isMappingActive);
-    
+
     
     
 
@@ -74,7 +75,8 @@ ParameterUI::~ParameterUI()
 
 void ParameterUI::setCustomText (const String text)
 {
-    customTextDisplayed = text;
+
+    customTextDisplayed = juce::translate(text);
     repaint();
 }
 
@@ -84,10 +86,10 @@ void ParameterUI::mouseDown (const MouseEvent& e)
     if (e.mods.isRightButtonDown())
     {
         PopupMenu p;
-        p.addItem (1, "Select Parameter (Alt+click)");
-        p.addItem (2, "Copy control address");
-        p.addItem (3, "Add FastMap To");
-        p.addItem (4, "Add FastMap From");
+        p.addItem (1, juce::translate("Select Parameter (Alt+click)"));
+        p.addItem (2, juce::translate("Copy control address"));
+        p.addItem (3, juce::translate("Add FastMap To"));
+        p.addItem (4, juce::translate("Add FastMap From"));
 
         int result = p.show();
 
@@ -124,7 +126,7 @@ bool ParameterUI::shouldBailOut()
     if (bailOut)
     {
         // TODO : changing vst preset sometimes hit that
-        NLOG ("ParameterUI", "!!! old component still displayed : " << getName());
+        NLOGE("ParameterUI", "old component still displayed : " << getName());
         //jassertfalse;
     }
 
@@ -146,7 +148,7 @@ void ParameterUI::controllableControlAddressChanged (Controllable*)
 
 
 String ParameterUI::getTooltip(){
-    return parameter->description + "\nControl Address : " + parameter->controlAddress;//"\nValue : "+parameter->value.toString();
+    return juce::translate(parameter->description) + "\n"+juce::translate("Control Address")+" : " + parameter->controlAddress;//"\nValue : "+parameter->value.toString();
 }
 
 void ParameterUI::visibilityChanged(){
@@ -322,7 +324,7 @@ NamedParameterUI::NamedParameterUI (ParameterUI* ui, int _labelWidth, bool label
     addAndMakeVisible (controllableLabel);
 
     controllableLabel.setJustificationType (Justification::centredLeft);
-    controllableLabel.setText (ui->parameter->niceName, dontSendNotification);
+    controllableLabel.setText (juce::translate(ui->parameter->niceName), dontSendNotification);
 
     if (ui->parameter->isUserDefined)
     {
@@ -369,7 +371,7 @@ void NamedParameterUI::labelTextChanged (Label* labelThatHasChanged)
 
 void  NamedParameterUI::controllableControlAddressChanged (Controllable* c){
     if(c && c==parameter){
-    controllableLabel.setText (parameter->niceName, dontSendNotification);
+    controllableLabel.setText (juce::translate(parameter->niceName), dontSendNotification);
     }
 }
 

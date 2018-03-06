@@ -447,10 +447,10 @@ void LooperNode::onContainerTriggerTriggered (Trigger* t)
             exportFolder = File::getSpecialLocation(File::SpecialLocationType::tempDirectory);
             
             if(exportFolder.exists()){
-                LOG("!! session not loaded, exporting to temp folder : "+ exportFolder.getFullPathName());
+                LOGW("session not loaded, exporting to temp folder : "+ exportFolder.getFullPathName());
             }
             else{
-                LOG("!!! can't create temporary folder for export path");
+                LOGE("can't create temporary folder for export path");
                 return;
             }
             
@@ -483,13 +483,13 @@ void LooperNode::onContainerTriggerTriggered (Trigger* t)
                     else if(loadedLGMLPath.startsWith(File::getSeparatorString())){
                         isOutsideFile = true;
                         destFile = folder.getChildFile(loadedFile.getFileName());
-                        LOG("!! copying sample : "+loadedLGMLPath);
+                        LOGW("copying sample : "+loadedLGMLPath);
                         loadedFile.copyFileTo(destFile);
                         
 
                     }
                     else{
-                        LOG ("!! existing sample already in LGML Folder");
+                        LOGW("existing sample already in LGML Folder");
                         continue;
                         
                     }
@@ -526,7 +526,7 @@ void LooperNode::onContainerTriggerTriggered (Trigger* t)
                     }
                     else
                     {
-                        LOG ("!!! export audio : can't create output format writer");
+                        LOGE("export audio : can't create output format writer");
                         jassertfalse;
                         continue;
                     }

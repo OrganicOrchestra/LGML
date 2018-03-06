@@ -79,7 +79,7 @@ void BoolToggleUI::paint (Graphics& g)
     }
     else
     {
-        g.drawText (parameter->niceName, getLocalBounds().reduced (2).toFloat(), Justification::centred);
+        g.drawText (juce::translate(parameter->niceName), getLocalBounds().reduced (2).toFloat(), Justification::centred);
     }
     }
 }

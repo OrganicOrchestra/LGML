@@ -110,7 +110,7 @@ class EnumChangeMessage
 class EnumParameter : public Parameter, public EnumParameterModel::Listener, public QueuedNotifier<EnumChangeMessage>::Listener
 {
 public:
-    DECLARE_OBJ_TYPE (EnumParameter)
+    DECLARE_OBJ_TYPE (EnumParameter,"List parameter")
     EnumParameter (const String& niceName, const String& description = "", EnumParameterModel* modelInstance = nullptr, const var& defaultValue = var::undefined(), bool userCanEnterText = false, bool enabled = true);
     ~EnumParameter() ;
 

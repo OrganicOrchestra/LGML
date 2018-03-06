@@ -765,10 +765,10 @@ static const unsigned char temp_binary_data_1[] =
 "                \"type\": 0,\r\n"
 "                \"width\": 1348,\r\n"
 "                \"height\": 273,\r\n"
-"                \"currentContent\": \"Tooltip\",\r\n"
+"                \"currentContent\": \"Help\",\r\n"
 "                \"tabs\": [\r\n"
 "                  {\r\n"
-"                    \"name\": \"Tooltip\"\r\n"
+"                    \"name\": \"Help\"\r\n"
 "                  }\r\n"
 "                ]\r\n"
 "              }\r\n"
@@ -3895,7 +3895,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) throw
     switch (hash)
     {
         case 0x9bae78ed:  numBytes = 51582; return littleredridinghoodmd_png;
-        case 0x1fa434c2:  numBytes = 2259; return default_lgmllayout;
+        case 0x1fa434c2:  numBytes = 2253; return default_lgmllayout;
         case 0xae53f640:  numBytes = 58335; return removeBT_png;
         case 0xe88b5a8e:  numBytes = 71763; return grandlouloup_png;
         case 0x5550a5bc:  numBytes = 45430; return wolf_footprint_png;

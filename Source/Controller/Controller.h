@@ -26,7 +26,7 @@
 class ControllerUI;
 class ControllerEditor;
 
-
+constexpr int activityTriggerDebounceTime =50;
 class Controller :
     public ParameterContainer
 {

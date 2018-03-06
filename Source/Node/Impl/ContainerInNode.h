@@ -26,7 +26,7 @@ class ContainerInNode :
     virtual public AudioProcessorGraph::AudioGraphIOProcessor
 {
 public:
-    DECLARE_OBJ_TYPE (ContainerInNode)
+    DECLARE_OBJ_TYPE (ContainerInNode,"input of the current container")
     ~ContainerInNode();
 
 

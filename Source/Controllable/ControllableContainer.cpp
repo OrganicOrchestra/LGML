@@ -214,7 +214,7 @@ void ControllableContainer::removeChildControllableContainer (ControllableContai
     controllableContainerListeners.call (&Listener::controllableContainerRemoved, this, container);
     controllableContainers.removeAllInstancesOf (container);
 
-    //  container->removeControllableContainerListener(this);
+      
     notifyStructureChanged (this,false);
     container->setParentContainer (nullptr);
 }
@@ -376,7 +376,7 @@ StringArray ControllableContainer::getControlAddressArray (const ControllableCon
 void ControllableContainer::setParentContainer (ControllableContainer* container)
 {
     this->parentContainer = container;
-    updateChildrenControlAddress();
+    if(container!=nullptr)updateChildrenControlAddress();
 
 }
 

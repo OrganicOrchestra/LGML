@@ -230,7 +230,7 @@ if __name__ == "__main__":
   sessionPath = "/Users/Tintamar/Documents/lgml.lgml"
   with LGMLSession(sessionPath) as s:
     ori = s.read()
-    volParam = LGMLParam("/node/audiodeviceinnode/volume1")
+    volParam = LGMLParam("/node/audiodevicein/volume1")
     s.run()
     s.save()
     newS = s.read()

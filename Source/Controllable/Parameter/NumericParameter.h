@@ -33,7 +33,7 @@ public:
 
     float getNormalizedValue() const;
 
-    DECLARE_OBJ_TYPE (NumericParameter)
+    DECLARE_OBJ_TYPE (NumericParameter,"Numeric parameter")
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NumericParameter)
 };
 

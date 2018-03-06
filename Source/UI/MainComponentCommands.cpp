@@ -237,7 +237,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
 
         case CommandIDs::newFile:
         {
-            int result = AlertWindow::showYesNoCancelBox (AlertWindow::QuestionIcon, "Save document", "Do you want to save the document before creating a new one ?");
+            int result = AlertWindow::showYesNoCancelBox (AlertWindow::QuestionIcon, juce::translate("Save document"), juce::translate("Do you want to save the document before creating a new one ?"));
 
             if (result != 0)
             {
@@ -251,7 +251,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
 
         case CommandIDs::open:
         {
-            int result = AlertWindow::showYesNoCancelBox (AlertWindow::QuestionIcon, "Save document", "Do you want to save the document before opening a new one ?");
+            int result = AlertWindow::showYesNoCancelBox (AlertWindow::QuestionIcon, juce::translate("Save document"), juce::translate("Do you want to save the document before opening a new one ?"));
 
             if (result != 0)
             {
@@ -266,7 +266,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
         {
             // TODO implement the JUCE version calling change every time something is made (maybe todo with undomanager)
             //            int result = engine->saveIfNeededAndUserAgrees();
-            int result = AlertWindow::showYesNoCancelBox (AlertWindow::QuestionIcon, "Save document", "Do you want to save the document before opening the last one ?");
+            int result = AlertWindow::showYesNoCancelBox (AlertWindow::QuestionIcon, juce::translate("Save document"), "Do you want to save the document before opening the last one ?");
 
             if (result != 0)
             {

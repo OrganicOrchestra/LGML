@@ -33,7 +33,7 @@ public EnumParameter::EnumListener,
 public JsEnvironment
 {
 public :
-    DECLARE_OBJ_TYPE_DEFAULTNAME (MIDIController, "MIDI");
+    DECLARE_OBJ_TYPE_DEFAULTNAME (MIDIController, "MIDI","use your MIDI device to control LGML");
     virtual ~MIDIController();
 
     
@@ -50,6 +50,7 @@ public :
     BoolParameter* logIncoming;
     IntParameter* channelFilter;
     BoolParameter *sendMIDIClock;
+    BoolParameter *sendMIDIPosition;
     IntParameter * midiClockOffset;
 
 

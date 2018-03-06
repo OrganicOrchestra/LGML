@@ -81,7 +81,7 @@ class LinuxBuilder (BuilderBase):
 
 
   def patchMakeFileIfNeeded(self):
-
+    # nasty hack to support c++11 builds
     def patchMakeFile(ori,rpl):
       makeFile = BuilderBase.rootPath+"/Builds/LinuxMakefile/Makefile"
       with open(makeFile,'r') as fp:

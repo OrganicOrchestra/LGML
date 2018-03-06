@@ -24,7 +24,7 @@ ShapeShifterPanelHeader::ShapeShifterPanelHeader()
     //  addPannelMenu.setButtonText("+");
     addAndMakeVisible (addPannelMenu);
     //  addPannelMenu.setConnectedEdges(0);
-    addPannelMenu.setTooltip ("add tab to this panel");
+    addPannelMenu.setTooltip(juce::translate("add tab to this panel"));
     addPannelMenu.addListener (this);
     setOpaque (true);
 }
@@ -138,7 +138,7 @@ void ShapeShifterPanelHeader::buttonClicked (Button* b)
 
         for (auto& n : globalPanelNames)
         {
-            menu.addItem (currentID, n, true);
+            menu.addItem (currentID,juce::translate(n), true);
             currentID++;
         }
 

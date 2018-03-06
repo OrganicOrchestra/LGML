@@ -111,6 +111,16 @@ void InspectableComponent::setSelected (bool value)
 
 }
 
+String InspectableComponent::getTooltip() {
+    if(relatedParameterContainer){
+        return relatedParameterContainer->getFactoryInfo();
+    }
+    else if(relatedParameter){
+        return relatedParameter->getFactoryInfo();
+    }
+    return juce::translate("no info");
+}
+
 void InspectableComponent::setSelectedInternal (bool)
 {
     //to be overriden

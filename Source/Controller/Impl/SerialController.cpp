@@ -172,7 +172,7 @@ void SerialController::serialDataReceived (const var& data)
 
     processMessage (data.toString());
     if(logIncoming->boolValue()){NLOG (getNiceName(),"In : "+ data.toString());}
-    inActivityTrigger->trigger();
+    inActivityTrigger->triggerDebounced(activityTriggerDebounceTime);
 
 }
 
@@ -199,7 +199,7 @@ var SerialController::sendMessageFromScript (const var::NativeFunctionArgs&)
 
 void SerialController::sendIdentificationQuery()
 {
-    outActivityTrigger->trigger();
+    outActivityTrigger->triggerDebounced(activityTriggerDebounceTime);
     port->writeString ("i");
 }
 

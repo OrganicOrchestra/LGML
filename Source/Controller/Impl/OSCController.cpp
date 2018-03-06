@@ -104,7 +104,7 @@ void OSCController::setupReceiver()
     if (!receiver.connect (localPortParam->stringValue().getIntValue()))
     {
 
-        LOG ("!!! can't connect to local port : " + localPortParam->stringValue());
+        LOGE("can't connect to local port : " + localPortParam->stringValue());
     };
 
     //DBG("Receiver connected" + String(result));
@@ -118,7 +118,7 @@ void OSCController::setupSender()
 
     if (!hostNameResolved)
     {
-        LOG ("!!! no valid ip found for " << remoteHostParam->stringValue());
+        LOGE("no valid ip found for " << remoteHostParam->stringValue());
     }
 
 }
@@ -168,7 +168,7 @@ void OSCController::resolveHostnameIfNeeded()
             }
             else
             {
-                LOG ("!! can't resolve IP : " << hostName);
+                LOGW("can't resolve IP : " << hostName);
             }
         }
         else
@@ -214,12 +214,12 @@ void OSCController::processMessage (const OSCMessage& msg)
         MessageManager::getInstance()->callAsync ([this, msg]() {checkAndAddParameterIfNeeded (msg);});
     }
     if(logIncoming && !result){
-        LOG("!! "+result.getErrorMessage());
+        LOGW(result.getErrorMessage());
     }
     isProcessingOSC = false;
     
 
-    inActivityTrigger->trigger();
+    inActivityTrigger->triggerDebounced(activityTriggerDebounceTime);
 }
 
 
@@ -524,7 +524,7 @@ bool OSCController::sendOSC (OSCMessage& m)
 bool OSCController::sendOSCInternal (OSCMessage& m)
 {
     if (logOutGoingOSC->boolValue()) { logMessage (m, "Out:");}
-    outActivityTrigger->trigger();
+    outActivityTrigger->triggerDebounced(activityTriggerDebounceTime);
     if(isConnected->boolValue()){
     return sender.send (m);
     }
@@ -631,7 +631,7 @@ void OSCController::OSCMessageQueue::add (OSCMessage* m)
     {
         aFifo.finishedRead (1);
         aFifo.prepareToWrite (1, startIndex1, blockSize1, startIndex2, blockSize2);
-        NLOG (owner->getNiceName(), "!!! still flooding OSC");
+        NLOGE (owner->getNiceName(), "still flooding OSC");
     }
     if (blockSize1 > 0)
     {

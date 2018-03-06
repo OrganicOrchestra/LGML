@@ -745,7 +745,8 @@ void LooperTrack::setTrackState (TrackState newState)
                 if (lastMaster)
                 {
                     lastMaster->setTrackState (WILL_PLAY);
-                    quantizedRecordStart = 0;
+                    setTrackState(WILL_RECORD);
+                    return;
                 }
                 else
                 {
@@ -790,7 +791,7 @@ void LooperTrack::setTrackState (TrackState newState)
             {
                 //          jassertfalse;
                 newState = RECORDING;
-                SLOG ("!! Looper: can't record that little of audio keep recording a bit");
+                SLOG("!! Looper: can't record that little of audio keep recording a bit");
                 quantizedRecordEnd = timeManager->getTimeInSample() + minRecordTime - playableBuffer.getRecordedLength() + 2048;
 
                 if (isMasterTempoTrack()) {quantizedPlayStart = quantizedRecordEnd;}
@@ -978,7 +979,7 @@ void LooperTrack::loadAudioSample (const String& path)
 
             if (importSize >= MAX_NUMSAMPLES)
             {
-                LOG ("!!! trying to import too much audio : " << importSize / parentLooper->getSampleRate() << "s ,max :" << (MAX_NUMSAMPLES) / parentLooper->getSampleRate() << "s");
+                LOGE("trying to import too much audio : " << importSize / parentLooper->getSampleRate() << "s ,max :" << (MAX_NUMSAMPLES) / parentLooper->getSampleRate() << "s");
             }
             else
             {
@@ -991,7 +992,7 @@ void LooperTrack::loadAudioSample (const String& path)
 
                 if (sampleRateRatio != 1)
                 {
-                    LOG ("!! sample loading : resampling should work but still experimental : " \
+                    LOGW("sample loading : resampling should work but still experimental : " \
                          << audioFile.getFileName() << " : " << audioReader->sampleRate);
 
                     CatmullRomInterpolator interpolator;
@@ -1035,12 +1036,12 @@ void LooperTrack::loadAudioSample (const String& path)
         }
         else
         {
-            LOG ("!!! sample loading : format not supported : " << audioFile.getFileExtension());
+            LOGE("sample loading : format not supported : " << audioFile.getFileExtension());
         }
     }
     else
     {
-        LOG ("!!! sample loading : file not found : " << audioFile.getFullPathName());
+        LOGE("sample loading : file not found : " << audioFile.getFullPathName());
     }
     isLoadingAudioFile = false;
 }

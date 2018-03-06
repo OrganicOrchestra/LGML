@@ -32,7 +32,7 @@ public:
             mainComp->addKeyListener(this);
         }
         else{
-            LOG("!!! can't find component for computer keyboard ");
+            LOGE("can't find component for computer keyboard ");
         }
     };
     ~ComputerKeyboardMIDIDevice(){

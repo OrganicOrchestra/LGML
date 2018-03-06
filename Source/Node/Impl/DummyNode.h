@@ -23,7 +23,7 @@
 class DummyNode : public NodeBase
 {
 public:
-    DECLARE_OBJ_TYPE (DummyNode)
+    DECLARE_OBJ_TYPE (DummyNode,"debugging node : internal  use only")
     ~DummyNode();
 
     //parameters

@@ -38,7 +38,7 @@ PresetChooserUI::PresetChooserUI (ParameterContainer* _container) :
     ComboBox::addListener (this);
     container->addControllableContainerListener (this);
     setTextWhenNothingSelected ("Preset");
-    setTooltip ("Set the current preset at :\n" + container->currentPresetName->getControlAddress() + " <presetName>");
+    setTooltip (juce::translate("Set the current preset at")+" :\n" + container->currentPresetName->getControlAddress() + " <presetName>");
 }
 
 PresetChooserUI::~PresetChooserUI()
@@ -150,7 +150,7 @@ void PresetChooserUI::comboBoxChanged (ComboBox* cb)
     }
     else if (presetID >= PresetChoice::deleteStartId)
     {
-        bool ok = AlertWindow::showOkCancelBox (AlertWindow::AlertIconType::QuestionIcon, "Oh man, d'ya know watcha doin' ?", "Do you REALLY want to delete this preset ?\nLike, really really ?\nJust think about it man.", "Oh yeah", "F* No");
+        bool ok = AlertWindow::showOkCancelBox (AlertWindow::AlertIconType::QuestionIcon, juce::translate("Oh man, d'ya know watcha doin' ?"), juce::translate("Do you REALLY want to delete this preset ?\nLike, really really ?\nJust think about it man."), juce::translate("Oh yeah"), juce::translate("F* No"));
 
         if (ok)
         {

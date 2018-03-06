@@ -38,7 +38,7 @@ public:
     bool checkValueIsTheSame (const var& v1, const var& v2) override;
     T getX() const {return (T)value[0];}
     T getY() const {return (T)value[1];}
-    DECLARE_OBJ_TYPE (Point2DParameter<T>);
+    DECLARE_OBJ_TYPE (Point2DParameter<T>,"2D Point Parameter");
 private:
 
 

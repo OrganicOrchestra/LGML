@@ -25,7 +25,7 @@ class DataInNode :
     public NodeBase
 {
 public:
-    DECLARE_OBJ_TYPE (DataInNode)
+    DECLARE_OBJ_TYPE (DataInNode,"deprecated")
     ~DataInNode();
 
     Array<Parameter*> dynamicParameters;

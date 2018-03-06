@@ -24,7 +24,7 @@ class AudioMixerNode : public NodeBase
 {
 
 public:
-    DECLARE_OBJ_TYPE (AudioMixerNode);
+    DECLARE_OBJ_TYPE (AudioMixerNode,"mix audio channels together");
     class OutputBus : public ParameterContainer
     {
     public:

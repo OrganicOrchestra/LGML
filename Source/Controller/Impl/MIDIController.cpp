@@ -37,6 +37,8 @@ midiChooser(this,true,false)
     logIncoming->isPresettable =false;
 
     sendMIDIClock = addNewParameter<BoolParameter> ("send MIDI Clock", "send MIDI Clock",false);
+    sendMIDIPosition = addNewParameter<BoolParameter> ("send MIDI Position", "send MIDI Position information",false);
+    sendMIDIPosition->setEnabled(sendMIDIClock->boolValue());
     midiClockOffset = addNewParameter<IntParameter>("MIDI clock offset", "offset to apply to midiclock",0, -300,300);
     channelFilter = addNewParameter<IntParameter> ("Channel", "Channel to filter message (0 = accept all channels)", 0, 0, 16);
     midiClock.setOutput(this);
@@ -137,7 +139,7 @@ void MIDIController::handleIncomingMidiMessage (MidiInput*,
         callJs (message);
     }
 
-    if(!message.isNoteOff())inActivityTrigger->trigger();
+    if(!message.isNoteOff())inActivityTrigger->triggerDebounced(activityTriggerDebounceTime);
 }
 
 
@@ -188,7 +190,7 @@ void MIDIController::onContainerParameterChanged (Parameter* p)
     {
         setNamespaceName ("controllers." + shortName);
     }
-    if(p==midiChooser.getDeviceInEnumParameter()){
+    else if(p==midiChooser.getDeviceInEnumParameter()){
         auto ep = midiChooser.getDeviceInEnumParameter();
         auto selId = ep->getFirstSelectedId();
         bool connected = ep->getModel()->isValidId(selId);
@@ -196,13 +198,17 @@ void MIDIController::onContainerParameterChanged (Parameter* p)
         startMidiClockIfNeeded();
 
     }
-    if(p==isConnected){
+    else if(p==isConnected){
         startMidiClockIfNeeded();
     }
-    if(p==sendMIDIClock){
+    else if(p==sendMIDIClock){
+        sendMIDIPosition->setEnabled(sendMIDIClock->boolValue());
         startMidiClockIfNeeded();
     }
-    if(p==midiClockOffset){
+    else if(p==sendMIDIPosition){
+        midiClock.sendSPP = sendMIDIPosition->boolValue();
+    }
+    else if(p==midiClockOffset){
         midiClock.delta = midiClockOffset->intValue();
         midiClock.reset();
     }
@@ -225,7 +231,7 @@ void MIDIController::startMidiClockIfNeeded(){
     }
 }
 void MIDIController::midiMessageSent(){
-    outActivityTrigger->trigger();
+    outActivityTrigger->triggerDebounced(activityTriggerDebounceTime);
 
 };
 
@@ -274,7 +280,7 @@ var MIDIController::sendNoteOnFromJS (const var::NativeFunctionArgs& a )
 
     if (a.numArguments < 3)
     {
-        NLOG ("MidiController", "!!! Incorrect number of arguments for sendNoteOn");
+        NLOGE("MidiController", "Incorrect number of arguments for sendNoteOn");
         return var (false);
     }
 
@@ -290,7 +296,7 @@ var MIDIController::sendNoteOffFromJS (const var::NativeFunctionArgs& a)
 
     if (a.numArguments < 3)
     {
-        NLOG ("MidiController", "!!! Incorrect number of arguments for sendNoteOff");
+        NLOGE("MidiController", "Incorrect number of arguments for sendNoteOff");
         return var (false);
     }
 
@@ -304,7 +310,7 @@ var MIDIController::sendCCFromJS (const var::NativeFunctionArgs& a)
 
     if (a.numArguments < 3)
     {
-        NLOG ("MidiController", "!!! Incorrect number of arguments for sendCC");
+        NLOGE("MidiController", "Incorrect number of arguments for sendCC");
         return var (false);
     }
     int targetChannel = (int) (a.arguments[0]);
@@ -322,7 +328,7 @@ var MIDIController::sendSysExFromJS (const var::NativeFunctionArgs& a)
 
     if (a.numArguments > 8)
     {
-        NLOG ("MidiController", "!!! Incorrect number of arguments for sendSysEx");
+        NLOGE("MidiController", "Incorrect number of arguments for sendSysEx");
         return var (false);
     }
 
