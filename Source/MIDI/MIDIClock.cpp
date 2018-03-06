@@ -19,8 +19,7 @@
 #include "MIDIClock.h"
 
 
-
-MIDIClock::MIDIClock()
+MIDIClock::MIDIClock(bool _sendSPP)
 :Thread("MIDIClock"),midiFifo(MIDI_SYNC_QUEUE_SIZE)
 {
     TimeManager::getInstance()->addTimeManagerListener(this);
@@ -28,8 +27,8 @@ MIDIClock::MIDIClock()
     interval = (1000.0/(4.0*framesPerSecond));
     delta = 0.0;
 
-    sendSPP = true;
-    syncNextBeat = false;
+    sendSPP = _sendSPP;
+
 }
 
 MIDIClock::~MIDIClock()
@@ -73,14 +72,13 @@ void MIDIClock::stop()
 void MIDIClock::run()
 {
 
-    lastppqn = getBeatWithDelta(24);
+    state.ppqn = getBeatWithDelta(24);
 
     int st1,st2,bs1,bs2,i;
     while (! threadShouldExit())
     {
 
         addClockIfNeeded();
-        syncPendingBeat();
         int numR = midiFifo.getNumReady();
         midiFifo.prepareToRead(numR, st1, bs1, st2, bs2);
         for( i = 0;i< bs1 ; i++){
@@ -94,71 +92,98 @@ void MIDIClock::run()
     }
 }
 
-void MIDIClock::syncPendingBeat(){
-    if(syncNextBeat ){
-        auto tm = TimeManager::getInstance();
-        float newT = tm->getBeat();//getBeatWithDelta(1);
-        if(newT>nextBeat){
-            syncNextBeat = false;
-            //float drift =(newT-nextBeat)*60000.0/TimeManager::getInstance()->BPM->doubleValue();
-            //DBG("MIDI drift :  "<< drift);
-            // jassert(fabs(drift)<10);
-            //int numR = midiFifo.getNumReady();
-            //midiFifo.finishedRead(numR);
 
-            playStop(false);
-            sendSPPIfNeeded();
-            playStop(true);
-
-
-
-        }
-
-    }
-
-}
 
 double MIDIClock::getBeatWithDelta(int multiplier){
     auto tm = TimeManager::getInstance();
     return (tm->getBeat()+ delta*1.0*tm->BPM->doubleValue()/60000.0)*1.0*multiplier ;
 }
 
-void MIDIClock::askSyncOnNextBeat(){
-    int inc = 1;
-    auto tm = TimeManager::getInstance();
-    if(tm->isPlaying()){
-        if( !syncNextBeat){
-            nextBeat  = getBeatWithDelta(1)+inc;
-            while(nextBeat<=0){
-                nextBeat+=inc;
-            }
-            syncNextBeat = true;
-        }
-        //        else{
-        //            nextBeat = jmax(nextBeat,getBeatWithDelta(1)+inc);
-        //        }
 
-    }
-    else{
-        syncNextBeat = false;
-        nextBeat = 0;
-    }
-    //DBG("nextBeat : " << nextBeat);
-}
 void MIDIClock::addClockIfNeeded(){
-    if(!TimeManager::getInstance()->isPlaying())return;
+    if(!TimeManager::getInstance()->isPlaying() || TimeManager::getInstance()->isSettingTempo->boolValue())return;
     int newT = getBeatWithDelta(24);
 
+
+
     JUCE_CONSTEXPR int maxClockMsg = MIDI_SYNC_QUEUE_SIZE - 4;
-    int numClocksToAdd  = (newT - lastppqn);
+    int numClocksToAdd  = (newT - state.ppqn);
     if(numClocksToAdd<0){
+        DBG("waiting clk:" <<numClocksToAdd);
         return;
+    }
+    if(numClocksToAdd>=0 && !state.isPlaying){
+        if(sendSPP)sendCurrentSPP();
+        if(!state.isPlaying)sendOneMsg(MidiMessage::midiStart());
+        else sendOneMsg(MidiMessage::midiContinue());
+        state.isPlaying=true;
     }
     if(numClocksToAdd > maxClockMsg){
         jassertfalse;
         numClocksToAdd = maxClockMsg;
 
     }
+
+    sendClocks(numClocksToAdd);
+
+}
+
+void MIDIClock::sendCurrentSPP(){
+    if(sendSPP){
+        jassert(!state.isPlaying);
+        //        int64 MIDIBeat = (int64)getBeatWithDelta(4);
+        auto tm = TimeManager::getInstance();
+        int MIDIBeat = (tm->getBeat() )*4.0;
+        if(MIDIBeat<0){
+//            jassertfalse;
+        }
+        // SPP Msg
+       sendOneMsg(MidiMessage::songPositionPointer(MIDIBeat));
+
+
+    }
+    
+}
+
+
+void MIDIClock::reset()
+{}
+
+
+
+void MIDIClock::BPMChanged (double /*BPM*/) {}
+
+void MIDIClock::timeJumped (sample_clk_t time) {
+    if(!state.isPlaying){
+        sendCurrentSPP();
+    }
+    else{
+        int dbg;dbg++;
+    }
+}
+
+void MIDIClock::playStop (bool playStop) {
+
+    if(playStop){
+
+        state.ppqn = getBeatWithDelta(24);
+        if(state.ppqn<0){sendClocks(-state.ppqn);}
+
+
+
+
+    }
+    else{
+
+        sendOneMsg(MidiMessage::midiStop());
+        state.isPlaying=false;
+
+    }
+
+}
+
+
+void MIDIClock::sendClocks(const int numClocksToAdd){
     int st1,st2,bs1,bs2;
     midiFifo.prepareToWrite(numClocksToAdd, st1, bs1, st2,bs2);
     for(int i = st1 ; i < st1+bs1 ; i++){
@@ -166,83 +191,18 @@ void MIDIClock::addClockIfNeeded(){
     }
     for(int i = st2 ; i < st2+bs2 ; i++){messagesToSend[i] = MidiMessage::midiClock();}
     midiFifo.finishedWrite(bs1+bs2);
-
-
-    lastppqn = newT;
-}
-
-void MIDIClock::sendSPPIfNeeded(){
-    if(sendSPP){
-
-
-        //        int64 MIDIBeat = (int64)getBeatWithDelta(4);
-        auto tm = TimeManager::getInstance();
-        int MIDIBeat = (tm->getBeat()  - delta*tm->BPM->doubleValue()/60000.0 )*4.0;
-        if(MIDIBeat<0){
-            jassertfalse;
-        }
-        // SPP Msg
-        MidiMessage msg = MidiMessage::songPositionPointer(MIDIBeat);
-        int st1,st2,bs1,bs2;
-        midiFifo.prepareToWrite(1, st1, bs1, st2,bs2);
-        if(bs1>0)
-            messagesToSend[st1] = msg;
-        else
-            jassertfalse;
-        midiFifo.finishedWrite(bs1);
-    }
-}
-
-
-void MIDIClock::reset()
-{
-
-    askSyncOnNextBeat();
-}
-
-
-
-void MIDIClock::BPMChanged (double /*BPM*/) {}
-
-void MIDIClock::timeJumped (sample_clk_t time) {
-
-    askSyncOnNextBeat();
+    state.ppqn+=numClocksToAdd;
 
 
 }
 
-void MIDIClock::playStop (bool playStop) {
-    int st1,bs1,st2,bs2;
-    midiFifo.prepareToWrite(1, st1, bs1, st2, bs2);
-    if(bs1 >0){
-        if(playStop){
-            auto tm = TimeManager::getInstance();
 
-            //lastppqn =tm->getBeat()*24;
-            lastppqn = getBeatWithDelta(24);
-
-            if((tm->getBeat()==0 && delta==0) || !sendSPP){
-                messagesToSend[st1] = MidiMessage::midiStart();
-            }
-            else{
-                askSyncOnNextBeat();
-                messagesToSend[st1] = MidiMessage::midiContinue();
-            }
-        }
-        else{
-
-            messagesToSend[st1] = MidiMessage::midiStop();
-            syncNextBeat = false;
-            nextBeat=0;
-
-        }
-
-
-    }
-    else{
-        jassertfalse;
+void MIDIClock::sendOneMsg(const MidiMessage & msg){
+    int st1,st2,bs1,bs2;
+    midiFifo.prepareToWrite(1,st1,bs1,st2,bs2);
+    if(bs1>0){
+        messagesToSend[st1] = msg;
     }
     midiFifo.finishedWrite(1);
 }
-
 

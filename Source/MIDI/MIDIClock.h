@@ -24,15 +24,14 @@ constexpr int MIDI_SYNC_QUEUE_SIZE = 100;
 class MIDIClock: public Thread, private TimeManager::TimeManagerListener
 {
 public:
-    MIDIClock();
+    MIDIClock(bool sendSPP);
     ~MIDIClock();
 
     bool start();
     void stop();
     bool setOutput(MIDIListener * _midiOut);
     void reset();
-    
-    void askSyncOnNextBeat();
+
     bool sendSPP;
     float delta;
     
@@ -55,16 +54,26 @@ private:
     // info for stopping manager if needed;
      bool isBoundToTime() override {return false;};
     void addClockIfNeeded();
-    void sendSPPIfNeeded();
-    MidiMessage  messagesToSend[MIDI_SYNC_QUEUE_SIZE];
-    AbstractFifo midiFifo;
-    int lastppqn;
-    bool syncNextBeat;
-    double nextBeat;
-    void syncPendingBeat();
-    void midiContinue();
+    void sendCurrentSPP();
+
+
+
+    
     double getBeatWithDelta(int multiplier);
 
+    void sendOneMsg(const MidiMessage & msg);
+    void sendClocks(const int num);
+    MidiMessage  messagesToSend[MIDI_SYNC_QUEUE_SIZE];
+    AbstractFifo midiFifo;
+
+    private :
+    struct MIDIClockState{
+        MIDIClockState():isPlaying(false),ppqn(0){};
+        bool isPlaying;
+        int ppqn;
+
+    };
+    MIDIClockState state;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MIDIClock);
     
 };
