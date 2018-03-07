@@ -94,6 +94,8 @@ public :
 
     SelectedItemSet<SelectedUIType> selectedItems;
 
+    void addNodeUndoable(const String & type,const Point<int> & mousePos);
+
 private:
 
     void changeListenerCallback (ChangeBroadcaster* source) override;
@@ -107,8 +109,8 @@ private:
     HashMap<SelectedUIType, Rectangle<int>> selectedInitBounds;
 
 
-    void addNodeUndoable(const String & type,const Point<int> & mousePos);
-    
+
+
 
 
     

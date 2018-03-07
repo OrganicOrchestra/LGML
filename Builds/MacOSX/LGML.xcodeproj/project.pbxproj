@@ -160,6 +160,7 @@
 		20DC1F03DC4C1F4881C5F757 = {isa = PBXBuildFile; fileRef = C40FEF2E907592DECE8B1947; };
 		F72124BA0EDF8D9BE8BF375B = {isa = PBXBuildFile; fileRef = 6100A5CB627EF9C28977A09D; };
 		FB14FE2D8522142D1D907FA6 = {isa = PBXBuildFile; fileRef = DEFCE8C923EC489CB8ED7DE7; };
+		38C50F6CDE8316ED635D77B9 = {isa = PBXBuildFile; fileRef = 38324E2B1A22A08A6E10B5B0; };
 		B72E5A92824EC549D8842E96 = {isa = PBXBuildFile; fileRef = 7D7A028D24A89E5E9B76503C; };
 		85B05C36D51A85D39F12E006 = {isa = PBXBuildFile; fileRef = 2107735F710165A1C1DD3293; };
 		254C91EFD34645E7B3EA8371 = {isa = PBXBuildFile; fileRef = 4D5AACA8CEB22306569DAE48; };
@@ -277,6 +278,7 @@
 		3636ACA8513FF7B12B9F05A0 = {isa = PBXFileReference; lastKnownFileType = file; name = "juce_gui_basics"; path = "../../../JUCE/modules/juce_gui_basics"; sourceTree = "SOURCE_ROOT"; };
 		36947B434EB53DFA2B7D5DD3 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ShapeShifterWindow.cpp; path = ../../Source/UI/ShapeShifter/ShapeShifterWindow.cpp; sourceTree = "SOURCE_ROOT"; };
 		37BCBE2D73600D2E35D92AAA = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = FastMapUI.h; path = ../../Source/FastMapper/FastMapUI.h; sourceTree = "SOURCE_ROOT"; };
+		38324E2B1A22A08A6E10B5B0 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = FactoryUIHelpers.cpp; path = ../../Source/Utils/FactoryUIHelpers.cpp; sourceTree = "SOURCE_ROOT"; };
 		3964E16B2B1CD70A152B54BD = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "list_ports_linux.cc"; path = "../../third_party/serial/src/impl/list_ports/list_ports_linux.cc"; sourceTree = "SOURCE_ROOT"; };
 		3A30B09AECE7940BAB4FBA5F = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ShapeShifterPanelHeader.cpp; path = ../../Source/UI/ShapeShifter/ShapeShifterPanelHeader.cpp; sourceTree = "SOURCE_ROOT"; };
 		3A5913014BA6BF4540C82524 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = DataInNodeUI.cpp; path = ../../Source/Data/DataInNodeUI.cpp; sourceTree = "SOURCE_ROOT"; };
@@ -895,6 +897,7 @@
 					1A0740D11C53D3D8710A13C2,
 					06F3F391126CAAEDDD87A951, ); name = UI; sourceTree = "<group>"; };
 		7467E54AD807664B6E3C7879 = {isa = PBXGroup; children = (
+					38324E2B1A22A08A6E10B5B0,
 					7D7A028D24A89E5E9B76503C,
 					C7576346F33A03790C28DC66,
 					C6D6C62D0163B282028885CF,
@@ -1405,6 +1408,7 @@
 					20DC1F03DC4C1F4881C5F757,
 					F72124BA0EDF8D9BE8BF375B,
 					FB14FE2D8522142D1D907FA6,
+					38C50F6CDE8316ED635D77B9,
 					B72E5A92824EC549D8842E96,
 					85B05C36D51A85D39F12E006,
 					254C91EFD34645E7B3EA8371,

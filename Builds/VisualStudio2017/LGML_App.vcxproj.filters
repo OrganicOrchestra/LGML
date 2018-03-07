@@ -916,6 +916,9 @@
     <ClCompile Include="..\..\Source\UI\Inspector\InspectorEditor.cpp">
       <Filter>LGML\Source\UI\Inspector</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Utils\FactoryUIHelpers.cpp">
+      <Filter>LGML\Source\Utils</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Utils\AutoUpdater.cpp">
       <Filter>LGML\Source\Utils</Filter>
     </ClCompile>

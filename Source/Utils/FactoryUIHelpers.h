@@ -18,6 +18,7 @@
 
 #pragma once
 #include "../JuceHeaderUI.h"
+#include "FactoryBase.h"
 
 namespace FactoryUIHelpers
 {

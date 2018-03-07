@@ -431,6 +431,7 @@
     <ClCompile Include="..\..\Source\UI\Inspector\InspectableComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Inspector\Inspector.cpp"/>
     <ClCompile Include="..\..\Source\UI\Inspector\InspectorEditor.cpp"/>
+    <ClCompile Include="..\..\Source\Utils\FactoryUIHelpers.cpp"/>
     <ClCompile Include="..\..\Source\Utils\AutoUpdater.cpp"/>
     <ClCompile Include="..\..\Source\Utils\FactoryBase.cpp"/>
     <ClCompile Include="..\..\Source\Utils\AudioDebugCrack.cpp"/>

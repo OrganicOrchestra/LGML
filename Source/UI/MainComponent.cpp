@@ -166,7 +166,7 @@ void MainContentComponent::startLoadFile()
     //  if(ControllerManagerUIViewport * cui = (ControllerManagerUIViewport*)ShapeShifterManager::getInstance()->getContentForName(ControllerPanel)){
     //    cui->controllerManagerUI->clear();
     //  }
-
+    getAppUndoManager().clearUndoHistory();
     if (fileProgressWindow != nullptr)
     {
         removeChildComponent (fileProgressWindow);

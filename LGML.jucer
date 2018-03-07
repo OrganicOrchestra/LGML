@@ -633,6 +633,8 @@
         </GROUP>
       </GROUP>
       <GROUP id="{8DA61DCB-02FE-2339-7E79-2A3547284A18}" name="Utils">
+        <FILE id="FYsUWY" name="FactoryUIHelpers.cpp" compile="1" resource="0"
+              file="Source/Utils/FactoryUIHelpers.cpp"/>
         <FILE id="LxYBN2" name="AutoUpdater.cpp" compile="1" resource="0" file="Source/Utils/AutoUpdater.cpp"/>
         <FILE id="mwaNCH" name="AutoUpdater.h" compile="0" resource="0" file="Source/Utils/AutoUpdater.h"/>
         <FILE compile="0" file="Source/Utils/FactoryUIHelpers.h" id="qi3kyB"

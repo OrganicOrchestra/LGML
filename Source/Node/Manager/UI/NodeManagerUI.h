@@ -227,29 +227,16 @@ public :
     {
         if (b == &addNodeBt)
         {
-            static Array<String> filt  {"t_ContainerInNode", "t_ContainerOutNode"};
-            ScopedPointer<PopupMenu> menu (FactoryUIHelpers::createFactoryTypesMenuFilter<NodeFactory> (filt));
+            
+            ScopedPointer<PopupMenu> menu (FactoryUIHelpers::getFactoryTypesMenu<NodeFactory> ());
 
             int result = menu->show();
-            Point<int> mousePos = vp.getViewArea().getCentre();
+            Point<int> destPos = vp.getViewArea().getCentre();
 
             if (result > 0)
             {
-                if (auto c =  FactoryUIHelpers::createFromMenuIdx<NodeBase> (result))
-                {
-                    ConnectableNode* n = nmui->currentViewer->nodeContainer->addNode (c);
-                    jassert (n != nullptr);
-                    if(auto ui= nmui->getControllableForAddress(c->getControlAddressArray())){
-                        if(auto d = dynamic_cast<ConnectableNodeUIParams*>(ui)){
-                            d->nodePosition->setPoint (mousePos);
-                            d->nodeMinimizedPosition->setPoint (mousePos);
-                        }
-                    }
-                }
-                else
-                {
-                    jassertfalse;
-                }
+                String tid(FactoryUIHelpers::getFactoryTypeNameFromMenuIdx<FactoryBase<NodeBase>>(result));
+                nmui->currentViewer->addNodeUndoable(tid, destPos);
             }
 
         }
