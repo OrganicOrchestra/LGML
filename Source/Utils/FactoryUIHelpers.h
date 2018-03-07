@@ -91,6 +91,39 @@ obj* createFromMenuIdx (int idx)
 }
 
 
+template<class T>
+class UndoableCreate:public UndoableAction{
+    public:
+        typedef std::function<void(T*)> addFType;
+        typedef std::function<void(T*)> rmFType;
+        UndoableCreate(String _typeID,addFType _addF,rmFType _rmF):addF(_addF),rmF(_rmF),typeID(_typeID){
+            
+        };
+
+        bool perform() override{
+            obj = FactoryBase<T>::createFromTypeID(typeID);
+            if(obj){
+                addF(obj);
+                return true;
+            }
+            return false;
+        }
+
+        bool undo() override{
+            if(obj){
+                rmF(obj);
+                obj=nullptr;
+                return true;
+            }
+
+            return false;
+        }
+    String typeID;
+        addFType addF;
+        rmFType rmF;
+    T* obj;
+
+};
 
 
 };

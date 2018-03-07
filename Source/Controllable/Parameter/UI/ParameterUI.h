@@ -69,7 +69,7 @@ protected:
     
     String getTooltip() override;
     virtual void mouseDown (const MouseEvent& e) override;
-
+    virtual void mouseUp (const MouseEvent& e) override;
 
 private:
     // see Parameter::AsyncListener

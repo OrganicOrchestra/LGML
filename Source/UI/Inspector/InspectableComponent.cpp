@@ -86,7 +86,7 @@ void InspectableComponent::selectThis()
     Inspector::getInstance()->setCurrentComponent (this);
 }
 
-void InspectableComponent::setSelected (bool value)
+void InspectableComponent::setVisuallySelected (bool value)
 {
     if (value == isSelected) return;
 
@@ -96,11 +96,12 @@ void InspectableComponent::setSelected (bool value)
     if (value){
         if(bringToFrontOnSelect)
             toFront (true);
-        if(auto i = Inspector::getInstanceWithoutCreating()){
-            if(i->getCurrentComponent()){ // keep that for multi selection
-                selectThis();
-            }
-        }
+        // keep that for multi selection
+//        if(auto i = Inspector::getInstanceWithoutCreating()){
+//            if(i->getCurrentComponent()){
+//                selectThis();
+//            }
+//        }
     }
     else{
 

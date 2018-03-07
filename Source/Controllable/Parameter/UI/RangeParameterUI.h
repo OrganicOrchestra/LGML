@@ -18,7 +18,7 @@
 #include "ParameterUI.h"
 
 #include "../RangeParameter.h"
-
+#include "../UndoableHelper.h"
 
 
 class RangeParameterUI : public ParameterUI, private Slider::Listener
@@ -55,8 +55,11 @@ public:
     void sliderValueChanged (Slider* s) override
     {
         jassert(s==&slider);
-        if(auto rangeP = ((RangeParameter*)parameter.get()) )
-            rangeP->setValue (slider.getMinValue(), slider.getMaxValue());
+        if(auto rangeP = ((RangeParameter*)parameter.get()) ){
+            Array<var> av={slider.getMinValue(), slider.getMaxValue()};
+
+            UndoableHelpers::setValueUndoable(rangeP,av);
+        }
         else
             jassertfalse;
     }

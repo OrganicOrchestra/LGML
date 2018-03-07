@@ -105,7 +105,9 @@ private:
 
     SelectedItemSet<SelectedUIType>& getLassoSelection() override;
     HashMap<SelectedUIType, Rectangle<int>> selectedInitBounds;
-    
+
+
+    void addNodeUndoable(const String & type,const Point<int> & mousePos);
     
 
 

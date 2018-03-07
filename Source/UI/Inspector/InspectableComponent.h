@@ -50,7 +50,7 @@ public:
     bool isSelected;
 
     void selectThis();
-    void setSelected (bool value);
+    void setVisuallySelected (bool value);
     virtual void setSelectedInternal (bool value); //to be overriden
 
 

@@ -93,9 +93,7 @@ void BoolToggleUI::mouseDown (const MouseEvent& e)
 
     if (e.mods.isLeftButtonDown() && !e.mods.isAnyModifierKeyDown())
     {
-//        UndoableHelpers::startNewTransaction(parameter);
         UndoableHelpers::setValueUndoable(parameter, !parameter->boolValue());
-        //parameter->setValue (!parameter->boolValue());
         
     }
 }

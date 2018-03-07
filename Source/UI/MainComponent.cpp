@@ -30,10 +30,25 @@ MainContentComponent* createMainContentComponent (Engine* e)
     return new MainContentComponent (e);
 }
 
+// synchronizes menubar
+class UndoWatcher:public ChangeListener,Timer{
+public:
+    UndoWatcher(MainContentComponent * _mc):mc(_mc){getAppUndoManager().addChangeListener(this);};
+
+    void timerCallback() override{
+        mc->menuItemsChanged();
+        stopTimer();
+    }
+    void changeListenerCallback(ChangeBroadcaster* source) override{startTimer(300);}
+    MainContentComponent * mc;
+};
+
+
 
 MainContentComponent::MainContentComponent (Engine* e):
     engine (e),
-    tooltipWindow(nullptr,1200)
+    tooltipWindow(nullptr,1200),
+    undoWatcher(new UndoWatcher(this))
 {
     engine->addEngineListener (this);
 

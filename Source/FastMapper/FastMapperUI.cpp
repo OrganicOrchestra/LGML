@@ -330,8 +330,12 @@ void FastMapperViewport::resized()
     vp.setBounds (getLocalBounds());
     int th = jmax<int> (fastMapperUI->getContentHeight(), getHeight());
     Rectangle<int> targetBounds = getLocalBounds().withPosition (fastMapperUI->getPosition()).withHeight (th);
-    targetBounds.removeFromRight (vp.getScrollBarThickness());
+
+    if(targetBounds.getHeight()>getHeight())
+        targetBounds.removeFromRight (vp.getScrollBarThickness());
     fastMapperUI->setBounds (targetBounds);
+
+
     if(fastMapperUI->mapsUI.size()==0){
         int side = (int)( jmin(getWidth(),getHeight()) * .5);
         addFastMapButton.setBounds(getLocalBounds().withSizeKeepingCentre(side,side));

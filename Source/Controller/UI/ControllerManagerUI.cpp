@@ -206,11 +206,20 @@ void ControllerManagerUIViewport::resized()
     vp.setBounds (getLocalBounds());
     int th = jmax<int> (controllerManagerUI->getContentHeight(), getHeight());
     Rectangle<int> targetBounds = getLocalBounds().withPosition (controllerManagerUI->getPosition()).withHeight (th);
-
-    targetBounds.removeFromRight (vp.getScrollBarThickness());
-    bool needResize = controllerManagerUI->getHeight()==th;
+    if(targetBounds.getHeight()>getHeight())
+        targetBounds.removeFromRight (vp.getScrollBarThickness());
 
     controllerManagerUI->setBounds (targetBounds);
+
+
+
+
+    bool needResize = controllerManagerUI->getHeight()==controllerManagerUI->getContentHeight();
+
+
+
+
+
     // resize not called if no change in heights, but internal state yes
     if(needResize) {controllerManagerUI->resized();}
 

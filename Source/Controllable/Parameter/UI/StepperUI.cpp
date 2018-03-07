@@ -15,7 +15,7 @@
 
 #include "StepperUI.h"
 #include "../NumericParameter.h"
-
+#include "../UndoableHelper.h"
 
 
 template<class T>
@@ -71,8 +71,7 @@ void StepperUI<T>::valueChanged (const var& value)
 template<class T>
 void StepperUI<T>::sliderValueChanged (Slider* _slider)
 {
-
-    parameter->setValue (_slider->getValue());
+    UndoableHelpers::setValueUndoable(parameter, _slider->getValue());
 
 }
 template <class T>

@@ -19,6 +19,7 @@
 #include "../../../Controllable/Parameter/UI/ParameterUI.h"
 
 
+
 NodeContainerContentUI::NodeContainerContentUI() :
     ConnectableNodeContentUI(),
     editContainerBT ("Edit Container"),
@@ -53,6 +54,8 @@ void NodeContainerContentUI::resized()
 
 
 }
+
+
 
 
 void NodeContainerContentUI::init()

@@ -18,6 +18,7 @@
 #include "../../../UI/Style.h"
 #include "../../../UI/LGMLDragger.h"
 #include "../../../FastMapper/FastMapper.h"
+#include "../UndoableHelper.h"
 
 //==============================================================================
 ParameterUI::ParameterUI (Parameter* _parameter) :
@@ -83,6 +84,7 @@ void ParameterUI::setCustomText (const String text)
 
 void ParameterUI::mouseDown (const MouseEvent& e)
 {
+    UndoableHelpers::startNewTransaction(parameter,true);
     if (e.mods.isRightButtonDown())
     {
         PopupMenu p;
@@ -115,8 +117,11 @@ void ParameterUI::mouseDown (const MouseEvent& e)
     if(e.mods.isAltDown()){
         Inspector::getInstance()->setCurrentComponent(this);
     }
-}
 
+}
+void ParameterUI::mouseUp (const MouseEvent& e) {
+
+};
 
 bool ParameterUI::shouldBailOut()
 {

@@ -165,7 +165,7 @@ void NodeManagerUI::setCurrentViewedContainer (NodeContainer* c)
         addAndMakeVisible (currentViewer);
         currentViewer->setMouseCursor(MouseCursor::CrosshairCursor);
         currentViewer->setTopLeftPosition (0, 0);
-        currentViewer->setSelected (true);
+        currentViewer->selectThis();
         setSize (0, 0);
         resized();
 

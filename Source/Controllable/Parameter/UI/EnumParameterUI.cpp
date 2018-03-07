@@ -15,7 +15,7 @@
 
 #include "EnumParameterUI.h"
 
-
+#include "../UndoableHelper.h"
 
 EnumParameterUI::EnumParameterUI (Parameter* parameter) :
     ParameterUI (parameter),
@@ -157,11 +157,12 @@ void EnumParameterUI::comboBoxChanged (ComboBox* c)
             {
                 jassert (ep->userCanEnterText);
                 ep->addOrSetOption (v, v, true);
-                ep->setValue (v);
+                UndoableHelpers::setValueUndoable(ep, v);
             }
             else
             {
-                ep->setValue(var::undefined());
+                UndoableHelpers::setValueUndoable(ep, var::undefined());
+
             }
         }
         else if (id == addElementId )
@@ -253,8 +254,8 @@ void EnumParameterUI::comboBoxChanged (ComboBox* c)
     }
     else
     {
-
-        ep->setValue (getCBSelectedKey());
+        UndoableHelpers::startNewTransaction(ep,true);
+        UndoableHelpers::setValueUndoable(ep,getCBSelectedKey());
     }
 };
 

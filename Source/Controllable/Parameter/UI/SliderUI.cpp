@@ -16,6 +16,7 @@
 #include "SliderUI.h"
 #include "../../../UI/Style.h"
 #include "../NumericParameter.h"
+#include "../UndoableHelper.h"
 
 //==============================================================================
 template<class T>
@@ -194,7 +195,7 @@ void SliderUI<T>::mouseDown (const MouseEvent& e)
 
     if (e.mods.isCommandDown())
     {
-        parameter->setValue(parameter->floatValue()>0?0:(T)parameter->lastValue);
+        UndoableHelpers::setValueUndoable(parameter, parameter->floatValue()>0?0:(T)parameter->lastValue);
     }
 
     if (assignOnMousePosDirect)
@@ -243,6 +244,7 @@ void SliderUI<T>::mouseDrag (const MouseEvent& e)
 template<class T>
 void SliderUI<T>::mouseUp (const MouseEvent& me)
 {
+    ParameterUI::mouseUp(me);
     if (!parameter->isEditable) return;
 
     if (!me.mods.isLeftButtonDown()) return;
@@ -295,7 +297,7 @@ void SliderUI<T>::mouseUp (const MouseEvent& me)
             }
 
             float newValue = nameWindow.getTextEditorContents ("newValue").getFloatValue();
-            parameter->setValue (newValue);
+            UndoableHelpers::setValueUndoable(parameter,newValue);
 
             if(valueBox)valueBox->hideEditor(true);
 
@@ -334,7 +336,10 @@ T SliderUI<T>::getValueFromPosition (const Point<int>& pos)
 template<class T>
 void SliderUI<T>::setParamNormalizedValue (float value)
 {
-    parameter->getAs<NumericParameter<T> >()->setNormalizedValue (jmin (jmax (value, 0.0f), 1.0f));
+    auto np = parameter->getAs<NumericParameter<T> >();
+    auto nv = (T)(jmap<T> (jmin<T> (jmax<T> (value, 0.0f), 1.0f), (T)np->minimumValue, (T)np->maximumValue));
+    UndoableHelpers::setValueUndoable(parameter, nv);
+
 }
 
 template<class T>
@@ -351,7 +356,7 @@ void SliderUI<T>::valueChanged (const var&)
 };
 template<class T>
 void SliderUI<T>::labelTextChanged (Label* labelThatHasChanged) {
-    parameter->setValue((T)labelThatHasChanged->getText().getDoubleValue());
+    UndoableHelpers::setValueUndoable(parameter,(T)labelThatHasChanged->getText().getDoubleValue());
 };
 template<class T>
 void SliderUI<T>::editorHidden (Label*, TextEditor&) {

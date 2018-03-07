@@ -58,7 +58,7 @@ void Inspector::setCurrentComponent (InspectableComponent* c)
         clearEditor();
         if(auto cont = getCurrentContainerSelected())
             cont->removeControllableContainerListener(this);
-        currentComponent->setSelected (false);
+        currentComponent->setVisuallySelected (false);
         
 
     }
@@ -67,7 +67,7 @@ void Inspector::setCurrentComponent (InspectableComponent* c)
 
     if (currentComponent != nullptr)
     {
-        currentComponent->setSelected (true);
+        currentComponent->setVisuallySelected (true);
         if(auto cont = getCurrentContainerSelected())
             cont->addControllableContainerListener(this);
     }
@@ -200,7 +200,7 @@ void InspectorViewport::resized()
 
     vp.setBounds (r);
 
-    r.removeFromRight (vp.getScrollBarThickness());
+
 
     if (inspector->getCurrentEditor() == nullptr){
 
@@ -218,6 +218,10 @@ void InspectorViewport::resized()
                 cH = tH;
         }
 
-        inspector->setBounds (r.withPosition (inspector->getPosition()).withHeight (cH));
+        auto tb =r.withPosition (inspector->getPosition()).withHeight (cH);
+        if(tb.getHeight()>getHeight())
+            tb.removeFromRight (vp.getScrollBarThickness());
+        inspector->setBounds (tb);
+
     }
 }

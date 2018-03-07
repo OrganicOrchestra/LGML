@@ -143,11 +143,13 @@ void MainContentComponent::getCommandInfo (CommandID commandID, ApplicationComma
         case CommandIDs::undo:
             result.setInfo ("Undo", "Undo last action", category, 0);
             result.addDefaultKeypress ('z', ModifierKeys::commandModifier);
+            result.setActive(getAppUndoManager().canUndo());
             break;
 
         case CommandIDs::redo:
             result.setInfo ("Redo", "Redo last undo", category, 0);
             result.addDefaultKeypress ('z', ModifierKeys::commandModifier | ModifierKeys::shiftModifier);
+            result.setActive(getAppUndoManager().canRedo());
             break;
 
         default:
@@ -385,7 +387,9 @@ bool MainContentComponent::perform (const InvocationInfo& info)
         }
             break;
         case CommandIDs::undo:
+        {
             getAppUndoManager().undo();
+        }
             break;
         case CommandIDs::redo:
         {
