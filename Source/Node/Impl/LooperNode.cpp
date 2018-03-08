@@ -447,10 +447,10 @@ void LooperNode::onContainerTriggerTriggered (Trigger* t)
             exportFolder = File::getSpecialLocation(File::SpecialLocationType::tempDirectory);
             
             if(exportFolder.exists()){
-                LOGW("session not loaded, exporting to temp folder : "+ exportFolder.getFullPathName());
+                LOGW(juce::translate("session not loaded, exporting to temp folder : ")+ exportFolder.getFullPathName());
             }
             else{
-                LOGE("can't create temporary folder for export path");
+                LOGE(juce::translate("can't create temporary folder for export path"));
                 return;
             }
             
@@ -483,13 +483,13 @@ void LooperNode::onContainerTriggerTriggered (Trigger* t)
                     else if(loadedLGMLPath.startsWith(File::getSeparatorString())){
                         isOutsideFile = true;
                         destFile = folder.getChildFile(loadedFile.getFileName());
-                        LOGW("copying sample : "+loadedLGMLPath);
+                        LOGW(juce::translate("copying sample : ")+loadedLGMLPath);
                         loadedFile.copyFileTo(destFile);
                         
 
                     }
                     else{
-                        LOGW("existing sample already in LGML Folder");
+                        LOGW(juce::translate("existing sample already in LGML Folder"));
                         continue;
                         
                     }

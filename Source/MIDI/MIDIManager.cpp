@@ -32,7 +32,7 @@ public:
             mainComp->addKeyListener(this);
         }
         else{
-            LOGE("can't find component for computer keyboard ");
+            LOGE(juce::translate("can't find component for computer keyboard "));
         }
     };
     ~ComputerKeyboardMIDIDevice(){
@@ -69,12 +69,12 @@ public:
         if(c=='w'){
             octave--;
             octave = jmax(octave,0);
-            LOG("computer keyboard octave = " << String(octave));
+            LOG(juce::translate("computer keyboard octave = ") << String(octave));
         }
         else if (c=='x'){
             octave++;
             octave = jmin(octave,8);
-            LOG("computer keyboard octave = " << String(octave));
+            LOG(juce::translate("computer keyboard octave = ") << String(octave));
         }
         else{
             int note =keyToPitch(key.getTextCharacter());
@@ -138,7 +138,7 @@ public:
 };
 
 
-String ComputerKeyboardMIDIDevice::deviceName("ComputerKeyboard");
+String ComputerKeyboardMIDIDevice::deviceName(juce::translate("Computer Keyboard"));
 
 constexpr int MIDICheckInterval(1000);
 MIDIManager::MIDIManager():computerKeyboardDevice(nullptr)
@@ -192,14 +192,14 @@ void MIDIManager::updateDeviceList (bool updateInput)
     {
         //    jassert(!d.contains("error"));
         listeners.call (updateInput ? &MIDIManagerListener::midiInputAdded : &MIDIManagerListener::midiOutputAdded, d);
-        NLOG ("MIDIManager", "MIDI " + String (updateInput ? "Input" : "Output") + " Added : " + d);
+        NLOG ("MIDIManager", juce::translate("MIDI 123 Added : 456").replace("123", updateInput ? "Input" : "Output").replace("456", d));
     }
 
     for (auto& d : devicesToRemove)
     {
         //    jassert(!d.contains("error"));
         listeners.call (updateInput ? &MIDIManagerListener::midiInputRemoved : &MIDIManagerListener::midiOutputRemoved, d);
-        NLOG ("MIDIManager", "MIDI " + String (updateInput ? "Input" : "Output") + " Removed : " + d);
+        NLOG ("MIDIManager",  juce::translate("MIDI 123 Removed : 456").replace("123", updateInput ? "Input" : "Output").replace("456", d));
     }
 
     if (devicesToAdd.size() > 0 || devicesToRemove.size() > 0)
@@ -266,13 +266,13 @@ MidiOutput* MIDIManager::enableOutputDevice (const String& deviceName)
 
     if (out)
     {
-        LOG ("Midi Out opened : " << out->getName());
+        LOG (juce::translate("Midi Out opened : ") << out->getName());
     }
     else
     {
         const String available ( inD.joinIntoString(", "));
 
-        LOG ("can't open MIDI out device : " << deviceName << "\navailable :" << available);
+        LOG (juce::translate("can't open MIDI out device : 123 \n available : 456").replace("123", deviceName).replace("456",available));
 
     }
 

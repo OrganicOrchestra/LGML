@@ -31,7 +31,7 @@ JsEnvironment ("controllers.Keyboard", this)
     }
     else{
         isConnected->setValue(false);
-        LOGE("can't find component for keyboard controller ");
+        LOGE(juce::translate("can't find component for keyboard controller "));
     }
 };
 KeyboardController::~KeyboardController(){
@@ -59,7 +59,7 @@ bool KeyboardController::keyPressed (const KeyPress& key, Component* /*originati
     for ( auto k:keysDown){if(k->key == key){ return false;}}
     keysDown.add(new KeyPressTime{key,time});
 
-    if(logIncoming->boolValue()){LOG("keyPress : " << c);}
+    if(logIncoming->boolValue()){LOG(juce::translate("keyPress : 123").replace("123" ,String(c)));}
 
     const String paramName=getPNameFromKey(key);
     if (Controllable* c = userContainer.getControllableByName(paramName))

@@ -209,7 +209,7 @@ void NodeContainer::updateAudioGraph (bool lock)
             //            jassertfalse;
             // node is not ready , postponing setup
             if( !isEngineLoadingFile()) {
-                LOGW("node "+getNiceName()+" is not ready , postponing setup");
+                LOGW(juce::translate("node 123 is not ready , postponing setup").replace("123",getNiceName()));
 //                jassertfalse;
             }
             else{
@@ -219,7 +219,7 @@ void NodeContainer::updateAudioGraph (bool lock)
 
         }
         else{
-//            LOG("! node "+getNiceName()+" is ready");
+//            LOG("! node 123 is ready"+getNiceName()+" is ready");
             getAudioGraph()->setRateAndBufferSizeDetails (NodeBase::getSampleRate(), NodeBase::getBlockSize());
             getAudioGraph()->prepareToPlay (NodeBase::getSampleRate(), NodeBase::getBlockSize());
             getAudioGraph()->suspendProcessing (false);
@@ -334,17 +334,17 @@ void NodeContainer::configureFromObject (DynamicObject* data)
 
             if (srcNode == nullptr)
             {
-                NLOGE ("loadJSON", "no srcnode for shortName : " + cData.getDynamicObject()->getProperty ("srcNode").toString());
+                NLOGE ("loadJSON", juce::translate("no srcnode for shortName : ") + cData.getDynamicObject()->getProperty ("srcNode").toString());
             }
 
             if (dstNode == nullptr)
             {
-                NLOGE ("loadJSON", "no dstnode for shortName : " + cData.getDynamicObject()->getProperty ("dstNode").toString());
+                NLOGE ("loadJSON", juce::translate("no dstnode for shortName : ") + cData.getDynamicObject()->getProperty ("dstNode").toString());
             }
 
 
 #if defined DEBUG
-            LOGE("Available Nodes in " + shortName + " : ");
+            LOGE(juce::translate("Available Nodes in " )+ shortName + " : ");
 
             for (auto& node : nodes)
             {

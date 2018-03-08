@@ -60,7 +60,7 @@ public:
         static auto exportFolder = File::getSpecialLocation(File::SpecialLocationType::tempDirectory);
         static File crashLog =exportFolder.getChildFile("lgml_error.log");
         if(crashLog.existsAsFile() && !crashLog.hasWriteAccess()){
-            LOGE("can't write to log " << crashLog.getFullPathName());
+            LOGE(juce::translate("can't write to log ") << crashLog.getFullPathName());
             jassertfalse;
 
         }
@@ -75,7 +75,7 @@ public:
         ScopedPointer<OutputStream> out ( getCrashFile().createOutputStream());
         if(out){
             if(!out->writeString(bt))
-                LOGE("Crash Reporter can't write to file");
+                LOGE(juce::translate("Crash Reporter can't write to file"));
         }
         }
         LOG(bt);

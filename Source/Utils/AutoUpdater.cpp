@@ -185,14 +185,14 @@ public:
 
         if (result.wasOk() && ! threadShouldExit())
         {
-            setStatusMessage ("Installing...");
+            setStatusMessage (juce::translate("Installing..."));
             result = owner.performUpdate (zipData, targetFolder);
         }
     }
 
     Result download (MemoryBlock& dest)
     {
-        setStatusMessage ("Downloading...");
+        setStatusMessage (juce::translate("Downloading..."));
 
         int statusCode = 302;
         const int maxRedirects = 5;
@@ -267,16 +267,15 @@ public:
         LatestVersionChecker::LGMLVersionTriple currentVersion (ProjectInfo::versionNumber);
 
         addAndMakeVisible (titleLabel = new Label ("Title Label",
-                                                   juce::translate("Download 123 version 456?").replace ("123", productName)
-                                                   .replace ("456", version.toString())));
+                                                   juce::translate("Download LGML version 123?").replace ("123", version.toString())));
 
         titleLabel->setFont (Font (15.00f, Font::bold));
         titleLabel->setJustificationType (Justification::centredLeft);
         titleLabel->setEditable (false, false, false);
 
         addAndMakeVisible (contentLabel = new Label ("Content Label",
-                                                     juce::translate("A new version of 123 is available - would you like to download it?")
-                                                     .replace ("123", productName)));
+                                                     juce::translate("A new version of LGML is available - would you like to download it?")
+                                                     ));
         contentLabel->setFont (Font (15.00f, Font::plain));
         contentLabel->setJustificationType (Justification::topLeft);
         contentLabel->setEditable (false, false, false);
@@ -790,13 +789,13 @@ void LatestVersionChecker::timerCallback()
             restartTimer = processResult (jsonReply, newRelativeDownloadPath);
             hasEnded = true;
             jassert(!restartTimer);
-            LOG("has checked for new version");
+            LOG(juce::translate("has checked for new version"));
         }
         
         hasAttemptedToReadWebsite = false;
         
         if (restartTimer){
-            LOGE("can't check for new version are you offline?");
+            LOGE(juce::translate("can't check for new version are you offline?"));
             hasEnded = true;
             if(statusCode!=0)startTimer(500);
             else stopTimer();

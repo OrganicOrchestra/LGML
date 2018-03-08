@@ -33,7 +33,7 @@ ShapeShifterManager::ShapeShifterManager() :
 
     if (!defaultFolder.exists() && !defaultFolder.createDirectory())
     {
-        LOGE("can't create default layout directory at : " + defaultFolder.getFullPathName());
+        LOGE(juce::translate("can't create default layout directory at : ") + defaultFolder.getFullPathName());
     }
 
     lastFile = defaultFolder.getChildFile ("_lastSession." + appLayoutExtension);
@@ -322,9 +322,9 @@ void ShapeShifterManager::loadLastSessionLayoutFile()
         if(!hasLoadedSuccessfully && hasFile){
             String bkName = lastFile.getFileNameWithoutExtension()+".bak."+appLayoutExtension;
             File bkFile = lastFile.getParentDirectory().getChildFile(bkName);
-            LOGE("last layout file not valid moving to :" << bkFile.getFullPathName());
+            LOGE(juce::translate("last layout file not valid moving to :") << bkFile.getFullPathName());
             if(!lastFile.moveFileTo(bkFile)){
-                LOGE("can't move last layout file");
+                LOGE(juce::translate("can't move last layout file"));
             }
         }
         loadDefaultLayoutFile();
@@ -345,9 +345,9 @@ void ShapeShifterManager::loadDefaultLayoutFile()
     if(!hasLoadedSuccessfully && hasDefaultFile){
         String bkName = defaultFile.getFileNameWithoutExtension()+".bak."+appLayoutExtension;
         File bkFile = defaultFile.getParentDirectory().getChildFile(bkName);
-        LOGE("default layout file not valid moving to :" << bkFile.getFullPathName());
+        LOGE(juce::translate("default layout file not valid moving to :") << bkFile.getFullPathName());
         if(!defaultFile.moveFileTo(bkFile)){
-            LOGE("can't move default layout file");
+            LOGE(juce::translate("can't move default layout file"));
         }
     }
     //load from app
@@ -389,7 +389,7 @@ void ShapeShifterManager::saveCurrentLayoutToFile (const File& toFile)
     }
     else
     {
-        LOGE("can't write to " + toFile.getFullPathName());
+        LOGE(juce::translate("can't write to ") + toFile.getFullPathName());
         jassertfalse;
 
     }

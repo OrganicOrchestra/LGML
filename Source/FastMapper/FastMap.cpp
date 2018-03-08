@@ -193,7 +193,7 @@ void FastMap::linkedParamChanged (ParameterProxy* p)
             if (p->linkedParam)
             {
 
-                LOGW("Can't map a parameter to itself");
+                LOGW(juce::translate("Can't map a parameter to itself"));
                 // ignore assert for loopBacks
                 //                referenceIn->isSettingValue = false;
                 MessageManager::callAsync([this](){
@@ -230,7 +230,7 @@ void FastMap::linkedParamChanged (ParameterProxy* p)
         {
             if (p->linkedParam)
             {
-                LOGW("Can't map a parameter to itself");
+                LOGW(juce::translate("Can't map a parameter to itself"));
                 // ignore assert for loopBacks
                 //                referenceOut->isSettingValue = false;
                 MessageManager::callAsync([this](){
@@ -240,7 +240,7 @@ void FastMap::linkedParamChanged (ParameterProxy* p)
         }
         else if (p->linkedParam && !p->linkedParam->isEditable)
         {
-            LOGW("Parameter non editable");
+            LOGW(juce::translate("Parameter non editable"));
             // ignore assert for loopBacks
             //            referenceOut->isSettingValue = false;
             MessageManager::callAsync([this](){

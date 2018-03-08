@@ -272,7 +272,7 @@ public :
 
         else
         {
-            NLOGE(js->localNamespace, "wrong Parameter Listener type for : " + parameter->shortName);
+            NLOGE(js->localNamespace, juce::translate("wrong Parameter Listener type for : ") + parameter->shortName);
         }
     }
     static Identifier parameterChangedFId;

@@ -43,7 +43,7 @@ namespace MIDIHelpers{
             addOption(k, k, true);
             }
             else{
-                LOG("error while checking MIDI Input");
+                LOGE(juce::translate("error while checking MIDI Input"));
             }
         };
         void midiInputRemoved (String& k)override {

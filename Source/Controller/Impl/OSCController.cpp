@@ -104,7 +104,7 @@ void OSCController::setupReceiver()
     if (!receiver.connect (localPortParam->stringValue().getIntValue()))
     {
 
-        LOGE("can't connect to local port : " + localPortParam->stringValue());
+        LOGE(juce::translate("can't connect to local port : ") + localPortParam->stringValue());
     };
 
     //DBG("Receiver connected" + String(result));
@@ -118,7 +118,7 @@ void OSCController::setupSender()
 
     if (!hostNameResolved)
     {
-        LOGE("no valid ip found for " << remoteHostParam->stringValue());
+        LOGE(juce::translate("no valid ip found for ") << remoteHostParam->stringValue());
     }
 
 }
@@ -164,11 +164,17 @@ void OSCController::resolveHostnameIfNeeded()
                 if(connected)connected = sender.connect (remoteIP,portNum );
                 isConnected->setValue (connected);
 
-                LOG ((connected?"":"!! un-") <<"resolved IP : " << hostName << " > " << remoteIP << ":" << remotePortParam->stringValue());
+                if(connected){
+                    LOG (juce::translate("resolved IP : ") << hostName << " > " << remoteIP << ":" << remotePortParam->stringValue());
+                }
+                else{
+                    LOGW (juce::translate("unresolved IP : ") << hostName << " > " << remoteIP << ":" << remotePortParam->stringValue());
+                }
+
             }
             else
             {
-                LOGW("can't resolve IP : " << hostName);
+                LOGW(juce::translate("can't resolve IP : ") << hostName);
             }
         }
         else
@@ -529,7 +535,7 @@ bool OSCController::sendOSCInternal (OSCMessage& m)
     return sender.send (m);
     }
     else{
-        LOG("OSC : "+nameParam->stringValue()+" not connected");
+        LOG(String("OSC : 123 not connected").replace("123",nameParam->stringValue()));
 
     }
     return false;
@@ -631,7 +637,7 @@ void OSCController::OSCMessageQueue::add (OSCMessage* m)
     {
         aFifo.finishedRead (1);
         aFifo.prepareToWrite (1, startIndex1, blockSize1, startIndex2, blockSize2);
-        NLOGE (owner->getNiceName(), "still flooding OSC");
+        NLOGE (owner->getNiceName(), juce::translate("still flooding OSC"));
     }
     if (blockSize1 > 0)
     {

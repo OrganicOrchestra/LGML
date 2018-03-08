@@ -404,7 +404,7 @@ PresetManager::Preset* ParameterContainer::saveNewPreset (const String& _name)
 {
     PresetManager::Preset* pre = PresetManager::getInstance()->addPresetFromControllableContainer (_name, getPresetFilter(), this, presetSavingIsRecursive);
     savePresetInternal (pre);
-    NLOG (getNiceName(), "New preset saved : " + pre->name);
+    NLOG (getNiceName(), juce::translate("New preset saved : ") + pre->name);
     loadPreset (pre);
     return pre;
 }
@@ -421,7 +421,7 @@ bool ParameterContainer::saveCurrentPreset()
 
     PresetManager::Preset* pre = PresetManager::getInstance()->addPresetFromControllableContainer (currentPreset->name, getPresetFilter(), this, presetSavingIsRecursive);
     savePresetInternal (pre);
-    NLOG (getNiceName(), "Current preset saved : " + pre->name);
+    NLOG (getNiceName(), juce::translate("Current preset saved : ") + pre->name);
     return loadPreset (pre);
 
     /*
@@ -434,7 +434,7 @@ bool ParameterContainer::saveCurrentPreset()
      }
      }
      savePresetInternal(currentPreset);
-     NLOG(niceName, "Current preset saved : " + currentPreset->name);
+     NLOG(niceName, juce::translate("Current preset saved : ") + currentPreset->name);
 
      return true;
      */

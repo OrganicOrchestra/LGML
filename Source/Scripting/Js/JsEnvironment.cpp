@@ -119,7 +119,7 @@ var getLocal(const juce::var::NativeFunctionArgs &a){
     }
     else
     {
-        LOGE("unknown controllable set from js");
+        LOGE(juce::translate("unknown controllable set from js"));
         jassertfalse;
     }
 
@@ -287,7 +287,7 @@ Result JsEnvironment::loadScriptContent (const String& content)
 
         if (_isInSyncWithLGML)
         {
-            NLOG (localNamespace, "Content loaded sucessfully");
+            NLOG (localNamespace, juce::translate("Content loaded sucessfully"));
         }
         else
         {
@@ -432,7 +432,7 @@ var JsEnvironment::callFunctionFromIdentifier (const Identifier& function, const
         else
         {
             //      jassertfalse;
-            NLOGE (localNamespace, "jsEngine is Locked");
+            NLOGE (localNamespace, juce::translate("jsEngine is Locked"));
         }
     }
 
@@ -894,7 +894,7 @@ void JSEnvContainer::onContainerTriggerTriggered (Trigger* p)
                     if(! scriptFile.exists()){
                         auto r = scriptFile.create();
                         if(!r){
-                            LOGE("Can't create script : " <<scriptFile.getFullPathName() << "("<< r.getErrorMessage()<<")");
+                            LOGE(juce::translate("Can't create script : ") <<scriptFile.getFullPathName() << "("<< r.getErrorMessage()<<")");
                         }
                     }
                     else{

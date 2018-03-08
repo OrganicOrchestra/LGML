@@ -171,7 +171,7 @@ void Engine::parseCommandline (const CommandLineElements& commandLine)
         {
             if (c.args.size() == 0)
             {
-                LOGE("no file provided for command : " + c.command);
+                LOGE(juce::translate("no file provided for command : ") + c.command);
                 jassertfalse;
                 continue;
             }
@@ -181,26 +181,26 @@ void Engine::parseCommandline (const CommandLineElements& commandLine)
 
             if( !(File::isAbsolutePath (fileArg) && fileToLoad.existsAsFile())){
 
-                NLOGE("Engine", "File : " << fileArg << " not found.");
+                NLOGE("Engine", juce::translate("File : 123 not found.").replace("123", fileArg));
             }
         }
         else if(c.command=="p"){
             if (c.args.size() == 0)
             {
-                LOG ("no preferences provided for command : " + c.command);
+                LOG (juce::translate("no preferences provided for command : 123").replace("123", c.command));
                 jassertfalse;
                 continue;
             }
 
 
             if(c.args.size()==0 || c.args.size()%2!=0){
-                LOGE("unable to parse parameter : " << c.args.joinIntoString(":"));
+                LOGE(juce::translate("unable to parse parameter : 123").replace("123", c.args.joinIntoString(":")));
                 jassertfalse;
                 continue;
             }
             for( int i = 0 ; i < c.args.size()-1 ; i+=2){
                 if (!getAppProperties()->getUserSettings()->containsKey(c.args[i])){
-                    LOGE("unknown parameter : " << c.args[i]);
+                    LOGE(juce::translate("unknown parameter : ") << c.args[i]);
                     jassertfalse;
                     continue;
                 }
@@ -255,7 +255,7 @@ void Engine::suspendAudio (bool shouldBeSuspended)
             else
             {
                 // if no audio device are present initialize it (if not, inner graph is void)
-                NLOGE("Engine", "no audio device available");
+                NLOGE("Engine", juce::translate("no audio device available"));
                 ap->prepareToPlay (44100, 1024);
             }
         }
@@ -439,7 +439,10 @@ StringArray  Engine::getAvailableLanguages(){
     tf.findChildFiles(tfs, File::findFiles, false,"*.txt");
     StringArray res = {"english"};
     for(auto& r:tfs){
-        res.add(r.getFileNameWithoutExtension());
+        auto lname = r.getFileNameWithoutExtension();
+        if(lname!="english"){
+            res.add(juce::translate(lname));
+        }
     }
     return res;
 

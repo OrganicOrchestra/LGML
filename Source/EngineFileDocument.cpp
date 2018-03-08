@@ -116,10 +116,10 @@ void Engine::loadDocumentAsync (const File& file)
 
     suspendAudio (true);
     clearTasks();
-    taskName = "Loading File";
-    ProgressTask* clearTask = addTask ("clearing");
-    ProgressTask* parseTask = addTask ("parsing");
-    ProgressTask* loadTask = addTask ("loading");
+    taskName = juce::translate("Loading File");
+    ProgressTask* clearTask = addTask (juce::translate("clearing"));
+    ProgressTask* parseTask = addTask (juce::translate("parsing"));
+    ProgressTask* loadTask = addTask (juce::translate("loading"));
     clearTask->start();
     clear();
     clearTask->end();
@@ -205,7 +205,7 @@ void Engine::handleAsyncUpdate()
         }
     }
     engineListeners.call (&EngineListener::endLoadFile);
-    NLOG ("Engine", "Session loaded in " << timeForLoading / 1000.0 << "s");
+    NLOG ("Engine", juce::translate("Session loaded in 123s").replace("123", String(timeForLoading / 1000.0)));
 }
 
 Result Engine::saveDocument (const File& file)
@@ -292,7 +292,7 @@ void Engine::loadJSONData (const var& data, ProgressTask* loadingTask)
     if (!versionChecked)
     {
         String versionString = md->hasProperty ("version") ? md->getProperty ("version").toString() : "?";
-        AlertWindow::showMessageBox (AlertWindow::AlertIconType::WarningIcon, "You're old, bitch !", "File version (" + versionString + ") is not supported anymore.\n(Minimum supported version : " + getMinimumRequiredFileVersion() + ")");
+        AlertWindow::showMessageBox (AlertWindow::AlertIconType::WarningIcon, juce::translate("You're old, bitch !"), juce::translate("File version (123) is not supported anymore.\n(Minimum supported version : 456)").replace("123", versionString).replace("456", getMinimumRequiredFileVersion()));
         return;
     }
 
@@ -301,10 +301,10 @@ void Engine::loadJSONData (const var& data, ProgressTask* loadingTask)
 
 
     DynamicObject* d = data.getDynamicObject();
-    ProgressTask* presetTask = loadingTask->addTask ("presetManager");
-    ProgressTask* nodeManagerTask = loadingTask->addTask ("nodeManager");
-    ProgressTask* controllerManagerTask = loadingTask->addTask ("controllerManager");
-    ProgressTask* fastMapperTask = loadingTask->addTask ("fastMapper");
+    ProgressTask* presetTask = loadingTask->addTask (juce::translate("presetManager"));
+    ProgressTask* nodeManagerTask = loadingTask->addTask (juce::translate("nodeManager"));
+    ProgressTask* controllerManagerTask = loadingTask->addTask (juce::translate("controllerManager"));
+    ProgressTask* fastMapperTask = loadingTask->addTask (juce::translate("fastMapper"));
 
     presetTask->start();
 
@@ -390,7 +390,7 @@ File Engine::getCurrentProjectFolder()
     if (!getFile().exists())
     {
 #if !LGML_UNIT_TESTS
-        LOGW("current session not saved, related files will have an absolute path");
+        LOGW(juce::translate("current session not saved, related files will have an absolute path"));
         //    jassertfalse;
 #endif
         return File();

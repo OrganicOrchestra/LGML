@@ -152,7 +152,7 @@ namespace{
         aw.addButton(juce::translate("Ok"), 1);
         aw.addButton(juce::translate("Cancel"), 2);
         if(aw.runModalLoop()==1){
-            LOGW("reseted user preferences");
+            LOGW(juce::translate("reseted user preferences"));
             auto fl = {getAppProperties()->getUserSettings()->getFile()};
             for(auto f:fl){
                 if(f.exists()){

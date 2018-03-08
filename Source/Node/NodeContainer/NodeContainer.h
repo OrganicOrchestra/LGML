@@ -229,7 +229,7 @@ public:
             if(interval < 2000){
                 curRebuildTime-=interval;
                 if(curRebuildTime<=0){
-                    LOGE("internal node loading error");
+                    LOGE(juce::translate("internal node loading error"));
                     jassertfalse;
                     stopTimer();
                 }

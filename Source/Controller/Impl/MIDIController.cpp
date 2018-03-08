@@ -67,7 +67,10 @@ void MIDIController::handleIncomingMidiMessage (MidiInput*,
     {
         if (logIncoming->boolValue())
         {
-            NLOG ("MIDI", "CC " + String (message.getControllerNumber()) + " > " + String (message.getControllerValue()) + " (Channel " + String (message.getChannel()) + ")");
+            NLOG ("MIDI", String("CC 123 > 456 (Channel 789)")
+                  .replace("123", String (message.getControllerNumber()))
+                  .replace("456", String (message.getControllerValue()))
+                  .replace("789",String (message.getChannel())));
         }
 
 
@@ -94,7 +97,13 @@ void MIDIController::handleIncomingMidiMessage (MidiInput*,
         bool isNoteOn = message.isNoteOn();
         if (logIncoming->boolValue())
         {
-            NLOG ("MIDI", "Note " + String (isNoteOn ? "on" : "off") + " : " + MidiMessage::getMidiNoteName (message.getNoteNumber(), true, true, 0) + " > " + String (message.getVelocity()) + " (Channel " + String (message.getChannel()) + ")");
+            NLOG ("MIDI", String("123 : 456 (Channel 1011)")
+                  .replace("123", String (isNoteOn ? "NoteOn" : "NoteOff"))
+                  .replace("456", MidiMessage::getMidiNoteName (message.getNoteNumber(), true, true, 0))
+                  .replace("789",String (message.getVelocity()))
+                  .replace("1011",String (message.getChannel()))
+                  );
+                  
         }
 
         const String paramName (MidiMessage::getMidiNoteName (message.getNoteNumber(), false, true, 0));//+"_"+String(message.getChannel()));
@@ -281,7 +290,7 @@ var MIDIController::sendNoteOnFromJS (const var::NativeFunctionArgs& a )
 
     if (a.numArguments < 3)
     {
-        NLOGE("MidiController", "Incorrect number of arguments for sendNoteOn");
+        NLOGE("MidiController", juce::translate("Incorrect number of arguments for sendNoteOn"));
         return var (false);
     }
 
@@ -297,7 +306,7 @@ var MIDIController::sendNoteOffFromJS (const var::NativeFunctionArgs& a)
 
     if (a.numArguments < 3)
     {
-        NLOGE("MidiController", "Incorrect number of arguments for sendNoteOff");
+        NLOGE("MidiController", juce::translate("Incorrect number of arguments for sendNoteOff"));
         return var (false);
     }
 
@@ -311,7 +320,7 @@ var MIDIController::sendCCFromJS (const var::NativeFunctionArgs& a)
 
     if (a.numArguments < 3)
     {
-        NLOGE("MidiController", "Incorrect number of arguments for sendCC");
+        NLOGE("MidiController", juce::translate("Incorrect number of arguments for sendCC"));
         return var (false);
     }
     int targetChannel = (int) (a.arguments[0]);
@@ -329,7 +338,7 @@ var MIDIController::sendSysExFromJS (const var::NativeFunctionArgs& a)
 
     if (a.numArguments > 8)
     {
-        NLOGE("MidiController", "Incorrect number of arguments for sendSysEx");
+        NLOGE("MidiController", juce::translate("Incorrect number of arguments for sendSysEx"));
         return var (false);
     }
 

@@ -48,7 +48,7 @@ void AudioDeviceOutNode::setParentNodeContainer (NodeContainer* parent)
 {
     NodeBase::setParentNodeContainer (parent);
     if(parent != NodeManager::getInstance()){
-        LOGE("avoid creating AudioDeviceIn/Out in container, unstable behaviour");
+        LOGE(juce::translate("avoid creating AudioDeviceIn/Out in container, unstable behaviour"));
         jassertfalse;
     }
 

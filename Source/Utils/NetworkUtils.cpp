@@ -100,7 +100,7 @@ public:
         // scan all interfaces not starting with lo
         struct ifaddrs* ifap = NULL;
 
-        if (getifaddrs (&ifap) < 0) {LOGE("Cannot not get a list of interfaces\n"); return;}
+        if (getifaddrs (&ifap) < 0) {LOGE(juce::translate("Cannot not get a list of interfaces\n")); return;}
 
         for (struct ifaddrs* p = ifap; p != NULL; p = p->ifa_next)
         {
@@ -252,7 +252,7 @@ public:
                                 // should happen only at the deletion of Pimpl
                                 if (threadShouldExit())return;
                                 
-                                LOGE("DNS service failed with error : "<<res);
+                                LOGE(juce::translate("DNS service failed with error : ")<<res);
 
                             }
 
@@ -350,7 +350,7 @@ public:
         else
         {
             jassertfalse;
-            LOGE("DNS : can't resolve ip :" << hostIP << " (" << String (hosttarget) << ")" );
+            LOGE(juce::translate("DNS : can't resolve ip :") << hostIP << " (" << String (hosttarget) << ")" );
         }
 
     }
@@ -455,7 +455,7 @@ public:
 OSCClientRecord NetworkUtils::hostnameToOSCRecord (const String& )
 //int hostname_to_ip(char * hostname , char* ip)
 {
-    LOGE("ip hostname discovery not supported on windows/Unix");
+    LOGE(juce::translate("ip hostname discovery not supported on windows/Unix"));
     return OSCClientRecord();
 }
 

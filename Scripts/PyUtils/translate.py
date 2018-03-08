@@ -8,7 +8,8 @@ import json
 
 sourcePath = os.path.abspath(os.path.join(__file__,os.path.pardir,os.path.pardir,os.path.pardir,'Source'))
 print (sourcePath)
-
+baseTranslationPath = os.path.expanduser('~/Documents/LGML/translations/')
+baseTranslationPath = os.path.expanduser('~/owncloud/DEVSPECTACLES/Tools/LGML/translations')
 
 def getFileList():
   global sourcePath
@@ -59,6 +60,12 @@ def getRegExs(fl):
   regL+=[buildRegFunction("ActionPropUI",[1])]
   regL+=[buildRegFunction("createActionProp",[1])]
   regL+=[buildRegFunction("createUnsavedPropUI",[1])]
+  # regL+=[buildRegFunction("(?<!N)LOG",[1])]
+  # regL+=[buildRegFunction("(?<!N)LOGW",[1])]
+  # regL+=[buildRegFunction("(?<!N)LOGE",[1])]
+  # regL+=[buildRegFunction("NLOG",[1,1])]
+  # regL+=[buildRegFunction("NLOGW",[1,1])]
+  # regL+=[buildRegFunction("NLOGE",[1,1])]
   for f in fl:
     # print('reading %s'%f)
     with open(f,'r',errors='replace',encoding='utf-8') as fp:
@@ -80,7 +87,7 @@ def getRegExs(fl):
         for i in numC:
           res[i]=(f,lineNum)
           # print (os.path.basename(f),lineNum,i)
-        # if g : print(g);
+        # if m : print(m);
   return res
 
 def getAllStrings(fl):
@@ -142,7 +149,7 @@ def mergeEscaped(ls,escaped):
 
 
 def buildLocalMT(strs,locale='fr'):
-  mtfile = "/tmp/mt"
+  mtfile = os.path.join(baseTranslationPath,'mt.'+locale+'.json')
   from googletrans import Translator
   translator = Translator()
   
@@ -202,17 +209,17 @@ def buildPO(mt,lang):
         occurrences=[(relSrcFile,lineNum)]
     )
     po.append(entry)
-  po.save(os.path.expanduser('~/Documents/LGML/translations/%s.po'%lang['name']))
+  po.save(os.path.join(baseTranslationPath,'%s.po'%lang['name']))
 
 
 def toJUCEfmt(mt,lang):
-  outputF = os.path.expanduser('~/Documents/LGML/translations/%s.txt'%lang['name'])
+  outputF = os.path.join(baseTranslationPath,'%s.txt'%lang['name'])
   
   with open(outputF,'w',encoding='utf-8') as fp:
     fp.write("""language: %s
-countries: fr be mc ch lu
+countries: %s
 
-"""%lang['name'])
+"""%(lang['name'],lang['code']))
     for k,v in mt.items():
       fp.write('"%s" = "%s"\n'%(k,v['trans']))
 
@@ -221,7 +228,7 @@ countries: fr be mc ch lu
 
 
 def getDefaultStrings():
-  resL= ["Node Manager", "Time Manager", "Inspector", "Logger", "Controllers", "Fast Mapper", "Outliner","Help"]
+  resL= ["Node Manager", "Time Manager", "Inspector", "Logger", "Controllers", "Fast Mapper", "Outliner","Help","french"]
   res = {}
   for a in resL:
       res[a] = ("No File",0)
@@ -233,10 +240,10 @@ def getDefaultStrings():
 
 def buildRegFunction(fname,valid_mask,strict = True):
   anys = r"[\s\n\r]*"
-  s = fname+anys+"\("+anys
+  s = r'(?<!//)'+anys+fname+anys+"\("+anys
   for m in  valid_mask:
     if m:
-      s+=r'"(.+?)"'
+      s+=r'(?:String'+anys+'\(|)"(.+?)"'
     else:
       s+=r'.+'
     s+=anys+','+anys
@@ -249,11 +256,11 @@ def buildRegFunction(fname,valid_mask,strict = True):
 
 if __name__ == "__main__":
 
-  # s = """ShapeShifterContentComponent (juce::translate("lala"), juce::translate("lalo"),Link parameters")"""
-  # r = buildRegFunction("juce::translate",[1],strict=True)
+  # s = """NLOGE("Engine", String("File : 123 not found.").replace("123", fileArg));"""
+  # r = buildRegFunction("(?<!N)LOGE",[1,1],strict=False)
   # print (re.findall(r,s))
   # exit()
-  lang  = {'code':'fr','name':'french'};
+
   fl = getFileList()
   tel = {}
   autoEl = getRegExs(fl)
@@ -261,12 +268,19 @@ if __name__ == "__main__":
 
   ds = getDefaultStrings()
   tel.update(ds)
+  # print (autoEl)
+  langs  = [
+  {'code':'fr','name':'french'},
+  {'code':'es','name':'spanish'},
+  {'code':'ru','name':'russian'},
+  {'code':'el','name':'greek'}
+  ]
+  tel.update({k['name']:('None',0) for k in langs})
+  for lang in langs:
+    mt = buildLocalMT(tel,lang['code'])
+    toJUCEfmt(mt,lang)
   
-
-  mt = buildLocalMT(tel,lang['code'])
-  toJUCEfmt(mt,lang)
-  
-  buildPO(mt,lang)
+    buildPO(mt,lang)
 
   exit()
 

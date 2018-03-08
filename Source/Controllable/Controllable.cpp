@@ -138,7 +138,7 @@ var Controllable::setControllableValueFromJS (const juce::var::NativeFunctionArg
     }
     else
     {
-        LOGE ("unknown controllable set from js");
+        LOGE (juce::translate("unknown controllable set from js"));
         jassertfalse;
     }
 

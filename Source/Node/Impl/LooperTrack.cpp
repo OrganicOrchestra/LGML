@@ -979,7 +979,9 @@ void LooperTrack::loadAudioSample (const String& path)
 
             if (importSize >= MAX_NUMSAMPLES)
             {
-                LOGE("trying to import too much audio : " << importSize / parentLooper->getSampleRate() << "s ,max :" << (MAX_NUMSAMPLES) / parentLooper->getSampleRate() << "s");
+                LOGE(juce::translate("trying to import too much audio : 123s , max : 456")
+                     .replace("123",String(importSize / parentLooper->getSampleRate()))
+                     .replace("456",String( (MAX_NUMSAMPLES) / parentLooper->getSampleRate())));
             }
             else
             {
@@ -992,8 +994,10 @@ void LooperTrack::loadAudioSample (const String& path)
 
                 if (sampleRateRatio != 1)
                 {
-                    LOGW("sample loading : resampling should work but still experimental : " \
-                         << audioFile.getFileName() << " : " << audioReader->sampleRate);
+                    LOGW(juce::translate("sample loading : resampling should work but still experimental : 123 : 456")
+                         .replace("123",audioFile.getFileName())
+                         .replace("456",String( audioReader->sampleRate))
+                         );
 
                     CatmullRomInterpolator interpolator;
                     AudioSampleBuffer origin;
@@ -1036,12 +1040,12 @@ void LooperTrack::loadAudioSample (const String& path)
         }
         else
         {
-            LOGE("sample loading : format not supported : " << audioFile.getFileExtension());
+            LOGE(juce::translate("sample loading : format not supported : ") << audioFile.getFileExtension());
         }
     }
     else
     {
-        LOGE("sample loading : file not found : " << audioFile.getFullPathName());
+        LOGE(juce::translate("sample loading : file not found : ") << audioFile.getFullPathName());
     }
     isLoadingAudioFile = false;
 }

@@ -102,9 +102,9 @@ lastUpdateTime(0)
     
     logger->addLogListener (this);
     TableHeaderComponent* thc = new TableHeaderComponent();
-    thc->addColumn ("Time", 1, 60);
-    thc->addColumn ("Source", 2, 80);
-    thc->addColumn ("Content", 3, 400);
+    thc->addColumn (juce::translate("Time"), 1, 60);
+    thc->addColumn (juce::translate("Source"), 2, 80);
+    thc->addColumn (juce::translate("Content"), 3, 400);
 
 
     logListComponent = new TableListBox ("LGMLLogger", &logList);
@@ -117,15 +117,18 @@ lastUpdateTime(0)
     logListComponent->setHeader (thc);
     addAndMakeVisible (logListComponent);
 
-    LOG ("LGML v" + String (ProjectInfo::versionString) + " : (" + String (Time::getCompilationDate().formatted("%d/%m/%y (%R)")) + ")" + "\nby OrganicOrchestra");
+    LOG (String("LGML v123 : (456) \n by OrganicOrchestra")
+         .replace("123",String (ProjectInfo::versionString))
+         .replace("456",String (Time::getCompilationDate().formatted("%d/%m/%y (%R)")))
+         );
 #if USE_FILE_LOGGER
-    LOG ("please provide logFile for any bug report :\nlogFile in " + l->fileWriter.getFilePath());
+    LOG (juce::translate("please provide logFile for any bug report :\nlogFile in 123").replace("123", l->fileWriter.getFilePath()));
 #endif
-    clearB.setButtonText ("Clear");
+    clearB.setButtonText (juce::translate("Clear"));
     clearB.addListener (this);
     addAndMakeVisible (clearB);
 
-    copyB.setButtonText("Copy to Clipboard");
+    copyB.setButtonText(juce::translate("Copy to Clipboard"));
     copyB.addListener(this);
     addAndMakeVisible(copyB);
 
@@ -415,7 +418,7 @@ void LGMLLoggerUI::buttonClicked (Button* b)
         logElements.clear();
         totalLogRow = 0;
         logListComponent->updateContent();
-        LOG ("Cleared.");
+        LOG (juce::translate("Cleared."));
     }
     
     else if (b == &copyB){

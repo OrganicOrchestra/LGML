@@ -90,7 +90,7 @@ void MIDIListener::sendNoteOn (int channel, int pitch, int velocity)
 {
     if (midiOutDevice == nullptr)
     {
-        LOGW("MIDI Out is null");
+        LOGW(juce::translate("MIDI Out is null"));
         return;
     }
 
@@ -105,7 +105,7 @@ void MIDIListener::sendNoteOff (int channel, int pitch, int velocity)
 {
     if (midiOutDevice == nullptr)
     {
-        LOGW("MIDI Out is null");
+        LOGW(juce::translate("MIDI Out is null"));
         return;
     }
 
@@ -120,7 +120,7 @@ void MIDIListener::sendNoteOff (int channel, int pitch, int velocity)
 void MIDIListener::sendMessage(const MidiMessage & msg){
     if (midiOutDevice == nullptr)
     {
-        LOGW("MIDI Out is null");
+        LOGW(juce::translate("MIDI Out is null"));
         return;
     }
 
@@ -132,7 +132,7 @@ void MIDIListener::sendCC (int channel, int number, int value)
 {
     if (midiOutDevice == nullptr)
     {
-        LOGW("MIDI Out is null");
+        LOGW(juce::translate("MIDI Out is null"));
         return;
     }
 
