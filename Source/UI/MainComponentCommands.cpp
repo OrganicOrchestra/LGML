@@ -41,6 +41,7 @@ namespace CommandIDs
     static const int pasteSelection         = 0x30022;
     static const int undo                   = 0x30023;
     static const int redo                   = 0x30024;
+    static const int find                   = 0x30025;
     static const int showPluginListEditor   = 0x30100;
     static const int showAppSettings        = 0x30200;
     static const int showAudioSettings      = 0x30201;
@@ -65,91 +66,96 @@ void MainContentComponent::getCommandInfo (CommandID commandID, ApplicationComma
     switch (commandID)
     {
         case CommandIDs::newFile:
-            result.setInfo ("New", "Creates a new filter graph file", category, 0);
+            result.setInfo (juce::translate("New"), juce::translate("Creates a new filter graph file"), category, 0);
             result.defaultKeypresses.add (KeyPress ('n', ModifierKeys::commandModifier, 0));
             break;
 
         case CommandIDs::open:
-            result.setInfo ("Open...", "Opens a filter graph file", category, 0);
+            result.setInfo (juce::translate("Open..."), juce::translate("Opens a filter graph file"), category, 0);
             result.defaultKeypresses.add (KeyPress ('o', ModifierKeys::commandModifier, 0));
             break;
 
         case CommandIDs::openLastDocument:
-            result.setInfo ("Open Last Document", "Opens a filter graph file", category, 0);
+            result.setInfo (juce::translate("Open Last Document"), juce::translate("Opens a filter graph file"), category, 0);
             result.defaultKeypresses.add (KeyPress ('o', ModifierKeys::shiftModifier | ModifierKeys::commandModifier, 0));
             break;
 
         case CommandIDs::save:
-            result.setInfo ("Save", "Saves the current graph to a file", category, 0);
+            result.setInfo (juce::translate("Save"), juce::translate("Saves the current graph to a file"), category, 0);
             result.defaultKeypresses.add (KeyPress ('s', ModifierKeys::commandModifier, 0));
             break;
 
         case CommandIDs::saveAs:
-            result.setInfo ("Save As...",
-                            "Saves a copy of the current graph to a file",
+            result.setInfo (juce::translate("Save As..."),
+                            juce::translate("Saves a copy of the current graph to a file"),
                             category, 0);
             result.defaultKeypresses.add (KeyPress ('s', ModifierKeys::shiftModifier | ModifierKeys::commandModifier, 0));
             break;
 
         case CommandIDs::showPluginListEditor:
-            result.setInfo ("Plug-Ins Settings...", String::empty, category, 0);
+            result.setInfo (juce::translate("Plug-Ins Settings..."),
+                            String::empty, category, 0);
             result.addDefaultKeypress ('p', ModifierKeys::commandModifier);
             break;
 
         case CommandIDs::showAudioSettings:
-            result.setInfo ("Audio settings...", String::empty, category, 0);
+            result.setInfo (juce::translate("Audio settings..."), String::empty, category, 0);
             result.addDefaultKeypress ('a', ModifierKeys::commandModifier);
             break;
         case CommandIDs::showAppSettings:
-            result.setInfo ("Settings...", String::empty, category, 0);
+            result.setInfo (juce::translate("Settings..."), String::empty, category, 0);
             result.addDefaultKeypress (',', ModifierKeys::commandModifier);
             break;
 
 
         case CommandIDs::aboutBox:
-            result.setInfo ("About...", String::empty, category, 0);
+            result.setInfo (juce::translate("About..."), String::empty, category, 0);
             break;
 
         case CommandIDs::allWindowsForward:
-            result.setInfo ("All Windows Forward", "Bring all plug-in windows forward", category, 0);
+            result.setInfo (juce::translate("All Windows Forward"), juce::translate("Bring all plug-in windows forward"), category, 0);
             result.addDefaultKeypress ('w', ModifierKeys::commandModifier);
             break;
 
         case CommandIDs::playPause:
-            result.setInfo ("Play/pause", "Play or pause LGML", category, 0);
+            result.setInfo (juce::translate("Play/pause"), juce::translate("Play or pause LGML"), category, 0);
             result.addDefaultKeypress (' ', ModifierKeys::noModifiers);
             break;
 
         case CommandIDs::toggleMappingMode:
-            result.setInfo ("toggle mappingMode", "toggle param mapping mode", category, 0);
+            result.setInfo (juce::translate("toggle mappingMode"), juce::translate("toggle param mapping mode"), category, 0);
             result.addDefaultKeypress ('m', ModifierKeys::commandModifier);
             break;
 
         case CommandIDs::copySelection:
-            result.setInfo ("Copy selection", "Copy current selection", category, 0);
+            result.setInfo (juce::translate("Copy selection"), juce::translate("Copy current selection"), category, 0);
             result.addDefaultKeypress ('c', ModifierKeys::commandModifier);
             break;
 
         case CommandIDs::cutSelection:
-            result.setInfo ("Cut selection", "Cut current selection", category, 0);
+            result.setInfo (juce::translate("Cut selection"), juce::translate("Cut current selection"), category, 0);
             result.addDefaultKeypress ('x', ModifierKeys::commandModifier);
             break;
 
         case CommandIDs::pasteSelection:
-            result.setInfo ("Paste selection", "Paste previously copied item into selected object if possible", category, 0);
+            result.setInfo (juce::translate("Paste selection"), juce::translate("Paste previously copied item into selected object if possible"), category, 0);
             result.addDefaultKeypress ('v', ModifierKeys::commandModifier);
             break;
 
         case CommandIDs::undo:
-            result.setInfo ("Undo", "Undo last action", category, 0);
+            result.setInfo (juce::translate("Undo"), juce::translate("Undo last action"), category, 0);
             result.addDefaultKeypress ('z', ModifierKeys::commandModifier);
             result.setActive(getAppUndoManager().canUndo());
             break;
 
         case CommandIDs::redo:
-            result.setInfo ("Redo", "Redo last undo", category, 0);
+            result.setInfo (juce::translate("Redo"), juce::translate("Redo last undo"), category, 0);
             result.addDefaultKeypress ('z', ModifierKeys::commandModifier | ModifierKeys::shiftModifier);
             result.setActive(getAppUndoManager().canRedo());
+            break;
+        case CommandIDs::find:
+            result.setInfo (juce::translate("Find"), juce::translate("Find element"), category, 0);
+            result.addDefaultKeypress ('f', ModifierKeys::commandModifier );
             break;
 
         default:
@@ -179,6 +185,7 @@ void MainContentComponent::getAllCommands (Array<CommandID>& commands)
         CommandIDs::pasteSelection,
         CommandIDs::undo,
         CommandIDs::redo,
+        CommandIDs::find,
         CommandIDs::toggleMappingMode
     };
 
@@ -191,7 +198,7 @@ PopupMenu MainContentComponent::getMenuForIndex (int /*topLevelMenuIndex*/, cons
     PopupMenu menu;
     auto commandManager = &getCommandManager();
 
-    if (menuName == "File")
+    if (menuName == juce::translate("File"))
     {
         // "File" menu
         menu.addCommandItem (commandManager, CommandIDs::newFile);
@@ -202,7 +209,7 @@ PopupMenu MainContentComponent::getMenuForIndex (int /*topLevelMenuIndex*/, cons
 
         PopupMenu recentFilesMenu;
         recentFiles.createPopupMenuItems (recentFilesMenu, CommandIDs::lastFileStartID, true, true);
-        menu.addSubMenu ("Open Recent", recentFilesMenu);
+        menu.addSubMenu (juce::translate("Open Recent"), recentFilesMenu);
 
         menu.addCommandItem (commandManager, CommandIDs::save);
         menu.addCommandItem (commandManager, CommandIDs::saveAs);
@@ -215,8 +222,10 @@ PopupMenu MainContentComponent::getMenuForIndex (int /*topLevelMenuIndex*/, cons
         menu.addCommandItem (commandManager, StandardApplicationCommandIDs::quit);
 
     }
-    else if (menuName == "Edit")
+    else if (menuName == juce::translate("Edit"))
     {
+        menu.addCommandItem(commandManager,CommandIDs::find);
+        menu.addSeparator();
         menu.addCommandItem (commandManager, CommandIDs::undo);
         menu.addCommandItem (commandManager, CommandIDs::redo);
         menu.addSeparator();
@@ -228,14 +237,14 @@ PopupMenu MainContentComponent::getMenuForIndex (int /*topLevelMenuIndex*/, cons
 
     }
 
-    else if (menuName == "Options")
+    else if (menuName == juce::translate("Options"))
     {
         // "Options" menu
         menu.addCommandItem (commandManager, CommandIDs::toggleMappingMode);
         menu.addSeparator();
 
     }
-    else if (menuName == "Windows")
+    else if (menuName == juce::translate("Windows"))
     {
         menu = ShapeShifterManager::getInstance()->getPanelsMenu();
         menu.addSeparator();
@@ -396,6 +405,30 @@ bool MainContentComponent::perform (const InvocationInfo& info)
             getAppUndoManager().redo();
         }
             break;
+
+        case CommandIDs::find:
+        {
+            auto sm =ShapeShifterManager::getInstance();
+            static String pn ("Outliner");
+            sm->showContent(pn);
+            auto outlinerP = sm->getPanelForContentName(pn);
+            if(outlinerP){
+                auto content = outlinerP->getContentForName(pn);
+                if(content && content->contentComponent){
+                auto searchBar = dynamic_cast<TextEditor*>(content->contentComponent->findChildWithID("search"));
+                if(searchBar){
+                    searchBar->grabKeyboardFocus();
+                }
+                else{
+                    DBG("Outliner should contain a search bar");
+                }
+                }
+            }
+            
+
+            
+        }
+            break;
         case CommandIDs::pasteSelection:
         {
             String clipboard = SystemClipboard::getTextFromClipboard();
@@ -469,7 +502,7 @@ void MainContentComponent::menuItemSelected (int menuItemID, int topLevelMenuInd
     
     String menuName = getMenuBarNames()[topLevelMenuIndex ];
     
-    if (menuName == "Windows")
+    if (menuName == juce::translate("Windows"))
     {
         ShapeShifterManager::getInstance()->handleMenuPanelCommand (menuItemID);
     }
@@ -483,8 +516,12 @@ void MainContentComponent::menuItemSelected (int menuItemID, int topLevelMenuInd
 
 StringArray MainContentComponent::getMenuBarNames()
 {
-    const char* const names[] = { "File", "Edit", "Options", "Windows", nullptr };
-    static  StringArray namesArray (names);
+
+    StringArray namesArray ({
+        juce::translate("File"),
+        juce::translate("Edit"),
+        juce::translate("Options"),
+        juce::translate("Windows") });
     return namesArray;
 }
 

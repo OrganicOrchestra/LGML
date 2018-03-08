@@ -49,7 +49,6 @@ class ConnectableNodeUI :
     public InspectableComponent,
     public ConnectableNode::ConnectableNodeListener,
     public ConnectableNodeUIParams
-
     
 {
 public:
@@ -90,8 +89,7 @@ public:
     };
 
     //ui
-    class MainComponentContainer : public juce::Component
-
+    class MainComponentContainer : public juce::Component,public TooltipClient
     {
     public:
 
@@ -117,7 +115,7 @@ public:
         virtual void setMiniMode (bool value);
 
         void childBoundsChanged (Component*)override;
-
+        String getTooltip() override;
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponentContainer)
     };
@@ -158,7 +156,6 @@ public:
 
     //Need to clean out and decide whether there can be more than 1 data connector / audio connector on nodes
     ConnectorComponent* getFirstConnector (NodeConnection::ConnectionType connectionType, ConnectorComponent::ConnectorIOType ioType);
-
 
 
 private:

@@ -24,7 +24,6 @@
 class ParameterUI : public InspectableComponent,
     protected Parameter::AsyncListener,
     private Parameter::Listener,
-    public TooltipClient,
     public Controllable::Listener
 {
 public:

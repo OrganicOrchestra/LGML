@@ -40,6 +40,7 @@ showUserContainer(true)
     addAndMakeVisible (treeView);
     treeView.getViewport()->setScrollBarThickness (10);
     if(showFilterText){
+        filterTextEditor.setComponentID("search");
         filterTextEditor.setTextToShowWhenEmpty ("search", Colours::grey);
         addAndMakeVisible (filterTextEditor);
         filterTextEditor.addListener (this);
@@ -582,8 +583,8 @@ void OutlinerItemComponent::mouseDown (const MouseEvent& e)
 
     if(e.mods.isRightButtonDown() && item->isContainer){
         PopupMenu m;
-        m.addItem(1, "expand all childs");
-        m.addItem(2, "close all childs");
+        m.addItem(1, juce::translate("expand all childs"));
+        m.addItem(2, juce::translate("close all childs"));
 
         auto res = m.showAt(this);
         if(res==1 || res==2){

@@ -24,7 +24,7 @@ class Inspector;
 class InspectorEditor;
 
 
-class InspectableComponent : public juce::Component
+class InspectableComponent : public juce::Component,public TooltipClient
 {
 public:
     InspectableComponent (ParameterContainer* relatedContainer , const String& inspectableType = "none");
@@ -56,7 +56,7 @@ public:
 
     //
     void paintOverChildren (juce::Graphics& g) override;
-    String getTooltip() ;
+    String getTooltip() override ;
 
 protected:
     ParameterContainer* relatedParameterContainer;

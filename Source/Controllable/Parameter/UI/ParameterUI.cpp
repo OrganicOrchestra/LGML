@@ -18,7 +18,6 @@
 #include "../../../UI/Style.h"
 #include "../../../UI/LGMLDragger.h"
 #include "../../../FastMapper/FastMapper.h"
-
 #include "../UndoableHelper.h"
 
 //==============================================================================
@@ -85,7 +84,6 @@ void ParameterUI::setCustomText (const String text)
 
 void ParameterUI::mouseDown (const MouseEvent& e)
 {
-
     UndoableHelpers::startNewTransaction(parameter,true);
     if (e.mods.isRightButtonDown())
     {
@@ -117,12 +115,11 @@ void ParameterUI::mouseDown (const MouseEvent& e)
         }
     }
     if(e.mods.isAltDown()){
-        Inspector::getInstance()->setCurrentComponent(this);    }
+        Inspector::getInstance()->setCurrentComponent(this);
+    }
+
 }
-
 void ParameterUI::mouseUp (const MouseEvent& e) {
-
-{
 
 };
 
@@ -178,8 +175,10 @@ void ParameterUI::visibilityChanged(){
             parameter->removeAsyncParameterListener (this);
             parameter->removeParameterListener (this);
             parameter->removeControllableListener (this);
-          }
-ive);
+        }
+    }
+    if (auto ld = LGMLDragger::getInstanceWithoutCreating())
+        setMappingState (ld->isMappingActive);
     wasShowing =_isShowing;
 
 }

@@ -48,7 +48,7 @@ public:
     FastMapper* fastMapper;
     TextButton linkToSelection;
     Label candidateLabel;
-
+    void addFastMapUndoable();
     
     ScopedPointer<Component> potentialIn, potentialOut;
     OwnedArray<FastMapUI> mapsUI;

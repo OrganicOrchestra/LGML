@@ -148,8 +148,14 @@ bool NodeContainer::removeNode (ConnectableNode* n,bool doDelete)
 
 
 
-      n->clear();
-  }
+    if(nodes.contains((NodeBase*)n)){
+        n->clear();
+    }
+    else{
+        // node has already been deleted
+        jassertfalse;
+        return false;
+    }
 
 
 

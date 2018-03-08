@@ -19,6 +19,7 @@
 #include "FastMapperUI.h"
 #include "FastMapper.h"
 #include "../Controllable/Parameter/UI/ParameterUIFactory.h"
+#include "../Utils/FactoryUIHelpers.h"
 
 FastMapperUI::FastMapperUI (FastMapper* _fastMapper, ControllableContainer* _viewFilterContainer) :
     fastMapper (_fastMapper), viewFilterContainer (_viewFilterContainer)
@@ -193,13 +194,13 @@ void FastMapperUI::mouseDown (const MouseEvent& e)
     if (e.mods.isRightButtonDown())
     {
         PopupMenu m;
-        m.addItem (1, "Add Fast Map");
+        m.addItem (1, juce::translate("Add Fast Map"));
         int result = m.show();
 
         switch (result)
         {
             case 1:
-                fastMapper->addFastMap();
+                addFastMapUndoable();
                 break;
         }
     }
@@ -294,6 +295,16 @@ void FastMapperUI::mappingModeChanged(bool){
     resized();
 }
 
+void FastMapperUI::addFastMapUndoable(){
+    getAppUndoManager().perform(new
+                                FactoryUIHelpers::UndoableCreate<ParameterContainer>
+                                (
+                                 [=](){return fastMapper->addFastMap();},
+                                 [=](ParameterContainer * f){
+                                     fastMapper->removeFastmap(dynamic_cast<FastMap*>(f));
+                                 })
+                                );
+}
 
 /////////////////
 // FastMapperViewport
@@ -359,7 +370,7 @@ void FastMapperViewport::buttonClicked (Button* b)
 {
     if (b == &addFastMapButton )
     {
-        fastMapperUI->fastMapper->addFastMap();
+        fastMapperUI->addFastMapUndoable();
     }
 
 }

@@ -18,10 +18,9 @@
 
 #pragma once
 #include "../JuceHeaderUI.h"
-
 #include "FactoryBase.h"
 
-
+extern UndoManager & getAppUndoManager();
 namespace FactoryUIHelpers
 {
 
@@ -92,12 +91,41 @@ obj* createFromMenuIdx (int idx)
     const String type = getFactoryTypeNameFromMenuIdx<FactoryBase<obj> > (idx);
     return (obj*)FactoryBase<obj>::createFromTypeID (type);
 }
-  WeakReference<T> obclass UndoableCreate:public UndoableAction{
-eate:public UndoableAction{
+
+template<class T>
+class UndoableCreate:public UndoableAction{
+
+    public :
+    typedef std::function<T*()> addFType;
+    typedef std::function<void(T*)> rmFType;
+    UndoableCreate(addFType _addF,rmFType _rmF):addF(_addF),rmF(_rmF){
+
+    }
+    bool perform() override{
+        obj=addF();
+        return obj.get()!=nullptr;
+    }
+
+    bool undo() override{
+        if(obj){
+            rmF(obj);
+            obj=nullptr;
+            return true;
+        }
+
+        return false;
+    }
+    addFType addF;
+    rmFType rmF;
+    WeakReference<T> obj;
+};
+
+template<class T>
+class UndoableFactoryCreate:public UndoableAction{
     public:
         typedef std::function<void(T*)> addFType;
-        typedef std::        UndoableCreate(String _typeID,addFType _addF,rmFType _rmF):addF(_addF),rmF(_rmF),typeID(_typeID){
-,rmF(_rmF),typeID(_typeID){
+        typedef std::function<void(T*)> rmFType;
+        UndoableFactoryCreate(String _typeID,addFType _addF,rmFType _rmF):addF(_addF),rmF(_rmF),typeID(_typeID){
             
         };
 
@@ -120,8 +148,8 @@ eate:public UndoableAction{
             return false;
         }
     String typeID;
-        addFType     T* obj;
-
+        addFType addF;
+        rmFType rmF;
     WeakReference<T> obj;
 
 };

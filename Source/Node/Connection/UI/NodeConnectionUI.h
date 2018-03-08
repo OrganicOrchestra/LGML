@@ -28,8 +28,7 @@
 class NodeConnectionUI :
     public InspectableComponent,
     public juce::ComponentListener,
-    public NodeConnection::Listener,
-    public TooltipClient
+    public NodeConnection::Listener
 
 {
 public:

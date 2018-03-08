@@ -244,7 +244,7 @@ void setAllComponentMappingState (Component* c, bool b)
     {
         Component*   ch = c->getChildComponent (i);
 
-        if (ch->isVisible())
+        if (!b || ch->isVisible())
         {
             if (auto lch = dynamic_cast<ParameterUI*> (ch))
             {
