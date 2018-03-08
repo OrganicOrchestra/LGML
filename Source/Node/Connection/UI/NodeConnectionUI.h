@@ -30,6 +30,7 @@ class NodeConnectionUI :
     public juce::ComponentListener,
     public NodeConnection::Listener,
     public TooltipClient
+
 {
 public:
     typedef ConnectorComponent Connector;

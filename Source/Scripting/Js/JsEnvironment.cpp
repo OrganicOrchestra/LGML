@@ -787,7 +787,8 @@ JSEnvContainer::JSEnvContainer (JsEnvironment* pEnv):
 ParameterContainer ("jsParams"), jsEnv (pEnv)
 {
 
-    scriptPath = addNewParameter<StringParameter> ("ScriptPath", "path for js script", "");
+    scriptPath = addNewParameter<StringParameter> ("ScriptPath",
+                                                   "path for js script", "");
     scriptPath->isControllableExposed = false;
     loadT =  addNewParameter<Trigger> ("loadFile", "open dialog to choose file to load");
     loadT->isControllableExposed = false;

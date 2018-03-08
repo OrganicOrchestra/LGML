@@ -125,9 +125,9 @@ void ControllableReferenceUI::buttonClicked (Button*)
 
         ControllableContainerPopupMenu p (rootContainer, &filterOutControllable);
         PopupMenu mainMenu;
-        mainMenu.addSubMenu("Change Target", p);
+        mainMenu.addSubMenu(juce::translate("Change Target"), p);
         int removeId = p.endId+1;
-        mainMenu.addItem(removeId, "Clear Target");
+        mainMenu.addItem(removeId, juce::translate("Clear Target"));
 
         int result = mainMenu.show();
 

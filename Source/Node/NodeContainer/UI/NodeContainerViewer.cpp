@@ -439,7 +439,7 @@ void NodeContainerViewer::mouseDown (const MouseEvent& event)
 
             if (result > 0)
             {
-                String tid(FactoryUIHelpers::getFactoryTypeNameFromMenuIdx<FactoryBase<NodeBase>>(result));
+                String tid(FactoryUIHelpers::getFactoryTypeNameFromMenuIdx<NodeFactory>(result));
                 addNodeUndoable(tid, mousePos);
 
 
@@ -609,7 +609,7 @@ bool NodeContainerViewer::keyPressed (const KeyPress& key)
 
         if (result > 0 )
         {
-            addNodeUndoable(FactoryUIHelpers::getFactoryTypeNameFromMenuIdx<FactoryBase<NodeBase> > (result),mousePos);
+            addNodeUndoable(FactoryUIHelpers::getFactoryTypeNameFromMenuIdx<NodeFactory > (result),mousePos);
 
         }
 
@@ -694,7 +694,7 @@ void NodeContainerViewer::changeListenerCallback (ChangeBroadcaster* source){
 }
 
 void NodeContainerViewer::addNodeUndoable(const String & tid,const Point<int> & mousePos){
-    getAppUndoManager().perform(new FactoryUIHelpers::UndoableCreate<NodeBase>
+    getAppUndoManager().perform(new FactoryUIHelpers::UndoableFactoryCreate<NodeBase>
                                 (tid,
                                  [=](NodeBase* c){
                                      if(c)

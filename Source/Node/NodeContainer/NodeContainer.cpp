@@ -148,8 +148,9 @@ bool NodeContainer::removeNode (ConnectableNode* n,bool doDelete)
 
 
 
+      n->clear();
+  }
 
-    n->clear();
 
 
     if (NodeContainer* nc = dynamic_cast<NodeContainer*> (n)) nodeContainers.removeFirstMatchingValue (nc);

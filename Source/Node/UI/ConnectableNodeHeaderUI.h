@@ -29,7 +29,8 @@ class ConnectableNodeUI;
 class ConnectableNodeHeaderUI : public juce::Component,
     public Button::Listener,
     private ControllableContainerListener,
-    public ConnectableNode::ConnectableNodeListener
+    public ConnectableNode::ConnectableNodeListener,
+    public TooltipClient
 {
 public:
 
@@ -85,7 +86,7 @@ public:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ConnectableNodeHeaderUI)
 
-
+    String getTooltip() override;
 
 
 };

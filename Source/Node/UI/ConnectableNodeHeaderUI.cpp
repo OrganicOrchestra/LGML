@@ -296,3 +296,5 @@ void ConnectableNodeHeaderUI::numAudioOutputChanged (ConnectableNode*, int /*new
     postCommandMessage (audioOutputChangedId);
 
 }
+
+String ConnectableNodeHeaderUI::getTooltip() {return nodeUI->getTooltip();};

@@ -52,10 +52,10 @@ void PresetChooserUI::fillWithPresets (ComboBox* cb, const  String& filter, bool
 {
     cb->clear();
 
-    if (_showSaveCurrent) cb->addItem ("Save current preset", SaveCurrent);
+    if (_showSaveCurrent) cb->addItem (juce::translate("Save current preset"), SaveCurrent);
 
-    cb->addItem ("Save to new preset", SaveToNew);
-    cb->addItem ("Reset to default", ResetToDefault);
+    cb->addItem (juce::translate("Save to new preset"), SaveToNew);
+    cb->addItem (juce::translate("Reset to default"), ResetToDefault);
 
     int pIndex = 1;
     PresetManager* pm = PresetManager::getInstance();
@@ -76,7 +76,7 @@ void PresetChooserUI::fillWithPresets (ComboBox* cb, const  String& filter, bool
 
         if (pre->filter == filter)
         {
-            cb->addItem ("delete " + pre->name, PresetChoice::deleteStartId + pre->presetId);
+            cb->addItem (juce::translate("delete")+" " + pre->name, PresetChoice::deleteStartId + pre->presetId);
         }
     }
 

@@ -65,6 +65,7 @@ void ControllerManagerUI::controllerRemoved (Controller* c)
 
 ControllerUI* ControllerManagerUI::addControllerUI (Controller* controller)
 {
+
     if (getUIForController (controller) != nullptr)
     {
         DBG ("Controller already exists");
@@ -215,6 +216,11 @@ void ControllerManagerUIViewport::resized()
 
 
     bool needResize = controllerManagerUI->getHeight()==controllerManagerUI->getContentHeight();
+
+
+
+
+ht();
 
 
 

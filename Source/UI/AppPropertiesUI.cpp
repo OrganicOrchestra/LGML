@@ -83,7 +83,7 @@ public:
             getAppProperties()->getUserSettings()->setValue(name,nonTranslatedChoices[newI]);
             if(cb!=nullptr)
                 cb(nonTranslatedChoices[newI]);
-        }
+                }
         si = newI;
         refresh();
     };
@@ -215,13 +215,14 @@ class PrefPanel : public PreferencesPanel{
     Component* createComponentForPage (const String& pageName)override{
         if(pageName==juce::translate(AppPropertiesUI::GeneralPageName)){
             auto res =  new PropertyPanel();
-            res->addProperties(
-                               {
-                                   new BoolPropUI("check for updates"),
-                                   createActionProp("check for updates now",checkUpdatesNow),
-                                   new EnumPropUI("language",Engine::getAvailableLanguages(),&Engine::setLanguage,"(restart needed)")
+            res->addProperties
+            (
+             {
+                 new BoolPropUI("check for updates"),
+                 createActionProp(juce::translate("check for updates now"),checkUpdatesNow),
+                 new EnumPropUI("language",Engine::getAvailableLanguages(),&Engine::setLanguage,juce::translate("(restart needed)"))
 
-                               } );
+             } );
             return res;
         }
         else if (pageName==juce::translate(AppPropertiesUI::AudioPageName)){
@@ -238,148 +239,147 @@ class PrefPanel : public PreferencesPanel{
             auto res =  new PropertyPanel();
             res->addProperties(
                                {new BoolPropUI("multiThreadedLoading"),
-                                   createActionProp("reset preferences",resetPreferences),
-                                   createUnsavedPropUI("stimulate Audio",stimulateAudio),
+                                   createActionProp(juce::translate("reset preferences"),resetPreferences),
+                                   createUnsavedPropUI(juce::translate("stimulate Audio"),stimulateAudio),
 
-                               } );
+                               }
+                               );
             return res;
         }
 
         else if(pageName==juce::translate(AppPropertiesUI::PluginsPageName)){
             auto vm = VSTManager::getInstance();
             if(vm){
-                auto appProps = getAppProperties()?getAppProperties()->getUserSettings():nullptr;
-                const File deadMansPedalFile = appProps?File(appProps->getFile().getSiblingFile ("RecentlyCrashedPluginsList")):File();
+                PropertiesFile* appProps(getAppProperties()?getAppProperties()->getUserSettings():nullptr);
+                const File deadMansPedalFile ((appProps)?File(appProps->getFile().getSiblingFile ("RecentlyCrashedPluginsList")):File());
 
-                auto res = new PluginListComponent (vm->formatManager,vm->knownPluginList,deadMansPedalFile,appProps, true);
+                auto res = new PluginListComponent (vm->formatManager,vm->knownPluginList,deadMansPedalFile,appProps, true);return res;
 
-                return res;
-                }
 
-                }
-                return nullptr;
+            }
+        }
+        return nullptr;
 
-                }
-                };
-
+    }
+};
 
 
 
 
 
-                ////////////
-                // AppPropertiesUI
-                //////////////
+////////////
+// AppPropertiesUI
+//////////////
 
-                static ScopedPointer<DrawableComposite>  createIcon(const String &n,PrefPanel * parent,const int color = 0){
-                    DrawableComposite * res = new DrawableComposite();
+static ScopedPointer<DrawableComposite>  createIcon(const String &n,PrefPanel * parent,const int color = 0){
+    DrawableComposite * res = new DrawableComposite();
 
-                    //    DrawablePath * border = new DrawablePath();
-                    //    Path circle;
-                    //    circle.addEllipse(0, 0, parent->getButtonSize(), parent->getButtonSize());
+    //    DrawablePath * border = new DrawablePath();
+    //    Path circle;
+    //    circle.addEllipse(0, 0, parent->getButtonSize(), parent->getButtonSize());
 
-                    //    border->setPath(circle);
-                    //    border->setFill(Colours::transparentWhite);
-                    //    border->setFill(parent->findColour(TextButton::ColourIds::textColourOnId).brighter());
+    //    border->setPath(circle);
+    //    border->setFill(Colours::transparentWhite);
+    //    border->setFill(parent->findColour(TextButton::ColourIds::textColourOnId).brighter());
 
-                    //    res->addAndMakeVisible(border);
-
-
-                    DrawableText * text = new DrawableText();
-                    text->setText(n.substring(0,1));
-                    text->setColour(parent->findColour(color>0? color:TextButton::ColourIds::textColourOffId));
-                    text->setJustification(juce::Justification::centred);
-                    text->setFontHeight(parent->getButtonSize());
-                    res->addAndMakeVisible(text);
+    //    res->addAndMakeVisible(border);
 
 
-
-                    return res;
-                }
-
-                void createForPageName(const String & pageName,PrefPanel * prefPanel){
-                    const int normalColorId = TextButton::ColourIds::textColourOffId;
-                    const int hoverColorId = TextButton::ColourIds::buttonOnColourId;
-                    prefPanel->addSettingsPage(juce::translate(pageName),
-                                               createIcon(pageName,prefPanel,normalColorId) ,
-                                               createIcon(pageName,prefPanel,hoverColorId) ,
-                                               nullptr//createIcon(GeneralPageName,prefPanel,downColorId)
-                                               );
-                }
-
-                AppPropertiesUI::AppPropertiesUI():ResizableWindow(juce::translate("Settings"),true){
+    DrawableText * text = new DrawableText();
+    text->setText(n.substring(0,1));
+    text->setColour(parent->findColour(color>0? color:TextButton::ColourIds::textColourOffId));
+    text->setJustification(juce::Justification::centred);
+    text->setFontHeight(parent->getButtonSize());
+    res->addAndMakeVisible(text);
 
 
-                    prefPanel = new PrefPanel();
 
-                    //    const int downColorId = TextButton::ColourIds::textColourOnId;
-                    createForPageName(GeneralPageName,prefPanel);
-                    createForPageName(AudioPageName,prefPanel);
+    return res;
+}
 
-                    createForPageName(PluginsPageName,prefPanel);
+void createForPageName(const String & pageName,PrefPanel * prefPanel){
+    const int normalColorId = TextButton::ColourIds::textColourOffId;
+    const int hoverColorId = TextButton::ColourIds::buttonOnColourId;
+    prefPanel->addSettingsPage(juce::translate(pageName),
+                               createIcon(pageName,prefPanel,normalColorId) ,
+                               createIcon(pageName,prefPanel,hoverColorId) ,
+                               nullptr//createIcon(GeneralPageName,prefPanel,downColorId)
+                               );
+}
+
+AppPropertiesUI::AppPropertiesUI():ResizableWindow(juce::translate("Settings"),true){
 
 
-                    createForPageName(AdvancedPageName,prefPanel);
+    prefPanel = new PrefPanel();
+
+    //    const int downColorId = TextButton::ColourIds::textColourOnId;
+    createForPageName(GeneralPageName,prefPanel);
+    createForPageName(AudioPageName,prefPanel);
+
+    createForPageName(PluginsPageName,prefPanel);
+
+
+    createForPageName(AdvancedPageName,prefPanel);
 
 
 #ifdef JUCE_MAC
-                    setUsingNativeTitleBar(true);
+    setUsingNativeTitleBar(true);
 #else
-                    setUsingNativeTitleBar(false);
+    setUsingNativeTitleBar(false);
 #endif
 
-                    setContentNonOwned(prefPanel, false);
-                    auto mainScreenB = Desktop::getInstance().getDisplays().getMainDisplay().userArea;
-                    auto area = mainScreenB.withSizeKeepingCentre(mainScreenB.getWidth()/3, mainScreenB.getHeight()/2);
-                    setBounds(area);
-                    setResizable (true, true);
-                    setDraggable (true);
-                }
+    setContentNonOwned(prefPanel, false);
+    auto mainScreenB = Desktop::getInstance().getDisplays().getMainDisplay().userArea;
+    auto area = mainScreenB.withSizeKeepingCentre(mainScreenB.getWidth()/3, mainScreenB.getHeight()/2);
+    setBounds(area);
+    setResizable (true, true);
+    setDraggable (true);
+}
 
-                AppPropertiesUI::~AppPropertiesUI(){
-                    getAppProperties()->saveIfNeeded();
-                    if(getEngine()){
-                        getEngine()->audioSettingsHandler.saveCurrent();
-                    }
-                    // TODO we may implement a mechanism to close appProps files every time we access it?
-                    //    getAppProperties().closeFiles();
-                }
+AppPropertiesUI::~AppPropertiesUI(){
+    getAppProperties()->saveIfNeeded();
+    if(getEngine()){
+        getEngine()->audioSettingsHandler.saveCurrent();
+    }
+    // TODO we may implement a mechanism to close appProps files every time we access it?
+    //    getAppProperties().closeFiles();
+}
 
-                void AppPropertiesUI::userTriedToCloseWindow() {
-                    deleteInstance();
-                }
+void AppPropertiesUI::userTriedToCloseWindow() {
+    deleteInstance();
+}
 
-                bool AppPropertiesUI::keyPressed (const KeyPress& key){
+bool AppPropertiesUI::keyPressed (const KeyPress& key){
 
-                    if (key.isKeyCode (KeyPress::escapeKey) )
-                    {
-                        deleteInstance();
-                        return true;
-                    }
-                    return false;
-                }
+    if (key.isKeyCode (KeyPress::escapeKey) )
+    {
+        deleteInstance();
+        return true;
+    }
+    return false;
+}
 
-                void AppPropertiesUI::showAppSettings(const String & name){
+void AppPropertiesUI::showAppSettings(const String & name){
 
-                    auto i = getInstance();
-                    if(name.isNotEmpty()){
-                        i->prefPanel->setCurrentPage(name);
-                    }
-                    i->setVisible (true);
-                    i->toFront (true);
-                    
-                    
-                    
-                    
-                }
-                
-                int AppPropertiesUI::getDesktopWindowStyleFlags() const {
-                    return
-                    (ResizableWindow::getDesktopWindowStyleFlags() | ComponentPeer::windowHasCloseButton )
-                    & ~ComponentPeer::windowHasMaximiseButton & ~ComponentPeer::windowHasMinimiseButton;
-                    
-                }
-                void AppPropertiesUI::closeAppSettings(){
-                    deleteInstance();
-                    
-                }
+    auto i = getInstance();
+    if(name.isNotEmpty()){
+        i->prefPanel->setCurrentPage(name);
+    }
+    i->setVisible (true);
+    i->toFront (true);
+
+
+
+
+}
+
+int AppPropertiesUI::getDesktopWindowStyleFlags() const {
+    return
+    (ResizableWindow::getDesktopWindowStyleFlags() | ComponentPeer::windowHasCloseButton )
+    & ~ComponentPeer::windowHasMaximiseButton & ~ComponentPeer::windowHasMinimiseButton;
+
+}
+void AppPropertiesUI::closeAppSettings(){
+    deleteInstance();
+
+}

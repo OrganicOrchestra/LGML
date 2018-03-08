@@ -114,10 +114,10 @@ void InspectableComponent::setVisuallySelected (bool value)
 
 String InspectableComponent::getTooltip() {
     if(relatedParameterContainer){
-        return relatedParameterContainer->getFactoryInfo();
+        return juce::translate(relatedParameterContainer->getFactoryInfo());
     }
     else if(relatedParameter){
-        return relatedParameter->getFactoryInfo();
+        return juce::translate(relatedParameter->getFactoryInfo());
     }
     return juce::translate("no info");
 }

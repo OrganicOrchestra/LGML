@@ -60,7 +60,7 @@ void EnumParameterUI::updateComboBox()
     if (EnumParameterModel* mod = ep->getModel())
     {
         int id = 1;
-        cb.addItem ("None", NoneId);
+        cb.addItem (juce::translate("None"), NoneId);
         NamedValueSet map = mod->getProperties();
         StringArray keys ;
         for(auto & k:map){
@@ -73,7 +73,7 @@ void EnumParameterUI::updateComboBox()
         {
             
 //            String key = kv.name.toString();
-            String displayed = key;//+" ["+kv.value.toString()+"]";
+            String displayed = juce::translate(key);//+" ["+kv.value.toString()+"]";
             cb.addItem (displayed, id);
             idKeyMap.set (id, key);
             keyIdMap.set (key, id);
@@ -89,8 +89,8 @@ void EnumParameterUI::updateComboBox()
 
     if (ep->isEditable)
     {
-        cb.addItem ("add " + ep->niceName, addElementId);
-        cb.addItem ("remove " + ep->niceName, removeElementId);
+        cb.addItem (juce::translate("add")+" " + ep->niceName, addElementId);
+        cb.addItem (juce::translate("remove")+" " + ep->niceName, removeElementId);
     }
 }
 

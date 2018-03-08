@@ -95,7 +95,7 @@ public :
     SelectedItemSet<SelectedUIType> selectedItems;
 
     void addNodeUndoable(const String & type,const Point<int> & mousePos);
-
+    String getTooltip() override{return String::empty;}
 private:
 
     void changeListenerCallback (ChangeBroadcaster* source) override;

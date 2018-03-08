@@ -61,3 +61,7 @@ void ConnectableNodeContentUI::setDefaultPosition (int x, int y)
     
 }
 
+String ConnectableNodeContentUI::getTooltip(){
+    return nodeUI->getTooltip();
+};
+

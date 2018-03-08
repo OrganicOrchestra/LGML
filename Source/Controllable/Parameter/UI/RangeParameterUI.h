@@ -26,10 +26,12 @@ class RangeParameterUI : public ParameterUI, private Slider::Listener
 public:
     RangeParameterUI (RangeParameter* p): ParameterUI (p), slider (Slider::SliderStyle::TwoValueHorizontal, Slider::NoTextBox)
     {
+
         slider.addListener (this);
         addAndMakeVisible (slider);
         slider.setRange (p->minimumValue, p->maximumValue);
-        slider.setMinAndMaxValues (p->getRangeMin(), p->getRangeMax());
+        slider.setMinAndMaxValues (p->getRangeMin(), p->getRangeMax(),dontSendNotification);
+
     }
 
     void valueChanged (const var& v) override

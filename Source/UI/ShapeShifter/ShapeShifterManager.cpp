@@ -428,9 +428,9 @@ PopupMenu ShapeShifterManager::getPanelsMenu()
 {
     PopupMenu p;
     PopupMenu layoutP;
-    layoutP.addItem (baseSpecialMenuCommandID + 1, "Save Current layout");
-    layoutP.addItem (baseSpecialMenuCommandID + 2, "Load Default Layout");
-    layoutP.addItem (baseSpecialMenuCommandID + 3, "Load Layout...");
+    layoutP.addItem (baseSpecialMenuCommandID + 1, juce::translate("Save Current layout"));
+    layoutP.addItem (baseSpecialMenuCommandID + 2, juce::translate("Load Default Layout"));
+    layoutP.addItem (baseSpecialMenuCommandID + 3, juce::translate("Load Layout..."));
     layoutP.addSeparator();
 
     Array<File> layoutFiles = getLayoutFiles();
@@ -443,17 +443,17 @@ PopupMenu ShapeShifterManager::getPanelsMenu()
         specialIndex++;
     }
 
-    p.addSubMenu ("Layout", layoutP);
+    p.addSubMenu (juce::translate("Layout"), layoutP);
 
     PopupMenu showP;
     int currentID = 1;
 
     for (auto& n : globalPanelNames)
     {
-        showP.addItem (baseMenuCommandID + currentID, n, true);
+        showP.addItem (baseMenuCommandID + currentID, juce::translate(n), true);
         currentID++;
     }
-    p.addSubMenu("Show Panel", showP);
+    p.addSubMenu(juce::translate("Show Panel"), showP);
     return p;
 }
 

@@ -236,6 +236,7 @@ public :
             if (result > 0)
             {
                 String tid(FactoryUIHelpers::getFactoryTypeNameFromMenuIdx<FactoryBase<NodeBase>>(result));
+
                 nmui->currentViewer->addNodeUndoable(tid, destPos);
             }
 

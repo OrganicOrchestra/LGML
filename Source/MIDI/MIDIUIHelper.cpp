@@ -36,7 +36,7 @@ void MIDIDeviceChooser::fillDeviceList()
 
 
     clear();
-    addItem ("Choose a MIDI Device", 1);
+    addItem (juce::translate("Choose a MIDI Device"), 1);
     StringArray deviceList = isInputChooser ? MIDIManager::getInstance()->inputDevices : MIDIManager::getInstance()->outputDevices;
     addItemList (deviceList, 2);
 

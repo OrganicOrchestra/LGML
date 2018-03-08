@@ -18,7 +18,9 @@
 
 #pragma once
 #include "../JuceHeaderUI.h"
+
 #include "FactoryBase.h"
+
 
 namespace FactoryUIHelpers
 {
@@ -90,14 +92,12 @@ obj* createFromMenuIdx (int idx)
     const String type = getFactoryTypeNameFromMenuIdx<FactoryBase<obj> > (idx);
     return (obj*)FactoryBase<obj>::createFromTypeID (type);
 }
-
-
-template<class T>
-class UndoableCreate:public UndoableAction{
+  WeakReference<T> obclass UndoableCreate:public UndoableAction{
+eate:public UndoableAction{
     public:
         typedef std::function<void(T*)> addFType;
-        typedef std::function<void(T*)> rmFType;
-        UndoableCreate(String _typeID,addFType _addF,rmFType _rmF):addF(_addF),rmF(_rmF),typeID(_typeID){
+        typedef std::        UndoableCreate(String _typeID,addFType _addF,rmFType _rmF):addF(_addF),rmF(_rmF),typeID(_typeID){
+,rmF(_rmF),typeID(_typeID){
             
         };
 
@@ -120,9 +120,9 @@ class UndoableCreate:public UndoableAction{
             return false;
         }
     String typeID;
-        addFType addF;
-        rmFType rmF;
-    T* obj;
+        addFType     T* obj;
+
+    WeakReference<T> obj;
 
 };
 

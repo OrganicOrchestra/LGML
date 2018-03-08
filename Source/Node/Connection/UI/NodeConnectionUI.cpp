@@ -288,8 +288,8 @@ void NodeConnectionUI::mouseDown (const MouseEvent& e)
     if (e.mods.isRightButtonDown())
     {
         PopupMenu m;
-        //m.addItem(1,"Edit connections...");
-        m.addItem (2, "Delete all connections");
+        //m.addItem(1,juce::translate("Edit connections..."));
+        m.addItem (2, juce::translate("Delete all connections"));
 
         int result = m.show();
 
