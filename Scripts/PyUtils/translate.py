@@ -44,34 +44,43 @@ def getEnclosed(s,start,opc='(',clc=')',ignore_escaped=False):
   return None
 
 
-def getTranslatedElements(fl):
 
-  methodName = "juce::translate"
-  # r = re.compile(methodName+"\ *\(([A-Za-z0-9_\ ]+)\)")
+def getRegExs(fl):
+  regL = []
   res ={}
+  regL+=[buildRegFunction("addNewParameter\<.*\>",[1,1],strict=False)]
+  regL+=[buildRegFunction("DECLARE_OBJ_TYPE",[0,1])]
+  regL+=[buildRegFunction("ShapeShifterContentComponent",[0,1])]
+  regL+=[buildRegFunction("juce::translate",[1],strict=True)]
+  regL+=[buildRegFunction("AppPropertiesUI::\w+",[1],strict=True)]
+  regL+=[buildRegFunction("BoolPropUI",[1],strict=True)]
+  regL+=[buildRegFunction("EnumPropUI",[1,0,0,1])]
+  regL+=[buildRegFunction("BoolUnsavedPropUI",[1])]
+  regL+=[buildRegFunction("ActionPropUI",[1])]
+  regL+=[buildRegFunction("createActionProp",[1])]
+  regL+=[buildRegFunction("createUnsavedPropUI",[1])]
   for f in fl:
     # print('reading %s'%f)
     with open(f,'r',errors='replace',encoding='utf-8') as fp:
-      
-      i = -1
-      for l in fp.readlines():
-        i+=1
-        found_idx = 0
-        found_idx = l.find(methodName,found_idx)
-        while found_idx>0:
-          sub = getEnclosed(l,found_idx)
-          if(sub is not None):
-            innerT = l[sub[0]+1:sub[1]]
-            res[innerT]=(f,i)
-            found_idx=sub[1]+1
-          else:
-            raise NameError('weird')
-            break;
-          
-          found_idx = l.find(methodName,found_idx+1)
-          
+      # for l in fp.readlines():
+      text = fp.read()
+    end='.*\n'
+    line=[]
+    for m in re.finditer(end, text):
+      line.append(m.end())
 
-
+    for r in regL:
+      literator =  (i for i in range(len(line)) if line[i]>m.start(1))
+      it = re.finditer (r,text)
+      lineNum = 0
+      for m in it:
+        if( line[lineNum]<m.start(1)):
+          lineNum = next(literator) + 1
+        numC = m.groups()
+        for i in numC:
+          res[i]=(f,lineNum)
+          # print (os.path.basename(f),lineNum,i)
+        # if g : print(g);
   return res
 
 def getAllStrings(fl):
@@ -132,7 +141,7 @@ def mergeEscaped(ls,escaped):
 
 
 
-def buildLocalMT(strs):
+def buildLocalMT(strs,locale='fr'):
   mtfile = "/tmp/mt"
   from googletrans import Translator
   translator = Translator()
@@ -143,13 +152,15 @@ def buildLocalMT(strs):
       mt = json.load(fp)
   else:
     mt = {}
+
+  res = {}
   for k in strs:
     if not k in mt:
-      print('translating :%s'%k)
+      print('translating :%s (%s,%i)'%(k,os.path.basename(strs[k][0]),strs[k][1]))
       kl,esc = splitEscaped(k)
       i+=1
 
-      trs = translator.translate(kl,src='en',dest='fr')
+      trs = translator.translate(kl,src='en',dest=locale)
       trs_l=[]
       for t in trs:
         trs_l += [t.text];#).decode('utf8')
@@ -158,14 +169,15 @@ def buildLocalMT(strs):
       if(i%10 ==0):
         with open(mtfile,'w') as fp:
           json.dump(mt,fp)
+
+    res[k] = {'trans':mt[k],'meta':strs[k]}
   if i>0:
     with open(mtfile,'w') as fp:
       json.dump(mt,fp)
-  return mt
+  return res
 
 
-def buildPO(strs):
-  mt = buildLocalMT(strs)
+def buildPO(mt,lang):
   po = polib.POFile(encoding='utf-8')
   po.metadata = {
       'Project-Id-Version': '1.2.7',
@@ -173,55 +185,94 @@ def buildPO(strs):
       'POT-Creation-Date': '2007-10-18 14:00+0100',
       'PO-Revision-Date': '2007-10-18 14:00+0100',
       'Last-Translator': 'you <lab@organic-orchestra.com>',
-      'Language-Team': 'French <lab@organic-orchestra.com>',
+      'Language-Team': 'Lab <lab@organic-orchestra.com>',
       'MIME-Version': '1.0',
       'Content-Type': 'text/plain; charset=utf-8',
       'Content-Transfer-Encoding': '8bit',
   }
   for k,v in mt.items():
 
-    trs_s = mt[k];
-    print (k)
+    trs_s = v['trans'];
+    relSrcFile = v['meta'][0][len(sourcePath)+1:]
+    lineNum = v['meta'][1]
+    print (k,relSrcFile,lineNum)
     entry = polib.POEntry(
         msgid=k,
         msgstr=trs_s,
-        occurrences=[(v[0],v[1])]
+        occurrences=[(relSrcFile,lineNum)]
     )
     po.append(entry)
-  po.save(os.path.expanduser('~/Documents/LGML/translations/tst.po'))
+  po.save(os.path.expanduser('~/Documents/LGML/translations/%s.po'%lang['name']))
 
 
-def toJUCEfmt(mt):
-  outputF = os.path.expanduser('~/Documents/LGML/translations/french.txt')
+def toJUCEfmt(mt,lang):
+  outputF = os.path.expanduser('~/Documents/LGML/translations/%s.txt'%lang['name'])
   
   with open(outputF,'w',encoding='utf-8') as fp:
-    fp.write("""language: French
+    fp.write("""language: %s
 countries: fr be mc ch lu
 
-""")
+"""%lang['name'])
     for k,v in mt.items():
-      fp.write('"%s" = "%s"\n'%(k,v))
+      fp.write('"%s" = "%s"\n'%(k,v['trans']))
+
+
+
+
+
+def getDefaultStrings():
+  resL= ["Node Manager", "Time Manager", "Inspector", "Logger", "Controllers", "Fast Mapper", "Outliner","Help"]
+  res = {}
+  for a in resL:
+      res[a] = ("No File",0)
+  return res
+
+
+
+
+
+def buildRegFunction(fname,valid_mask,strict = True):
+  anys = r"[\s\n\r]*"
+  s = fname+anys+"\("+anys
+  for m in  valid_mask:
+    if m:
+      s+=r'"(.+?)"'
+    else:
+      s+=r'.+'
+    s+=anys+','+anys
+  s = s[:-len(anys)-1]
+  if(strict) :
+    s+=anys+"\)"
+  print(s)
+  return re.compile(s,re.MULTILINE)
 
 
 if __name__ == "__main__":
+
+  # s = """ShapeShifterContentComponent (juce::translate("lala"), juce::translate("lalo"),Link parameters")"""
+  # r = buildRegFunction("juce::translate",[1],strict=True)
+  # print (re.findall(r,s))
+  # exit()
+  lang  = {'code':'fr','name':'french'};
   fl = getFileList()
+  tel = {}
+  autoEl = getRegExs(fl)
+  tel.update(autoEl)
 
-  tel = getTranslatedElements(fl)
-  valid_s = {}
-  invalid_s = {}
-  for s,v in tel.items():
-    if s[0]=='"' and s[-1]=='"':
-      valid_s[s.strip('"')]=v
-    else:
-      invalid_s[s]=[v]
-  print(valid_s)
-  print(invalid_s)
-  mt = buildLocalMT(valid_s)
-  toJUCEfmt(mt)
+  ds = getDefaultStrings()
+  tel.update(ds)
+  
 
-  strs = getAllStrings(fl)
-  #toJUCEfmt(buildLocalMT(strs))
-  # buildPO(strs)
+  mt = buildLocalMT(tel,lang['code'])
+  toJUCEfmt(mt,lang)
+  
+  buildPO(mt,lang)
+
+  exit()
+
+  
+  
+  
 
 
   for k,v in strs.items():
