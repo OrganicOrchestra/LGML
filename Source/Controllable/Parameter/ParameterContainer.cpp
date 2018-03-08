@@ -36,6 +36,7 @@ isHidenInEditor(false)
     nameParam->isPresettable = false;
 
 
+
     currentPresetName = addNewParameter<StringParameter> (presetIdentifier.toString(), "Current Preset", "");
     currentPresetName->isHidenInEditor = true;
     savePresetTrigger = addNewParameter<Trigger> ("Save Preset", "Save current preset");

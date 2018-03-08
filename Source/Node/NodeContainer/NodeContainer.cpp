@@ -153,7 +153,7 @@ bool NodeContainer::removeNode (ConnectableNode* n,bool doDelete)
     }
     else{
         // node has already been deleted
-        jassertfalse;
+        //jassertfalse;
         return false;
     }
 

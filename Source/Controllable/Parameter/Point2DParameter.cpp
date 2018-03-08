@@ -41,7 +41,7 @@ Point2DParameter<T>::Point2DParameter (const String& niceName, const String& des
         jassertfalse;
     }
 
-    isHidenInEditor = true;
+//    isHidenInEditor = true;
     setPoint (x, y);
 }
 
