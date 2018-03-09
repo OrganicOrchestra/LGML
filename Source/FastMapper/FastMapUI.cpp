@@ -16,6 +16,7 @@
  ==============================================================================
  */
 
+#if !ENGINE_HEADLESS
 #include "FastMapUI.h"
 #include "../Controllable/Parameter/UI/ParameterUIFactory.h"
 #include "FastMapper.h"
@@ -145,3 +146,4 @@ void FastMapUI::linkedParamChanged (ParameterProxy* p )
         resized();
     }
 };
+#endif

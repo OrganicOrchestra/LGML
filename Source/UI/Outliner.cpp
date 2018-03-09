@@ -16,6 +16,8 @@
  ==============================================================================
  */
 
+#if !ENGINE_HEADLESS
+
 #include "Outliner.h"
 #include "../Engine.h"
 #include "Style.h"
@@ -639,3 +641,4 @@ void OutlinerItemComponent::labelTextChanged (Label* labelThatHasChanged) {
         item->parameter->setNiceName(label.getTextValue().toString());
     }
 };
+#endif

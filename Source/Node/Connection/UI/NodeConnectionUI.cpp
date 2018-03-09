@@ -12,7 +12,7 @@
 *
 */
 
-
+#if !ENGINE_HEADLESS
 
 #include "NodeConnectionUI.h"
 #include "NodeConnectionEditor.h"
@@ -506,3 +506,5 @@ String NodeConnectionUI::getTooltip() {
     }
     return tt;
     }
+
+#endif

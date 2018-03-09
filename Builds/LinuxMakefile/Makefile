@@ -216,6 +216,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/Engine_7f3228cb.o \
   $(JUCE_OBJDIR)/EngineFileDocument_abfb722.o \
   $(JUCE_OBJDIR)/Main_90ebc5c2.o \
+  $(JUCE_OBJDIR)/Version_2d694139.o \
   $(JUCE_OBJDIR)/list_ports_linux_5c85ed4.o \
   $(JUCE_OBJDIR)/list_ports_osx_ba915334.o \
   $(JUCE_OBJDIR)/list_ports_win_c7a6a16c.o \
@@ -988,6 +989,11 @@ $(JUCE_OBJDIR)/EngineFileDocument_abfb722.o: ../../Source/EngineFileDocument.cpp
 $(JUCE_OBJDIR)/Main_90ebc5c2.o: ../../Source/Main.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling Main.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/Version_2d694139.o: ../../Source/Version.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling Version.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/list_ports_linux_5c85ed4.o: ../../third_party/serial/src/impl/list_ports/list_ports_linux.cc

@@ -13,6 +13,7 @@
 */
 
 
+
 #include "AudioDeviceOutNode.h"
 
 
@@ -156,5 +157,7 @@ void AudioDeviceOutNode::removeVolMute()
     logVolumes.removeLast();
     lastNumberOfOutputs--;
 }
+
+
 
 

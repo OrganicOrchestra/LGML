@@ -8,6 +8,8 @@
   ==============================================================================
 */
 
+#if !ENGINE_HEADLESS
+
 #include "FactoryUIHelpers.h"
 #include "../Node/NodeBase.h"
 
@@ -21,3 +23,5 @@ PopupMenu* getFactoryTypesMenu< FactoryBase<NodeBase> > (int menuIdOffset ){
     return createFactoryTypesMenuFilter<FactoryBase<NodeBase> >(nodeFilter,menuIdOffset);
 }
 }
+
+#endif

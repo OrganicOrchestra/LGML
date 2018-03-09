@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "ShapeShifterManager.h"
 #include "ShapeShifterFactory.h"
@@ -492,3 +493,5 @@ void ShapeShifterManager::handleMenuPanelCommand (int commandID)
     String contentName = globalPanelNames[relCommandID];
     showContent (contentName);
 }
+
+#endif

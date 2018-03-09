@@ -18,7 +18,8 @@
 
 #pragma once
 
-#include "../JuceHeaderCore.h"
+
+#include "../JuceHeaderUI.h"
 
 
 class UpdaterDialogModalCallback;
@@ -99,3 +100,4 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LatestVersionChecker)
 };
+

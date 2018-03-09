@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "ParameterUIFactory.h"
 #include "../BoolParameter.h"
@@ -62,3 +63,5 @@ ParameterUI* ParameterUIFactory::createDefaultUI (const Parameter* t)
 
 
 }
+
+#endif

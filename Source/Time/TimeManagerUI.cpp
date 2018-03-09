@@ -16,6 +16,7 @@
  ==============================================================================
  */
 
+#if !ENGINE_HEADLESS
 #include "TimeManagerUI.h"
 #include "../Controllable/Parameter/UI/ParameterUIFactory.h"
 #include "../UI/Style.h"
@@ -314,3 +315,6 @@ void TimeManagerUI::TimeBar::BeatComponent::paint (Graphics& g)
     g.fillRect (lineR.removeFromLeft ((int) (percentDone * lineR.getWidth())));
 
 }
+
+
+#endif

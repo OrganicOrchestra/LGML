@@ -22,16 +22,19 @@
 #include "../Controllable/Parameter/ParameterContainer.h"
 #include "FastMap.h"
 
+#if !ENGINE_HEADLESS
 #include "../UI/LGMLDragger.h"
 #include "../UI/Inspector/Inspector.h"
-
+#endif
 
 class FastMapper;
 
 
 class FastMapper :
     public ParameterContainer,
+#if !ENGINE_HEADLESS
     private LGMLDragger::Listener,
+#endif
     private ParameterProxy::ParameterProxyListener
 
 {
@@ -63,10 +66,11 @@ public:
 
 private:
 
+#if !ENGINE_HEADLESS
     // LGMLDragger Listener
     void selectionChanged (Parameter*) override;
     void mappingModeChanged(bool) override;
-
+#endif
     uint32 lastFMAddedTime;
 
     // proxy listener

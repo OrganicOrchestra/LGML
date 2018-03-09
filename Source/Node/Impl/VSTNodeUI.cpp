@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "VSTNodeUI.h"
 #include "../../Controllable/Parameter/UI/TriggerBlinkUI.h"
@@ -230,3 +231,4 @@ void VSTNodeContentUI::buttonClicked (Button* button)
 
 
 
+#endif

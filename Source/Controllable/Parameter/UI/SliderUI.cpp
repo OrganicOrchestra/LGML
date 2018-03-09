@@ -12,6 +12,7 @@
  *
  */
 
+#if !ENGINE_HEADLESS
 
 #include "SliderUI.h"
 #include "../../../UI/Style.h"
@@ -369,3 +370,5 @@ void SliderUI<T>::editorHidden (Label*, TextEditor&) {
 
 template class SliderUI<int>;
 template class SliderUI<double>;
+
+#endif

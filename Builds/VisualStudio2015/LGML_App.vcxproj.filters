@@ -946,6 +946,9 @@
     <ClCompile Include="..\..\Source\Main.cpp">
       <Filter>LGML\Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Version.cpp">
+      <Filter>LGML\Source</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\third_party\serial\src\impl\list_ports\list_ports_linux.cc">
       <Filter>LGML\third_party\serial\src\impl\list_ports</Filter>
     </ClCompile>
@@ -3257,6 +3260,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Inspector\InspectorEditor.h">
       <Filter>LGML\Source\UI\Inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Utils\HeadlessWrappers.h">
+      <Filter>LGML\Source\Utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Utils\AutoUpdater.h">
       <Filter>LGML\Source\Utils</Filter>

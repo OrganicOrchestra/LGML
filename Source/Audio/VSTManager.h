@@ -20,9 +20,9 @@
 #define VSTMANAGER_H_INCLUDED
 
 #include "../JuceHeaderAudio.h"//keep
+#include <juce_audio_processors/juce_audio_processors.h>
 
 
-ApplicationCommandManager& getCommandManager();
 ApplicationProperties * getAppProperties();
 
 

@@ -21,7 +21,7 @@
 #pragma once
 
 #include "MIDIManager.h"
-
+#include "../JuceHeaderUI.h"
 
 class MIDIDeviceChooser : public ComboBox, public MIDIManager::MIDIManagerListener
 {

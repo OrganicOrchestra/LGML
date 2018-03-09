@@ -16,6 +16,8 @@
  ==============================================================================
  */
 
+#if !ENGINE_HEADLESS
+
 #include "PresetChooserUI.h"
 #include "../Utils/DebugHelpers.h"
 #include "../Controllable/Parameter/ParameterContainer.h"
@@ -189,3 +191,5 @@ void PresetChooserUI::controllableContainerPresetLoaded (ControllableContainer*)
 {
     updatePresetComboBox (false);
 }
+
+#endif

@@ -781,7 +781,7 @@ var JsEnvironment::createParameterListenerObject (const var::NativeFunctionArgs&
 };
 ////////////////////////
 // JSEnvContainer
-#include "JsEnvironmentUI.h"
+//#include "JsEnvironmentUI.h"
 
 JSEnvContainer::JSEnvContainer (JsEnvironment* pEnv):
 ParameterContainer ("jsParams"), jsEnv (pEnv)

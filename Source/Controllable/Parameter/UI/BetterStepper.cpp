@@ -12,6 +12,7 @@
  *
  */
 
+#if !ENGINE_HEADLESS
 
 #include "BetterStepper.h"
 
@@ -89,4 +90,5 @@ void BetterStepper::mouseEnter(const MouseEvent& e){
     Slider::mouseEnter(e);
 };
 
+#endif
 

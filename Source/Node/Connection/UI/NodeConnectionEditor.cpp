@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 
 #include "NodeConnectionEditor.h"
@@ -586,3 +587,5 @@ void NodeConnectionEditor::slotMouseDrag (NodeConnectionEditorDataSlot*)
 {
     updateEditingLink();
 }
+
+#endif

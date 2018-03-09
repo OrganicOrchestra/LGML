@@ -16,10 +16,11 @@
  ==============================================================================
  */
 
+#if !ENGINE_HEADLESS
 #include "LGMLLoggerUI.h"
 #include "../UI/Style.h"
 
-#include "JuceHeader.h" // for version
+#include "../Engine.h" //for version
 
 
 void LGMLLoggerUI::newMessage (const String& s)
@@ -117,10 +118,7 @@ lastUpdateTime(0)
     logListComponent->setHeader (thc);
     addAndMakeVisible (logListComponent);
 
-    LOG (String("LGML v123 : (456) \n by OrganicOrchestra")
-         .replace("123",String (ProjectInfo::versionString))
-         .replace("456",String (Time::getCompilationDate().formatted("%d/%m/%y (%R)")))
-         );
+    LOG (l->getWelcomeMessage());
 #if USE_FILE_LOGGER
     LOG (juce::translate("please provide logFile for any bug report :\nlogFile in 123").replace("123", l->fileWriter.getFilePath()));
 #endif
@@ -133,6 +131,7 @@ lastUpdateTime(0)
     addAndMakeVisible(copyB);
 
 }
+
 
 LGMLLoggerUI::~LGMLLoggerUI()
 {
@@ -434,3 +433,4 @@ void LGMLLoggerUI::buttonClicked (Button* b)
         SystemClipboard::copyTextToClipboard (s);
     }
 }
+#endif

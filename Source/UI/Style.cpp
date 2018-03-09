@@ -16,6 +16,9 @@
  ==============================================================================
  */
 
+
+#if !ENGINE_HEADLESS
+
 #include "Style.h"
 
 
@@ -267,3 +270,4 @@ CachedGlyph::CachedFont::~CachedFont(){
 
 }
 
+#endif

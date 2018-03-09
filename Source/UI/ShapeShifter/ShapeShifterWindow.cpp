@@ -12,6 +12,7 @@
  *
  */
 
+#if !ENGINE_HEADLESS
 
 #include "ShapeShifterWindow.h"
 #include "ShapeShifterManager.h"
@@ -190,3 +191,5 @@ void ShapeShifterWindow::panelEmptied (ShapeShifterPanel*)
 {
     if (!checking) ShapeShifterManager::getInstance()->closePanelWindow (this, true);
 }
+
+#endif

@@ -12,6 +12,8 @@
 *
 */
 
+#if !ENGINE_HEADLESS
+
 
 #include "GenericParameterContainerEditor.h"
 #include "../../../UI/Inspector/InspectableComponent.h"
@@ -547,3 +549,5 @@ CCInnerContainerUI::CCLinkBT::CCLinkBT (ParameterContainer* _targetContainer) :
     TextButton ("[ "+juce::translate("Inspect")+" " + _targetContainer->getNiceName() + " >> ]")
 {
 }
+
+#endif

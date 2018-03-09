@@ -31,6 +31,14 @@
 
 #include "Scripting/Js/JsGlobalEnvironment.h"
 
+#include "Version.h"
+
+// this allow to avoid juce header dependency in all other source code
+// calling Engine::versionNumber instead of ProjectInfo::versionNumber
+int Engine::versionNumber( ProjectInfo::versionNumber);
+const char* Engine::versionString ( ProjectInfo::versionString);
+const char* Engine::projectName   ( ProjectInfo::projectName);
+
 
 const char* const filenameSuffix = ".lgml";
 const char* const filenameWildcard = "*.lgml";
@@ -51,7 +59,8 @@ void initDefaultUserSettings(){
     settings->saveIfNeeded();
 }
 
-Engine::Engine(): FileBasedDocument (filenameSuffix,
+Engine::Engine():
+FileBasedDocument (filenameSuffix,
                                      filenameWildcard,
                                      "Load a filter graph",
                                      "Save a filter graph"),
@@ -85,6 +94,8 @@ hasDefaultOSCControl(false)
     SerialManager::getInstance()->init();
     NodeManager::getInstance()->addNodeManagerListener (this);
     VSTManager::getInstance();
+
+
 
 
     addChildControllableContainer (NodeManager::getInstance());
@@ -448,6 +459,9 @@ StringArray  Engine::getAvailableLanguages(){
 
 
 }
+
+
+
 
 
 

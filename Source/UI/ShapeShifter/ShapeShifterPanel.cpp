@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "ShapeShifterPanel.h"
 #include "../Style.h"
@@ -468,3 +469,5 @@ void ShapeShifterPanel::headerDrag()
     }
     else listeners.call (&Listener::headerDrag, this);
 }
+
+#endif

@@ -15,7 +15,7 @@
 
  ==============================================================================
  */
-
+#if !ENGINE_HEADLESS
 #include "LookAndFeelOO.h"
 #include "Style.h"
 
@@ -263,3 +263,4 @@ void LookAndFeelOO::drawTextEditorOutline (Graphics& /*g*/, int /*width*/, int /
 //    }
 }
 
+#endif

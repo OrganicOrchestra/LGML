@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "ShapeShifterPanelTab.h"
 #include "../Style.h"
@@ -81,3 +82,5 @@ void ShapeShifterPanelTab::buttonClicked (Button* b)
     if (b == &closePanelBT) tabListeners.call (&TabListener::askForRemoveTab, this);
 }
 
+
+#endif

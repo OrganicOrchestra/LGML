@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 
 #include "TriggerBlinkUI.h"
@@ -114,3 +115,4 @@ void TriggerBlinkUI::mouseDown (const MouseEvent& e)
     }
 
 }
+#endif

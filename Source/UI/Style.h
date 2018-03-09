@@ -19,6 +19,7 @@
 #ifndef STYLE_H_INCLUDED
 #define STYLE_H_INCLUDED
 #pragma once
+#if !ENGINE_HEADLESS
 
 #include "../JuceHeaderUI.h"
 
@@ -123,5 +124,6 @@ private:
 
 
 
+#endif // WITHUI
 
 #endif  // STYLE_H_INCLUDED

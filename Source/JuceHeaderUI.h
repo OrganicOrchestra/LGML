@@ -22,7 +22,12 @@
 #define JUCE_HEADERUI_INCLUDED
 
 
+
 #include "JuceHeaderCore.h"
+
+#if ENGINE_HEADLESS
+    #error shouldn't be included in headless builds
+#endif
 
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <juce_gui_extra/juce_gui_extra.h>

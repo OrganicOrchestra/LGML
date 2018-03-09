@@ -24,6 +24,8 @@
 
 juce_ImplementSingleton (MIDIManager)
 
+#if !ENGINE_HEADLESS
+#include "../JuceHeaderUI.h" // for key listener
 class ComputerKeyboardMIDIDevice:public ReferenceCountedObject,private KeyListener {
 public:
     ComputerKeyboardMIDIDevice():octave(4){
@@ -138,7 +140,16 @@ public:
 };
 
 
+#else
+class ComputerKeyboardMIDIDevice:public ReferenceCountedObject{
+public:
+    void addMidiInputCallback(MidiInputCallback * cb){jassertfalse;}
+    void removeMidiInputCallback(MidiInputCallback * cb){jassertfalse;}
+    static String deviceName;
+};
+#endif
 String ComputerKeyboardMIDIDevice::deviceName(juce::translate("Computer Keyboard"));
+
 
 constexpr int MIDICheckInterval(1000);
 MIDIManager::MIDIManager():computerKeyboardDevice(nullptr)
@@ -166,10 +177,9 @@ void MIDIManager::updateDeviceList (bool updateInput)
     StringArray deviceNames = updateInput ? MidiInput::getDevices() : MidiOutput::getDevices();
 
     StringArray sourceArray = updateInput ? inputDevices : outputDevices;
-
-    if(updateInput){
-        deviceNames.add(ComputerKeyboardMIDIDevice::deviceName);
-    }
+#if !ENGINE_HEADLESS
+    if(updateInput){deviceNames.add(ComputerKeyboardMIDIDevice::deviceName);}
+#endif
     StringArray devicesToAdd;
     StringArray devicesToRemove;
 

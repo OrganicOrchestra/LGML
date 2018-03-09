@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "LooperNodeUI.h"
 #include "../../Controllable/Parameter/UI/ParameterUIFactory.h"
@@ -355,3 +356,5 @@ void LooperNodeContentUI::TrackUI::TimeStateUI::trackTimeChangedAsync (double /*
 {
     repaint();
 }
+
+#endif

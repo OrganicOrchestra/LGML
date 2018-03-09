@@ -11,7 +11,7 @@
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 *
 */
-
+#if !ENGINE_HEADLESS
 
 #include "AudioDeviceOutNodeUI.h"
 
@@ -175,3 +175,5 @@ void AudioDeviceOutNodeContentUI::numAudioInputChanged (ConnectableNode*, int)
 {
     updateVuMeters();
 }
+
+#endif

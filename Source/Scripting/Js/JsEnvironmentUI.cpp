@@ -12,6 +12,8 @@
 *
 */
 
+#if !ENGINE_HEADLESS
+
 #include "JsEnvironmentUI.h"
 #include "../../Controllable/Parameter/UI/ParameterUIFactory.h"
 #include "../../Controllable/Parameter/UI/StringParameterUI.h"
@@ -96,3 +98,5 @@ void JsEnvironmentUI::newJsFileLoaded (bool)
         reloadB->setVisible(hasScript);
     }
 }
+
+#endif

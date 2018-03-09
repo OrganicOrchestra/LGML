@@ -16,6 +16,8 @@
  ==============================================================================
  */
 
+#if !ENGINE_HEADLESS
+
 #include "DataInNodeUI.h"
 #include "../Controllable/Parameter/UI/SliderUI.h"
 
@@ -98,3 +100,4 @@ void DataInNodeContentUI::parameterRemoved (Parameter* p)
     parameterUIs.removeObject (pui);
     resized();
 }
+#endif

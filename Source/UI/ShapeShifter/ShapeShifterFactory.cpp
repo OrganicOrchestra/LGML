@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "ShapeShifterFactory.h"
 
@@ -75,3 +76,5 @@ ShapeShifterContent* ShapeShifterFactory::createContentForName (String name)
 {
     return createContentForIndex ((PanelName)globalPanelNames.strings.indexOf (name));
 }
+
+#endif

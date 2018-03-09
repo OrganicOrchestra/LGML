@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "DummyNodeContentUI.h"
 #include "../UI/ConnectableNodeUI.h"
@@ -73,3 +74,5 @@ void DummyNodeContentUI::init()
 
 }
 #endif // JUCE_DEBUG
+
+#endif // WITHUI

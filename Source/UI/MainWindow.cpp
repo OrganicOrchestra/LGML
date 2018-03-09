@@ -16,11 +16,13 @@
  ==============================================================================
  */
 
+#if !ENGINE_HEADLESS
+
 #include "MainWindow.h"
 #include "MainComponent.h"
 #include "../Engine.h"
 
-#include "JuceHeader.h" // for ProjectInfo
+
 #include "../Utils/AutoUpdater.h"
 
 
@@ -156,9 +158,10 @@ void MainWindow::timerCallback()
         latestVChecker = nullptr;
     }
     setName (getEngine()->getDocumentTitle() + " : LGML "
-             + String (ProjectInfo::versionString) + String (" (CPU : ") +
+             + Engine::versionString + String (" (CPU : ") +
              String ((int) getEngine()->engineStats->getAudioCPU()) + String ("%)"));
 }
 
 
 
+#endif

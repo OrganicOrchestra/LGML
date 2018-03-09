@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "NodeContainerContentUI.h"
 #include "../../Manager/UI/NodeManagerUI.h"
@@ -84,3 +85,5 @@ void NodeContainerContentUI::buttonClicked (Button* b)
         }
     }
 }
+
+#endif

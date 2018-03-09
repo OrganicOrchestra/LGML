@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "ConnectableNodeContentUI.h"
 #include "ConnectableNodeUI.h"
@@ -65,3 +66,5 @@ String ConnectableNodeContentUI::getTooltip(){
     return nodeUI->getTooltip();
 };
 
+
+#endif

@@ -11,7 +11,7 @@
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 *
 */
-
+#if !ENGINE_HEADLESS
 
 #include "ParameterUI.h"
 #include "../../../Utils/DebugHelpers.h"
@@ -382,3 +382,4 @@ void  NamedParameterUI::controllableControlAddressChanged (Controllable* c){
     }
 }
 
+#endif

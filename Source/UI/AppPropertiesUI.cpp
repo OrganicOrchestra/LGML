@@ -16,9 +16,13 @@
  ==============================================================================
  */
 
-#include "AppPropertiesUI.h"
-#include "../Engine.h"
+#if !ENGINE_HEADLESS
 
+#include "AppPropertiesUI.h"
+
+#include "../Engine.h"
+#include <juce_audio_devices/juce_audio_devices.h>
+#include <juce_audio_utils/gui/juce_AudioDeviceSelectorComponent.h> // AudioDevice selector
 #include "../Utils/AutoUpdater.h" // for version checking
 
 juce_ImplementSingleton(AppPropertiesUI);
@@ -383,3 +387,5 @@ void AppPropertiesUI::closeAppSettings(){
     deleteInstance();
 
 }
+
+#endif

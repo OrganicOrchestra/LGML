@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "NodeManagerUI.h"
 #include "../NodeManager.h"
@@ -199,3 +200,4 @@ bool NodeManagerUI::keyPressed (const KeyPress& key)
 }
 
 
+#endif

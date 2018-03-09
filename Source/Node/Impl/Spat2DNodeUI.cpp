@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "Spat2DNodeUI.h"
 #include "../UI/ConnectableNodeUI.h"
@@ -147,3 +148,5 @@ void Spat2DNodeContentUI::nodeParameterChanged (ConnectableNode*, Parameter* p)
         resized();
     }
 }
+
+#endif

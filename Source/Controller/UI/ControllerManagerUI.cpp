@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
  */
-
+#if !ENGINE_HEADLESS
 
 #include "ControllerManagerUI.h"
 
@@ -258,3 +258,5 @@ void ControllerManagerUIViewport::buttonClicked (Button* b )
     }
 
 }
+
+#endif

@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "ControllerUI.h"
 #include "ControllerEditor.h"
@@ -200,3 +201,5 @@ InspectorEditor* ControllerUI::createEditor()
 {
     return new GenericParameterContainerEditor(controller);
 }
+
+#endif

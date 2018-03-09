@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "BoolToggleUI.h"
 #include "../../../UI/Style.h"
@@ -111,3 +112,5 @@ void BoolToggleUI::valueChanged (const var& )
 {
     repaint();
 }
+
+#endif

@@ -18,6 +18,7 @@
 
 #pragma once
 
+#if !ENGINE_HEADLESS
 #include "../JuceHeaderUI.h"
 
 class PrefPanel;
@@ -45,3 +46,4 @@ private:
 
 
 };
+#endif

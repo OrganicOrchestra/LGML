@@ -34,12 +34,7 @@ public :
 
     juce_DeclareSingleton (LGMLLogger, true);
 
-    LGMLLogger(): notifier (5000)
-    {
-#if USE_FILE_LOGGER
-        addLogListener (&fileWriter);
-#endif
-    }
+    LGMLLogger();
 
     void logMessage (const String& message) override;
 
@@ -47,8 +42,8 @@ public :
     QueuedNotifier<String> notifier;
     typedef QueuedNotifier<String>::Listener Listener;
 
-
-
+    
+    const String & getWelcomeMessage();
     void addLogListener (Listener* l) {notifier.addListener (l);}
     void removeLogListener (Listener* l) {notifier.removeListener (l);}
 
@@ -65,6 +60,9 @@ public :
 
     FileWriter fileWriter;
 #endif
+
+private:
+    const String welcomeMessage;
 };
 
 

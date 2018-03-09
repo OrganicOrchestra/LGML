@@ -12,6 +12,7 @@
  *
  */
 
+#if !ENGINE_HEADLESS
 
 #include "InspectableComponent.h"
 #include "Inspector.h"
@@ -144,3 +145,5 @@ ParameterContainer* InspectableComponent::getRelatedParameterContainer(){
 Parameter* InspectableComponent::getRelatedParameter(){
     return relatedParameter;
 }
+
+#endif

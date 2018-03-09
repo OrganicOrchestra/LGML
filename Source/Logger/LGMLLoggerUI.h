@@ -36,6 +36,8 @@ public:
     LGMLLoggerUI (const String& contentName, LGMLLogger* l);
     ~LGMLLoggerUI();
 
+    
+
     class LogList : public juce::TableListBoxModel
     {
     public:

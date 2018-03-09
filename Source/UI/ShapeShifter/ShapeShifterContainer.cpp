@@ -11,7 +11,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
  */
-
+#if !ENGINE_HEADLESS
 
 #include "ShapeShifterContainer.h"
 #include "../Style.h"
@@ -581,3 +581,5 @@ int ShapeShifterContainer::getMinHeight(){
     return minSize;
 
 }
+
+#endif

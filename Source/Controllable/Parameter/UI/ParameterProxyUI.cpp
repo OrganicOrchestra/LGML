@@ -11,7 +11,7 @@
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 *
 */
-
+#if !ENGINE_HEADLESS
 
 #include "ParameterProxyUI.h"
 #include "StringParameterUI.h"
@@ -139,3 +139,5 @@ void ParameterProxyUI::controllableNameChanged (Controllable* c)
 
 
 }
+
+#endif

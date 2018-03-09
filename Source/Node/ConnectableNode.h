@@ -20,7 +20,7 @@
 #define CONNECTABLENODE_H_INCLUDED
 #pragma once
 #include "../JuceHeaderAudio.h"
-
+#include <juce_audio_processors/juce_audio_processors.h>
 #include "../Controllable/Parameter/ParameterContainer.h"
 #include "Manager/NodeFactory.h"
 

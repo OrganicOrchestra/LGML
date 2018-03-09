@@ -16,6 +16,7 @@
  ==============================================================================
  */
 
+#if !ENGINE_HEADLESS
 #include "LGMLDragger.h"
 #include "MainComponent.h"
 
@@ -425,3 +426,4 @@ void LGMLDragger::setSelected (ParameterUI* c,LGMLDragger::Listener * from)
 
     }
 }
+#endif

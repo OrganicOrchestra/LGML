@@ -22,7 +22,9 @@
 #define MULTITHREADED_LOADING
 
 
-
+#include "JuceHeaderAudio.h"
+#include <juce_audio_processors/juce_audio_processors.h>
+#include <juce_audio_utils/players/juce_AudioProcessorPlayer.h>
 #include "MIDI/MIDIManager.h"
 #include "Controller/ControllerManager.h"
 #include "Node/Manager/NodeManager.h"
@@ -35,6 +37,11 @@
 #include "Utils/CommandLineElements.hpp"
 class AudioFucker;
 
+
+
+#if ENGINE_HEADLESS
+#include "Utils/HeadlessWrappers.h"
+#endif
 
 class Engine:
     public FileBasedDocument,
@@ -89,6 +96,7 @@ public:
     Result saveDocument (const File& file)override;
     File getLastDocumentOpened() override;
     void setLastDocumentOpened (const File& file) override;
+
     // helpers for file document
     File getCurrentProjectFolder();
     // return absolute Path if out of project directory
@@ -199,10 +207,15 @@ public:
     void handleAsyncUpdate()override;
 
     ThreadPool threadPool;
+
     RecentlyOpenedFilesList getLastOpenedFileList();
 
     static void setLanguage(const String & l);
     static StringArray getAvailableLanguages();
+
+    static int versionNumber;
+    static const char* versionString;
+    static const char* projectName;
 
 };
 

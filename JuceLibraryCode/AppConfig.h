@@ -25,7 +25,11 @@
 // we really don't care of unreferenced parameter warnings do we?
 #pragma warning (disable : 4100)
 
-#define ENGINE_WITH_UI 1
+
+// should be set in global flags
+#ifndef ENGINE_HEADLESS
+    #define ENGINE_HEADLESS 0
+#endif
 
 #define DO_PRAGMA(x) _Pragma (#x)
 #define TODO(x) DO_PRAGMA(message ("TODO - " #x));

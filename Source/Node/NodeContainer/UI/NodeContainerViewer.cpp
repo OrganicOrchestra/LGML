@@ -12,6 +12,7 @@
  *
  */
 
+#if !ENGINE_HEADLESS
 
 #include "NodeContainerViewer.h"
 #include "../../Connection/UI/NodeConnectionUI.h"
@@ -716,3 +717,5 @@ void NodeContainerViewer::addNodeUndoable(const String & tid,const Point<int> & 
                                  ));
 
 }
+
+#endif

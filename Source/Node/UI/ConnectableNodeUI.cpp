@@ -13,6 +13,8 @@
  */
 
 
+#if !ENGINE_HEADLESS
+
 #include "ConnectableNodeUI.h"
 #include "ConnectableNodeHeaderUI.h"
 #include "../NodeContainer/NodeContainer.h"
@@ -632,3 +634,5 @@ bool ConnectableNodeUI::hitTest(int x, int y){
     }
     return false;
 }
+
+#endif

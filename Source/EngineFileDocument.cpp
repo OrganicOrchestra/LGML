@@ -16,21 +16,20 @@
  ==============================================================================
  */
 
-#include "Engine.h"
 
+
+
+#if !ENGINE_HEADLESS
 #include "UI/Inspector/Inspector.h"
-
+#endif
 #include "Node/Impl/AudioDeviceInNode.h"
 #include "Node/Impl/AudioDeviceOutNode.h"
 #include "Controller/Impl/OSCJsController.h"
 
-#include "JuceHeader.h" // for project info
 
-#ifndef ENGINE_WITH_UI
-#error should be defined here
-#endif
+#include "Engine.h"
 
-#if ENGINE_WITH_UI
+#if !ENGINE_HEADLESS
 #include "Node/Manager/UI/NodeManagerUI.h"
 #endif
 
@@ -89,8 +88,9 @@ Result Engine::loadDocument (const File& file)
 
     isLoadingFile = true;
     engineListeners.call (&EngineListener::startLoadFile);
-
+#if !ENGINE_HEADLESS
     if (Inspector::getInstanceWithoutCreating() != nullptr) Inspector::getInstance()->setEnabled (false); //avoid creation of inspector editor while recreating all nodes, controllers, rules,etc. from file
+#endif
 
 #ifdef MULTITHREADED_LOADING
     // force clear on main thread, safer for ui related stuffs
@@ -259,8 +259,10 @@ DynamicObject* Engine::getObject()
     auto data = new DynamicObject();
     var metaData (new DynamicObject());
 
-    metaData.getDynamicObject()->setProperty ("version", ProjectInfo::versionString);
-    metaData.getDynamicObject()->setProperty ("versionNumber", ProjectInfo::versionNumber);
+    metaData.getDynamicObject()->setProperty ("version",
+                                              Engine::versionString
+                                              );
+    metaData.getDynamicObject()->setProperty ("versionNumber", Engine::versionNumber);
 
     data->setProperty ("metaData", metaData);
 
@@ -315,7 +317,7 @@ void Engine::loadJSONData (const var& data, ProgressTask* loadingTask)
 
     if (d->hasProperty ("nodeManager")) NodeManager::getInstance()->configureFromObject (d->getProperty ("nodeManager").getDynamicObject());
 
-#if ENGINE_WITH_UI
+#if !ENGINE_HEADLESS
     if(d->hasProperty("NodesUI")) {
         auto p = dynamic_cast<ParameterContainer*>(getControllableContainerByName("NodesUI"));
 
@@ -345,8 +347,9 @@ void Engine::loadJSONData (const var& data, ProgressTask* loadingTask)
 
     //Clean unused presets
     PresetManager::getInstance()->deleteAllUnusedPresets (this);
-
+#if !ENGINE_HEADLESS
     if (auto inspector = Inspector::getInstanceWithoutCreating() ) inspector->setEnabled (true); //Re enable editor
+#endif
 
 }
 

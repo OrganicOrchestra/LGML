@@ -13,7 +13,7 @@
 */
 
 
-
+#if !ENGINE_HEADLESS
 
 #include "../../../UI/Style.h"
 #include "NodeConnectionEditorLink.h"
@@ -155,3 +155,5 @@ bool NodeConnectionEditorLink::keyPressed (const KeyPress& key)
 }
 
 void NodeConnectionEditorLink::remove() { listeners.call (&LinkListener::askForRemoveLink, this); }
+
+#endif

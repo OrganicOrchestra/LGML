@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "AudioMixerNodeUI.h"
 #include "../UI/ConnectableNodeUI.h"
@@ -234,3 +235,5 @@ void AudioMixerNodeUI::OutputBusUI::resized()
         idx++;
     }
 }
+
+#endif

@@ -11,7 +11,7 @@
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 *
 */
-
+#if !ENGINE_HEADLESS
 
 #include "AudioDeviceInNodeUI.h"
 #include "AudioDeviceInNode.h"
@@ -167,3 +167,4 @@ void AudioDeviceInNodeContentUI::changeListenerCallback (ChangeBroadcaster*)
 {
     updateVuMeters();
 }
+#endif

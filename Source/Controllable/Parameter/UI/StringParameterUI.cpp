@@ -12,7 +12,7 @@
 *
 */
 
-
+#if !ENGINE_HEADLESS
 
 #include "StringParameterUI.h"
 #include "../../../UI/Style.h"
@@ -158,3 +158,5 @@ void StringParameterUI::labelTextChanged (Label*)
 
     }
 }
+
+#endif

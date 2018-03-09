@@ -16,6 +16,8 @@
  ==============================================================================
  */
 
+#if !ENGINE_HEADLESS
+
 #include "ControllableUIHelpers.h"
 #include "../Utils/DebugHelpers.h"
 
@@ -151,3 +153,4 @@ void ControllableReferenceUI::buttonClicked (Button*)
 }
 
 
+#endif

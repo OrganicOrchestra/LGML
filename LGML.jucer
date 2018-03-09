@@ -633,6 +633,8 @@
         </GROUP>
       </GROUP>
       <GROUP id="{8DA61DCB-02FE-2339-7E79-2A3547284A18}" name="Utils">
+        <FILE id="KPMV0Q" name="HeadlessWrappers.h" compile="0" resource="0"
+              file="Source/Utils/HeadlessWrappers.h"/>
         <FILE id="FYsUWY" name="FactoryUIHelpers.cpp" compile="1" resource="0"
               file="Source/Utils/FactoryUIHelpers.cpp"/>
         <FILE id="LxYBN2" name="AutoUpdater.cpp" compile="1" resource="0" file="Source/Utils/AutoUpdater.cpp"/>
@@ -683,6 +685,7 @@
       <FILE id="RhPCNk" name="JuceHeaderUI.h" compile="0" resource="0" file="Source/JuceHeaderUI.h"/>
       <FILE compile="1" file="Source/Main.cpp" id="zO82Cw" name="Main.cpp"
             resource="0"/>
+      <FILE id="svlAPQ" name="Version.cpp" compile="1" resource="0" file="Source/Version.cpp"/>
       <FILE id="Czij22" name="Version.h" compile="0" resource="0" file="Source/Version.h"/>
     </GROUP>
     <GROUP id="{4ECB17E4-3FE1-7FC4-41D8-E3545696264E}" name="third_party">

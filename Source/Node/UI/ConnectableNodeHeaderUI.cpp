@@ -12,6 +12,8 @@
 *
 */
 
+#if !ENGINE_HEADLESS
+
 #include "ConnectableNodeHeaderUI.h"
 #include "ConnectableNodeUI.h"
 
@@ -298,3 +300,6 @@ void ConnectableNodeHeaderUI::numAudioOutputChanged (ConnectableNode*, int /*new
 }
 
 String ConnectableNodeHeaderUI::getTooltip() {return nodeUI->getTooltip();};
+
+
+#endif

@@ -12,7 +12,7 @@
 *
 */
 
-
+#if !ENGINE_HEADLESS
 #include "JsNodeUI.h"
 
 #include "JsNode.h"
@@ -120,3 +120,5 @@ void JsNodeUI::controllableRemoved (ControllableContainer*, Controllable* c)
 
 
 };
+
+#endif

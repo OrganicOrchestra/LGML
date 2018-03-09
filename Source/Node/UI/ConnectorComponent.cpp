@@ -12,6 +12,8 @@
 *
 */
 
+#if !ENGINE_HEADLESS
+
 #include "ConnectorComponent.h"
 #include "../NodeContainer/UI/NodeContainerViewer.h"
 #include "../Manager/NodeFactory.h"
@@ -170,3 +172,5 @@ ConnectableNodeUI* ConnectorComponent::getNodeUI() const noexcept
 {
     return findParentComponentOfClass<ConnectableNodeUI>();
 }
+
+#endif

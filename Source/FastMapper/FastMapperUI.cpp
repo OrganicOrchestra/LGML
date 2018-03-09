@@ -16,6 +16,8 @@
  ==============================================================================
  */
 
+#if !ENGINE_HEADLESS
+
 #include "FastMapperUI.h"
 #include "FastMapper.h"
 #include "../Controllable/Parameter/UI/ParameterUIFactory.h"
@@ -375,3 +377,4 @@ void FastMapperViewport::buttonClicked (Button* b)
 
 }
 
+#endif

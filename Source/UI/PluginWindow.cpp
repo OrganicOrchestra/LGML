@@ -16,6 +16,8 @@
  ==============================================================================
  */
 
+#if !ENGINE_HEADLESS
+
 #include "PluginWindow.h"
 
 
@@ -132,3 +134,4 @@ void PluginWindow::closeButtonPressed()
     owner->pluginWindowParameter.isDisplayed->setValue (false);
     delete this;
 }
+#endif

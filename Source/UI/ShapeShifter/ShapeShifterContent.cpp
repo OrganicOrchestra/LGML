@@ -11,7 +11,7 @@
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 *
 */
-
+#if !ENGINE_HEADLESS
 
 #include "ShapeShifterContent.h"
 
@@ -44,3 +44,4 @@ void ShapeShifterContentComponent::resized(){
 }
 
 
+#endif

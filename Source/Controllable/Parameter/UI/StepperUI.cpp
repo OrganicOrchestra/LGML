@@ -11,7 +11,7 @@
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 *
 */
-
+#if !ENGINE_HEADLESS
 
 #include "StepperUI.h"
 #include "../NumericParameter.h"
@@ -86,3 +86,5 @@ void StepperUI<T>::rangeChanged (Parameter* p)
 
 template class StepperUI<double>;
 template class StepperUI<int>;
+
+#endif

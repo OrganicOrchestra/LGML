@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "Spat2DViewerUI.h"
 #include "../../UI/Style.h"
@@ -362,3 +363,5 @@ bool Spat2DHandle::hitTest (int x, int y)
     float dist = relPoint.getDistanceFrom (getLocalBounds().getCentre().toFloat());
     return dist < size / 2;
 }
+
+#endif

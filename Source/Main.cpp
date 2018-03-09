@@ -21,11 +21,11 @@
 
 
 #include "Engine.h"
-#include "JuceHeader.h" // for project info
+
 
 #include "Utils/CommandLineElements.hpp"
 
-#if ENGINE_WITH_UI
+#if !ENGINE_HEADLESS
 #include "UI/LookAndFeelOO.h"
 #include "UI/MainWindow.h"
 #endif
@@ -41,7 +41,7 @@ public:
             if(in){
                 String bt = in->readString();
                 LOG(bt);
-                #if ENGINE_WITH_UI
+                #if !ENGINE_HEADLESS
                 AlertWindow aw("lgml crashed last time","error message : ",AlertWindow::AlertIconType::WarningIcon);
                 aw.addTextBlock(bt);
                 aw.addButton("Ok", 1);
@@ -101,8 +101,8 @@ public:
     ScopedPointer<Engine> engine;
 
 
-    const String getApplicationName() override       { return ProjectInfo::projectName; }
-    const String getApplicationVersion() override    { return ProjectInfo::versionString; }
+    const String getApplicationName() override       { return Engine::projectName; }
+    const String getApplicationVersion() override    { return Engine::versionString; }
     bool moreThanOneInstanceAllowed() override       { return false; }
 
     //==============================================================================
@@ -116,7 +116,7 @@ public:
 
         if (commandLinesElements.containsCommand ("v"))
         {
-            std::cout << ProjectInfo::versionString << std::endl;
+            std::cout << Engine::versionString << std::endl;
             quit();
             return;
             }
@@ -175,7 +175,7 @@ public:
             quit();
 #else
 
-#if ENGINE_WITH_UI
+#if !ENGINE_HEADLESS
             LookAndFeel::setDefaultLookAndFeel (lookAndFeelOO = new LookAndFeelOO);
             mainWindow = new MainWindow (getApplicationName(), engine);
 #endif
@@ -195,7 +195,7 @@ public:
             {
                 // Add your application's shutdown code here..
                 CrashHandler::saveToFile = false;
-#if ENGINE_WITH_UI
+#if !ENGINE_HEADLESS
                 mainWindow = nullptr; // (deletes our window)
 #endif
                 engine = nullptr;
@@ -228,7 +228,7 @@ public:
 //                }
 //                else{
 
-#if ENGINE_WITH_UI
+#if !ENGINE_HEADLESS
 //                    AlertWindow::showMessageBox(AlertWindow::AlertIconType::WarningIcon,"other instance started", commandLine);
 #endif
 //                }
@@ -236,7 +236,7 @@ public:
 
             }
 
-#if ENGINE_WITH_UI
+#if !ENGINE_HEADLESS
             ScopedPointer<MainWindow> mainWindow;
             ScopedPointer<LookAndFeel> lookAndFeelOO;
 #endif

@@ -16,6 +16,8 @@
  ==============================================================================
  */
 
+#if !ENGINE_HEADLESS
+
 #include "MainComponent.h"
 #include "AppPropertiesUI.h"
 
@@ -216,3 +218,5 @@ void MainContentComponent::timerCallback()
 
     //repaint();
 }
+
+#endif

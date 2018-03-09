@@ -16,6 +16,8 @@
  ==============================================================================
  */
 
+#if !ENGINE_HEADLESS
+
 #include "MainComponent.h"
 #include "../FastMapper/FastMap.h"
 #include "../Engine.h"
@@ -526,3 +528,4 @@ StringArray MainContentComponent::getMenuBarNames()
 }
 
 
+#endif

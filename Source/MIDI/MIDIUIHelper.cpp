@@ -16,6 +16,8 @@
  ==============================================================================
  */
 
+
+#if !ENGINE_HEADLESS
 #include "MIDIUIHelper.h"
 
 MIDIDeviceChooser::MIDIDeviceChooser (bool _isInputChooser) :
@@ -83,3 +85,4 @@ void MIDIDeviceChooser::midiOutputsChanged()
 
     fillDeviceList();
 }
+#endif

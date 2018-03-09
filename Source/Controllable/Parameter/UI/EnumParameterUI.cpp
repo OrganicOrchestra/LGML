@@ -11,7 +11,7 @@
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 *
 */
-
+#if !ENGINE_HEADLESS
 
 #include "EnumParameterUI.h"
 
@@ -279,3 +279,4 @@ void EnumParameterUI::selectString (const juce::String& s)
 }
 
 
+#endif

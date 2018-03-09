@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "Inspector.h"
 #include "../../Controllable/Parameter/ParameterContainer.h"
@@ -225,3 +226,5 @@ void InspectorViewport::resized()
 
     }
 }
+
+#endif

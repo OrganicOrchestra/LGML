@@ -17,8 +17,9 @@
  */
 
 #include "ControllerManager.h"
+#if !ENGINE_HEADLESS
 #include "../UI/LGMLDragger.h" // to enable default mapping mode on creation  
-
+#endif
 juce_ImplementSingleton (ControllerManager);
 
 
@@ -44,7 +45,9 @@ Controller* ControllerManager::addController (Controller* c)
 
     addChildControllableContainer (c);
     listeners.call (&ControllerManager::Listener::controllerAdded, c);
+#if !ENGINE_HEADLESS
     c->setMappingMode(LGMLDragger::getInstance()->isMappingActive);
+#endif
     return c;
 }
 

@@ -8,6 +8,8 @@
  ==============================================================================
  */
 
+#if !ENGINE_HEADLESS
+
 #include "KeyboardController.h"
 #include "../../Scripting/Js/JsHelpers.h"
 
@@ -148,3 +150,5 @@ var KeyboardController::createJsKeyboardListener (const var::NativeFunctionArgs&
     
     return var::undefined();
 }
+
+#endif

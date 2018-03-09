@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "ShapeShifterPanelHeader.h"
 #include "../Style.h"
@@ -156,3 +157,5 @@ void ShapeShifterPanelHeader::buttonClicked (Button* b)
         }
     }
 }
+
+#endif

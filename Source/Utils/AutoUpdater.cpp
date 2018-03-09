@@ -16,8 +16,11 @@
  ==============================================================================
  */
 
+#if !ENGINE_HEADLESS
+#include "../Version.h" // for project Info
 
-#include "../Version.h"
+
+
 #ifndef BUILD_VERSION_UID
 #error BUILD_VERSION_UID should be defined in Version.h
 #endif
@@ -28,13 +31,8 @@
 #include "AutoUpdater.h"
 #include "DebugHelpers.h"
 
-#include "JuceHeader.h" // for project Info
 
 extern ApplicationProperties * getAppProperties();
-
-
-
-
 
 
 
@@ -815,3 +813,4 @@ void LatestVersionChecker::run()
 {
     checkForNewVersion();
 }
+#endif // ENGINE_HEADLESS

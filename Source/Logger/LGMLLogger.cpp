@@ -17,9 +17,28 @@
  */
 
 #include "LGMLLogger.h"
-
+#include "../Engine.h"
 juce_ImplementSingleton (LGMLLogger);
 
+LGMLLogger::LGMLLogger():
+notifier (5000),
+welcomeMessage
+(
+ String("LGML v123 : (456) \n by OrganicOrchestra")
+ .replace("123",String (Engine::versionString))
+ .replace("456",String (Time::getCompilationDate()
+                        .formatted("%d/%m/%y (%R)")))
+ ){
+
+#if USE_FILE_LOGGER
+        addLogListener (&fileWriter);
+#endif
+
+}
+
+const String & LGMLLogger::getWelcomeMessage(){
+    return welcomeMessage;
+}
 
 
 void LGMLLogger::logMessage (const String& message)

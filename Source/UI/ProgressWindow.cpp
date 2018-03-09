@@ -16,6 +16,7 @@
  ==============================================================================
  */
 
+#if !ENGINE_HEADLESS
 #include "ProgressWindow.h"
 #include "Style.h"
 
@@ -71,3 +72,4 @@ void ProgressWindow::setProgress (float progress)
 {
     progressParam.setValue (progress);
 }
+#endif

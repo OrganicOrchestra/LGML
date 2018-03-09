@@ -57,8 +57,9 @@ pSync(this)
 
     potentialIn->addParameterProxyListener(this);
     potentialOut->addParameterProxyListener(this);
+    #if !ENGINE_HEADLESS
     LGMLDragger::getInstance()->addSelectionListener (this);
-
+    #endif
 
     potentialIn->isSavable = false;
     potentialOut->isSavable = false;
@@ -70,10 +71,12 @@ pSync(this)
 
 FastMapper::~FastMapper()
 {
+    #if !ENGINE_HEADLESS
     if (auto* dr = LGMLDragger::getInstanceWithoutCreating())
     {
         dr->removeSelectionListener (this);
     }
+    #endif
     if(auto cm = ControllerManager::getInstanceWithoutCreating()){
         cm->removeControllableContainerListener(&pSync);
     }
@@ -133,6 +136,7 @@ FastMap* FastMapper::addFastMap()
         maps.add (f);
         lastFMAddedTime = Time::getMillisecondCounter();
 
+        #if !ENGINE_HEADLESS
         // avoid listener feedback
         MessageManager::callAsync([this](){
             if(auto dr = LGMLDragger::getInstance()){
@@ -141,6 +145,7 @@ FastMap* FastMapper::addFastMap()
             potentialIn->setParamToReferTo (nullptr);
             potentialOut->setParamToReferTo (nullptr);
         });
+        #endif
         return f.release();
     }
     else{
@@ -200,7 +205,7 @@ ParameterContainer*   FastMapper::addContainerFromObject (const String& /*name*/
 
 
 
-
+#if !ENGINE_HEADLESS
 void FastMapper::selectionChanged (Parameter* c )
 {
 
@@ -227,6 +232,7 @@ void FastMapper::mappingModeChanged(bool state){
 
 };
 
+#endif
 void  FastMapper::linkedParamChanged (ParameterProxy* p ) {
     if(p== potentialIn || p== potentialOut){
             createNewFromPotentials();

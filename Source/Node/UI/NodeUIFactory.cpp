@@ -13,6 +13,7 @@
  *
  */
 
+#if !ENGINE_HEADLESS
 
 #include "NodeUIFactory.h"
 
@@ -97,3 +98,5 @@ ConnectableNodeUI* NodeUIFactory::createDefaultUI (ConnectableNode* t,Connectabl
 
 
 }
+
+#endif
