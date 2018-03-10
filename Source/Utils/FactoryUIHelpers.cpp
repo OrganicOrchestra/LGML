@@ -19,8 +19,8 @@ namespace FactoryUIHelpers{
 static Array<String> nodeFilter  {"t_ContainerInNode", "t_ContainerOutNode","t_NodeManager"};
 
 template<>
-PopupMenu* getFactoryTypesMenu< FactoryBase<NodeBase> > (int menuIdOffset ){
-    return createFactoryTypesMenuFilter<FactoryBase<NodeBase> >(nodeFilter,menuIdOffset);
+PopupMenu* getFactoryTypesMenu< NodeFactory > (int menuIdOffset ){
+    return createFactoryTypesMenuFilter<NodeFactory >(nodeFilter,menuIdOffset);
 }
 }
 

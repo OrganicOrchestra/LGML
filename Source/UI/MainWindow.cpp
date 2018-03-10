@@ -31,15 +31,16 @@ MainWindow::~MainWindow(){
     LGMLDragger::deleteInstance();
     stopTimer();
     latestVChecker = nullptr;
+    getAppUndoManager().removeChangeListener(this);
 }
 
 
 MainWindow::MainWindow (String name, Engine* e)  :
-    DocumentWindow (name,Colours::lightgrey,DocumentWindow::allButtons),
-    latestVChecker(nullptr)
+DocumentWindow (name,Colours::lightgrey,DocumentWindow::allButtons),
+latestVChecker(nullptr)
 {
 
-
+    getAppUndoManager().addChangeListener(this);
     mainComponent = createMainContentComponent (e);
     setContentOwned (mainComponent, false);
     // shapeshifter does'nt handle well if size are really small (under its min Size)
@@ -47,11 +48,11 @@ MainWindow::MainWindow (String name, Engine* e)  :
     getConstrainer()->setMinimumOnscreenAmounts(100, 100, 100, 100);
 
 #ifdef JUCE_LINUX
-/* lots of bug with nativetitlebar on ubuntu
-    - no display
-    - wrong rebuilding of windows position / size
-    - double clicks sent to titlebar
-*/
+    /* lots of bug with nativetitlebar on ubuntu
+     - no display
+     - wrong rebuilding of windows position / size
+     - double clicks sent to titlebar
+     */
     setUsingNativeTitleBar (false);
 
 #else
@@ -105,6 +106,10 @@ void MainWindow::focusGained (FocusChangeType cause)
 
 }
 
+void MainWindow::changeListenerCallback (ChangeBroadcaster* source) {
+    getEngine()->setChangedFlag(getAppUndoManager().canUndo());
+};
+
 
 void MainWindow::closeButtonPressed()
 {
@@ -112,26 +117,26 @@ void MainWindow::closeButtonPressed()
     // ask the app to quit when this happens, but you can change this to do
     // whatever you need.
 
-    //@martin added but commented for testing (relou behavior)
-    int result = AlertWindow::showYesNoCancelBox (AlertWindow::QuestionIcon, juce::translate("Save document"), juce::translate("Do you want to save the document before quitting ?"));
+    if(getEngine()->hasChangedSinceSaved()){
+        int result = AlertWindow::showYesNoCancelBox (AlertWindow::QuestionIcon, juce::translate("Save document"), juce::translate("Do you want to save the document before quitting ?"));
 
-    if (result == 0)  return; //prevent exit
+        if (result == 0)  return; //prevent exit
 
-    if (result == 1)
-    {
-        juce::FileBasedDocument::SaveResult sr = getEngine()->save (true, true);
-
-        switch (sr)
+        if (result == 1)
         {
-            case juce::FileBasedDocument::SaveResult::userCancelledSave:
-            case juce::FileBasedDocument::SaveResult::failedToWriteToFile:
-                return;
+            juce::FileBasedDocument::SaveResult sr = getEngine()->save (true, true);
 
-            case FileBasedDocument::SaveResult::savedOk:
-                break;
+            switch (sr)
+            {
+                case juce::FileBasedDocument::SaveResult::userCancelledSave:
+                case juce::FileBasedDocument::SaveResult::failedToWriteToFile:
+                    return;
+
+                case FileBasedDocument::SaveResult::savedOk:
+                    break;
+            }
         }
     }
-
 
     var boundsVar = var (new DynamicObject());
     Rectangle<int> r = getScreenBounds();

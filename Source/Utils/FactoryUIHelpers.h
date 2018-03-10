@@ -20,6 +20,7 @@
 #include "../JuceHeaderUI.h"
 #include "FactoryBase.h"
 
+class NodeBase;
 extern UndoManager & getAppUndoManager();
 namespace FactoryUIHelpers
 {
@@ -155,4 +156,11 @@ class UndoableFactoryCreate:public UndoableAction{
 };
 
 
+    //e xplicit template specialization to filter out uncreatable nodes
+template<>
+PopupMenu* getFactoryTypesMenu< FactoryBase<NodeBase> > (int menuIdOffset )
+;
+
 };
+
+

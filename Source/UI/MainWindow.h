@@ -27,7 +27,8 @@ class LatestVersionChecker;
 class MainContentComponent;
 class Engine;
 
-class MainWindow    : public DocumentWindow, private Timer
+class MainWindow    : public DocumentWindow, private Timer,
+private ChangeListener // for undoactions
 {
 public:
     MainWindow (String name, Engine* e) ;
@@ -39,6 +40,7 @@ public:
 
     void timerCallback() override;
 
+    void changeListenerCallback (ChangeBroadcaster* source) override;
 
     /* Note: Be careful if you override any DocumentWindow methods - the base
      class uses a lot of them, so by overriding you might break its functionality.

@@ -7,17 +7,19 @@ import re
 import json
 
 sourcePath = os.path.abspath(os.path.join(__file__,os.path.pardir,os.path.pardir,os.path.pardir,'Source'))
-print (sourcePath)
+jucePath = os.path.abspath(os.path.join(__file__,os.path.pardir,os.path.pardir,os.path.pardir,os.path.pardir,'JUCE','modules'))
+print (sourcePath,jucePath)
 baseTranslationPath = os.path.expanduser('~/Documents/LGML/translations/')
-baseTranslationPath = os.path.expanduser('~/owncloud/DEVSPECTACLES/Tools/LGML/translations')
+# baseTranslationPath = os.path.expanduser('~/owncloud/DEVSPECTACLES/Tools/LGML/translations')
 
 def getFileList():
-  global sourcePath
+  global sourcePath,jucePath
   files = []
-  for l in glob.glob(sourcePath+'/**/*.cpp',recursive = True):
-    files+=[l]
-  for l in glob.glob(sourcePath+'/**/*.h',recursive = True):
-    files+=[l]
+  for p in [sourcePath,jucePath]:
+    for l in glob.glob(p+'/**/*.cpp',recursive = True):
+      files+=[l]
+    for l in glob.glob(p+'/**/*.h',recursive = True):
+      files+=[l]
   return files
 
 
@@ -53,6 +55,7 @@ def getRegExs(fl):
   regL+=[buildRegFunction("DECLARE_OBJ_TYPE",[0,1])]
   regL+=[buildRegFunction("ShapeShifterContentComponent",[0,1])]
   regL+=[buildRegFunction("juce::translate",[1],strict=True)]
+  regL+=[buildRegFunction("(?<!NEEDS_)TRANS",[1],strict=True)]
   regL+=[buildRegFunction("AppPropertiesUI::\w+",[1],strict=True)]
   regL+=[buildRegFunction("BoolPropUI",[1],strict=True)]
   regL+=[buildRegFunction("EnumPropUI",[1,0,0,1])]
@@ -67,7 +70,7 @@ def getRegExs(fl):
   # regL+=[buildRegFunction("NLOGW",[1,1])]
   # regL+=[buildRegFunction("NLOGE",[1,1])]
   for f in fl:
-    # print('reading %s'%f)
+    print('reading %s'%f)
     with open(f,'r',errors='replace',encoding='utf-8') as fp:
       # for l in fp.readlines():
       text = fp.read()
@@ -275,7 +278,7 @@ if __name__ == "__main__":
   {'code':'ru','name':'russian'},
   {'code':'el','name':'greek'}
   ]
-  tel.update({k['name']:('None',0) for k in langs})
+  # tel.update({k['name']:('None',0) for k in langs})
   for lang in langs:
     mt = buildLocalMT(tel,lang['code'])
     toJUCEfmt(mt,lang)

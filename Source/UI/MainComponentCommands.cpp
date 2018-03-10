@@ -267,43 +267,51 @@ bool MainContentComponent::perform (const InvocationInfo& info)
 
         case CommandIDs::newFile:
         {
-            int result = AlertWindow::showYesNoCancelBox (AlertWindow::QuestionIcon, juce::translate("Save document"), juce::translate("Do you want to save the document before creating a new one ?"));
-
-            if (result != 0)
-            {
-                if (result == 1) engine->save (true, true);
-
+//            if(engine->hasChangedSinceSaved()){
+//                int result = AlertWindow::showYesNoCancelBox (AlertWindow::QuestionIcon, juce::translate("Save document"), juce::translate("Do you want to save the document before creating a new one ?"));
+//
+//                if (result == 0) break;
+//                if (result == 1) engine->save (true, true);
+//            }
+//            engine->createNewGraph();
+            if(engine->saveIfNeededAndUserAgrees()!=FileBasedDocument::SaveResult::userCancelledSave){
                 engine->createNewGraph();
-
             }
+
         }
             break;
 
         case CommandIDs::open:
         {
-            int result = AlertWindow::showYesNoCancelBox (AlertWindow::QuestionIcon, juce::translate("Save document"), juce::translate("Do you want to save the document before opening a new one ?"));
 
-            if (result != 0)
-            {
-                if (result == 1) engine->save (true, true);
-
+//            if(engine->hasChangedSinceSaved()){
+//                int result = AlertWindow::showYesNoCancelBox (AlertWindow::QuestionIcon, juce::translate("Save document"), juce::translate("Do you want to save the document before opening a new one ?"));
+//
+//                if (result == 0) break;
+//                if (result == 1) engine->save (true, true);
+//            }
+//            engine->loadFromUserSpecifiedFile (true);
+            if(engine->saveIfNeededAndUserAgrees()!=FileBasedDocument::SaveResult::userCancelledSave){
                 engine->loadFromUserSpecifiedFile (true);
             }
+
         }
             break;
 
         case CommandIDs::openLastDocument:
         {
-            // TODO implement the JUCE version calling change every time something is made (maybe todo with getAppmanager)
-            //            int result = engine->saveIfNeededAndUserAgrees();
-            int result = AlertWindow::showYesNoCancelBox (AlertWindow::QuestionIcon, juce::translate("Save document"), "Do you want to save the document before opening the last one ?");
 
-            if (result != 0)
-            {
-                if (result == 1) engine->save (true, true);
-
+//            if(engine->hasChangedSinceSaved()){
+//                int result = AlertWindow::showYesNoCancelBox (AlertWindow::QuestionIcon, juce::translate("Save document"), "Do you want to save the document before opening the last one ?");
+//
+//                if (result == 0) break;
+//                if (result == 1) engine->save (true, true);
+//            }
+            if(engine->saveIfNeededAndUserAgrees()!=FileBasedDocument::SaveResult::userCancelledSave){
                 engine->loadFrom (engine->getLastDocumentOpened(), true);
             }
+
+
         }
             break;
 
@@ -341,12 +349,8 @@ bool MainContentComponent::perform (const InvocationInfo& info)
             Desktop& desktop = Desktop::getInstance();
 
             for (int i = 0; i < desktop.getNumComponents(); ++i)
-
                 // doesn't work on windows
-                if (desktop.getComponent (i)->getParentComponent() != nullptr)
-                {
-                    desktop.getComponent (i)->toBehind (this);
-                }
+                if (desktop.getComponent (i)->getParentComponent() != nullptr){desktop.getComponent (i)->toBehind (this);}
 
             break;
         }
@@ -417,18 +421,18 @@ bool MainContentComponent::perform (const InvocationInfo& info)
             if(outlinerP){
                 auto content = outlinerP->getContentForName(pn);
                 if(content && content->contentComponent){
-                auto searchBar = dynamic_cast<TextEditor*>(content->contentComponent->findChildWithID("search"));
-                if(searchBar){
-                    searchBar->grabKeyboardFocus();
-                }
-                else{
-                    DBG("Outliner should contain a search bar");
-                }
+                    auto searchBar = dynamic_cast<TextEditor*>(content->contentComponent->findChildWithID("search"));
+                    if(searchBar){
+                        searchBar->grabKeyboardFocus();
+                    }
+                    else{
+                        DBG("Outliner should contain a search bar");
+                    }
                 }
             }
-            
 
-            
+
+
         }
             break;
         case CommandIDs::pasteSelection:
@@ -518,7 +522,7 @@ void MainContentComponent::menuItemSelected (int menuItemID, int topLevelMenuInd
 
 StringArray MainContentComponent::getMenuBarNames()
 {
-
+    
     StringArray namesArray ({
         juce::translate("File"),
         juce::translate("Edit"),

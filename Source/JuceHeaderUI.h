@@ -26,7 +26,7 @@
 #include "JuceHeaderCore.h"
 
 #if ENGINE_HEADLESS
-    #error shouldn't be included in headless builds
+    #error shouldnt be included in headless builds
 #endif
 
 #include <juce_gui_basics/juce_gui_basics.h>

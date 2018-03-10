@@ -178,6 +178,7 @@ public:
 #if !ENGINE_HEADLESS
             LookAndFeel::setDefaultLookAndFeel (lookAndFeelOO = new LookAndFeelOO);
             mainWindow = new MainWindow (getApplicationName(), engine);
+            
 #endif
             engine->parseCommandline (commandLinesElements);
 
