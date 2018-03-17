@@ -13,5 +13,6 @@
 #if JUCE_DONT_DECLARE_PROJECTINFO
 #error
 #endif
+#include "AppConfig.h"
 #include "JuceHeader.h" // for project info
 

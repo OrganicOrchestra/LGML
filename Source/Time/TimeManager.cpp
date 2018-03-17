@@ -592,11 +592,11 @@ void TimeManager::setBlockSize (int bS)
 void TimeManager::setBPMInternal (double /*_BPM*/, bool adaptTimeInSample)
 {
     isSettingTempo->setValue (false, false, false);
-    sample_clk_t newBeatTime = (sample_clk_t) (sampleRate * 60.0 / BPM->doubleValue());
+    sample_clk_t newBeatTime = (sample_clk_t) (sampleRate * 60.0 / BPM->doubleValue() + 0.5);
 
     if (adaptTimeInSample)
     {
-        sample_clk_t targetTime = (sample_clk_t) (timeState.time * (newBeatTime * 1.0 / beatTimeInSample));
+        sample_clk_t targetTime = (sample_clk_t) (timeState.time * (newBeatTime * 1.0 / beatTimeInSample) +0.5);
         jassert (targetTime >= 0);
         goToTime (targetTime, true);
     }

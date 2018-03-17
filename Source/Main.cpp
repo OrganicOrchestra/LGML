@@ -198,6 +198,7 @@ public:
                 CrashHandler::saveToFile = false;
 #if !ENGINE_HEADLESS
                 mainWindow = nullptr; // (deletes our window)
+                if(LGMLDragger::getInstanceWithoutCreating()){LGMLDragger::deleteInstance();}
 #endif
                 engine = nullptr;
             }

@@ -167,12 +167,13 @@ public:
 
         for (int i = 0 ; i < 2.3 * recordSizeInBlock ; i++)
         {
+
             processBlock();
+            int curWallTime = tm->getTimeInSample() % (recordSizeInBlock * blockSize);
+            int nextWallTime = (tm->getNextTimeInSample()) % (recordSizeInBlock * blockSize);
 
 
-            int startWallTime = tm->getTimeInSample() % (recordSizeInBlock * blockSize);
-            int endWallTime = (tm->getNextTimeInSample()) % (recordSizeInBlock * blockSize);
-            expect (endWallTime != startWallTime, "block unused");
+            expect (nextWallTime != curWallTime, "block unused");
             int offset = 0;
 
             // need to be first playedSample
@@ -180,7 +181,7 @@ public:
             {
                 expect (track1->playableBuffer.isPlaying(), "not Playing");
                 offset = (recordSizeInBlock * blockSize) - tm->getTimeInSample();
-                startWallTime = (startWallTime + offset) % (recordSizeInBlock * blockSize);
+                //curWallTime = (curWallTime + offset) % (recordSizeInBlock * blockSize);
                 int recLen = track1->playableBuffer.getRecordedLength() ;
                  offset = recLen % (tm->beatTimeInSample);
                 expect (recLen == getRecordedLength(),
@@ -189,14 +190,14 @@ public:
                         "wrong quantization");
             }
 
-            expect (track1->playableBuffer.playNeedle == (endWallTime % track1->playableBuffer.recordNeedle), "unaligned PlayNeedle : " + String (track1->playableBuffer.playNeedle) + " , " + String (endWallTime % track1->playableBuffer.recordNeedle) );
+            expect (track1->playableBuffer.playNeedle == (curWallTime % track1->playableBuffer.recordNeedle), "unaligned PlayNeedle : " + String (track1->playableBuffer.playNeedle) + " , " + String (curWallTime % track1->playableBuffer.recordNeedle) );
 
             float magnitude = testBuffer.getMagnitude (0, testBuffer.getNumSamples());
             expect (magnitude > 0, "not Playing");
-            int localTime = (i * blockSize) % (recordSizeInBlock * blockSize);
+            int localTime = ((i+1) * blockSize) % (recordSizeInBlock * blockSize);
 
-            expect (localTime == startWallTime, "localTime not aligned : " + String (localTime) + "," + String (startWallTime));
-            expect (checkBufferAlignedForTime (testBuffer, startWallTime), "buffer not aligned with time : " + String (startWallTime));
+            expect (localTime == curWallTime, "localTime not aligned : " + String (localTime) + "," + String (curWallTime));
+            expect (checkBufferAlignedForTime (testBuffer, curWallTime), "buffer not aligned with time : " + String (curWallTime));
 
         }
 

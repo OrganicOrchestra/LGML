@@ -324,10 +324,10 @@ inline bool PlayableBuffer::readNextBlock (AudioBuffer<float>& buffer, sample_cl
         multiNeedle.setLoopSize (getRecordedLength());
     }
 
-    if (state == BUFFER_PLAYING && !isStretchPending)
+    if (state == BUFFER_PLAYING && !isStretchPending && !wasLastRecordingFrame())
     {
         jassert (multiNeedle.loopSize == getRecordedLength() );
-        sample_clk_t targetTime = (time  + getRecordedLength()) % getRecordedLength();
+        sample_clk_t targetTime = (time  + getRecordedLength()-numSamples) % getRecordedLength();
 
         if (targetTime != playNeedle)
         {

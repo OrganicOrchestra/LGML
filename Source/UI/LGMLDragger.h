@@ -16,6 +16,10 @@
  ==============================================================================
  */
 
+#if ENGINE_HEADLESS
+#error should not include that in headless builds
+#endif
+
 #pragma once
 
 #include "../JuceHeaderUI.h"

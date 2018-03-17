@@ -415,7 +415,7 @@ bool ParameterContainer::saveCurrentPreset()
     //Same as saveNewPreset because PresetManager now replaces if name is the same
     if (currentPreset == nullptr)
     {
-        jassertfalse;
+//        jassertfalse;
         return false;
     }
 
