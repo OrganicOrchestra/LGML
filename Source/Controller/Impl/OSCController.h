@@ -51,7 +51,7 @@ public:
     virtual Result processMessageInternal (const OSCMessage& msg);
 
 
-    virtual void onContainerParameterChanged (Parameter* p) override;
+    virtual void onContainerParameterChanged ( ParameterBase* p) override;
     virtual void onContainerTriggerTriggered (Trigger* t) override;
 
 
@@ -90,7 +90,7 @@ public:
 
     void logMessage (const OSCMessage& m, const String& prefix = "");
 
-    bool setParameterFromMessage (Parameter* c, const OSCMessage& msg, bool force = false,bool allowConversions = true);
+    bool setParameterFromMessage ( ParameterBase* c, const OSCMessage& msg, bool force = false,bool allowConversions = true);
 
     void sendOSCForAddress (const Controllable* c, const String& cAddress);
     void sendOSCFromParam(const Controllable* c);

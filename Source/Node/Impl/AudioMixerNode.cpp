@@ -45,7 +45,7 @@ void AudioMixerNode::setParentNodeContainer (NodeContainer* c)
 
 }
 
-void AudioMixerNode::onContainerParameterChanged (Parameter* p)
+void AudioMixerNode::onContainerParameterChanged ( ParameterBase* p)
 {
     NodeBase::onContainerParameterChanged (p);
 
@@ -249,7 +249,7 @@ void AudioMixerNode::OutputBus::setNumInput (int numInput)
     lastVolumes.resize (numInput);
 }
 
-void AudioMixerNode::OutputBus::onContainerParameterChanged (Parameter* p)
+void AudioMixerNode::OutputBus::onContainerParameterChanged ( ParameterBase* p)
 {
     ScopedLock lk (volumes.getLock());
 

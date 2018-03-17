@@ -65,7 +65,7 @@ void JsNode::buildLocalEnv()
 }
 
 
-void JsNode::onContainerParameterChanged (Parameter* p)
+void JsNode::onContainerParameterChanged ( ParameterBase* p)
 {
     
     NodeBase::onContainerParameterChanged (p);

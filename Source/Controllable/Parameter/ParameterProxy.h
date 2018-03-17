@@ -24,29 +24,29 @@
 
 class ParameterProxy :
     public StringParameter,
-    private Parameter::Listener,
+    private ParameterBase::Listener,
     public Controllable::Listener,
     private ControllableContainer::Listener
 {
 public:
-    ParameterProxy (const String& niceName, const String& desc = "", Parameter* ref = nullptr, ControllableContainer* root = nullptr);
+    ParameterProxy (const String& niceName, const String& desc = "", ParameterBase* ref = nullptr, ControllableContainer* root = nullptr);
     virtual ~ParameterProxy();
 
 
-    WeakReference<Parameter> linkedParam;
+    WeakReference<ParameterBase> linkedParam;
     ControllableContainer* rootOfProxy;
 
     void setRoot (ControllableContainer* );
-    Parameter* get();
-    void tryToSetValue (const var & _value, bool silentSet, bool force,Parameter::Listener * notifier=nullptr )override;
+    ParameterBase* get();
+    void tryToSetValue (const var & _value, bool silentSet, bool force, ParameterBase::Listener * notifier=nullptr )override;
     void setValueInternal (const var& _value) override;
     bool isMappable() override;
 
     // Inherited via Listener
-    void parameterValueChanged (Parameter* p,Parameter::Listener * notifier) override;
-    void parameterRangeChanged (Parameter* ) override;
+    void parameterValueChanged ( ParameterBase* p, ParameterBase::Listener * notifier) override;
+    void parameterRangeChanged ( ParameterBase* ) override;
     
-    void setParamToReferTo (Parameter* p);
+    void setParamToReferTo ( ParameterBase* p);
 
 
     class ParameterProxyListener

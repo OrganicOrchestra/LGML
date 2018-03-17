@@ -61,7 +61,7 @@ public:
     void clear();
     void initAudio();
     void closeAudio();
-    Parameter * saveSession,*loadSession,*closeEngine;
+ParameterBase* saveSession,*loadSession,*closeEngine;
     class EngineStats : public ParameterContainer ,public Timer{
     public:
         EngineStats(Engine *);
@@ -80,7 +80,7 @@ public:
     };
     ScopedPointer< EngineStats> engineStats;
     bool hasDefaultOSCControl;
-    void onContainerParameterChanged(Parameter *)override;
+    void onContainerParameterChanged( ParameterBase*)override;
     void onContainerTriggerTriggered(Trigger *t)override;
     void suspendAudio (bool shouldSuspend);
 

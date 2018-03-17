@@ -81,7 +81,7 @@ namespace MIDIHelpers{
 
     class MIDIControllerModel : public EnumParameterModel,
     ControllerManager::Listener,
-    Parameter::Listener{
+    ParameterBase::Listener{
     public:
         MIDIControllerModel(){
             auto cm = ControllerManager::getInstance();
@@ -108,7 +108,7 @@ namespace MIDIHelpers{
                 removeOption(mc->getNiceName(), true);
             }
         };
-        void parameterValueChanged (Parameter* p,Parameter::Listener * notifier=nullptr) override{
+        void parameterValueChanged ( ParameterBase* p, ParameterBase::Listener * notifier=nullptr) override{
             auto c = p->parentContainer.get();
             if(auto cont = dynamic_cast<MIDIController*>(c)){
                 jassert(p==cont->nameParam);

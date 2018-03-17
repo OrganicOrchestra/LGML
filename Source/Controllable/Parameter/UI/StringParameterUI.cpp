@@ -34,7 +34,7 @@ String varToString(const var &v){
 
 }
 
-StringParameterUI::StringParameterUI (Parameter* p) :
+StringParameterUI::StringParameterUI ( ParameterBase* p) :
     ParameterUI (p), autoSize (false), maxFontHeight (12)
 {
 

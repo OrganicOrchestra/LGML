@@ -46,7 +46,7 @@ public :
     void clear();
 
     void resized() override;
-    void onContainerParameterChanged(Parameter * p) override;
+    void onContainerParameterChanged( ParameterBase* p) override;
 
 
     // Inherited via NodeContainerListener

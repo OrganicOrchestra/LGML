@@ -71,7 +71,7 @@ public:
     public:
         virtual ~Listener() {};
         virtual void mappingModeChanged(bool) = 0;
-        virtual void selectionChanged (Parameter*) = 0;
+        virtual void selectionChanged ( ParameterBase*) = 0;
     };
     void addSelectionListener (Listener* l ) {listeners.add (l);}
     void removeSelectionListener (Listener* l ) {listeners.remove (l);}

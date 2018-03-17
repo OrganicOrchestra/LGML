@@ -447,7 +447,7 @@ bool NodeContainer::removeConnection (NodeConnection* c)
 
 
 
-void NodeContainer::onContainerParameterChanged (Parameter* p)
+void NodeContainer::onContainerParameterChanged ( ParameterBase* p)
 {
 
     NodeBase::onContainerParameterChanged (p);
@@ -457,7 +457,7 @@ void NodeContainer::onContainerParameterChanged (Parameter* p)
 
 
 
-void NodeContainer::onContainerParameterChangedAsync (Parameter* p, const var& v)
+void NodeContainer::onContainerParameterChangedAsync ( ParameterBase* p, const var& v)
 {
     NodeBase::onContainerParameterChangedAsync (p, v);
 

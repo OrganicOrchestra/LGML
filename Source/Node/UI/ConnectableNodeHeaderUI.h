@@ -65,7 +65,7 @@ public:
     virtual void setMiniMode (bool value);
 
     // Inherited via Listeners
-    virtual void nodeParameterChanged (ConnectableNode*, Parameter*) override;
+    virtual void nodeParameterChanged (ConnectableNode*, ParameterBase*) override;
 
     virtual void buttonClicked (Button*) override;
     virtual void controllableContainerPresetLoaded (ControllableContainer*) override;

@@ -91,7 +91,7 @@ void VSTNode::processBlockBypassed (AudioBuffer<float>& buffer, MidiBuffer&)
     
 }
 
-void VSTNode::onContainerParameterChanged (Parameter* p)
+void VSTNode::onContainerParameterChanged ( ParameterBase* p)
 {
     NodeBase::onContainerParameterChanged (p);
     

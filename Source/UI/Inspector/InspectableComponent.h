@@ -19,7 +19,7 @@
 #include "../../JuceHeaderUI.h"//keep
 
 class ParameterContainer;
-class Parameter;
+class ParameterBase;
 class Inspector;
 class InspectorEditor;
 
@@ -28,7 +28,7 @@ class InspectableComponent : public juce::Component,public TooltipClient
 {
 public:
     InspectableComponent (ParameterContainer* relatedContainer , const String& inspectableType = "none");
-    InspectableComponent (Parameter* relatedParameter , const String& inspectableType = "none");
+    InspectableComponent ( ParameterBase* relatedParameter , const String& inspectableType = "none");
     InspectableComponent (const String& inspectableType );
 
     virtual ~InspectableComponent();
@@ -37,7 +37,7 @@ public:
     const String inspectableType;
 
     ParameterContainer* getRelatedParameterContainer();
-    Parameter * getRelatedParameter();
+    ParameterBase * getRelatedParameter();
     virtual InspectorEditor* createEditor();
 
 
@@ -61,7 +61,7 @@ public:
 
 protected:
     ParameterContainer* relatedParameterContainer;
-    Parameter* relatedParameter;
+    ParameterBase* relatedParameter;
 private:
     WeakReference<InspectableComponent>::Master masterReference;
     friend class WeakReference<InspectableComponent>;

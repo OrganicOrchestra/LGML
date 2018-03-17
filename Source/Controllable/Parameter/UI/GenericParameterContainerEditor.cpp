@@ -214,7 +214,7 @@ void CCInnerContainerUI::rebuild()
         addAndMakeVisible (presetChooser);
     }
 
-    for (auto& c : container->getControllablesOfType<Parameter> (false))
+    for (auto& c : container->getControllablesOfType<ParameterBase> (false))
     {
         if (!c->isHidenInEditor) addParameterUI (c);
     }
@@ -295,7 +295,7 @@ void CCInnerContainerUI::removeCCLink (ParameterContainer* cc)
     lowerContainerLinks.removeObject (bt);
 }
 
-void CCInnerContainerUI::addParameterUI (Parameter* c)
+void CCInnerContainerUI::addParameterUI ( ParameterBase* c)
 {
     if ( !c->isControllableExposed) return;
 
@@ -305,7 +305,7 @@ void CCInnerContainerUI::addParameterUI (Parameter* c)
     addAndMakeVisible (cui);
 }
 
-void CCInnerContainerUI::removeParameterUI (Parameter* c)
+void CCInnerContainerUI::removeParameterUI ( ParameterBase* c)
 {
     NamedParameterUI*   cui = getUIForParameter (c);
 
@@ -316,7 +316,7 @@ void CCInnerContainerUI::removeParameterUI (Parameter* c)
 
 }
 
-NamedParameterUI*   CCInnerContainerUI::getUIForParameter (Parameter* c)
+NamedParameterUI*   CCInnerContainerUI::getUIForParameter ( ParameterBase* c)
 {
     for (auto& cui : parametersUI)
     {
@@ -498,13 +498,13 @@ void CCInnerContainerUI::controllableAdded (ControllableContainer*, Controllable
 
     if (c->isHidenInEditor) return;
 
-    auto pc = static_cast<Parameter*> (c);
+    auto pc = static_cast <ParameterBase*> (c);
     addParameterUI (pc);
 }
 
 void CCInnerContainerUI::controllableRemoved (ControllableContainer*, Controllable* c)
 {
-    auto pc = static_cast<Parameter*> (c);
+    auto pc = static_cast <ParameterBase*> (c);
     removeParameterUI (pc);
 }
 

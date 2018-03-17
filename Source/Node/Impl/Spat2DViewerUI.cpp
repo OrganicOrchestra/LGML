@@ -166,7 +166,7 @@ void Spat2DViewer::paint (Graphics& g)
     g.fillRect (getLocalBounds());
 }
 
-void Spat2DViewer::nodeParameterChanged (ConnectableNode*, Parameter* p)
+void Spat2DViewer::nodeParameterChanged (ConnectableNode*, ParameterBase* p)
 {
     DBG ("node parameter changed " << p->niceName);
 

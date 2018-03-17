@@ -34,7 +34,7 @@
 
 
 
-class LinkPimpl;
+class LinkImpl;
 
 class FadeInOut;
 
@@ -100,7 +100,7 @@ public :
 
     IntParameter* quantizedBarFraction;
 
-    ScopedPointer<LinkPimpl> linkPimpl;
+    ScopedPointer<LinkImpl> linkPimpl;
     friend class LinkPimpl;
     FloatParameter* linkLatencyParam;
 
@@ -223,7 +223,7 @@ private:
     void updateState();
     void incrementClock (int block);
 
-    void onContainerParameterChanged (Parameter* )override;
+    void onContainerParameterChanged ( ParameterBase* )override;
     void onContainerTriggerTriggered (Trigger* ) override;
 
 

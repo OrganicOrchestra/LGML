@@ -19,7 +19,7 @@
 
 
 template<class T>
-StepperUI<T>::StepperUI (Parameter* _parameter) : ParameterUI (_parameter)
+StepperUI<T>::StepperUI ( ParameterBase* _parameter) : ParameterUI (_parameter)
 {
 
     slider = new BetterStepper (this);
@@ -75,7 +75,7 @@ void StepperUI<T>::sliderValueChanged (Slider* _slider)
 
 }
 template <class T>
-void StepperUI<T>::rangeChanged (Parameter* p)
+void StepperUI<T>::rangeChanged ( ParameterBase* p)
 {
     auto* fp = parameter->getAs<NumericParameter<T>>();
     jassert (fp);

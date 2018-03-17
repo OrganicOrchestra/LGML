@@ -152,7 +152,7 @@ void Outliner::buildTree (OutlinerItem* parentItem, ParameterContainer* parentCo
 
     }
 
-    auto childControllables = parentContainer->getControllablesOfType<Parameter> (false);
+    auto childControllables = parentContainer->getControllablesOfType<ParameterBase> (false);
 
     for (auto& c : childControllables)
     {
@@ -305,7 +305,7 @@ container (_container), parameter (nullptr), isContainer (true)
     }
 }
 
-OutlinerItem::OutlinerItem (Parameter* _parameter,bool generateSubTree) :
+OutlinerItem::OutlinerItem ( ParameterBase* _parameter,bool generateSubTree) :
 container (nullptr), parameter (_parameter), isContainer (false)
 {
 
@@ -393,7 +393,7 @@ void OutlinerItem::controllableContainerRemoved(ControllableContainer * notif,Co
 
 void OutlinerItem::controllableAdded (ControllableContainer* notif, Controllable* ori) {
     if(notif && notif==container){
-        MessageManager::callAsync([this , ori](){addSubItem(new OutlinerItem (dynamic_cast<Parameter*>(ori),true));});
+        MessageManager::callAsync([this , ori](){addSubItem(new OutlinerItem (dynamic_cast <ParameterBase*>(ori),true));});
     }
     else if (container){
         jassertfalse;
@@ -541,7 +541,7 @@ void OutlinerItemComponent::controllableNameChanged (Controllable* ) {
         jassertfalse;
 }
 
-void OutlinerItemComponent::newMessage(const Parameter::ParamWithValue &pv){
+void OutlinerItemComponent::newMessage(const ParameterBase::ParamWithValue &pv){
     if(item->isContainer && pv.parameter==item->container->nameParam)
         label.setText(  item->container->nameParam->stringValue(),dontSendNotification);
     else

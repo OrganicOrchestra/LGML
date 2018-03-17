@@ -104,7 +104,7 @@ public:
     void resized() override;
     void paint (Graphics& g) override;
 
-    void nodeParameterChanged (ConnectableNode*, Parameter* p) override;
+    void nodeParameterChanged (ConnectableNode*, ParameterBase* p) override;
 
     void nodeInputDataChanged (ConnectableNode*, Data* d) override;
     void nodeOutputDataUpdated (ConnectableNode*, Data* d) override;

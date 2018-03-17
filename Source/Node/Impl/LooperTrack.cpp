@@ -562,7 +562,7 @@ String LooperTrack::trackStateToString (const TrackState& ts)
     return "[noState]";
 }
 
-void LooperTrack::onContainerParameterChanged (Parameter* p)
+void LooperTrack::onContainerParameterChanged ( ParameterBase* p)
 {
 
     if (p == volume)

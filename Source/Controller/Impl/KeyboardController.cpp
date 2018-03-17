@@ -44,7 +44,7 @@ KeyboardController::~KeyboardController(){
     };
 }
 
-void KeyboardController::onContainerParameterChanged (Parameter* p){
+void KeyboardController::onContainerParameterChanged ( ParameterBase* p){
 
 
 }
@@ -66,7 +66,7 @@ bool KeyboardController::keyPressed (const KeyPress& key, Component* /*originati
     const String paramName=getPNameFromKey(key);
     if (Controllable* c = userContainer.getControllableByName(paramName))
     {
-        ((Parameter*)c)->setValue(key.isCurrentlyDown());
+        (( ParameterBase*)c)->setValue(key.isCurrentlyDown());
     }
     else if(autoAddParams){
         MessageManager::callAsync([this,key,paramName](){
@@ -102,7 +102,7 @@ bool KeyboardController::keyStateChanged (const bool /*isKeyDown*/, Component* /
             const String paramName=getPNameFromKey(key);
             if (Controllable* c = userContainer.getControllableByName(paramName))
             {
-                ((Parameter*)c)->setValue(key.isCurrentlyDown());
+                (( ParameterBase*)c)->setValue(key.isCurrentlyDown());
             }
             keysDown.remove(i);
         }

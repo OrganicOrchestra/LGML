@@ -160,7 +160,8 @@ public:
             expect (magnitude == 0, "still monitoring : " + String (magnitude));
         }
 
-        expect (track1->playableBuffer.recordNeedle == recordSizeInBlock * blockSize, "jumped a block while recording : " + String (track1->playableBuffer.recordNeedle) + " : " + String (recordSizeInBlock * blockSize));
+        expect (track1->playableBuffer.recordNeedle == recordSizeInBlock * blockSize,
+                "jumped a block while recording : " + String (track1->playableBuffer.recordNeedle) + " : " + String (recordSizeInBlock * blockSize));
         track1->recPlayTrig->trigger();
 
 
@@ -182,8 +183,10 @@ public:
                 startWallTime = (startWallTime + offset) % (recordSizeInBlock * blockSize);
                 int recLen = track1->playableBuffer.getRecordedLength() ;
                  offset = recLen % (tm->beatTimeInSample);
-                expect (recLen == getRecordedLength(), "wrong recorded Length found : " + String (recLen) + " for " + String ( getRecordedLength()));
-                expect (offset == 0, "wrong quantization");
+                expect (recLen == getRecordedLength(),
+                        "wrong recorded Length found : " + String (recLen) + " for " + String ( getRecordedLength()));
+                expect (offset == 0,
+                        "wrong quantization");
             }
 
             expect (track1->playableBuffer.playNeedle == (endWallTime % track1->playableBuffer.recordNeedle), "unaligned PlayNeedle : " + String (track1->playableBuffer.playNeedle) + " , " + String (endWallTime % track1->playableBuffer.recordNeedle) );

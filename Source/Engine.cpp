@@ -155,7 +155,7 @@ Engine::~Engine()
 
 }
 
-void Engine::onContainerParameterChanged (Parameter* p) {
+void Engine::onContainerParameterChanged ( ParameterBase* p) {
     if(p==saveSession){
         File fileToLoad (loadSession->stringValue());
         MessageManager::callAsync([this,fileToLoad](){saveAs(File(saveSession->stringValue()),false, false,true);});

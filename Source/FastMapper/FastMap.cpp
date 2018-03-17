@@ -48,7 +48,7 @@ FastMap::~FastMap()
     referenceIn->removeParameterProxyListener (this);
 
 }
-void FastMap::onContainerParameterChanged (Parameter* p)
+void FastMap::onContainerParameterChanged ( ParameterBase* p)
 {
     if (p == invertParam || p == inputRange || p == outputRange || p == fullSync)
     {
@@ -118,7 +118,7 @@ void FastMap::process (bool toReferenceOut)
 
                 if (invertParam->boolValue()) targetVal = maxOut - (targetVal - minOut);
 
-                ((Parameter*)outRef)->setValue (targetVal);
+                (( ParameterBase*)outRef)->setValue (targetVal);
             }
         }
     }

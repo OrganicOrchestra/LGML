@@ -45,7 +45,7 @@ public:
 
 
 
-    void onContainerParameterChanged (Parameter*) override;
+    void onContainerParameterChanged ( ParameterBase*) override;
 
 
 

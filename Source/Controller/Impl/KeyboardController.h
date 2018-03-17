@@ -40,7 +40,7 @@ public :
     BoolParameter* logIncoming;
 
 
-    void    onContainerParameterChanged (Parameter* )override;
+    void    onContainerParameterChanged ( ParameterBase* )override;
     bool keyPressed (const KeyPress& key, Component* originatingComponent) override;
     bool keyStateChanged (const bool isKeyDown, Component* originatingComponent) override;
 

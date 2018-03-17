@@ -34,7 +34,7 @@ public SettableTooltipClient,
 private Button::Listener,
 private Label::Listener,
 private Controllable::Listener, // for name of controllables
-private Parameter::AsyncListener // for nameParam(container)
+private ParameterBase::AsyncListener // for nameParam(container)
 {
 public:
     OutlinerItemComponent (OutlinerItem* item);
@@ -53,7 +53,7 @@ public:
     // ControllableListener
     void controllableNameChanged (Controllable* ) override;
     // ParamListener
-    void newMessage(const Parameter::ParamWithValue &pv)override;
+    void newMessage(const ParameterBase::ParamWithValue &pv)override;
 
 };
 
@@ -61,13 +61,13 @@ class OutlinerItem : public TreeViewItem,ControllableContainer::Listener
 {
 public:
     OutlinerItem (ParameterContainer* container,bool generateSubTree);
-    OutlinerItem (Parameter* controllable,bool generateSubTree);
+    OutlinerItem ( ParameterBase* controllable,bool generateSubTree);
     ~OutlinerItem();
 
     bool isContainer;
 
     WeakReference<ParameterContainer> container;
-    WeakReference<Parameter> parameter;
+    WeakReference<ParameterBase> parameter;
     WeakReference<Component> currentDisplayedComponent;
 
     String getUniqueName() const override;

@@ -87,7 +87,7 @@ void ContainerInNode::setNumChannels (int num)
     }
 }
 
-void ContainerInNode::onContainerParameterChanged (Parameter* p)
+void ContainerInNode::onContainerParameterChanged ( ParameterBase* p)
 {
     NodeBase::onContainerParameterChanged (p);
 

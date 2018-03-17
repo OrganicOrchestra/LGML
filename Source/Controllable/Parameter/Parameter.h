@@ -20,13 +20,13 @@
 #include "../../Utils/QueuedNotifier.h"
 
 
-class Parameter : public Controllable, private AsyncUpdater
+class ParameterBase : public Controllable, private AsyncUpdater
 {
 public:
     class Listener;
-    Parameter ( const String& niceName, const String& description, var initialValue, bool enabled = true);
+    ParameterBase ( const String& niceName, const String& description, var initialValue, bool enabled = true);
 
-    virtual ~Parameter() {Parameter::masterReference.clear(); cancelPendingUpdate();}
+    virtual ~ParameterBase() {ParameterBase::masterReference.clear(); cancelPendingUpdate();}
 
 
 
@@ -97,9 +97,9 @@ public:
                     linkedP.removeLast();
             }
         }
-        virtual void parameterValueChanged (Parameter* p,Parameter::Listener * notifier=nullptr) = 0;
-        virtual void parameterRangeChanged (Parameter* ) {};
-        Array<WeakReference<Parameter> > linkedP;
+        virtual void parameterValueChanged ( ParameterBase* p,ParameterBase::Listener * notifier=nullptr) = 0;
+        virtual void parameterRangeChanged ( ParameterBase* ) {};
+        Array<WeakReference<ParameterBase> > linkedP;
     };
 
 
@@ -120,8 +120,8 @@ public:
     class  ParamWithValue
     {
     public:
-        ParamWithValue (Parameter* p, const var & v, bool _isRange,Listener* _notifier=nullptr): parameter (p), value (v), m_isRange (_isRange),notifier(_notifier) {}
-        Parameter* parameter;
+        ParamWithValue ( ParameterBase* p, const var & v, bool _isRange,Listener* _notifier=nullptr): parameter (p), value (v), m_isRange (_isRange),notifier(_notifier) {}
+         ParameterBase* parameter;
         var value;
         bool m_isRange;
         Listener* notifier;
@@ -149,9 +149,9 @@ public:
     static const Identifier valueIdentifier;
 
 
-    static const Parameter* fromControllable (const Controllable* c) {return static_cast<const Parameter*> (c);}
+    static const ParameterBase* fromControllable (const Controllable* c) {return static_cast<const  ParameterBase*> (c);}
 
-    static Parameter* fromControllable (Controllable* c) {return static_cast<Parameter*> (c);}
+    static ParameterBase* fromControllable (Controllable* c) {return static_cast<ParameterBase*> (c);}
     template<typename T> T* getAs() {return dynamic_cast<T*> (this);}
 
 
@@ -166,11 +166,11 @@ private:
 
     void checkVarIsConsistentWithType();
 
-    WeakReference<Parameter>::Master masterReference;
-    friend class WeakReference<Parameter>;
+    WeakReference<ParameterBase>::Master masterReference;
+    friend class WeakReference<ParameterBase>;
     
     
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Parameter)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ParameterBase)
     
 };
 

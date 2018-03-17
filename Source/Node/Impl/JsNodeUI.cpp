@@ -86,7 +86,7 @@ void JsNodeUI::controllableAdded (ControllableContainer*, Controllable* c)
 
     if (!jsNode->jsDynamicParameters.contains ((Controllable*)c))return;
 
-    ParameterUI* comp = new NamedParameterUI (ParameterUIFactory::createDefaultUI (Parameter::fromControllable (c)), 100);
+    ParameterUI* comp = new NamedParameterUI (ParameterUIFactory::createDefaultUI ( ParameterBase::fromControllable (c)), 100);
     varUI.add (comp);
     addAndMakeVisible (comp);
 
@@ -102,7 +102,7 @@ void JsNodeUI::controllableAdded (ControllableContainer*, Controllable* c)
 }
 void JsNodeUI::controllableRemoved (ControllableContainer*, Controllable* c)
 {
-    Parameter* pToComp = Parameter::fromControllable (c);
+    ParameterBase* pToComp = ParameterBase::fromControllable (c);
 
     for (auto& comp : varUI)
     {

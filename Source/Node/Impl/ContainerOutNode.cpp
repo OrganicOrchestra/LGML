@@ -76,7 +76,7 @@ void ContainerOutNode::setNumChannels (int num)
     if (parentNodeContainer) {parentNodeContainer->setPreferedNumAudioOutput (AudioGraphIOProcessor::getTotalNumInputChannels());}
 }
 
-void ContainerOutNode::onContainerParameterChanged (Parameter* p)
+void ContainerOutNode::onContainerParameterChanged ( ParameterBase* p)
 {
     NodeBase::onContainerParameterChanged (p);
 

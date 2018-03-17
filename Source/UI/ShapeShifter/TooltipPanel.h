@@ -109,7 +109,7 @@ public:
         auto hs  = juce::translate("Help");
         if(newTT.isNotEmpty()){
             if(auto *pui = dynamic_cast<ParameterUI*>(tc)){
-                hs+=" : "+pui->parameter->niceName + "("+FactoryBase<Parameter>::getFactoryNiceNameForInstance(pui->parameter.get())+")";
+                hs+=" : "+pui->parameter->niceName + "("+FactoryBase<ParameterBase>::getFactoryNiceNameForInstance(pui->parameter.get())+")";
             }
         }
         else{
@@ -157,5 +157,5 @@ public:
     Label descriptionLabel,helpLabel;
     TextEditor label;
     TextEditor userDescription;
-    WeakReference<Parameter> descriptionParameter;
+    WeakReference<ParameterBase> descriptionParameter;
 };

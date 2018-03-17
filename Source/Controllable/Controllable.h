@@ -25,7 +25,7 @@
 
 
 class ControllableContainer;
-class Parameter;
+class ParameterBase;
 
 
 class Controllable : public FactoryObject

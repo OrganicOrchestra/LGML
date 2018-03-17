@@ -63,7 +63,7 @@ public:
     virtual void clear();
 
 
-    void onContainerParameterChanged (Parameter* p) override;
+    void onContainerParameterChanged ( ParameterBase* p) override;
 
 
 
@@ -72,7 +72,7 @@ public:
     {
     public:
         virtual ~ConnectableNodeListener() {}
-        virtual void nodeParameterChanged (ConnectableNode*, Parameter*) {}
+        virtual void nodeParameterChanged (ConnectableNode*, ParameterBase*) {}
 
         virtual void numAudioInputChanged (ConnectableNode*, int /*newNumInput*/) {};
         virtual void numAudioOutputChanged (ConnectableNode*, int /*newNumOutput*/) {};

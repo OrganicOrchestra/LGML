@@ -111,8 +111,8 @@ public:
 
 
     void onContainerTriggerTriggered (Trigger* t) override;
-    void onContainerParameterChanged (Parameter* p) override;
-    //  void parameterValueChanged(Parameter *p)override;
+    void onContainerParameterChanged ( ParameterBase* p) override;
+    //  void parameterValueChanged( ParameterBase*p)override;
     // internal
     void processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;
 

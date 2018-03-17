@@ -12,9 +12,9 @@
 #include "Parameter.h"
 namespace UndoableHelpers{
 
-    void setValueUndoable (Parameter* p,const var & _value, bool silentSet = false, bool force = false);
+    void setValueUndoable ( ParameterBase* p,const var & _value, bool silentSet = false, bool force = false);
     
-    void startNewTransaction(Parameter *p,bool force=false);
+    void startNewTransaction( ParameterBase*p,bool force=false);
     void setParameterCoalesced(bool t);
     
 }

@@ -229,7 +229,7 @@ void OSCController::processMessage (const OSCMessage& msg)
 }
 
 
-bool OSCController::setParameterFromMessage (Parameter* c, const OSCMessage& msg, bool force,bool allowConversions)
+bool OSCController::setParameterFromMessage ( ParameterBase* c, const OSCMessage& msg, bool force,bool allowConversions)
 {
     auto  targetType = c->getFactoryTypeId();
 
@@ -253,7 +253,7 @@ bool OSCController::setParameterFromMessage (Parameter* c, const OSCMessage& msg
             (msg[0].isInt32() || msg[0].isFloat32())))
         {
             float val = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
-            ((Parameter*)c)->setValue (val > 0, false, force);
+            (( ParameterBase*)c)->setValue (val > 0, false, force);
         }
     }
     else if (targetType == FloatParameter::_factoryType)
@@ -261,7 +261,7 @@ bool OSCController::setParameterFromMessage (Parameter* c, const OSCMessage& msg
         if (msg.size() > 0 && ((allowConversions && msg[0].isInt32()) || msg[0].isFloat32()))
         {
             float value = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
-            ((Parameter*)c)->setValue ((float)value, false, force); //normalized or not ? can user decide ?
+            (( ParameterBase*)c)->setValue ((float)value, false, force); //normalized or not ? can user decide ?
         }
     }
     else if (targetType == IntParameter::_factoryType)
@@ -269,7 +269,7 @@ bool OSCController::setParameterFromMessage (Parameter* c, const OSCMessage& msg
         if (msg.size() > 0 && (msg[0].isInt32() || (allowConversions && msg[0].isFloat32())))
         {
             int value = msg[0].isInt32() ? msg[0].getInt32() : (int)msg[0].getFloat32();
-            ((Parameter*)c)->setValue (value, false, force);
+            (( ParameterBase*)c)->setValue (value, false, force);
         }
     }
     else if (targetType == StringParameter::_factoryType)
@@ -280,11 +280,11 @@ bool OSCController::setParameterFromMessage (Parameter* c, const OSCMessage& msg
             if  (allowConversions && (msg[0].isInt32() || msg[0].isFloat32()))
             {
                 float value = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
-                ((Parameter*)c)->setValue (String (value));
+                (( ParameterBase*)c)->setValue (String (value));
             }
             else if (msg[0].isString())
             {
-                ((Parameter*)c)->setValue (msg[0].getString(), false, force);
+                (( ParameterBase*)c)->setValue (msg[0].getString(), false, force);
             }
         }
     }
@@ -296,12 +296,12 @@ bool OSCController::setParameterFromMessage (Parameter* c, const OSCMessage& msg
             if  (allowConversions && (msg[0].isInt32() || msg[0].isFloat32()))
             {
                 int value = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
-                ((Parameter*)c)->setValue (value, false, force);
+                (( ParameterBase*)c)->setValue (value, false, force);
             }
             // select by name
             else if (msg[0].isString())
             {
-                ((Parameter*)c)->setValue (msg[0].getString(), false, force);
+                (( ParameterBase*)c)->setValue (msg[0].getString(), false, force);
             }
         }
     }
@@ -324,7 +324,7 @@ void OSCController::checkAndAddParameterIfNeeded (const OSCMessage& msg)
         return;
     // TODO handle wildcards
     String addr = msg.getAddressPattern().toString();
-    auto* linked = Parameter::fromControllable (userContainer.getControllableForAddress (addr));
+    auto* linked = ParameterBase::fromControllable (userContainer.getControllableForAddress (addr));
 
     if (!linked)
     {
@@ -409,7 +409,7 @@ Result OSCController::processMessageInternal (const OSCMessage&)
     return Result::fail ("Not handled"); //if not overriden, msg is not handled so result is false
 }
 
-void OSCController::onContainerParameterChanged (Parameter* p)
+void OSCController::onContainerParameterChanged ( ParameterBase* p)
 {
     Controller::onContainerParameterChanged (p);
 
@@ -581,7 +581,7 @@ void OSCController::sendOSCForAddress (const Controllable* c, const String& cAdd
 {
 
 
-    if (const Parameter* p = Parameter::fromControllable (c))
+    if (const ParameterBase* p = ParameterBase::fromControllable (c))
     {
         auto  targetType = p->getFactoryTypeId();
 

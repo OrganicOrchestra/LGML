@@ -20,7 +20,7 @@
 #include "../UndoableHelper.h"
 
 //==============================================================================
-BoolToggleUI::BoolToggleUI (Parameter* parameter) :
+BoolToggleUI::BoolToggleUI ( ParameterBase* parameter) :
     ParameterUI (parameter)
 {
     setSize (10, 10);

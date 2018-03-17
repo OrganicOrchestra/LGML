@@ -43,7 +43,7 @@ void RangeParameter::setValue (double _x, double _y)
     var d;
     d.append (_x);
     d.append (_y);
-    Parameter::setValue (d);
+    ParameterBase::setValue (d);
 }
 
 void RangeParameter::setValueInternal (const var& _value)

@@ -28,21 +28,21 @@ public:
     DECLARE_OBJ_TYPE (DataInNode,"deprecated")
     ~DataInNode();
 
-    Array<Parameter*> dynamicParameters;
+    Array <ParameterBase*> dynamicParameters;
 
     FloatParameter* addFloatParamAndData (const String& name, float initialValue, float minVal, float maxVal);
     void removeFloatParamAndData (FloatParameter* p);
 
 
-    void onContainerParameterChanged (Parameter* p) override;
+    void onContainerParameterChanged ( ParameterBase* p) override;
 
     //Listener
     class DataInListener
     {
     public:
         virtual ~DataInListener() {}
-        virtual void parameterAdded (Parameter*) = 0;
-        virtual void parameterRemoved (Parameter*) = 0;
+        virtual void parameterAdded ( ParameterBase*) = 0;
+        virtual void parameterRemoved ( ParameterBase*) = 0;
 
     };
 

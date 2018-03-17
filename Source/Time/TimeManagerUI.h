@@ -29,7 +29,7 @@
 #include "../UI/ShapeShifter/ShapeShifterContent.h"
 
 
-class TimeManagerUI : public ShapeShifterContentComponent, public Parameter::AsyncListener
+class TimeManagerUI : public ShapeShifterContentComponent, public ParameterBase::AsyncListener
 {
 
 public :
@@ -39,7 +39,7 @@ public :
     
     void resized()override;
 
-    void newMessage (const Parameter::ParamWithValue& pv) override;
+    void newMessage (const ParameterBase::ParamWithValue& pv) override;
 
 
     class TimeBar : public juce::Component, private Timer

@@ -21,7 +21,7 @@
 
 //==============================================================================
 template<class T>
-SliderUI<T>::SliderUI (Parameter* parameter) :
+SliderUI<T>::SliderUI ( ParameterBase* parameter) :
     ParameterUI (parameter), fixedDecimals (2),
     defaultColor (0xff99ff66),
     scrollWheelAllowed(true)

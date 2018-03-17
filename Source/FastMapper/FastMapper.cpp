@@ -25,7 +25,7 @@ IMPL_OBJ_TYPE (FastMapper);
 template<>
 void ControllableContainer::OwnedFeedbackListener<FastMapper>::controllableFeedbackUpdate (ControllableContainer* notif, Controllable*ori) {
 
-    if (auto p = Parameter::fromControllable (ori))
+    if (auto p = ParameterBase::fromControllable (ori))
     {
         if(owner->autoAddFastMaps){
             if(notif== ControllerManager::getInstance()){
@@ -86,14 +86,14 @@ FastMapper::~FastMapper()
 
 
 
-void FastMapper::setPotentialInput (Parameter* p)
+void FastMapper::setPotentialInput ( ParameterBase* p)
 {
     if(p!=potentialIn->get()){
         potentialIn->setParamToReferTo (p);
 
     }
 }
-void FastMapper::setPotentialOutput (Parameter* p )
+void FastMapper::setPotentialOutput ( ParameterBase* p )
 {
     if(p!=potentialOut->get()){
         potentialOut->setParamToReferTo (p);
@@ -206,15 +206,15 @@ ParameterContainer*   FastMapper::addContainerFromObject (const String& /*name*/
 
 
 #if !ENGINE_HEADLESS
-void FastMapper::selectionChanged (Parameter* c )
+void FastMapper::selectionChanged ( ParameterBase* c )
 {
 
     auto ms = Desktop::getInstance().getMouseSource(0);
     if (ms&& ms->getCurrentModifiers().isAltDown()){
-        setPotentialInput (Parameter::fromControllable (c));
+        setPotentialInput ( ParameterBase::fromControllable (c));
     }
     else{
-        setPotentialOutput (Parameter::fromControllable (c));
+        setPotentialOutput ( ParameterBase::fromControllable (c));
     }
 
 };

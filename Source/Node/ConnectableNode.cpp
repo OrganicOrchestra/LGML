@@ -116,7 +116,7 @@ bool ConnectableNode::hasDataOutputs()
 
 
 
-void ConnectableNode::onContainerParameterChanged (Parameter* p)
+void ConnectableNode::onContainerParameterChanged ( ParameterBase* p)
 {
     nodeListeners.call (&ConnectableNodeListener::nodeParameterChanged, this, p);
 }

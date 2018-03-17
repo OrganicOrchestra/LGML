@@ -84,7 +84,7 @@ TimeManagerUI::~TimeManagerUI()
 }
 
 
-void TimeManagerUI::newMessage (const Parameter::ParamWithValue& pv)
+void TimeManagerUI::newMessage (const ParameterBase::ParamWithValue& pv)
 {
 
     if (pv.parameter == timeManager->playState)

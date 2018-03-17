@@ -43,7 +43,7 @@ public:
     void processInputDataChanged (Data* d) override;
 
 
-    void onContainerParameterChanged (Parameter*) override;
+    void onContainerParameterChanged ( ParameterBase*) override;
 
 
 

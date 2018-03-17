@@ -58,7 +58,7 @@ public :
 //    void enumOptionSelectionChanged(EnumParameter * ep, bool isSelected, bool isValid, const juce::Identifier & key)override;
     void midiMessageSent()override;
 
-    void    onContainerParameterChanged (Parameter* )override;
+    void    onContainerParameterChanged ( ParameterBase* )override;
 
     static var sendCCFromJS (const var::NativeFunctionArgs& v);
     static var sendNoteOnFromJS (const var::NativeFunctionArgs& v);

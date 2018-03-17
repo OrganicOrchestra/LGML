@@ -20,7 +20,7 @@
 #include "ParameterFactory.h"
 REGISTER_PARAM_TYPE (ParameterProxy)
 
-ParameterProxy::ParameterProxy (const String& niceName, const String& desc, Parameter* ref, ControllableContainer* root) :
+ParameterProxy::ParameterProxy (const String& niceName, const String& desc, ParameterBase* ref, ControllableContainer* root) :
     StringParameter (niceName, desc),
     linkedParam (ref),
     rootOfProxy (nullptr)
@@ -55,7 +55,7 @@ void ParameterProxy::setRoot (ControllableContainer* r)
     resolveAddress();
 
 }
-void ParameterProxy::tryToSetValue (const var & _value, bool silentSet, bool force,Parameter::Listener * notifier )
+void ParameterProxy::tryToSetValue (const var & _value, bool silentSet, bool force, ParameterBase::Listener * notifier )
 {
 
     if (_value.isString())
@@ -96,24 +96,24 @@ void ParameterProxy::setValueInternal (const var& _value)
 }
 
 
-void ParameterProxy::parameterValueChanged (Parameter* p,Parameter::Listener * notifier)
+void ParameterProxy::parameterValueChanged ( ParameterBase* p, ParameterBase::Listener * notifier)
 {
     jassert (p == linkedParam);
     proxyListeners.call (&ParameterProxyListener::linkedParamValueChanged, this);
 }
 
-void ParameterProxy::parameterRangeChanged (Parameter* p)
+void ParameterProxy::parameterRangeChanged ( ParameterBase* p)
 {
     jassert (p == linkedParam);
     proxyListeners.call (&ParameterProxyListener::linkedParamRangeChanged, this);
 }
 
 
-Parameter* ParameterProxy::get()
+ParameterBase* ParameterProxy::get()
 {
     return linkedParam.get();
 }
-void ParameterProxy::setParamToReferTo (Parameter* p)
+void ParameterProxy::setParamToReferTo ( ParameterBase* p)
 {
 
     String targetAddress = p ? p->getControlAddress (getRoot()) : String::empty;
@@ -164,7 +164,7 @@ bool ParameterProxy::resolveAddress()
 {
     if (stringValue().isNotEmpty())
     {
-        auto p = Parameter::fromControllable (getRoot()->getControllableForAddress (stringValue()));
+        auto p = ParameterBase::fromControllable (getRoot()->getControllableForAddress (stringValue()));
 
         setParamToReferTo (p);
     }
@@ -182,7 +182,7 @@ void ParameterProxy::controllableAdded (ControllableContainer*, Controllable* c)
 
     if (c->getControlAddress() == stringValue())
     {
-        setParamToReferTo (Parameter::fromControllable (c));
+        setParamToReferTo ( ParameterBase::fromControllable (c));
     }
 
 }

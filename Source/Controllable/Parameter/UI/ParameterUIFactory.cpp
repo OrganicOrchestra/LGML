@@ -45,7 +45,7 @@
 #define CHKNRETURN(p,classN,UIN)  if(p->isType< classN >()) {return new UIN((classN*)p);}
 
 //#define REG(cls,meth)
-ParameterUI* ParameterUIFactory::createDefaultUI (const Parameter* t)
+ParameterUI* ParameterUIFactory::createDefaultUI (const ParameterBase* t)
 {
 
     CHKNRETURN (t, BoolParameter, BoolToggleUI)

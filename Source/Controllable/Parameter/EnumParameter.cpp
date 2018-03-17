@@ -56,7 +56,7 @@ String dumpVarObj(const var & v ,const int indent=0){
 // EnumParameter
 
 EnumParameter::EnumParameter (const String& niceName, const String& description, EnumParameterModel* modelInstance, const var& defaultValue, bool _userCanEnterText, bool enabled) :
-Parameter ( niceName, description, defaultValue, enabled),
+ParameterBase ( niceName, description, defaultValue, enabled),
 asyncNotifier (1000),
 userCanEnterText (_userCanEnterText),
 enumData (new DynamicObject())
@@ -428,7 +428,7 @@ void EnumParameter::modelOptionAdded (EnumParameterModel*, Identifier& key )
     {
         msg->isSelectionChange = true;
         msg->isSelected = true;
-        Parameter::notifyValueChanged();
+        ParameterBase::notifyValueChanged();
     }
 
     processForMessage (*msg, enumListeners);
@@ -443,7 +443,7 @@ void EnumParameter::modelOptionRemoved (EnumParameterModel*, Identifier& key)
     {
         msg->isSelectionChange = true;
         msg->isSelected = false;
-        Parameter::notifyValueChanged();
+        ParameterBase::notifyValueChanged();
     }
 
     processForMessage (*msg, enumListeners);

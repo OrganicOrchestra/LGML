@@ -17,7 +17,7 @@
  */
 
 #if LGML_UNIT_TESTS
-#include  "JuceHeader.h"
+
 #include "../Node/NodeBase.h"
 #include "../Node/Manager/NodeManager.h"
 #include "../Engine.h"
@@ -65,9 +65,9 @@ public:
 
                 if (tested.get())
                 {
-                    if (!dynamic_cast<ContainerInNode*>(tested->parentContainer) &&
-                        dynamic_cast<ContainerOutNode*>(tested->parentContainer) &&
-                        tested != static_cast<ParameterContainer*>(tested->parentContainer)->nameParam
+                    if (!dynamic_cast<ContainerInNode*>(tested->parentContainer.get()) &&
+                        dynamic_cast<ContainerOutNode*>(tested->parentContainer.get()) &&
+                        tested != static_cast<ParameterContainer*>(tested->parentContainer.get())->nameParam
                         && tested->shortName != "savePreset" &&
                         tested->shortName != "loadFile" &&
                         tested->shortName != "scriptPath" &&

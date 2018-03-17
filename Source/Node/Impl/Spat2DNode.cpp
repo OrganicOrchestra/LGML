@@ -232,7 +232,7 @@ bool Spat2DNode::modeIsBeam()
     return (int)spatMode->getFirstSelectedValue() == BEAM;
 }
 
-void Spat2DNode::onContainerParameterChanged (Parameter* p)
+void Spat2DNode::onContainerParameterChanged ( ParameterBase* p)
 {
 
     if (p == spatMode)

@@ -20,7 +20,7 @@ REGISTER_PARAM_TYPE (StringParameter)
 
 
 StringParameter::StringParameter (const String& niceName, const String& description, const String& initialValue, bool enabled) :
-    Parameter (niceName, description, initialValue, enabled)
+   ParameterBase (niceName, description, initialValue, enabled)
 {
 
 }

@@ -107,7 +107,7 @@ void AudioDeviceInNode::changeListenerCallback (ChangeBroadcaster*)
     NodeBase::setRateAndBufferSizeDetails (AudioGraphIOProcessor::getSampleRate(), AudioGraphIOProcessor::getBlockSize());
     updateVolMutes();
 }
-void AudioDeviceInNode::onContainerParameterChanged (Parameter* p)
+void AudioDeviceInNode::onContainerParameterChanged ( ParameterBase* p)
 {
 
     if (p == desiredNumAudioInput)

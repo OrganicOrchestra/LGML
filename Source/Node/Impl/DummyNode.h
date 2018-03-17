@@ -38,7 +38,7 @@ public:
     Trigger* testTrigger;
 
 
-    void onContainerParameterChanged (Parameter* p) override;
+    void onContainerParameterChanged ( ParameterBase* p) override;
 
     //AUDIO
 

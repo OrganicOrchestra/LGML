@@ -23,7 +23,7 @@ class SliderUI    : public ParameterUI ,private Label::Listener
 {
 
 public:
-    SliderUI (Parameter* parameter = nullptr);
+    SliderUI ( ParameterBase* parameter = nullptr);
     virtual ~SliderUI();
 
     enum Direction { HORIZONTAL, VERTICAL };
@@ -53,7 +53,7 @@ public:
 
     virtual void setParamNormalizedValue (float value);
     virtual float getParamNormalizedValue();
-    void rangeChanged (Parameter* )override
+    void rangeChanged ( ParameterBase* )override
     {
         repaint();
     };

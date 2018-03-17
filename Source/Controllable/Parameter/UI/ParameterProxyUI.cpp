@@ -67,7 +67,7 @@ void ParameterProxyUI::resized()
 
 }
 
-void ParameterProxyUI::setLinkedParamUI (Parameter* p)
+void ParameterProxyUI::setLinkedParamUI ( ParameterBase* p)
 {
 
 
@@ -127,7 +127,7 @@ void ParameterProxyUI::linkedParamChanged (ParameterProxy* p)
 
 void ParameterProxyUI::choosedControllableChanged (ControllableReferenceUI*, Controllable* c)
 {
-    auto t = Parameter::fromControllable (c);
+    auto t = ParameterBase::fromControllable (c);
     paramProxy->setParamToReferTo (t);
 
 

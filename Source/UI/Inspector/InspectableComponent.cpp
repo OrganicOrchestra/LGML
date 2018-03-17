@@ -49,7 +49,7 @@ bringToFrontOnSelect (true)
 
 }
 
-InspectableComponent::InspectableComponent (Parameter* _relatedParameter, const String& _inspectableType) :
+InspectableComponent::InspectableComponent ( ParameterBase* _relatedParameter, const String& _inspectableType) :
 inspectableType (_inspectableType),
 relatedParameterContainer (nullptr),
 relatedParameter(_relatedParameter),
@@ -141,7 +141,7 @@ void InspectableComponent::paintOverChildren (juce::Graphics& g)
 ParameterContainer* InspectableComponent::getRelatedParameterContainer(){
     return relatedParameterContainer;
 }
-Parameter* InspectableComponent::getRelatedParameter(){
+ParameterBase* InspectableComponent::getRelatedParameter(){
     return relatedParameter;
 }
 

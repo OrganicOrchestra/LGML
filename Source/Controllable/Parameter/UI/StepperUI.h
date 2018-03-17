@@ -25,7 +25,7 @@ class StepperUI : public ParameterUI, private Slider::Listener
 {
 
 public:
-    StepperUI (Parameter* _parameter);
+    StepperUI ( ParameterBase* _parameter);
     virtual ~StepperUI();
 
 
@@ -39,7 +39,7 @@ public:
     void mouseDown(const MouseEvent & e)override;
 protected:
     void valueChanged (const var&) override;
-    virtual void rangeChanged (Parameter* p) override;
+    virtual void rangeChanged ( ParameterBase* p) override;
 
     // Inherited via Listener
     virtual void sliderValueChanged (Slider* slider) override;

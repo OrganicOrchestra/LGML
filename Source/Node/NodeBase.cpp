@@ -104,7 +104,7 @@ bool NodeBase::hasDataOutputs()
 }
 
 
-void NodeBase::onContainerParameterChanged (Parameter* p)
+void NodeBase::onContainerParameterChanged ( ParameterBase* p)
 {
     if (!p)return;
 

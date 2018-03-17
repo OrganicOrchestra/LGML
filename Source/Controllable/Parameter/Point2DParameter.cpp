@@ -82,7 +82,7 @@ void Point2DParameter<T>::setValueInternal (const var& _value)
         _value.getArray()->set (1, jmin (static_cast<T> (maximumValue[1]), static_cast<T> (_value[1])));
     }
 
-    Parameter::setValueInternal (_value);
+    ParameterBase::setValueInternal (_value);
 
 
 }

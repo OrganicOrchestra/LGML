@@ -107,7 +107,7 @@ class EnumChangeMessage
 
 
 // EnumParameter changes are deffered to message thread per default
-class EnumParameter : public Parameter, public EnumParameterModel::Listener, public QueuedNotifier<EnumChangeMessage>::Listener
+class EnumParameter : public ParameterBase, public EnumParameterModel::Listener, public QueuedNotifier<EnumChangeMessage>::Listener
 {
 public:
     DECLARE_OBJ_TYPE (EnumParameter,"List parameter")

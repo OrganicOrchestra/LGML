@@ -25,7 +25,7 @@
 
 class AudioMixerNodeUI : public ConnectableNodeContentUI,
     public ConnectableNode::ConnectableNodeListener,
-    private Parameter::Listener
+    private ParameterBase::Listener
 {
 public:
     AudioMixerNodeUI()
@@ -75,7 +75,7 @@ public:
     };
 
     void handleCommandMessage (int id)override;
-    void parameterValueChanged (Parameter* p,Parameter::Listener * notifier=nullptr) override;
+    void parameterValueChanged ( ParameterBase* p, ParameterBase::Listener * notifier=nullptr) override;
     void resized() override;
     OwnedArray<OutputBusUI> outputBusUIs;
     AudioMixerNode* mixerNode;

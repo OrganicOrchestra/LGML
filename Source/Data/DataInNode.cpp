@@ -50,7 +50,7 @@ inline void DataInNode::removeFloatParamAndData (FloatParameter* p)
     dataInListeners.call (&DataInListener::parameterRemoved, p);
 }
 
-void DataInNode::onContainerParameterChanged (Parameter* p)
+void DataInNode::onContainerParameterChanged ( ParameterBase* p)
 {
     NodeBase::onContainerParameterChanged (p);
 

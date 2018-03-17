@@ -85,7 +85,7 @@ ControllerUI::ControllerUI (Controller* controller) :
     addAndMakeVisible (removeBT);
 
     if(auto *c = controller->isConnected){
-        isConnectedUI = ParameterUIFactory::createDefaultUI((Parameter*)c);
+        isConnectedUI = ParameterUIFactory::createDefaultUI(( ParameterBase*)c);
         isConnectedUI->showLabel = false;
         addAndMakeVisible(isConnectedUI);
     }

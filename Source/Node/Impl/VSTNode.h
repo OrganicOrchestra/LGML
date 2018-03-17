@@ -65,7 +65,7 @@ public:
 
 
 
-    void onContainerParameterChanged (Parameter* p) override;
+    void onContainerParameterChanged ( ParameterBase* p) override;
 
     void audioProcessorParameterChanged (AudioProcessor* processor,
                                          int parameterIndex,

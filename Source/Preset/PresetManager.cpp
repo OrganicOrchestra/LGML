@@ -50,7 +50,7 @@ PresetManager::Preset* PresetManager::addPresetFromControllableContainer (const 
     {
         if (!p->isPresettable || !p->isEditable) continue;
 
-        if (p == (Parameter*)container->currentPresetName) { continue; }
+        if (p == ( ParameterBase*)container->currentPresetName) { continue; }
 
         if (!p->isControllableExposed && !includeNotExposed) continue;
 

@@ -52,8 +52,8 @@ public:
 
     void clear();
 
-    void setPotentialInput (Parameter*);
-    void setPotentialOutput (Parameter*);
+    void setPotentialInput ( ParameterBase*);
+    void setPotentialOutput ( ParameterBase*);
 
     FastMap* addFastMap();
     void removeFastmap (FastMap* f);
@@ -68,7 +68,7 @@ private:
 
 #if !ENGINE_HEADLESS
     // LGMLDragger Listener
-    void selectionChanged (Parameter*) override;
+    void selectionChanged ( ParameterBase*) override;
     void mappingModeChanged(bool) override;
 #endif
     uint32 lastFMAddedTime;

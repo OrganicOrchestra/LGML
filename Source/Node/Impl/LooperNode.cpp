@@ -579,7 +579,7 @@ void LooperNode::numChannelsChanged (bool isInput)
         streamAudioBuffer.setNumChannels (getTotalNumInputChannels());
     }
 }
-void LooperNode::onContainerParameterChanged (Parameter* p)
+void LooperNode::onContainerParameterChanged ( ParameterBase* p)
 {
     NodeBase::onContainerParameterChanged (p);
 

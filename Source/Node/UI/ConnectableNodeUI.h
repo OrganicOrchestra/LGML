@@ -167,8 +167,8 @@ private:
     friend class NodeContainerViewer;
 
     void childBoundsChanged (Component*)override;
-    void nodeParameterChanged (ConnectableNode*, Parameter* p) override;
-    void onContainerParameterChanged(Parameter *p) override;
+    void nodeParameterChanged (ConnectableNode*, ParameterBase* p) override;
+    void onContainerParameterChanged( ParameterBase*p) override;
 
     void mouseDown (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;

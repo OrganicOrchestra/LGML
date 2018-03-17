@@ -22,15 +22,15 @@
 
 
 class ParameterUI : public InspectableComponent,
-    protected Parameter::AsyncListener,
-    private Parameter::Listener,
+    protected ParameterBase::AsyncListener,
+    private ParameterBase::Listener,
     public Controllable::Listener
 {
 public:
-    ParameterUI (Parameter* parameter);
+    ParameterUI ( ParameterBase* parameter);
     virtual ~ParameterUI();
 
-    WeakReference<Parameter> parameter;
+    WeakReference<ParameterBase> parameter;
 
     bool showLabel;
     bool showValue;
@@ -63,7 +63,7 @@ protected:
     // here we are bound to only one parameter so no need to pass parameter*
     // for general behaviour see AsyncListener
     virtual void valueChanged (const var& ) {};
-    virtual void rangeChanged (Parameter* ) {};
+    virtual void rangeChanged ( ParameterBase* ) {};
 
     
     String getTooltip() override;
@@ -71,12 +71,12 @@ protected:
     virtual void mouseUp (const MouseEvent& e) override;
 
 private:
-    // see Parameter::AsyncListener
-    virtual void newMessage (const Parameter::ParamWithValue& p) override;
+    // see ParameterBase::AsyncListener
+    virtual void newMessage (const ParameterBase::ParamWithValue& p) override;
 
     // never change this as value can be changed from other threads
-    void parameterValueChanged (Parameter* ,Parameter::Listener * /*notifier=nullptr*/) override {};
-    void parameterRangeChanged (Parameter* )override {};
+    void parameterValueChanged ( ParameterBase* , ParameterBase::Listener * /*notifier=nullptr*/) override {};
+    void parameterRangeChanged ( ParameterBase* )override {};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ParameterUI)
     friend class LGMLDragger;

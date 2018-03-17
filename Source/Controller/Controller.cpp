@@ -72,7 +72,7 @@ void Controller::remove()
     }
 }
 
-void Controller::onContainerParameterChanged (Parameter* p)
+void Controller::onContainerParameterChanged ( ParameterBase* p)
 {
     if (p == nameParam)
     {

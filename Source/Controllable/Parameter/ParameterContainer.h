@@ -32,8 +32,8 @@ namespace juce {class Component;};
 class StringParameter;
 class Trigger;
 class ParameterContainer: public ControllableContainer,
-    public Parameter::Listener,
-    public Parameter::AsyncListener,
+    public ParameterBase::Listener,
+    public ParameterBase::AsyncListener,
     public ControllableContainer::Listener,
     protected FactoryObject
 {
@@ -52,7 +52,7 @@ public:
     
 
     virtual ParameterContainer* addContainerFromObject (const String& name, DynamicObject*   data) ;
-    virtual Parameter* addParameterFromVar (const String& name, const var& data) ;
+    virtual ParameterBase* addParameterFromVar (const String& name, const var& data) ;
 
     virtual void configureFromObject (DynamicObject* data) override;
     virtual DynamicObject* getObject() override;
@@ -86,17 +86,17 @@ public:
     void cleanUpPresets();
 
     virtual String getPresetFilter();
-    virtual var getPresetValueFor (Parameter* p);//Any parameter that is part of a this preset can use this function
+    virtual var getPresetValueFor ( ParameterBase* p);//Any parameter that is part of a this preset can use this function
 
 
     void setUserDefined (bool v);
 
-    Parameter* addParameter (Parameter* );
-    Array<WeakReference<Parameter>> getAllParameters (bool recursive = false, bool getNotExposed = false);
+    ParameterBase* addParameter ( ParameterBase* );
+    Array<WeakReference<ParameterBase>> getAllParameters (bool recursive = false, bool getNotExposed = false);
 
-    // Inherited via Parameter::Listener
-    virtual void parameterValueChanged (Parameter* p,Parameter::Listener * notifier=nullptr) override;
-    void newMessage (const  Parameter::ParamWithValue&)override;
+    // Inherited via ParameterBase::Listener
+    virtual void parameterValueChanged ( ParameterBase* p, ParameterBase::Listener * notifier=nullptr) override;
+    void newMessage (const  ParameterBase::ParamWithValue&)override;
 
     bool canHavePresets;
     bool presetSavingIsRecursive;
@@ -121,9 +121,9 @@ private:
     //      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)
     //      
 
-    virtual void onContainerParameterChanged (Parameter*) {};
+    virtual void onContainerParameterChanged ( ParameterBase*) {};
     virtual void onContainerTriggerTriggered (Trigger*) {};
-    virtual void onContainerParameterChangedAsync (Parameter*, const var& /*value*/) {};
+    virtual void onContainerParameterChangedAsync ( ParameterBase*, const var& /*value*/) {};
 
 
 };

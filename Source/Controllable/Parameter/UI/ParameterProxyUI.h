@@ -38,7 +38,7 @@ public:
 
     void resized()override ;
 
-    void setLinkedParamUI (Parameter*);
+    void setLinkedParamUI ( ParameterBase*);
 
 
 

@@ -200,7 +200,7 @@ DynamicObject*   OSCJsController::createOSCJsObject()
 
 };
 
-void OSCJsController::onContainerParameterChanged (Parameter* p)
+void OSCJsController::onContainerParameterChanged ( ParameterBase* p)
 {
     OSCDirectController::onContainerParameterChanged (p);
 

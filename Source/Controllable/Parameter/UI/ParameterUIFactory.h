@@ -16,14 +16,14 @@
 #pragma once
 
 #include "ParameterUI.h"
-class Parameter;
+class ParameterBase;
 
 
 class ParameterUIFactory
 {
 public:
     // used for generating editor
-    static ParameterUI* createDefaultUI (const Parameter* targetControllable = nullptr);
+    static ParameterUI* createDefaultUI (const ParameterBase* targetControllable = nullptr);
 
 
 

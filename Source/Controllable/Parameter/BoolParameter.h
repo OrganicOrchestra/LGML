@@ -20,7 +20,7 @@
 
 
 
-class BoolParameter : public Parameter
+class BoolParameter : public ParameterBase
 {
 public:
 

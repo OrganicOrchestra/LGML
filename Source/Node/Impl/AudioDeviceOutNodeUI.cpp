@@ -149,7 +149,7 @@ void AudioDeviceOutNodeContentUI::removeLastVuMeter()
     removeChildComponent (volumes[curVuMeterNum]);
     volumes.removeLast();
 }
-void AudioDeviceOutNodeContentUI::nodeParameterChanged (ConnectableNode*, Parameter* p)
+void AudioDeviceOutNodeContentUI::nodeParameterChanged (ConnectableNode*, ParameterBase* p)
 {
 
     int index = 0;

@@ -58,7 +58,7 @@ public:
 
     bool modeIsBeam();
 
-    void onContainerParameterChanged (Parameter*) override;
+    void onContainerParameterChanged ( ParameterBase*) override;
 
     void processInputDataChanged (Data*) override;
 

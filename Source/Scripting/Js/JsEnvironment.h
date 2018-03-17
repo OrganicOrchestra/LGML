@@ -26,7 +26,7 @@ class JsParameterListenerObject;
 class JSEnvContainer;
 
 class JsEnvironment : public MultiTimer, //timer for autoWatch & timer for calling update() in scripts
-    private Parameter::Listener,
+    private ParameterBase::Listener,
 private ControllableContainer::FeedbackListener
 
 {
@@ -123,7 +123,7 @@ protected :
     static var createParameterListenerObject (const var::NativeFunctionArgs& a);
 
 protected :
-    Array<WeakReference<Parameter> > listenedParameters;
+    Array<WeakReference<ParameterBase> > listenedParameters;
     Array<WeakReference<ControllableContainer> > listenedContainers;
     void sendAllParametersToJS();
 
@@ -237,7 +237,7 @@ private:
 
     void clearListeners();
     Result checkUserControllableEventFunction();
-    void parameterValueChanged (Parameter* c,Parameter::Listener * notifier=nullptr) override;
+    void parameterValueChanged ( ParameterBase* c, ParameterBase::Listener * notifier=nullptr) override;
 
 
     void controllableFeedbackUpdate (ControllableContainer* originContainer, Controllable*)     override;
@@ -258,10 +258,10 @@ private:
 
 
 
-class JsParameterListenerObject: public Parameter::AsyncListener
+class JsParameterListenerObject: public ParameterBase::AsyncListener
 {
 public :
-    JsParameterListenerObject (JsEnvironment* js, Parameter* p): jsEnv (js), parameter (p)
+    JsParameterListenerObject (JsEnvironment* js, ParameterBase* p): jsEnv (js), parameter (p)
     {
         buildVarObject();
 
@@ -302,7 +302,7 @@ public :
 
     static var dummyCallback (const var::NativeFunctionArgs& /*a*/) {return var::undefined();};
 
-    void newMessage (const Parameter::ParamWithValue& pv)override
+    void newMessage (const ParameterBase::ParamWithValue& pv)override
     {
         jsEnv->callFunctionFromIdentifier (parameterChangedFId, var::NativeFunctionArgs (object, &pv.value, 1), true);
 
@@ -310,7 +310,7 @@ public :
 
 
     JsEnvironment* jsEnv;
-    WeakReference<Parameter> parameter;
+    WeakReference<ParameterBase> parameter;
     var object;
 };
 
@@ -324,7 +324,7 @@ public:
     ~JSEnvContainer();
     
 
-    void onContainerParameterChanged (Parameter* p) override;
+    void onContainerParameterChanged ( ParameterBase* p) override;
     void onContainerTriggerTriggered (Trigger* p)override;
     StringParameter* scriptPath;
     Trigger* loadT;

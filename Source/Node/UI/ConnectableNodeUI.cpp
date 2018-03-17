@@ -236,7 +236,7 @@ void ConnectableNodeUI::resized()
     isDraggingFromUI = false;
 }
 
-void ConnectableNodeUI::onContainerParameterChanged(Parameter *p){
+void ConnectableNodeUI::onContainerParameterChanged( ParameterBase*p){
 
         if (p == nodePosition )
         {
@@ -261,7 +261,7 @@ void ConnectableNodeUI::onContainerParameterChanged(Parameter *p){
 
 }
 
-void ConnectableNodeUI::nodeParameterChanged (ConnectableNode*, Parameter* p)
+void ConnectableNodeUI::nodeParameterChanged (ConnectableNode*, ParameterBase* p)
 {
 
     if (p == connectableNode->enabledParam)

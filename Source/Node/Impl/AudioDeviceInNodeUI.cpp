@@ -141,7 +141,7 @@ void AudioDeviceInNodeContentUI::removeLastVuMeter()
     volumes.removeLast();
 }
 
-void AudioDeviceInNodeContentUI::nodeParameterChanged (ConnectableNode*, Parameter* p)
+void AudioDeviceInNodeContentUI::nodeParameterChanged (ConnectableNode*, ParameterBase* p)
 {
     int index = 0;
 

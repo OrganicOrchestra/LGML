@@ -599,7 +599,7 @@ Result JsEnvironment::checkUserControllableEventFunction()
 
                     Controllable* c = candidate->getControllableForAddress (localName);
 
-                    if (Parameter* p = dynamic_cast<Parameter*> (c))
+                    if ( ParameterBase* p = dynamic_cast <ParameterBase*> (c))
                     {
                         listenedParameters.addIfNotAlreadyThere (p);
                         found = true;
@@ -666,7 +666,7 @@ void JsEnvironment::updateUserDefinedFunctions()
 
 }
 
-void JsEnvironment::parameterValueChanged (Parameter* p,Parameter::Listener * notifier)
+void JsEnvironment::parameterValueChanged ( ParameterBase* p, ParameterBase::Listener * notifier)
 {
     if (p == linkedContainer->nameParam)
     {
@@ -698,7 +698,7 @@ void JsEnvironment::controllableFeedbackUpdate (ControllableContainer* originCon
 
     var v = var::undefined();
 
-    if (Parameter* p = dynamic_cast<Parameter*> (c))
+    if ( ParameterBase* p = dynamic_cast <ParameterBase*> (c))
         v = p->value;
 
     String address = c->getControlAddress (originContainer);
@@ -765,7 +765,7 @@ var JsEnvironment::createParameterListenerObject (const var::NativeFunctionArgs&
 {
     if (a.numArguments == 0) { return var::undefined(); }
 
-    if (auto  p = getObjectPtrFromObject<Parameter> (a.arguments[0].getDynamicObject()))
+    if (auto  p = getObjectPtrFromObject<ParameterBase> (a.arguments[0].getDynamicObject()))
     {
         JsEnvironment* originEnv = dynamic_cast<JsEnvironment*> (a.thisObject.getDynamicObject());
 
@@ -806,7 +806,7 @@ JSEnvContainer::~JSEnvContainer(){
     masterReference.clear();
 }
 
-void JSEnvContainer::onContainerParameterChanged (Parameter* p)
+void JSEnvContainer::onContainerParameterChanged ( ParameterBase* p)
 {
     if (p == scriptPath)
     {

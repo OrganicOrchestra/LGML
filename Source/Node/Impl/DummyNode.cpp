@@ -66,7 +66,7 @@ DummyNode::~DummyNode()
 {
 }
 
-void DummyNode::onContainerParameterChanged (Parameter* p)
+void DummyNode::onContainerParameterChanged ( ParameterBase* p)
 {
     NodeBase::onContainerParameterChanged (p);
 

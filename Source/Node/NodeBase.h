@@ -57,8 +57,8 @@ public:
 
 
     //  TODO:  this should not be implemented in Node to avoid overriding this method
-    void onContainerParameterChanged (Parameter* p) override;
-    void onContainerParameterChangedAsync (Parameter*, const var& /*value*/)override {};
+    void onContainerParameterChanged ( ParameterBase* p) override;
+    void onContainerParameterChangedAsync ( ParameterBase*, const var& /*value*/)override {};
 
 
     virtual void clear() override;

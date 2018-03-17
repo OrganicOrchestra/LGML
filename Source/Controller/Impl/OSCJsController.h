@@ -35,7 +35,7 @@ public:
     void callonAnyMsg (const OSCMessage& msg);
 
     static var sendOSCFromJS (const juce::var::NativeFunctionArgs& a);
-    void onContainerParameterChanged (Parameter* p) override;
+    void onContainerParameterChanged ( ParameterBase* p) override;
     void onContainerTriggerTriggered (Trigger* t ) override;
 
 

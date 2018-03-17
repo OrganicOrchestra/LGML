@@ -44,7 +44,7 @@ public:
 
     void numChannelsChanged (bool isInput)override;
 
-    void onContainerParameterChanged (Parameter* p) override;
+    void onContainerParameterChanged ( ParameterBase* p) override;
 private :
     void updateVolMutes();
     int lastNumberOfOutputs;

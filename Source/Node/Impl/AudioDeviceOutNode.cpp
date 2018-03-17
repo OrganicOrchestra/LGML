@@ -68,7 +68,7 @@ void AudioDeviceOutNode::changeListenerCallback (ChangeBroadcaster*)
     updateVolMutes();
 };
 
-void AudioDeviceOutNode::onContainerParameterChanged (Parameter* p)
+void AudioDeviceOutNode::onContainerParameterChanged ( ParameterBase* p)
 {
 
     if (p == desiredNumAudioOutput)

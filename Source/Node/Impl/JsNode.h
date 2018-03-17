@@ -33,7 +33,7 @@ public :
     void buildLocalEnv() override;
 
 
-    void onContainerParameterChanged (Parameter* p) override;
+    void onContainerParameterChanged ( ParameterBase* p) override;
 
 
     static var addIntParameter (const var::NativeFunctionArgs& a);

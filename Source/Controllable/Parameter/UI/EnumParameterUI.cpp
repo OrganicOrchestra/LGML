@@ -17,7 +17,7 @@
 
 #include "../UndoableHelper.h"
 
-EnumParameterUI::EnumParameterUI (Parameter* parameter) :
+EnumParameterUI::EnumParameterUI ( ParameterBase* parameter) :
     ParameterUI (parameter),
     ep ((EnumParameter*)parameter),
     lastId (NoneId),

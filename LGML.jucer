@@ -3,7 +3,7 @@
 <JUCERPROJECT bundleIdentifier="org.anic.orchestra.LGML" companyName="Organic Orchestra"
               companyWebsite="http://www.organic-orchestra.com" cppLanguageStandard="14"
               displaySplashScreen="1" id="a1hJPO" includeBinaryInAppConfig="1"
-              jucerVersion="5.2.1" name="LGML" projectType="guiapp" reportAppUsage="1"
+              jucerVersion="5.3.0" name="LGML" projectType="guiapp" reportAppUsage="1"
               splashScreenColour="Dark" version="1.2.8" companyCopyright="Organic Orchestra">
   <MAINGROUP id="RYpQgZ" name="LGML">
     <GROUP id="{C4A5CA13-B090-453E-F1E3-DE9F74C715E2}" name="Assets">
@@ -520,6 +520,7 @@
               name="NodeChildProofer.cpp" resource="0"/>
       </GROUP>
       <GROUP id="{ED4CCFF9-43D5-64BD-A2D6-39CFD039E6B0}" name="Time">
+        <FILE id="nQSRZm" name="LinkImpl.hpp" compile="0" resource="0" file="Source/Time/LinkImpl.hpp"/>
         <FILE compile="1" file="Source/Time/TimeManager.cpp" id="VcFFPP" name="TimeManager.cpp"
               resource="0"/>
         <FILE compile="0" file="Source/Time/TimeManager.h" id="a3Z4Kc" name="TimeManager.h"

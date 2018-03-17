@@ -19,7 +19,7 @@ REGISTER_PARAM_TYPE (BoolParameter)
 
 
 BoolParameter::BoolParameter (const String& niceName, const String& description, bool initialValue, bool enabled) :
-    Parameter ( niceName, description, initialValue, enabled),
+   ParameterBase ( niceName, description, initialValue, enabled),
     invertVisuals (false)
 {
     setValue (initialValue);

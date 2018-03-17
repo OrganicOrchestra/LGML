@@ -97,7 +97,7 @@ void SerialController::newJsFileLoaded()
 
 }
 
-void SerialController::onContainerParameterChanged (Parameter* p)
+void SerialController::onContainerParameterChanged ( ParameterBase* p)
 {
     Controller::onContainerParameterChanged (p);
 
@@ -255,7 +255,7 @@ void SerialController::processMessage (const String& message)
 
             if (v != nullptr)
             {
-                ((Parameter*)v)->setValue (split[2].getFloatValue());
+                (( ParameterBase*)v)->setValue (split[2].getFloatValue());
             }
         }
 /*    }// use_LGMLProtocol
@@ -265,7 +265,7 @@ void SerialController::processMessage (const String& message)
         String command = split[0];
         auto v = userContainer.getControllableForAddress (command);
         if (v != nullptr){
-            ((Parameter*)v)->setValue (split[1].getFloatValue());
+            (( ParameterBase*)v)->setValue (split[1].getFloatValue());
         }
         else if( autoAddParams){
             MessageManager::getInstance()->callAsync ([this, split]() {checkAndAddParameterIfNeeded (split);});
@@ -290,7 +290,7 @@ void SerialController::checkAndAddParameterIfNeeded (const StringArray& split)
     String command = split[0];
 
 
-    auto* linked = Parameter::fromControllable (userContainer.getControllableForAddress (command));
+    auto* linked = ParameterBase::fromControllable (userContainer.getControllableForAddress (command));
 
     if (!linked)
     {
@@ -333,7 +333,7 @@ void SerialController::checkAndAddParameterIfNeeded (const StringArray& split)
 
             if (linked)
             {
-                ((Parameter*)linked)->setValue (split[2].getFloatValue());
+                (( ParameterBase*)linked)->setValue (split[2].getFloatValue());
             }
         }
         else

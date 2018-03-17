@@ -33,7 +33,7 @@ public:
 
 
 
-    virtual void onContainerParameterChanged (Parameter* p) override;
+    virtual void onContainerParameterChanged ( ParameterBase* p) override;
 
     OwnedFeedbackListener<OSCDirectController> pSync;
 

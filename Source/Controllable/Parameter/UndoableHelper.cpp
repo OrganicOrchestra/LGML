@@ -16,7 +16,7 @@ namespace UndoableHelpers{
 
 class UndoableSetValueAction : public UndoableAction{
 public:
-    UndoableSetValueAction(Parameter* p,const var & _value, bool _silentSet, bool _force):
+    UndoableSetValueAction( ParameterBase* p,const var & _value, bool _silentSet, bool _force):
     silentSet(_silentSet),
     force(_force),
     parameter(p)
@@ -61,7 +61,7 @@ public:
         return nullptr;
         }
 
-    WeakReference<Parameter> parameter;
+    WeakReference<ParameterBase> parameter;
     bool silentSet,force;
     var value,lastValue;
 };
@@ -69,13 +69,13 @@ public:
     void setParameterCoalesced(bool t){
         isCoalescing  = t;
     }
-    void setValueUndoable (Parameter* p,const var & _value, bool silentSet , bool force ){
+    void setValueUndoable ( ParameterBase* p,const var & _value, bool silentSet , bool force ){
         if(p){
             if(!isCoalescing)startNewTransaction(p);
             getAppUndoManager().perform(new UndoableSetValueAction(p,_value,silentSet,force));
         }
     }
-    void startNewTransaction(Parameter *p,bool force){
+    void startNewTransaction( ParameterBase*p,bool force){
         String tname ("set " + p->niceName + (p->parentContainer?("from : " + p->parentContainer->getNiceName()):""));
         if(force || tname!=getAppUndoManager().getCurrentTransactionName()){
             getAppUndoManager().beginNewTransaction (tname);

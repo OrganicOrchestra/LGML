@@ -46,7 +46,7 @@ public:
 
 
 private:
-    void onContainerParameterChanged (Parameter*)override;
+    void onContainerParameterChanged ( ParameterBase*)override;
 
     bool isInRange; //memory for triggering
     bool fastMapIsProcessing;

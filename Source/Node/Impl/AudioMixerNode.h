@@ -31,7 +31,7 @@ public:
         OutputBus (int _outputIndex, int numInput);
         void setNumInput (int numInput);
 
-        void onContainerParameterChanged (Parameter* p)override;
+        void onContainerParameterChanged ( ParameterBase* p)override;
         Array<FloatParameter*, CriticalSection> volumes;
         Array<float> logVolumes;
         Array<float> lastVolumes;
@@ -57,7 +57,7 @@ public:
 
 
     void processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer&)override;
-    void onContainerParameterChanged (Parameter* p) override;
+    void onContainerParameterChanged ( ParameterBase* p) override;
 
 
 

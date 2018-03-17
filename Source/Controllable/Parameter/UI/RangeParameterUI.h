@@ -43,7 +43,7 @@ public:
 
     };
 
-    void rangeChanged (Parameter* p)override
+    void rangeChanged ( ParameterBase* p)override
     {
         auto rangeP = (RangeParameter*)p;
         slider.setRange (rangeP->minimumValue, rangeP->maximumValue);

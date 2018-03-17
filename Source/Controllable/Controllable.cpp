@@ -115,7 +115,7 @@ var Controllable::getVarStateFromScript (const juce::var::NativeFunctionArgs& a)
 
     if (c == nullptr  ) return var();
 
-    //  WeakReference<Parameter> wc = c;
+    //  WeakReference<ParameterBase> wc = c;
     //  if(!wc.get()) return var();
     return c->getVarState();
 

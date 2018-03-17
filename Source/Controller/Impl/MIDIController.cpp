@@ -77,7 +77,7 @@ void MIDIController::handleIncomingMidiMessage (MidiInput*,
         const String paramName( "CC "+String(message.getControllerNumber()));
         if (Controllable* c = userContainer.getControllableByName(paramName))
         {
-                ((Parameter*)c)->setValue(message.getControllerValue()*1.0/127);
+                (( ParameterBase*)c)->setValue(message.getControllerValue()*1.0/127);
         }
         else if(autoAddParams){
             MessageManager::callAsync([this,message,paramName](){
@@ -109,7 +109,7 @@ void MIDIController::handleIncomingMidiMessage (MidiInput*,
         const String paramName (MidiMessage::getMidiNoteName (message.getNoteNumber(), false, true, 0));//+"_"+String(message.getChannel()));
         if (Controllable* c = userContainer.getControllableByName(paramName))
         {
-            ((Parameter*)c)->setValue(isNoteOn?message.getFloatVelocity():0);
+            (( ParameterBase*)c)->setValue(isNoteOn?message.getFloatVelocity():0);
         }
         else if(autoAddParams && isNoteOn ){
             MessageManager::callAsync([this,message,paramName](){
@@ -192,7 +192,7 @@ void MIDIController::callJs (const MidiMessage& message)
     }
 }
 
-void MIDIController::onContainerParameterChanged (Parameter* p)
+void MIDIController::onContainerParameterChanged ( ParameterBase* p)
 {
     Controller::onContainerParameterChanged (p);
 

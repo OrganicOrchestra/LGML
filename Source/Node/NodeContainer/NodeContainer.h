@@ -149,8 +149,8 @@ public:
 
 
 
-    virtual void onContainerParameterChanged (Parameter* p) override;
-    virtual void onContainerParameterChangedAsync (Parameter* p, const var& value)override;
+    virtual void onContainerParameterChanged ( ParameterBase* p) override;
+    virtual void onContainerParameterChangedAsync ( ParameterBase* p, const var& value)override;
 
 
 

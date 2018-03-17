@@ -17,19 +17,19 @@
 
 #include "../../Utils/FactoryBase.h"
 
-class Parameter;
-class  ParameterFactory: public FactoryBase<Parameter>
+class ParameterBase;
+class  ParameterFactory: public FactoryBase<ParameterBase>
 {
 public:
     //  default creation for simple types
-    static Parameter* createBaseFromVar (StringRef name, const var&);
+    static ParameterBase* createBaseFromVar (StringRef name, const var&);
 };
 
 
-#define REGISTER_PARAM_TYPE(T) REGISTER_OBJ_TYPE(Parameter,T,#T)
+#define REGISTER_PARAM_TYPE(T) REGISTER_OBJ_TYPE(ParameterBase,T,#T)
 
 
-#define REGISTER_PARAM_TYPE_TEMPLATED(T,TT,NICENAME) REGISTER_OBJ_TYPE_TEMPLATED(Parameter,T,TT,NICENAME)
+#define REGISTER_PARAM_TYPE_TEMPLATED(T,TT,NICENAME) REGISTER_OBJ_TYPE_TEMPLATED(ParameterBase,T,TT,NICENAME)
 
 
 

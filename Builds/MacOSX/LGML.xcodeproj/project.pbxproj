@@ -323,6 +323,7 @@
 		532239A4F7228AF052A49099 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AudioDeviceOutNodeUI.h; path = ../../Source/Node/Impl/AudioDeviceOutNodeUI.h; sourceTree = "SOURCE_ROOT"; };
 		536C04FA2CE757888068C3B6 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = BetterStepper.cpp; path = ../../Source/Controllable/Parameter/UI/BetterStepper.cpp; sourceTree = "SOURCE_ROOT"; };
 		53D9FE9527C95EEC4847E7C7 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ConnectableNodeAudioCtlUI.h; path = ../../Source/Node/UI/ConnectableNodeAudioCtlUI.h; sourceTree = "SOURCE_ROOT"; };
+		5444798DFD14CD223920FC3C = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LinkImpl.hpp; path = ../../Source/Time/LinkImpl.hpp; sourceTree = "SOURCE_ROOT"; };
 		565F13E36871AC907D101C92 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JuceHeaderUI.h; path = ../../Source/JuceHeaderUI.h; sourceTree = "SOURCE_ROOT"; };
 		5682710C643EDF24E9E8A151 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AudioDebugPipe.h; path = ../../Source/Utils/AudioDebugPipe.h; sourceTree = "SOURCE_ROOT"; };
 		569C5460F274ABF0A8F21293 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MIDIHelpers.cpp; path = ../../Source/MIDI/MIDIHelpers.cpp; sourceTree = "SOURCE_ROOT"; };
@@ -843,6 +844,7 @@
 					6D40AC1F80DA93C3FD996451,
 					68116CA84B74FA6D90AC3326, ); name = Tests; sourceTree = "<group>"; };
 		988AA8B0ACB1E3956AC156F8 = {isa = PBXGroup; children = (
+					5444798DFD14CD223920FC3C,
 					E88DB6C2F8CAC6D457342B80,
 					3AE0A6AF56A43948EA62252E,
 					E8D8722BF6BED74CBA89FAD5,

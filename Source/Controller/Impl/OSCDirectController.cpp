@@ -88,7 +88,7 @@ Result OSCDirectController::processMessageInternal (const OSCMessage& msg)
 
 
 
-    if (auto* up = (Parameter*)userContainer.getControllableForAddress (addrArray))
+    if (auto* up = ( ParameterBase*)userContainer.getControllableForAddress (addrArray))
     {
         if (!setParameterFromMessage (up, msg))
         {
@@ -103,7 +103,7 @@ Result OSCDirectController::processMessageInternal (const OSCMessage& msg)
 
         auto params = root->getControllablesForExtendedAddress(addrArray);
         for(auto cont:params){
-            if (auto c = Parameter::fromControllable (cont))
+            if (auto c = ParameterBase::fromControllable (cont))
             {
                 if (c->isControllableExposed && c->isEditable)
                 {
@@ -124,7 +124,7 @@ Result OSCDirectController::processMessageInternal (const OSCMessage& msg)
 
 
 
-        if (auto c = Parameter::fromControllable (cont))
+        if (auto c = ParameterBase::fromControllable (cont))
         {
             if (c->isControllableExposed && c->isEditable)
             {
@@ -164,7 +164,7 @@ String getValidOSCAddress (const String& s)
 }
 
 
-void OSCDirectController::onContainerParameterChanged (Parameter* p)
+void OSCDirectController::onContainerParameterChanged ( ParameterBase* p)
 {
     OSCController::onContainerParameterChanged (p);
 

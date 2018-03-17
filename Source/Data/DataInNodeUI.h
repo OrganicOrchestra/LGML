@@ -43,16 +43,16 @@ public:
     void init() override;
 
     //helpers
-    void addUIForParameter (Parameter* p);
+    void addUIForParameter ( ParameterBase* p);
     void addParameterUI (ParameterUI* pui);
 
 private:
 
     // Inherited via Listener
-    virtual void parameterAdded (Parameter*) override;
-    virtual void parameterRemoved (Parameter*) override;
+    virtual void parameterAdded ( ParameterBase*) override;
+    virtual void parameterRemoved ( ParameterBase*) override;
 
-    ParameterUI* getUIForParameter (Parameter* p)
+    ParameterUI* getUIForParameter ( ParameterBase* p)
     {
         for (auto& pui : parameterUIs)
         {

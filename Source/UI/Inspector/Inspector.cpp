@@ -80,7 +80,7 @@ ParameterContainer* Inspector::getCurrentContainerSelected()
 {
     return currentComponent?currentComponent->getRelatedParameterContainer():nullptr;
 }
-Parameter* Inspector::getCurrentParameterSelected()
+ParameterBase* Inspector::getCurrentParameterSelected()
 {
     return currentComponent?currentComponent->getRelatedParameter():nullptr;
 }

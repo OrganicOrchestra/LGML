@@ -20,7 +20,7 @@
 #include "Parameter.h"
 
 
-class StringParameter : public Parameter
+class StringParameter : public ParameterBase
 {
 public:
     StringParameter (const String& niceName, const String& description = "", const String& initialValue = "", bool enabled = true);

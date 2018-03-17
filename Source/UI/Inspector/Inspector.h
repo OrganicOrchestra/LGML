@@ -44,7 +44,7 @@ public:
 
     InspectableComponent * getCurrentComponent();
     ParameterContainer* getCurrentContainerSelected();
-    Parameter* getCurrentParameterSelected();
+    ParameterBase* getCurrentParameterSelected();
 
    const  InspectorEditor * const getCurrentEditor();
 

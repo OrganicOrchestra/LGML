@@ -63,11 +63,11 @@ void DataInNodeContentUI::init()
     setDefaultSize (150, 200);
 }
 
-void DataInNodeContentUI::addUIForParameter (Parameter* p)
+void DataInNodeContentUI::addUIForParameter ( ParameterBase* p)
 {
     //    if
     //    {
-    //        case Parameter::Type::FLOAT:
+    //        case ParameterBase::Type::FLOAT:
     //            addParameterUI(new FloatSliderUI((FloatParameter *)p));
     //            break;
     //        default:
@@ -86,12 +86,12 @@ void DataInNodeContentUI::addParameterUI (ParameterUI* pui)
     setBounds (getLocalBounds().withHeight (parameterUIs.size() * 30));
 }
 
-void DataInNodeContentUI::parameterAdded (Parameter* p)
+void DataInNodeContentUI::parameterAdded ( ParameterBase* p)
 {
     addUIForParameter (p);
 }
 
-void DataInNodeContentUI::parameterRemoved (Parameter* p)
+void DataInNodeContentUI::parameterRemoved ( ParameterBase* p)
 {
     ParameterUI* pui = getUIForParameter (p);
 

@@ -21,7 +21,7 @@
 #include "../UndoableHelper.h"
 
 //==============================================================================
-ParameterUI::ParameterUI (Parameter* _parameter) :
+ParameterUI::ParameterUI ( ParameterBase* _parameter) :
     InspectableComponent(_parameter,"ParameterUI"),
     parameter (_parameter),
     showLabel (true),
@@ -88,7 +88,7 @@ void ParameterUI::mouseDown (const MouseEvent& e)
     if (e.mods.isRightButtonDown())
     {
         PopupMenu p;
-        p.addItem (1, juce::translate("Select Parameter (Alt+click)"));
+        p.addItem (1, juce::translate("SelectParameterBase (Alt+click)"));
         p.addItem (2, juce::translate("Copy control address"));
         p.addItem (3, juce::translate("Add FastMap To"));
         p.addItem (4, juce::translate("Add FastMap From"));
@@ -105,11 +105,11 @@ void ParameterUI::mouseDown (const MouseEvent& e)
                 break;
 
             case 3:
-                FastMapper::getInstance()->addFastMap()->referenceOut->setParamToReferTo (Parameter::fromControllable (parameter));
+                FastMapper::getInstance()->addFastMap()->referenceOut->setParamToReferTo ( ParameterBase::fromControllable (parameter));
                 break;
 
             case 4:
-                FastMapper::getInstance()->addFastMap()->referenceIn->setParamToReferTo (Parameter::fromControllable (parameter));
+                FastMapper::getInstance()->addFastMap()->referenceIn->setParamToReferTo ( ParameterBase::fromControllable (parameter));
                 break;
 
         }
@@ -301,7 +301,7 @@ void ParameterUI::setMappingDest (bool _isMappingDest)
 
 }
 
-void ParameterUI::newMessage (const Parameter::ParamWithValue& p)
+void ParameterUI::newMessage (const ParameterBase::ParamWithValue& p)
 {
     if (p.isRange())
     {

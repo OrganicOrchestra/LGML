@@ -627,7 +627,7 @@ void NodeContainerViewer::childBoundsChanged (Component*)
     resizeToFitNodes();
 }
 
-void NodeContainerViewer::onContainerParameterChanged(Parameter * p) {
+void NodeContainerViewer::onContainerParameterChanged( ParameterBase* p) {
     if(p==minimizeAll){
         for(auto n:nodesUI){
             if(minimizeAll->boolValue()){

@@ -217,7 +217,7 @@ void ConnectableNodeHeaderUI::setMiniMode (bool value)
     }
 }
 
-void ConnectableNodeHeaderUI::nodeParameterChanged (ConnectableNode*, Parameter* p)
+void ConnectableNodeHeaderUI::nodeParameterChanged (ConnectableNode*, ParameterBase* p)
 {
     if (p == node->enabledParam)
     {

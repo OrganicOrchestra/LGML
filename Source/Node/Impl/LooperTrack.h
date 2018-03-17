@@ -77,7 +77,7 @@ public:
     int trackIdx;
 
     static String trackStateToString (const TrackState& ts);
-    void onContainerParameterChanged (Parameter* p) override;
+    void onContainerParameterChanged ( ParameterBase* p) override;
     void onContainerTriggerTriggered (Trigger* t) override;
 
     //    Component * createDefaultUI(Component*)override;

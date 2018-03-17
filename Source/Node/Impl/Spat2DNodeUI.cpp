@@ -128,7 +128,7 @@ void Spat2DNodeContentUI::updateShapeModeView()
     resized();
 }
 
-void Spat2DNodeContentUI::nodeParameterChanged (ConnectableNode*, Parameter* p)
+void Spat2DNodeContentUI::nodeParameterChanged (ConnectableNode*, ParameterBase* p)
 {
     if (p == spatNode->shapeMode) updateShapeModeView();
     else if (p == spatNode->useGlobalTarget)

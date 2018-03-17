@@ -61,8 +61,8 @@ public:
     void clear();
     void rebuild();
 
-    void addParameterUI (Parameter* c);
-    void removeParameterUI (Parameter* c);
+    void addParameterUI ( ParameterBase* c);
+    void removeParameterUI ( ParameterBase* c);
 
     void addCCInnerUI (ParameterContainer* cc);
     void removeCCInnerUI (ParameterContainer* cc);
@@ -72,7 +72,7 @@ public:
 
     int getContentHeight() const;
 
-    NamedParameterUI* getUIForParameter (Parameter* c);
+    NamedParameterUI* getUIForParameter ( ParameterBase* c);
     CCInnerContainerUI* getInnerContainerForCC (ParameterContainer* cc);
     CCLinkBT* getCCLinkForCC (ParameterContainer* cc);
 

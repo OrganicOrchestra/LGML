@@ -50,7 +50,7 @@ public:
     void addVuMeter();
     void removeLastVuMeter();
 
-    virtual void nodeParameterChanged (ConnectableNode*, Parameter*) override;
+    virtual void nodeParameterChanged (ConnectableNode*, ParameterBase*) override;
 
     virtual void numAudioOutputChanged (ConnectableNode*, int newNum) override;
     virtual void numAudioInputChanged (ConnectableNode*, int newNum) override;
