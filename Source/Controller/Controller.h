@@ -60,8 +60,9 @@ public:
     void setMappingMode(bool state) ;
     bool autoAddParams;
 
-
-
+private:
+    WeakReference<Controller>::Master masterReference;
+    friend class WeakReference<Controller>;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Controller)
 };

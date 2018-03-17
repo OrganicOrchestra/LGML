@@ -844,6 +844,9 @@
     <ClCompile Include="..\..\Source\Time\TimeMasterCandidate.cpp">
       <Filter>LGML\Source\Time</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\StackedContainerUI.cpp">
+      <Filter>LGML\Source\UI</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\AppPropertiesUI.cpp">
       <Filter>LGML\Source\UI</Filter>
     </ClCompile>
@@ -3188,6 +3191,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Time\TimeMasterCandidate.h">
       <Filter>LGML\Source\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\StackedContainerUI.h">
+      <Filter>LGML\Source\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\AppPropertiesUI.h">
       <Filter>LGML\Source\UI</Filter>

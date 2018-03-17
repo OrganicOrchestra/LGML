@@ -77,6 +77,11 @@ InspectorEditor* InspectableComponent::createEditor()
     return nullptr;
 }
 
+void InspectableComponent::mouseUp (const MouseEvent&)
+{
+    selectThis();
+}
+
 void InspectableComponent::selectThis()
 {
     if (Inspector::getInstanceWithoutCreating() == nullptr)
@@ -97,12 +102,6 @@ void InspectableComponent::setVisuallySelected (bool value)
     if (value){
         if(bringToFrontOnSelect)
             toFront (true);
-        // keep that for multi selection
-//        if(auto i = Inspector::getInstanceWithoutCreating()){
-//            if(i->getCurrentComponent()){
-//                selectThis();
-//            }
-//        }
     }
     else{
 

@@ -152,10 +152,7 @@ int ControllerUI::getHeight(){
     return   headerHeight + (showUserParams->getToggleState()?jmax(usrParamHeight,userParamsUI->treeView.getViewport()->getViewArea().getHeight()):0);
 }
 
-void ControllerUI::mouseDown (const MouseEvent&)
-{
-    selectThis();
-}
+
 
 Component * getViewportOrParent( Component * c){
     Component * ic = c;

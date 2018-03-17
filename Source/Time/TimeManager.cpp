@@ -866,7 +866,7 @@ bool TimeManager::getCurrentPosition (CurrentPositionInfo& result)
     result.timeInSamples = timeState.time;
     result.timeInSeconds = (double) (timeState.time) * sampleRate;
     result.editOriginTime = 0;
-
+    result.frameRate = FrameRateType::fpsUnknown;
     result.isLooping = false;
     return true;
 }

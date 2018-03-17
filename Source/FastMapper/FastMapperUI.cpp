@@ -23,8 +23,20 @@
 #include "../Controllable/Parameter/UI/ParameterUIFactory.h"
 #include "../Utils/FactoryUIHelpers.h"
 
-FastMapperUI::FastMapperUI (FastMapper* _fastMapper, ControllableContainer* _viewFilterContainer) :
-    fastMapper (_fastMapper), viewFilterContainer (_viewFilterContainer)
+FastMapperUI::FastMapperUI (const String& contentName,FastMapper* _fastMapper, ControllableContainer* _viewFilterContainer) :
+ShapeShifterContentComponent (contentName,"Link parameters together\nAdd FastMap here\nCmd+m toggles mapping mode"),
+    fastMapper (_fastMapper), viewFilterContainer (_viewFilterContainer),
+mapsUI(new StackedContainerUI<FastMapUI, FastMap>(
+                                                  [](FastMapUI* ui){return ui->fastMap;},
+                                                  [_fastMapper](int ia, int ib){
+                                                      int iia = _fastMapper->controllableContainers.indexOf(_fastMapper->maps[ia]);
+                                                      int iib = _fastMapper->controllableContainers.indexOf(_fastMapper->maps[ib]);
+                                                      _fastMapper->controllableContainers.swap(iia,iib);
+                                                      _fastMapper->maps.swap(ia,ib);
+                                                  },
+                                                  30,
+                                                  false)
+       )
 {
     fastMapper->addControllableContainerListener (this);
 
@@ -44,6 +56,16 @@ FastMapperUI::FastMapperUI (FastMapper* _fastMapper, ControllableContainer* _vie
     addAndMakeVisible(candidateLabel);
     addAndMakeVisible (potentialIn);
     addAndMakeVisible (potentialOut);
+
+    addAndMakeVisible(mapsUI);
+
+    addAndMakeVisible (addFastMapButton);
+    addFastMapButton.addListener (this);
+    addFastMapButton.setTooltip (juce::translate("Add FastMap"));
+
+    contentIsFlexible = true;
+
+    
     resetAndUpdateView();
 
 
@@ -66,10 +88,8 @@ FastMapperUI::~FastMapperUI()
 
 void FastMapperUI::addFastMapUI (FastMap* f)
 {
-    FastMapUI* fui = new FastMapUI (f);
-    mapsUI.add (fui);
-    addAndMakeVisible (fui);
-    fastMapperUIListeners.call (&FastMapperUIListener::fastMapperContentChanged, this);
+    jassert(mapsUI.addFromT (f)!=nullptr);
+
 }
 
 void FastMapperUI::removeFastMapUI (FastMapUI* fui)
@@ -77,10 +97,8 @@ void FastMapperUI::removeFastMapUI (FastMapUI* fui)
 
     if (fui == nullptr) return;
 
-    removeChildComponent (fui);
-    mapsUI.removeObject (fui);
+    mapsUI.removeUI (fui);
 
-    fastMapperUIListeners.call (&FastMapperUIListener::fastMapperContentChanged, this);
 }
 
 
@@ -139,15 +157,7 @@ bool FastMapperUI::mapPassViewFilter (FastMap* f)
 
 
 
-FastMapUI* FastMapperUI::getUIForFastMap (FastMap* f)
-{
-    for (auto& fui : mapsUI)
-    {
-        if (fui->fastMap == f) return fui;
-    }
 
-    return nullptr;
-}
 
  int getTargetHeight(){
      if(auto ld = LGMLDragger::getInstanceWithoutCreating() )
@@ -159,11 +169,14 @@ constexpr int linkBtHeight = 21;
 int FastMapperUI::getContentHeight() const
 {
 
-    return mapsUI.size() * (mapHeight + gap) +  getTargetHeight() + linkBtHeight + 10;
+    return mapsUI.getSize()+  getTargetHeight() + linkBtHeight + 10;
 }
+
+
 
 void FastMapperUI::resized()
 {
+    ShapeShifterContentComponent::resized();
     Rectangle<int> r = getLocalBounds().reduced (2);
     auto inputHeader  = r.removeFromTop (getTargetHeight());
     candidateLabel.setBounds(inputHeader.removeFromLeft(100));
@@ -173,22 +186,31 @@ void FastMapperUI::resized()
     linkToSelection.setBounds (r.removeFromTop (linkBtHeight).reduced (2));
 
 
-    r.removeFromTop (10);
-    r.reduce (2, 0);
 
-    for (auto& fui : mapsUI)
-    {
-        fui->setBounds (r.removeFromTop (mapHeight));
-        r.removeFromTop (gap);
+
+    // empty shows help
+    if(mapsUI.getNumStacked()==0){
+        auto labelR = r.removeFromTop(r.getHeight()/2);
+        infoLabel.setVisible(true);
+        infoLabel.setBounds(labelR);
+        int side = (int)( jmin(r.getWidth(),r.getHeight()) * .95);
+        addFastMapButton.setBounds(r.withSizeKeepingCentre(side,side));
+
     }
+    else{
+        r.removeFromTop (5);
+        r.reduce (2, 0);
+        mapsUI.setBounds(r);
+        infoLabel.setVisible(false);
+        addFastMapButton.setFromParentBounds (r);
+    }
+
+    
 }
 
 void FastMapperUI::clear()
 {
-    while (mapsUI.size() > 0)
-    {
-        removeFastMapUI (mapsUI[0]);
-    }
+    mapsUI.clear();
 }
 
 void FastMapperUI::mouseDown (const MouseEvent& e)
@@ -219,7 +241,7 @@ void FastMapperUI::controllableContainerAdded (ControllableContainer* ori, Contr
         {
             if (wf.get())
             {
-                addFastMapUI ((FastMap*)wf.get());
+                mapsUI.addFromT((FastMap*)wf.get());
                 resized();
             }
         });
@@ -234,7 +256,7 @@ void FastMapperUI::controllableContainerRemoved (ControllableContainer* ori, Con
     if (ori == fastMapper)
     {
 
-        WeakReference<Component> fui (getUIForFastMap ((FastMap*)cc));
+        WeakReference<Component> fui (mapsUI.getFromT((FastMap*)cc));
         execOrDefer ([ = ]()
         {
             if (fui.get())
@@ -263,6 +285,11 @@ void FastMapperUI::buttonClicked (Button* b)
             resetViewFilter ();
         }
     }
+    else if (b == &addFastMapButton )
+    {
+        addFastMapUndoable();
+    }
+
 
 
 }
@@ -298,6 +325,7 @@ void FastMapperUI::mappingModeChanged(bool){
 }
 
 void FastMapperUI::addFastMapUndoable(){
+    getAppUndoManager().beginNewTransaction("add FastMap ");
     getAppUndoManager().perform(new
                                 FactoryUIHelpers::UndoableCreate<ParameterContainer>
                                 (
@@ -308,73 +336,10 @@ void FastMapperUI::addFastMapUndoable(){
                                 );
 }
 
-/////////////////
-// FastMapperViewport
-//////////
 
 
-FastMapperViewport::FastMapperViewport (const String& contentName, FastMapperUI* _fastMapperUI) :
-fastMapperUI (_fastMapperUI),
-ShapeShifterContentComponent (contentName,
-"Link parameters together\nAdd FastMap here\nCmd+m toggles mapping mode")
-{
-    vp.setViewedComponent (fastMapperUI, true);
-    vp.setScrollBarsShown (true, false);
-    vp.setScrollOnDragEnabled (false);
-    addAndMakeVisible (vp);
-    addAndMakeVisible (addFastMapButton);
-    addFastMapButton.addListener (this);
-    addFastMapButton.setTooltip (juce::translate("Add FastMap"));
-    vp.setScrollBarThickness (10);
-    contentIsFlexible = true;
-    fastMapperUI->addFastMapperUIListener (this);
-
-}
-
- FastMapperViewport::~FastMapperViewport()
-{
-    fastMapperUI->removeFastMapperUIListener (this);
-}
 
 
-void FastMapperViewport::resized()
-{
-    ShapeShifterContentComponent::resized();
-    vp.setBounds (getLocalBounds());
-    int th = jmax<int> (fastMapperUI->getContentHeight(), getHeight());
-    Rectangle<int> targetBounds = getLocalBounds().withPosition (fastMapperUI->getPosition()).withHeight (th);
 
-    if(targetBounds.getHeight()>getHeight())
-        targetBounds.removeFromRight (vp.getScrollBarThickness());
-    fastMapperUI->setBounds (targetBounds);
-
-
-    if(fastMapperUI->mapsUI.size()==0){
-        int side = (int)( jmin(getWidth(),getHeight()) * .5);
-        addFastMapButton.setBounds(getLocalBounds().withSizeKeepingCentre(side,side));
-        infoLabel.setVisible(true);
-        auto labelR =getLocalBounds().withBottom(addFastMapButton.getY()+35);
-        labelR=labelR.withSizeKeepingCentre(jmax(300,getWidth()),labelR.getHeight());
-        infoLabel.setBounds(labelR);
-    }
-    else{
-        infoLabel.setVisible(false);
-        addFastMapButton.setFromParentBounds (getLocalBounds());
-    }
-}
-
-void FastMapperViewport::fastMapperContentChanged (FastMapperUI*)
-{
-    resized();
-}
-
-void FastMapperViewport::buttonClicked (Button* b)
-{
-    if (b == &addFastMapButton )
-    {
-        fastMapperUI->addFastMapUndoable();
-    }
-
-}
 
 #endif

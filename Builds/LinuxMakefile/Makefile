@@ -182,6 +182,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/TimeManager_2ea8a747.o \
   $(JUCE_OBJDIR)/TimeManagerUI_681c6b5b.o \
   $(JUCE_OBJDIR)/TimeMasterCandidate_ed6091db.o \
+  $(JUCE_OBJDIR)/StackedContainerUI_e62e11aa.o \
   $(JUCE_OBJDIR)/AppPropertiesUI_2bd48916.o \
   $(JUCE_OBJDIR)/MainWindow_5f9c9b05.o \
   $(JUCE_OBJDIR)/LGMLDragger_a52aaed4.o \
@@ -819,6 +820,11 @@ $(JUCE_OBJDIR)/TimeManagerUI_681c6b5b.o: ../../Source/Time/TimeManagerUI.cpp
 $(JUCE_OBJDIR)/TimeMasterCandidate_ed6091db.o: ../../Source/Time/TimeMasterCandidate.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling TimeMasterCandidate.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/StackedContainerUI_e62e11aa.o: ../../Source/UI/StackedContainerUI.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling StackedContainerUI.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/AppPropertiesUI_2bd48916.o: ../../Source/UI/AppPropertiesUI.cpp

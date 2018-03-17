@@ -65,15 +65,18 @@ public:
     bool silentSet,force;
     var value,lastValue;
 };
-
+    bool isCoalescing = false;
+    void setParameterCoalesced(bool t){
+        isCoalescing  = t;
+    }
     void setValueUndoable (Parameter* p,const var & _value, bool silentSet , bool force ){
         if(p){
-            startNewTransaction(p);
+            if(!isCoalescing)startNewTransaction(p);
             getAppUndoManager().perform(new UndoableSetValueAction(p,_value,silentSet,force));
         }
     }
     void startNewTransaction(Parameter *p,bool force){
-        String tname ("set " + p->niceName);
+        String tname ("set " + p->niceName + (p->parentContainer?("from : " + p->parentContainer->getNiceName()):""));
         if(force || tname!=getAppUndoManager().getCurrentTransactionName()){
             getAppUndoManager().beginNewTransaction (tname);
         }

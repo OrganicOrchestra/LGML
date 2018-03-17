@@ -93,7 +93,7 @@ public:
                 keysDown.add(new KeyPressTime{key,note,time});
             }
         }
-        return false;
+        return true;
     }
 
     bool keyStateChanged (const bool /*isKeyDown*/, Component* /*originatingComponent*/) override
@@ -122,7 +122,7 @@ public:
         }
 
 
-        return false;
+        return true;
     }
 
 

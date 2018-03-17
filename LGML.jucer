@@ -534,6 +534,10 @@
               name="TimeMasterCandidate.h" resource="0"/>
       </GROUP>
       <GROUP id="{02F30C9F-B8EE-F4A9-F9F8-5309911C4D05}" name="UI">
+        <FILE id="KM6eDx" name="StackedContainerUI.cpp" compile="1" resource="0"
+              file="Source/UI/StackedContainerUI.cpp"/>
+        <FILE id="U23xRa" name="StackedContainerUI.h" compile="0" resource="0"
+              file="Source/UI/StackedContainerUI.h"/>
         <FILE id="VZcR0o" name="AppPropertiesUI.cpp" compile="1" resource="0"
               file="Source/UI/AppPropertiesUI.cpp"/>
         <FILE id="uXtuKD" name="AppPropertiesUI.h" compile="0" resource="0"

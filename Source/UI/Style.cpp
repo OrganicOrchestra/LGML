@@ -234,7 +234,7 @@ void CachedGlyph::updateGlyph(){
         
         glyphArr.clear();
         glyphArr.addCurtailedLineOfText (*getCurFont(), text, 0.0f, 0.0f,
-                                         area.getWidth(), useEllipsesIfTooBig);
+                                         (float)area.getWidth(), useEllipsesIfTooBig);
 
         glyphArr.justifyGlyphs (0, glyphArr.getNumGlyphs(),
                                 area.getX(), area.getY(), area.getWidth(), area.getHeight(),

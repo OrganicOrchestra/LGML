@@ -51,12 +51,12 @@ ShapeShifterContent* ShapeShifterFactory::createContentForIndex (PanelName pn)
 
 
         case ControllerPanel:
-            return new ControllerManagerUIViewport (contentName, new ControllerManagerUI ( ControllerManager::getInstance()));
+            return new ControllerManagerUI (contentName,ControllerManager::getInstance());
 
 
 
         case FastMapperPanel:
-            return new FastMapperViewport (contentName, new FastMapperUI (FastMapper::getInstance()));
+            return new FastMapperUI (contentName, FastMapper::getInstance());
 
         case OutlinerPanel:
             return new Outliner (contentName);

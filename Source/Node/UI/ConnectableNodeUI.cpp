@@ -156,6 +156,7 @@ Point2DParameter<int>* ConnectableNodeUI::getCurrentPositionParam(){
 
 void ConnectableNodeUI::moved()
 {
+    bool wasDraggingFromUI = isDraggingFromUI;
     isDraggingFromUI = true;
     auto p = getPosition();
     auto pp = getCurrentPositionParam();
@@ -163,10 +164,11 @@ void ConnectableNodeUI::moved()
         auto stp=pp->getPoint();
         if(stp!=p){
             Array<var> v  ({p.x,p.y});
-            UndoableHelpers::setValueUndoable(getCurrentPositionParam(),v);
+            UndoableHelpers::setValueUndoable(pp,v);
+            //else{pp->setValue(v);}
         }
     }
-    isDraggingFromUI = false;
+    isDraggingFromUI = wasDraggingFromUI;
 }
 
 
@@ -328,12 +330,15 @@ void ConnectableNodeUI::childBoundsChanged (Component* c)
 
 void ConnectableNodeUI::mouseDown (const juce::MouseEvent& /*e*/)
 {
+UndoableHelpers::startNewTransaction(getCurrentPositionParam(),true);
+    UndoableHelpers::setParameterCoalesced(true);
 
 }
 
 void ConnectableNodeUI::mouseUp (const juce::MouseEvent&)
 {
     isDraggingFromUI = false;
+    UndoableHelpers::setParameterCoalesced(false);
 }
 
 void ConnectableNodeUI::mouseDrag (const MouseEvent& e)

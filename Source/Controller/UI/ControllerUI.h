@@ -45,7 +45,7 @@ public:
     virtual void paint (Graphics& g) override;
     virtual void resized() override;
 
-    virtual void mouseDown (const MouseEvent& e) override;
+    
     virtual void buttonClicked (Button*) override;
     bool keyPressed (const KeyPress& e) override;
 

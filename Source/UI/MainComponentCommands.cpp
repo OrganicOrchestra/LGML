@@ -266,53 +266,21 @@ bool MainContentComponent::perform (const InvocationInfo& info)
 
 
         case CommandIDs::newFile:
-        {
-//            if(engine->hasChangedSinceSaved()){
-//                int result = AlertWindow::showYesNoCancelBox (AlertWindow::QuestionIcon, juce::translate("Save document"), juce::translate("Do you want to save the document before creating a new one ?"));
-//
-//                if (result == 0) break;
-//                if (result == 1) engine->save (true, true);
-//            }
-//            engine->createNewGraph();
             if(engine->saveIfNeededAndUserAgrees()!=FileBasedDocument::SaveResult::userCancelledSave){
                 engine->createNewGraph();
             }
-
-        }
             break;
 
         case CommandIDs::open:
-        {
-
-//            if(engine->hasChangedSinceSaved()){
-//                int result = AlertWindow::showYesNoCancelBox (AlertWindow::QuestionIcon, juce::translate("Save document"), juce::translate("Do you want to save the document before opening a new one ?"));
-//
-//                if (result == 0) break;
-//                if (result == 1) engine->save (true, true);
-//            }
-//            engine->loadFromUserSpecifiedFile (true);
             if(engine->saveIfNeededAndUserAgrees()!=FileBasedDocument::SaveResult::userCancelledSave){
                 engine->loadFromUserSpecifiedFile (true);
             }
-
-        }
             break;
 
         case CommandIDs::openLastDocument:
-        {
-
-//            if(engine->hasChangedSinceSaved()){
-//                int result = AlertWindow::showYesNoCancelBox (AlertWindow::QuestionIcon, juce::translate("Save document"), "Do you want to save the document before opening the last one ?");
-//
-//                if (result == 0) break;
-//                if (result == 1) engine->save (true, true);
-//            }
             if(engine->saveIfNeededAndUserAgrees()!=FileBasedDocument::SaveResult::userCancelledSave){
                 engine->loadFrom (engine->getLastDocumentOpened(), true);
             }
-
-
-        }
             break;
 
         case CommandIDs::save:
@@ -322,9 +290,6 @@ bool MainContentComponent::perform (const InvocationInfo& info)
         case CommandIDs::saveAs:
             engine->saveAs (File::nonexistent, true, true, true);
             break;
-
-
-
 
 
         case CommandIDs::showPluginListEditor:

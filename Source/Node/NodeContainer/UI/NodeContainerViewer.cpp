@@ -427,7 +427,7 @@ void NodeContainerViewer::mouseDown (const MouseEvent& event)
 {
     if (event.eventComponent == this)
     {
-        if (event.mods.isRightButtonDown())
+        if (event.mods.isRightButtonDown() || event.getNumberOfClicks()>1)
         {
 
             Point<int> mousePos = getMouseXYRelative();
@@ -695,6 +695,7 @@ void NodeContainerViewer::changeListenerCallback (ChangeBroadcaster* source){
 }
 
 void NodeContainerViewer::addNodeUndoable(const String & tid,const Point<int> & mousePos){
+    getAppUndoManager().beginNewTransaction("add Node :"+tid);
     getAppUndoManager().perform(new FactoryUIHelpers::UndoableFactoryCreate<NodeBase>
                                 (tid,
                                  [=](NodeBase* c){

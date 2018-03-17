@@ -66,7 +66,7 @@ FastMapUI (FastMap* f) :
     linkedParamChanged (f->referenceIn);
     linkedParamChanged (f->referenceOut);
 
-    setSize (100, 40);
+//    setSize (100, 40);
 }
 
 FastMapUI::~FastMapUI()
@@ -120,10 +120,6 @@ void FastMapUI::buttonClicked (Button* b)
     if (b == &removeBT) FastMapper::getInstance()->removeFastmap (fastMap);
 }
 
-void FastMapUI::mouseDown (const MouseEvent&)
-{
-    selectThis();
-};
 
 
 void FastMapUI::linkedParamChanged (ParameterProxy* p )

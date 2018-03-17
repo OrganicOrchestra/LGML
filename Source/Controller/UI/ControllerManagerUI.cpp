@@ -23,12 +23,29 @@
 #include "../../Controllable/ControllableUIHelpers.h"
 
 //==============================================================================
-ControllerManagerUI::ControllerManagerUI (ControllerManager* manager):
-    manager (manager)
+ControllerManagerUI::ControllerManagerUI (const String & contentName, ControllerManager* _manager):
+    manager (_manager),
+ShapeShifterContentComponent (contentName,
+                              "Communicate with the real world\nAdd your controllers here\n OSC / MIDI / Serial"),
+controllersUI(new StackedContainerUI<ControllerUI, Controller>
+              (
+               [](ControllerUI *ui){return ui->controller;},
+               [_manager](int ia, int ib){
+                  int iia = _manager->controllableContainers.indexOf(_manager->controllers[ia]);
+                  int iib = _manager->controllableContainers.indexOf(_manager->controllers[ib]);
+                  _manager->controllableContainers.swap(iia,iib);
+                  _manager->controllers.swap(ia,ib);
+               },
+               20,
+               false)
+              )
 {
+    addAndMakeVisible (addControllerBt);
+    addControllerBt.setTooltip (juce::translate("Add controller"));
+    addControllerBt.addListener (this);
 
     manager->addControllerListener (this);
-
+    addAndMakeVisible(controllersUI);
     for (auto& c : manager->controllers)
     {
         addControllerUI (c);
@@ -39,15 +56,13 @@ ControllerManagerUI::ControllerManagerUI (ControllerManager* manager):
 ControllerManagerUI::~ControllerManagerUI()
 {
     manager->removeControllerListener (this);
-    clear(false);
+    clear();
 }
 
-void ControllerManagerUI::clear(bool notify)
+void ControllerManagerUI::clear()
 {
-    while (controllersUI.size() > 0)
-    {
-        removeControllerUI (controllersUI[0]->controller,notify);
-    }
+    controllersUI.clear();
+
 }
 
 
@@ -66,74 +81,55 @@ void ControllerManagerUI::controllerRemoved (Controller* c)
 ControllerUI* ControllerManagerUI::addControllerUI (Controller* controller)
 {
     
-    if (getUIForController (controller) != nullptr)
+    if (controllersUI.getFromT(controller) != nullptr)
     {
         DBG ("Controller already exists");
         return nullptr;
     }
 
-    ControllerUI* cui = new ControllerUI(controller);
-    controllersUI.add (cui);
-
     {
         MessageManagerLock ml;
-        addAndMakeVisible (cui);
-        resized();
 
-    }
-    cui->selectThis();
-
-    notifyParentViewPort();
-    return cui;
-}
-
-void ControllerManagerUI::removeControllerUI (Controller* controller,bool notify)
-{
-    ControllerUI* cui = getUIForController (controller);
-
-    if (cui == nullptr)
-    {
-        DBG ("Controller dont exist");
-        return;
-    }
-
-    {
-        MessageManagerLock ml;
-        removeChildComponent (getIndexOfChildComponent (cui));
-        controllersUI.removeObject (cui);
-
-        resized();
-    }
-
-    if(notify)notifyParentViewPort();
-
-}
-void ControllerManagerUI::notifyParentViewPort() {
-    if (auto* p = findParentComponentOfClass<ControllerManagerUIViewport>())
-        p->resized();
-}
-
-ControllerUI* ControllerManagerUI::getUIForController (Controller* controller)
-{
-    for (auto& cui : controllersUI)
-    {
-        if (cui->controller == controller) return cui;
+        if (auto cui = controllersUI.addFromT(controller)){
+            cui->selectThis();
+            resized();
+            return cui;
+        }
     }
 
     return nullptr;
+
+
 }
 
-const int elemGap = 5;
+void ControllerManagerUI::removeControllerUI (Controller* controller)
+{
+    {
+        MessageManagerLock ml;
+        controllersUI.removeFromT(controller);
+    }
+
+}
+
+
 
 void ControllerManagerUI::resized()
 {
     Rectangle<int> r = getLocalBounds().reduced (4,0);
 
-    for (auto& cui : controllersUI)
-    {
-        r.removeFromTop (elemGap);
-        cui->setBounds (r.removeFromTop (cui->getHeight()));
+    controllersUI.setBounds (r);
 
+    if(controllersUI.getNumStacked()==0){
+        int side = (int)( jmin(getWidth(),getHeight()) * .5);
+        addControllerBt.setBounds(getLocalBounds().withSizeKeepingCentre(side,side));
+        infoLabel.setVisible(true);
+        auto labelR =getLocalBounds().withBottom(addControllerBt.getY());
+        labelR=labelR.withSizeKeepingCentre(jmax(250,getWidth()),labelR.getHeight());
+        infoLabel.setBounds(labelR);
+    }
+    else{
+        infoLabel.setVisible(false);
+        addControllerBt.setFromParentBounds (getLocalBounds());
     }
 }
 
@@ -144,11 +140,9 @@ void ControllerManagerUI::paint (Graphics&)
 
 int ControllerManagerUI::getContentHeight() const
 {
-    int totalHeight = 0;
-    for(auto & c : controllersUI){
-        totalHeight+= c->getHeight() +  elemGap;
-    }
-    return totalHeight;
+
+    return  controllersUI.getSize();
+
 
 }
 
@@ -167,12 +161,8 @@ void ControllerManagerUI::mouseDown (const MouseEvent& event)
 
             if (result > 0 )
             {
-                if (auto c = FactoryUIHelpers::createFromMenuIdx<Controller> (result))
-                {
-                    manager->addController (c);
-                }
-                else
-                    jassertfalse;
+                String t = FactoryUIHelpers::getFactoryTypeNameFromMenuIdx<FactoryBase<Controller>>(result);
+                addControllerUndoable(t);
             }
         }
 
@@ -180,65 +170,9 @@ void ControllerManagerUI::mouseDown (const MouseEvent& event)
 }
 
 
-ControllerManagerUIViewport::ControllerManagerUIViewport (const String& contentName, ControllerManagerUI* _UI) :
-controllerManagerUI (_UI),
-ShapeShifterContentComponent (contentName,
-                              "Communicate with the real world\nAdd your controllers here\n OSC / MIDI / Serial")
-{
-    vp.setViewedComponent (controllerManagerUI, true);
-    vp.setScrollBarsShown (true, false);
-    vp.setScrollOnDragEnabled (false);
-    addAndMakeVisible (vp);
-    vp.setScrollBarThickness (10);
-    addAndMakeVisible (addControllerBt);
-    addControllerBt.setTooltip (juce::translate("Add controller"));
-    addControllerBt.addListener (this);
-
-}
-
-ControllerManagerUIViewport::~ControllerManagerUIViewport()
-{
-
-}
-
-void ControllerManagerUIViewport::resized()
-{
-    ShapeShifterContentComponent::resized();
-    vp.setBounds (getLocalBounds());
-    int th = jmax<int> (controllerManagerUI->getContentHeight(), getHeight());
-    Rectangle<int> targetBounds = getLocalBounds().withPosition (controllerManagerUI->getPosition()).withHeight (th);
-    if(targetBounds.getHeight()>getHeight())
-        targetBounds.removeFromRight (vp.getScrollBarThickness());
-
-    controllerManagerUI->setBounds (targetBounds);
 
 
-
-
-    bool needResize = controllerManagerUI->getHeight()==controllerManagerUI->getContentHeight();
-
-
-
-
-
-    // resize not called if no change in heights, but internal state yes
-    if(needResize) {controllerManagerUI->resized();}
-
-    if(controllerManagerUI->controllersUI.size()==0){
-        int side = (int)( jmin(getWidth(),getHeight()) * .5);
-        addControllerBt.setBounds(getLocalBounds().withSizeKeepingCentre(side,side));
-        infoLabel.setVisible(true);
-        auto labelR =getLocalBounds().withBottom(addControllerBt.getY());
-        labelR=labelR.withSizeKeepingCentre(jmax(250,getWidth()),labelR.getHeight());
-        infoLabel.setBounds(labelR);
-    }
-    else{
-        infoLabel.setVisible(false);
-        addControllerBt.setFromParentBounds (getLocalBounds());
-    }
-}
-
-void ControllerManagerUIViewport::buttonClicked (Button* b )
+void ControllerManagerUI::buttonClicked (Button* b )
 {
     if (b == &addControllerBt)
     {
@@ -248,15 +182,23 @@ void ControllerManagerUIViewport::buttonClicked (Button* b )
 
         if (result > 0 )
         {
-            if (auto c = FactoryUIHelpers::createFromMenuIdx<Controller> (result))
-            {
-                controllerManagerUI->manager->addController (c);
-            }
-            else
-                jassertfalse;
+            String t = FactoryUIHelpers::getFactoryTypeNameFromMenuIdx<FactoryBase<Controller>>(result);
+            addControllerUndoable(t);
         }
     }
 
+}
+
+void ControllerManagerUI::addControllerUndoable(const String & typeId){
+    getAppUndoManager().beginNewTransaction("add Controller :"+typeId);
+    getAppUndoManager().perform(new
+                                FactoryUIHelpers::UndoableFactoryCreate<Controller>
+                                (typeId,
+                                 [=](Controller * c){manager->addController(c);},
+                                 [=](Controller * c){manager->removeController(c);}
+
+                                )
+                                );
 }
 
 #endif

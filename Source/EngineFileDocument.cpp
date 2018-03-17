@@ -293,8 +293,8 @@ void Engine::loadJSONData (const var& data, ProgressTask* loadingTask)
 
     if (!versionChecked)
     {
-        String versionString = md->hasProperty ("version") ? md->getProperty ("version").toString() : "?";
-        AlertWindow::showMessageBox (AlertWindow::AlertIconType::WarningIcon, juce::translate("You're old, bitch !"), juce::translate("File version (123) is not supported anymore.\n(Minimum supported version : 456)").replace("123", versionString).replace("456", getMinimumRequiredFileVersion()));
+        String _versionString = md->hasProperty ("version") ? md->getProperty ("version").toString() : "?";
+        AlertWindow::showMessageBox (AlertWindow::AlertIconType::WarningIcon, juce::translate("You're old, bitch !"), juce::translate("File version (123) is not supported anymore.\n(Minimum supported version : 456)").replace("123", _versionString).replace("456", getMinimumRequiredFileVersion()));
         return;
     }
 

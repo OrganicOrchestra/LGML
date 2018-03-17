@@ -24,34 +24,30 @@
 #include "../UI/Inspector/Inspector.h"
 #include "../UI/Style.h"
 #include "../UI/LGMLDragger.h"
+#include "../UI/StackedContainerUI.h"
 
 class FastMapper;
-class FastMapperUI;
-class FastMapperUIListener
-{
-public:
-    virtual ~FastMapperUIListener() {}
-    virtual void fastMapperContentChanged (FastMapperUI*) {}
-};
 
 class FastMapperUI :
-    public juce::Component,
     private ControllableContainerListener,
     private Button::Listener,
     private Inspector::InspectorListener,
-    private LGMLDragger::Listener
+    private LGMLDragger::Listener,
+    public ShapeShifterContentComponent
+
 {
 public:
-    FastMapperUI (FastMapper* fastMapper, ControllableContainer* viewFilterContainer = nullptr);
+    FastMapperUI (const String& contentName, FastMapper* fastMapper, ControllableContainer* viewFilterContainer = nullptr);
     virtual ~FastMapperUI();
 
     FastMapper* fastMapper;
     TextButton linkToSelection;
     Label candidateLabel;
+    AddElementButton addFastMapButton;
     void addFastMapUndoable();
     
     ScopedPointer<Component> potentialIn, potentialOut;
-    OwnedArray<FastMapUI> mapsUI;
+    StackedContainerViewport<FastMapUI,FastMap> mapsUI;
 
     ControllableContainer* viewFilterContainer;
     Controllable* viewFilterControllable;
@@ -79,9 +75,7 @@ public:
     virtual void controllableContainerAdded (ControllableContainer*, ControllableContainer*) override;
     virtual void controllableContainerRemoved (ControllableContainer*, ControllableContainer*) override;
 
-    ListenerList<FastMapperUIListener> fastMapperUIListeners;
-    void addFastMapperUIListener (FastMapperUIListener* newListener) { fastMapperUIListeners.add (newListener); }
-    void removeFastMapperUIListener (FastMapperUIListener* listener) { fastMapperUIListeners.remove (listener); }
+    
 private:
 
     void buttonClicked (Button*) override;
@@ -96,29 +90,6 @@ private:
 
 };
 
-class FastMapperViewport :
-    public ShapeShifterContentComponent,
-    public FastMapperUIListener,
-    private Button::Listener
-{
-public:
-    FastMapperViewport (const String& contentName, FastMapperUI* _fastMapperUI) ;
-
-
-    virtual ~FastMapperViewport();
-
-    void resized() override;
-    void fastMapperContentChanged (FastMapperUI*)override;
-    void buttonClicked (Button* b)override;
-
-
-    Viewport vp;
-    FastMapperUI* fastMapperUI;
-    AddElementButton addFastMapButton;
-    
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FastMapperViewport)
-};
 
 
 #endif  // FASTMAPPERUI_H_INCLUDED

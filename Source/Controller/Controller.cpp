@@ -55,7 +55,7 @@ Controller::~Controller()
     {
         parentContainer->removeChildControllableContainer (this);
     }
-
+    masterReference.clear();
 
     //DBG("Remove Controller");
 }

@@ -231,7 +231,7 @@ countries: %s
 
 
 def getDefaultStrings():
-  resL= ["Node Manager", "Time Manager", "Inspector", "Logger", "Controllers", "Fast Mapper", "Outliner","Help","french"]
+  resL= ["Node Manager", "Time Manager", "Inspector", "Logger", "Controllers", "Fast Mapper", "Outliner","Help"]
   res = {}
   for a in resL:
       res[a] = ("No File",0)

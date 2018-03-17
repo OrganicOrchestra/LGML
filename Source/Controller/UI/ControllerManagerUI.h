@@ -22,24 +22,29 @@
 
 #include "../../UI/ShapeShifter/ShapeShifterContent.h"
 #include "../../UI/Style.h"
+
+#include "../../UI/StackedContainerUI.h"
 //==============================================================================
 /*
 */
 
-class ControllerManagerUI : public juce::Component, ControllerManager::Listener
+class ControllerManagerUI :
+ControllerManager::Listener,
+public ShapeShifterContentComponent,
+private Button::Listener
 {
 public:
-    ControllerManagerUI (ControllerManager* manager);
+    ControllerManagerUI (const String& contentName,ControllerManager* manager);
     ~ControllerManagerUI();
 
     ControllerManager* manager;
 
-    OwnedArray<ControllerUI> controllersUI;
-
+    StackedContainerViewport<ControllerUI,Controller> controllersUI;
+    AddElementButton addControllerBt;
     ControllerUI* addControllerUI (Controller* controller);
-    void removeControllerUI (Controller* controller,bool notify=true);
+    void removeControllerUI (Controller* controller);
 
-    ControllerUI* getUIForController (Controller* controller);
+    
 
     void paint (Graphics&)override;
     void resized()override;
@@ -48,32 +53,19 @@ public:
 
     int getContentHeight() const;
 
-    void clear(bool notify=true);
+    void clear();
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ControllerManagerUI)
 
     // Inherited via Listener
     void controllerAdded (Controller*) override;
     void controllerRemoved (Controller*) override;
-    void notifyParentViewPort() ;
-};
 
-
-class ControllerManagerUIViewport :
-    public ShapeShifterContentComponent,
-    private Button::Listener
-{
-public:
-    ControllerManagerUIViewport (const String& contentName, ControllerManagerUI* _UI) ;
-    virtual ~ControllerManagerUIViewport();
-
-    void resized() override;
 
     void buttonClicked (Button*) override;
-
-    Viewport vp;
-    ControllerManagerUI* controllerManagerUI;
-    AddElementButton addControllerBt;
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ControllerManagerUIViewport)
+    void addControllerUndoable(const String & typeId);
 };
+
+
+
 #endif  // CONTROLLERMANAGERUI_H_INCLUDED

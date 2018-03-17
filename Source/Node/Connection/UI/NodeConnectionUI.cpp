@@ -307,7 +307,7 @@ void NodeConnectionUI::mouseDown (const MouseEvent& e)
     }
     else
     {
-        selectThis();
+//        selectThis();
 
 
         if (isEditing() && candidateDropConnector)
