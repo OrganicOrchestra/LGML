@@ -529,7 +529,7 @@ void ConnectableNodeUI::ConnectorContainer::setConnectorsFromNode (ConnectableNo
 
 
     addConnector (type, NodeConnection::ConnectionType::AUDIO, targetNode);
-    addConnector (type, NodeConnection::ConnectionType::DATA, targetNode);
+    
 
     resized();
 

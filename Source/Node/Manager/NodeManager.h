@@ -17,11 +17,11 @@
 #define NODEMANAGER_H_INCLUDED
 #pragma once
 /*
-Node Manager Contain all Node and synchronize building of audioGraph (AudioProcessorGraph) and DataGraph (DataProcessorGraph)
+Node Manager Contain all Node and synchronize building of audioGraph (AudioProcessorGraph)
 
 */
 
-#include "../../Data/DataProcessorGraph.h"
+
 #include "../../Controllable/Parameter/ParameterContainer.h"
 #include "../NodeContainer/NodeContainer.h"
 
@@ -38,7 +38,6 @@ public:
     juce_DeclareSingleton (NodeManager, true);
 
 
-    DataProcessorGraph dataGraph;
 
 
     void rebuildAudioGraph();

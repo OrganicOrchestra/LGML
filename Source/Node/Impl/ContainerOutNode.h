@@ -37,11 +37,6 @@ public:
     void processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;
 
 
-    //DATA
-    IntParameter* numInputData;
-
-    void processInputDataChanged (Data* d) override;
-
 
     void onContainerParameterChanged ( ParameterBase*) override;
 

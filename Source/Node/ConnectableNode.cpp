@@ -101,17 +101,6 @@ bool ConnectableNode::hasAudioOutputs()
 
 }
 
-bool ConnectableNode::hasDataInputs()
-{
-    //to override
-    return false;
-}
-
-bool ConnectableNode::hasDataOutputs()
-{
-    //to override
-    return false;
-}
 
 
 
@@ -214,64 +203,3 @@ String ConnectableNode::getOutputChannelName (int channelIndex)
     return defaultName;
 }
 
-
-
-/////////////////////////////  DATA
-
-Data* ConnectableNode::getInputData (int)
-{
-    //to override
-    return nullptr;
-}
-
-Data* ConnectableNode::getOutputData (int)
-{
-    //to override
-    return nullptr;
-}
-
-int ConnectableNode::getTotalNumInputData()
-{
-    //to override
-    return 0;
-}
-
-int ConnectableNode::getTotalNumOutputData()
-{
-    //to override
-    return 0;
-}
-
-StringArray ConnectableNode::getInputDataInfos()
-{
-    return StringArray();
-}
-
-StringArray ConnectableNode::getOutputDataInfos()
-{
-    return StringArray();
-}
-
-Data::DataType ConnectableNode::getInputDataType (const String&, const String& )
-{
-    //to override
-    return Data::DataType::Unknown;
-}
-
-Data::DataType ConnectableNode::getOutputDataType (const String&, const String& )
-{
-    //to override
-    return Data::DataType::Unknown;
-}
-
-Data* ConnectableNode::getOutputDataByName (const String& )
-{
-    //to override
-    return nullptr;
-}
-
-Data* ConnectableNode::getInputDataByName (const String& )
-{
-    //to override
-    return nullptr;
-}

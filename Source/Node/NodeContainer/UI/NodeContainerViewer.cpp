@@ -368,18 +368,9 @@ void NodeContainerViewer::finishEditingConnection()
 
     if (editingConnection->candidateDropConnector != nullptr) editingConnection->candidateDropConnector->removeMouseListener (this);
 
-    bool isDataConnection = editingConnection->getBaseConnector()->dataType == NodeConnection::ConnectionType::DATA;
+    bool isAudioConnection = editingConnection->getBaseConnector()->dataType == NodeConnection::ConnectionType::AUDIO;
 
-    if (isDataConnection) //DATA
-    {
-        bool success = editingConnection->finishEditing();
-
-        if (success)
-        {
-            nodeContainer->addConnection (editingConnection->sourceConnector->node, editingConnection->destConnector->node, editingConnection->getBaseConnector()->dataType, editingModel);
-        }
-    }
-    else //AUDIO
+    if (isAudioConnection) 
     {
         bool success = editingConnection->finishEditing();
 

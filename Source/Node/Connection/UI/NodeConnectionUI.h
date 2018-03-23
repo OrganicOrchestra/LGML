@@ -112,8 +112,7 @@ public:
 
 
     // Inherited via Listener
-    virtual void connectionDataLinkAdded (DataProcessorGraph::Connection* dataConnection) override;
-    virtual void connectionDataLinkRemoved (DataProcessorGraph::Connection* dataConnection) override;
+    
     virtual void connectionAudioLinkAdded (const std::pair<int, int>& audioConnection) override;
     virtual void connectionAudioLinkRemoved (const std::pair<int, int>& audioConnection) override;
 

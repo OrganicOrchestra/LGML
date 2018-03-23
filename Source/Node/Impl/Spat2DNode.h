@@ -33,23 +33,26 @@ public:
 
     IntParameter* numSpatInputs;
     IntParameter* numSpatOutputs;
-
+    
     FloatParameter* targetRadius;
 
     //Circle shape
     FloatParameter* circleRadius;
     FloatParameter* circleRotation;
+    BoolParameter * useLogCurve;
 
     Array<Point2DParameter<float> *> targetPositions;
 
     BoolParameter* useGlobalTarget;
     Point2DParameter<float>* globalTargetPosition;
+    Array<Point2DParameter<float>*> inputsPositionsParams;
+    Array<FloatParameter*> outputsIntensities;
     FloatParameter* globalTargetRadius;
 
     void setSourcePosition (int index, const Point<float>& position);
     void setTargetPosition (int index, const Point<float>& position);
-    void updateInputOutputDataSlots();
-
+    
+    void updateIOParams();
     void updateTargetsFromShape();
     void computeAllInfluences();
     void computeInfluencesForTarget (int targetIndex);
@@ -60,8 +63,6 @@ public:
 
     void onContainerParameterChanged ( ParameterBase*) override;
 
-    void processInputDataChanged (Data*) override;
-
 
 
     //AUDIO
@@ -69,8 +70,8 @@ public:
     void numChannelsChanged (bool isInput)override;
     virtual void processBlockInternal (AudioBuffer<float>& /*buffer*/, MidiBuffer& /*midiMessage*/) override;
 
-
-
+    AudioBuffer<float> tempBuf;
+    Array<float> influences;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Spat2DNode)
 };

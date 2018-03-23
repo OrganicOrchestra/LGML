@@ -74,13 +74,7 @@ void ConnectorComponent::generateToolTip()
             tooltip = juce::translate("[Error accessing audio processor]");
         }
     }
-    else
-    {
 
-        StringArray dataInfos = ioType == ConnectorIOType::INPUT ? node->getInputDataInfos() : node->getOutputDataInfos();
-        tooltip += dataInfos.joinIntoString ("\n");
-
-    }
 
     setTooltip (tooltip);
 }
@@ -94,15 +88,12 @@ void ConnectorComponent::mouseDown (const MouseEvent&)
 {
     NodeContainerViewer* containerViewer = getNodeContainerViewer();
 
-    if (dataType == NodeConnection::ConnectionType::DATA)
-    {
-
-        containerViewer->createDataConnectionFromConnector (this);
-    }
-    else
+    if (dataType == NodeConnection::ConnectionType::AUDIO)
     {
         containerViewer->createAudioConnectionFromConnector (this);
+
     }
+
 }
 
 void ConnectorComponent::mouseEnter (const MouseEvent&)
@@ -123,7 +114,7 @@ void ConnectorComponent::updateVisibility()
     bool isInput = ioType == ConnectorIOType::INPUT;
 
     if (isAudio) setVisible (isInput ? node->hasAudioInputs() : node->hasAudioOutputs());
-    else setVisible (isInput ? node->hasDataInputs() : node->hasDataOutputs());
+
 
     connectorListeners.call (&ConnectorListener::connectorVisibilityChanged, this);
 }
@@ -145,21 +136,6 @@ void ConnectorComponent::handleCommandMessage (int /*id*/)
 {
     updateVisibility();
 
-}
-
-//DATA
-void ConnectorComponent::numDataInputChanged (ConnectableNode*, int)
-{
-    if (dataType != NodeConnection::ConnectionType::DATA || ioType != ConnectorIOType::INPUT) return;
-
-    postCommandMessage (0);
-}
-
-void ConnectorComponent::numDataOutputChanged (ConnectableNode*, int)
-{
-    if (dataType != NodeConnection::ConnectionType::DATA || ioType != ConnectorIOType::OUTPUT) return;
-
-    postCommandMessage (0);
 }
 
 

@@ -46,13 +46,6 @@ DummyNode::DummyNode (StringRef name) :
 
 
 
-    //DATA
-    addInputData ("IN Number", DataType::Number);
-    addInputData ("IN Orientation", DataType::Orientation);
-
-    addOutputData ("OUT Number", DataType::Number);
-    outPosData = addOutputData ("OUT Position", DataType::Position);
-
     pxParam = addNewParameter<FloatParameter> ("PointX", "X", 0.f, 0.f, 1.f);
     pyParam = addNewParameter<FloatParameter> ("PointY", "Y", 0.f, 0.f, 1.f);
 
@@ -83,12 +76,7 @@ void DummyNode::onContainerParameterChanged ( ParameterBase* p)
     {
         //DBG("Enum param changed : " << enumParam->stringValue() << " / " << enumParam->getFirstSelected().toString());
     }
-    else if (p == pxParam || p == pyParam)
-    {
 
-        outPosData->update (pxParam->floatValue(), pyParam->floatValue());
-
-    }
 }
 
 
@@ -206,16 +194,6 @@ void DummyNode::processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer&)
 
 
 
-
-inline void DummyNode::processInputDataChanged (Data* d)
-{
-    //DBG("DummyNode :: Input data changed " << d->name);
-
-    if (d->name == "IN Number")
-    {
-        amp = d->getElement ("value")->value;
-    }
-}
 
 
 #endif // JUCE DEBGUG

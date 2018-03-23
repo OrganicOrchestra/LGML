@@ -160,9 +160,6 @@ public:
     void updateAudioGraph (bool lock = true) ;
     void numChannelsChanged (bool isInput) override;
 
-    //DATA
-    bool hasDataInputs() override;
-    bool hasDataOutputs() override;
 
     void processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer& midiMessage ) override;
     void processBlockBypassed (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;

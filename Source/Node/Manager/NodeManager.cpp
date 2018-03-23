@@ -48,7 +48,6 @@ void NodeManager::clear()
 
     NodeContainer::clear();
 
-    dataGraph.clear();
 
     nodeManagerListeners.call (&NodeManagerListener::managerCleared);
 }

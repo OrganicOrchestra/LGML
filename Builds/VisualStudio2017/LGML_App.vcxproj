@@ -339,10 +339,6 @@
     <ClCompile Include="..\..\Source\Controller\UI\ControllerUI.cpp"/>
     <ClCompile Include="..\..\Source\Controller\Controller.cpp"/>
     <ClCompile Include="..\..\Source\Controller\ControllerManager.cpp"/>
-    <ClCompile Include="..\..\Source\Data\Data.cpp"/>
-    <ClCompile Include="..\..\Source\Data\DataInNode.cpp"/>
-    <ClCompile Include="..\..\Source\Data\DataInNodeUI.cpp"/>
-    <ClCompile Include="..\..\Source\Data\DataProcessorGraph.cpp"/>
     <ClCompile Include="..\..\Source\FastMapper\FastMap.cpp"/>
     <ClCompile Include="..\..\Source\FastMapper\FastMapper.cpp"/>
     <ClCompile Include="..\..\Source\FastMapper\FastMapperUI.cpp"/>
@@ -2228,10 +2224,6 @@
     <ClInclude Include="..\..\Source\Controller\Controller.h"/>
     <ClInclude Include="..\..\Source\Controller\ControllerFactory.h"/>
     <ClInclude Include="..\..\Source\Controller\ControllerManager.h"/>
-    <ClInclude Include="..\..\Source\Data\Data.h"/>
-    <ClInclude Include="..\..\Source\Data\DataInNode.h"/>
-    <ClInclude Include="..\..\Source\Data\DataInNodeUI.h"/>
-    <ClInclude Include="..\..\Source\Data\DataProcessorGraph.h"/>
     <ClInclude Include="..\..\Source\FastMapper\FastMap.h"/>
     <ClInclude Include="..\..\Source\FastMapper\FastMapper.h"/>
     <ClInclude Include="..\..\Source\FastMapper\FastMapperUI.h"/>

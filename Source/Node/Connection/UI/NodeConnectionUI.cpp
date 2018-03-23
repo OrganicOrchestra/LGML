@@ -472,15 +472,6 @@ void NodeConnectionUI::handleCommandMessage (int /*commandId*/)
     repaint();
 }
 
-void NodeConnectionUI::connectionDataLinkAdded (DataProcessorGraph::Connection*)
-{
-    postCommandMessage (0);
-}
-
-void NodeConnectionUI::connectionDataLinkRemoved (DataProcessorGraph::Connection*)
-{
-    postCommandMessage (0);
-}
 
 void NodeConnectionUI::connectionAudioLinkAdded (const std::pair<int, int>&)
 {
@@ -498,10 +489,10 @@ String NodeConnectionUI::getTooltip() {
         tt+=connection->getFactoryInfo()+"\n("+String(connection->model.audioConnections.size())+ " connections)\n";
     if(sourceConnector)
         if(auto nb = sourceConnector->getNodeBase())
-             tt+="in : " + String(nb->getTotalNumOutputChannels());
+             tt+="\nin : " + String(nb->getTotalNumOutputChannels());
     if(destConnector)
         if(auto nb = sourceConnector->getNodeBase())
-            tt+="out : " + String(nb->getTotalNumOutputChannels())+"\n";
+            tt+="\nout : " + String(nb->getTotalNumOutputChannels());
 
     }
     return tt;

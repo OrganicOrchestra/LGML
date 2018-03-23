@@ -29,7 +29,6 @@ ContainerInNode::ContainerInNode (StringRef name) :
     userCanAccessInputs = false;
 
     numChannels = addNewParameter<IntParameter> ("Num Audio Inputs", "Number of input channels for this container", 2, 0, 100);
-    numInputData = addNewParameter<IntParameter> ("Num Data Inputs", "Number of data inputs for this container", 0, 0, 100);
     setNumChannels(numChannels->intValue());
     
 }
@@ -68,14 +67,6 @@ void ContainerInNode::setParentNodeContainer (NodeContainer* nc)
 
 }
 
-//DATA
-
-void ContainerInNode::processInputDataChanged (Data* d)
-{
-    Data* od = getOutputDataByName (d->name);
-    od->updateFromSourceData (d);
-}
-
 
 void ContainerInNode::setNumChannels (int num)
 {
@@ -95,21 +86,6 @@ void ContainerInNode::onContainerParameterChanged ( ParameterBase* p)
     {
         setNumChannels (p->intValue());
     }
-    else if (p == numInputData)
-    {
 
-        while (inputDatas.size() && (p->intValue() < getTotalNumInputData()))
-        {
-            //      bool res  =
-            removeInputData (inputDatas[inputDatas.size() - 1]->name);
-            //      jassert(res);
-        }
-
-        while ( p->intValue() > getTotalNumInputData())
-        {
-            addInputData ("Input Data " + String (inputDatas.size()), DataType::Number);
-        }
-
-    }
 
 }

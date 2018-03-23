@@ -17,7 +17,7 @@
 #define NODECONNECTION_H_INCLUDED
 #pragma once
 
-#include "../../Data/DataProcessorGraph.h"
+
 #include "../ConnectableNode.h"
 #include "../../Utils/FactoryObject.h"
 
@@ -30,7 +30,7 @@ class NodeConnection :
 public:
     enum ConnectionType
     {
-        AUDIO, DATA, UNDEFINED
+        AUDIO, UNDEFINED
     };
 
     typedef std::pair<int, int> AudioConnection;
@@ -39,7 +39,7 @@ public:
         // keeps all connection info (used to keep info after deletion)
     public:
         Array<AudioConnection> audioConnections;
-        Array<DataProcessorGraph::Connection*> dataConnections;
+
     };
     Model model;
 
@@ -51,7 +51,7 @@ public:
     ConnectionType connectionType;
 
     bool isAudio() { return connectionType == ConnectionType::AUDIO; }
-    bool isData() { return connectionType == ConnectionType::DATA; }
+    
 
     WeakReference<ConnectableNode> sourceNode;
     WeakReference<ConnectableNode> destNode;
@@ -64,12 +64,6 @@ public:
 
     void removeAllAudioGraphConnectionsForChannel (int channel, bool isSourceChannel);
 
-    //Data
-    void addDataGraphConnection (Data* sourceData, Data* destData);
-    void removeDataGraphConnection (Data* sourceData, Data* destData);
-    void removeAllDataGraphConnections();
-
-    void removeAllDataGraphConnectionsForData (Data*, bool isSourceData);
 
     void remove();
 
@@ -80,8 +74,6 @@ public:
     virtual void audioOutputRemoved (ConnectableNode*, int /* channel */) override;
 
 
-    virtual void dataInputRemoved (ConnectableNode*, Data*) override;
-    virtual void dataOutputRemoved (ConnectableNode*, Data*) override;
 
 
     // save / load
@@ -97,9 +89,6 @@ public:
         virtual ~Listener() {}
 
         virtual void connectionRemoved (NodeConnection*) {}
-
-        virtual void connectionDataLinkAdded (DataProcessorGraph::Connection* ) {}
-        virtual void connectionDataLinkRemoved (DataProcessorGraph::Connection* ) {}
 
         virtual void connectionAudioLinkAdded (const AudioConnection&) {}
         virtual void connectionAudioLinkRemoved (const AudioConnection&) {}

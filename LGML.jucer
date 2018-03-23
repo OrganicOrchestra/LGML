@@ -237,24 +237,6 @@
         <FILE compile="0" file="Source/Controller/ControllerManager.h" id="oYmvxL"
               name="ControllerManager.h" resource="0"/>
       </GROUP>
-      <GROUP id="{1401E4C2-39E3-0241-D6B9-DBF594ED8AAE}" name="Data">
-        <FILE compile="1" file="Source/Data/Data.cpp" id="fFqNdW" name="Data.cpp"
-              resource="0"/>
-        <FILE compile="0" file="Source/Data/Data.h" id="wvv0zz" name="Data.h"
-              resource="0"/>
-        <FILE compile="1" file="Source/Data/DataInNode.cpp" id="hoIim5" name="DataInNode.cpp"
-              resource="0"/>
-        <FILE compile="0" file="Source/Data/DataInNode.h" id="SI0vgm" name="DataInNode.h"
-              resource="0"/>
-        <FILE compile="1" file="Source/Data/DataInNodeUI.cpp" id="ugNxJC" name="DataInNodeUI.cpp"
-              resource="0"/>
-        <FILE compile="0" file="Source/Data/DataInNodeUI.h" id="Ormw5C" name="DataInNodeUI.h"
-              resource="0"/>
-        <FILE compile="1" file="Source/Data/DataProcessorGraph.cpp" id="ud3lGi"
-              name="DataProcessorGraph.cpp" resource="0"/>
-        <FILE compile="0" file="Source/Data/DataProcessorGraph.h" id="XH6Tlx"
-              name="DataProcessorGraph.h" resource="0"/>
-      </GROUP>
       <GROUP id="{685A0515-C610-B837-2B3E-BE8DD42E2F55}" name="FastMapper">
         <FILE compile="1" file="Source/FastMapper/FastMap.cpp" id="mfgKTy"
               name="FastMap.cpp" resource="0"/>

@@ -30,7 +30,7 @@
 
 #include "../Impl/AudioMixerNodeUI.h"
 #include "../Impl/AudioMixerNode.h"
-//#include "../Impl/DataInNodeUI.h"
+
 
 #include "../Impl/JsNodeUI.h"
 #include "../Impl/JsNode.h"
@@ -38,8 +38,7 @@
 #include "../Impl/ContainerInNode.h"
 #include "../Impl/ContainerOutNode.h"
 
-#include "../../Data/DataInNode.h"
-#include "../../Data/DataInNodeUI.h"
+
 
 #if JUCE_DEBUG
 #include "../Impl/DummyNode.h"
@@ -67,7 +66,6 @@ ConnectableNodeUI* NodeUIFactory::createDefaultUI (ConnectableNode* t,Connectabl
     CHKNRETURN (t, AudioMixerNode, new AudioMixerNodeUI); //ui->recursiveInspectionLevel = 2;
     CHKNRETURN (t, JsNode, new JsNodeUI);
 
-    CHKNRETURN (t, DataInNode, new DataInNodeContentUI);
 #if JUCE_DEBUG
     CHKNRETURN (t, DummyNode, new DummyNodeContentUI);
 #endif

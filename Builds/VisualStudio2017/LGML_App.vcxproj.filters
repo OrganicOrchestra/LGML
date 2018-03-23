@@ -26,9 +26,6 @@
     <Filter Include="LGML\Source\Controller">
       <UniqueIdentifier>{E4EDAB3C-F62F-A40D-518B-850EE621CE8F}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LGML\Source\Data">
-      <UniqueIdentifier>{A98DA5F9-57F3-2EDD-3543-1DCA156EE7B2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="LGML\Source\FastMapper">
       <UniqueIdentifier>{6D7EDC97-E502-AB45-CB1E-68713BDD12AD}</UniqueIdentifier>
     </Filter>
@@ -645,18 +642,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Controller\ControllerManager.cpp">
       <Filter>LGML\Source\Controller</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Data\Data.cpp">
-      <Filter>LGML\Source\Data</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Data\DataInNode.cpp">
-      <Filter>LGML\Source\Data</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Data\DataInNodeUI.cpp">
-      <Filter>LGML\Source\Data</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Data\DataProcessorGraph.cpp">
-      <Filter>LGML\Source\Data</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\FastMapper\FastMap.cpp">
       <Filter>LGML\Source\FastMapper</Filter>
@@ -3008,18 +2993,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Controller\ControllerManager.h">
       <Filter>LGML\Source\Controller</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Data\Data.h">
-      <Filter>LGML\Source\Data</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Data\DataInNode.h">
-      <Filter>LGML\Source\Data</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Data\DataInNodeUI.h">
-      <Filter>LGML\Source\Data</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Data\DataProcessorGraph.h">
-      <Filter>LGML\Source\Data</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\FastMapper\FastMap.h">
       <Filter>LGML\Source\FastMapper</Filter>

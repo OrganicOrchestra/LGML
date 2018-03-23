@@ -66,16 +66,12 @@ public:
 
     void updateVisibility();
 
-    //void selectDataAndElementPopup(String &selectedDataName, String &selectedElementName, DataType &selectedDataType, const DataType &filterType = DataType::Unknown);
 
     NodeContainerViewer* getNodeContainerViewer() const noexcept;
     ConnectableNodeUI* getNodeUI() const noexcept;
 
     void numAudioInputChanged (ConnectableNode*, int newNum) override;
     void numAudioOutputChanged (ConnectableNode*, int newNum) override;
-    //DATA
-    void numDataInputChanged (ConnectableNode*, int newNum) override;
-    void numDataOutputChanged (ConnectableNode*, int newNum) override;
 
     void handleCommandMessage (int id)override;
 

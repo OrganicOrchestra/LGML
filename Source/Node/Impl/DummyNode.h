@@ -50,11 +50,7 @@ public:
 
     void processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer&)override;
 
-    //DATA
-
-    Data* outPosData;
-    void processInputDataChanged (Data* d) override;
-
+    
 
 
 

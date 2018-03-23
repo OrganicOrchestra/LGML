@@ -266,7 +266,7 @@ DynamicObject* NodeContainer::getObject()
         connectionsData.append (c->getObject());
     }
 
-    //  data.getDynamicObject()->setProperty("nodes", nodesData);
+    
     data->setProperty ("connections", connectionsData);
 
     return data;
@@ -472,16 +472,6 @@ void NodeContainer::onContainerParameterChangedAsync ( ParameterBase* p, const v
 void NodeContainer::bypassNode (bool /*bypass*/) {}
 
 
-
-bool NodeContainer::hasDataInputs()
-{
-    return containerInNode != nullptr ? containerInNode->hasDataInputs() : false;
-}
-
-bool NodeContainer::hasDataOutputs()
-{
-    return containerOutNode != nullptr ? containerOutNode->hasDataOutputs() : false;
-}
 
 
 void NodeContainer::numChannelsChanged (bool isInput)

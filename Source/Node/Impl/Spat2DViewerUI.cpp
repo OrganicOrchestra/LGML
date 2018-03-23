@@ -118,7 +118,7 @@ void Spat2DViewer::updateSourcePosition (int sourceIndex)
 {
     if (sourceIndex == -1 || sourceIndex >= sources.size()) return;
 
-    sources[sourceIndex]->setPosition (Point<float> (node->inputDatas[sourceIndex]->elements[0]->value, node->inputDatas[sourceIndex]->elements[1]->value));
+    sources[sourceIndex]->setPosition (node->inputsPositionsParams[sourceIndex]->getPoint());
 }
 
 void Spat2DViewer::updateTargetPosition (int targetIndex)
@@ -132,7 +132,7 @@ void Spat2DViewer::updateTargetInfluence (int targetIndex)
 {
     if (targetIndex == -1 || targetIndex >= targets.size()) return;
 
-    targets[targetIndex]->influence = node->outputDatas[targetIndex]->elements[0]->value;
+    targets[targetIndex]->influence = node->outputsIntensities[targetIndex]->floatValue();
     targets[targetIndex]->repaint();
 }
 
@@ -168,7 +168,7 @@ void Spat2DViewer::paint (Graphics& g)
 
 void Spat2DViewer::nodeParameterChanged (ConnectableNode*, ParameterBase* p)
 {
-    DBG ("node parameter changed " << p->niceName);
+
 
     if (p == node->numSpatInputs) updateNumSources();
     else if (p == node->numSpatOutputs) updateNumTargets();
@@ -183,12 +183,28 @@ void Spat2DViewer::nodeParameterChanged (ConnectableNode*, ParameterBase* p)
                 resized();
             }
         }
+
         else
         {
             Point2DParameter<float>* p2d = (Point2DParameter<float>*)p;
-            int index = node->targetPositions.indexOf (p2d);
-            updateTargetPosition (index);
+            if(node->targetPositions.contains(p2d)){
+                int index = node->targetPositions.indexOf (p2d);
+                updateTargetPosition (index);
+            }
+            else if(node->inputsPositionsParams.contains(p2d)){
+                int index = node->inputsPositionsParams.indexOf (p2d);
+                updateSourcePosition(index);
+            }
+            else{
+                jassertfalse;
+            }
+
         }
+
+    }
+    else if(node->outputsIntensities.contains((FloatParameter*)p)){
+        int index = node->outputsIntensities.indexOf((FloatParameter *)p);
+        updateTargetInfluence(index);
 
     }
     else if (p == node->shapeMode)
@@ -228,29 +244,6 @@ void Spat2DViewer::nodeParameterChanged (ConnectableNode*, ParameterBase* p)
     }
 }
 
-
-
-void Spat2DViewer::nodeInputDataChanged (ConnectableNode*, Data* d)
-{
-    int index = node->inputDatas.indexOf (d);
-    updateSourcePosition (index);
-}
-
-void Spat2DViewer::nodeOutputDataUpdated (ConnectableNode*, Data* d)
-{
-    int index = node->outputDatas.indexOf (d);
-    updateTargetInfluence (index);
-}
-
-void Spat2DViewer::dataInputAdded (ConnectableNode*, Data*)
-{
-    updateNumSources();
-}
-
-void Spat2DViewer::dataInputRemoved (ConnectableNode*, Data*)
-{
-    updateNumSources();
-}
 
 void Spat2DViewer::controllableAdded (ControllableContainer*, Controllable* c)
 {

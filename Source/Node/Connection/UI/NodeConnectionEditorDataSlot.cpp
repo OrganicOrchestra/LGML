@@ -16,24 +16,17 @@
 
 #include "NodeConnectionEditorDataSlot.h"
 #include "../../../UI/Style.h"
-//==============================================================================
-NodeConnectionEditorDataSlot::NodeConnectionEditorDataSlot (String label, Data* data,
-                                                            NodeConnection::ConnectionType connectionType, IOType ioType) : label (label), data (data), channel (-1),
-    connectionType (connectionType), ioType (ioType), currentEditingData (nullptr)
-{
 
-
-}
 
 NodeConnectionEditorDataSlot::NodeConnectionEditorDataSlot (String label, int channel,
-                                                            NodeConnection::ConnectionType connectionType, IOType ioType) : label (label), data (nullptr), channel (channel),
-    connectionType (connectionType), ioType (ioType), currentEditingData (nullptr)
+                                                            NodeConnection::ConnectionType connectionType, IOType ioType) : label (label), channel (channel),
+    connectionType (connectionType), ioType (ioType)
 {
 }
 
 NodeConnectionEditorDataSlot::~NodeConnectionEditorDataSlot()
 {
-    data = nullptr;
+    
 }
 
 void NodeConnectionEditorDataSlot::paint (Graphics& g)
@@ -46,12 +39,7 @@ void NodeConnectionEditorDataSlot::paint (Graphics& g)
 
     Colour c = isMouseOver() ? findColour (TextButton::buttonOnColourId) : (isConnected() ? Colours::lightblue : findColour (TextButton::buttonColourId));
 
-    if (currentEditingData != nullptr)
-    {
-        if (currentEditingData->type == data->type) c = Colours::lightgreen;
-        else if (currentEditingData->isTypeCompatible (data->type)) c = Colours::yellow;
-        else c = findColour (TextButton::buttonColourId);
-    }
+
 
     g.setColour (c);
 

@@ -106,12 +106,6 @@ public:
 
     void nodeParameterChanged (ConnectableNode*, ParameterBase* p) override;
 
-    void nodeInputDataChanged (ConnectableNode*, Data* d) override;
-    void nodeOutputDataUpdated (ConnectableNode*, Data* d) override;
-
-    void dataInputAdded (ConnectableNode*, Data*) override;
-    void dataInputRemoved (ConnectableNode*, Data*) override;
-
     void controllableAdded (ControllableContainer*, Controllable*) override;
     void controllableRemoved (ControllableContainer*, Controllable*) override;
 

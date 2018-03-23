@@ -28,7 +28,7 @@ ContainerOutNode::ContainerOutNode (StringRef name) :
     userCanAccessOutputs = false;
 
     numChannels = addNewParameter<IntParameter> ("Num Audio Outputs", "Number of output channels for this container", 2, 0, 100);
-    numInputData = addNewParameter<IntParameter> ("Num Data Outputs", "Number of data outputs for this container", 0, 0, 100);
+    
     setNumChannels(numChannels->intValue());
 }
 
@@ -59,11 +59,6 @@ void ContainerOutNode::processBlockInternal (AudioBuffer<float>& buffer, MidiBuf
 };
 
 
-void ContainerOutNode::processInputDataChanged (Data* d)
-{
-    Data* od = getOutputDataByName (d->name);
-    od->updateFromSourceData (d);
-}
 
 
 void ContainerOutNode::setNumChannels (int num)
@@ -85,16 +80,6 @@ void ContainerOutNode::onContainerParameterChanged ( ParameterBase* p)
         setNumChannels (p->value);
     }
 
-    else if (p == numInputData)
-    {
-        if (p->intValue() < getTotalNumOutputData())
-        {
-            removeOutputData (outputDatas[outputDatas.size() - 1]->name);
-        }
-        else
-        {
-            addOutputData ("Output Data " + String (outputDatas.size()), DataType::Number);
-        }
-    }
+
 
 }

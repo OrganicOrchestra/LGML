@@ -70,7 +70,7 @@ NodeConnection::~NodeConnection()
         removeAllAudioGraphConnections();
     }
 
-    model.dataConnections.clear();
+
 
     if (sourceNode.get())
     {
@@ -183,51 +183,6 @@ void NodeConnection::removeAllAudioGraphConnectionsForChannel (int channel, bool
 
 }
 
-void NodeConnection::addDataGraphConnection (Data* sourceData, Data* destData)
-{
-    DataProcessorGraph::Connection* c = NodeManager::getInstance()->dataGraph.addConnection (sourceData, destData);
-    model.dataConnections.add (c);
-    listeners.call (&Listener::connectionDataLinkAdded, c);
-}
-
-void NodeConnection::removeDataGraphConnection (Data* sourceData, Data* destData)
-{
-    DataProcessorGraph::Connection* c = NodeManager::getInstance()->dataGraph.getConnectionBetween (sourceData, destData);
-    model.dataConnections.removeAllInstancesOf (c);
-    listeners.call (&Listener::connectionDataLinkRemoved, c);
-    NodeManager::getInstance()->dataGraph.removeConnection (c);
-
-}
-
-void NodeConnection::removeAllDataGraphConnections()
-{
-    while (model.dataConnections.size() > 0)
-    {
-        removeDataGraphConnection (model.dataConnections[0]->sourceData, model.dataConnections[0]->destData);
-    }
-
-    //useless ?
-    model.dataConnections.clear();
-}
-
-
-void NodeConnection::removeAllDataGraphConnectionsForData (Data* data, bool isSourceData)
-{
-    Array<DataProcessorGraph::Connection*> connectionsToRemove;
-
-    for (auto& c : model.dataConnections)
-    {
-        if ((isSourceData && c->sourceData == data) || (!isSourceData && c->destData == data))
-        {
-            connectionsToRemove.add (c);
-        }
-    }
-
-    for (auto& tc : connectionsToRemove) removeDataGraphConnection (tc->sourceData, tc->destData);
-
-}
-
-
 
 void NodeConnection::remove()
 {
@@ -284,25 +239,6 @@ void NodeConnection::audioOutputRemoved (ConnectableNode* n, int channel)
 }
 
 
-void NodeConnection::dataInputRemoved (ConnectableNode* n, Data* d)
-{
-    if (n == destNode)
-    {
-        removeAllDataGraphConnectionsForData (d, false);
-        //if (n->getTotalNumInputData() == 0) remove();
-    }
-}
-
-void NodeConnection::dataOutputRemoved (ConnectableNode* n, Data* d)
-{
-    if (n == sourceNode)
-    {
-        removeAllDataGraphConnectionsForData (d, true);
-        //if (n->getTotalNumOutputData() == 0) remove();
-    }
-}
-
-
 DynamicObject* NodeConnection::getObject()
 {
     auto data = new DynamicObject();
@@ -338,16 +274,6 @@ DynamicObject* NodeConnection::getObject()
             links.append (cObject);
         }
     }
-    else
-    {
-        for (auto& c : model.dataConnections)
-        {
-            var cObject (new DynamicObject());
-            cObject.getDynamicObject()->setProperty ("sourceData", c->sourceData->name);
-            cObject.getDynamicObject()->setProperty ("destData", c->destData->name);
-            links.append (cObject);
-        }
-    }
 
     data->setProperty ("links", links);
 
@@ -377,18 +303,6 @@ void NodeConnection::configureFromObject (DynamicObject* data)
                 addAudioGraphConnection (sourceChannel, destChannel);
             }
         }
-        else
-        {
 
-            removeAllDataGraphConnections();
-
-            for (auto& linkVar : *links)
-            {
-                String sourceName = linkVar.getProperty ("sourceData", var());
-                String destName = linkVar.getProperty ("destData", var());
-                addDataGraphConnection (sourceNode->getOutputDataByName (sourceName), destNode->getInputDataByName (destName));
-            }
-
-        }
     }
 }

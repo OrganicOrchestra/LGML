@@ -43,7 +43,6 @@ bool NodeConnectionEditorLink::setCandidateDropSlot (NodeConnectionEditorDataSlo
 
     if (baseSlot->connectionType != slot->connectionType) return false;
 
-    if (baseSlot->isData() && ! (baseSlot->data->isTypeCompatible (slot->data->type))) return false;
 
     if (baseSlot->isConnectedTo (slot)) return false;
 

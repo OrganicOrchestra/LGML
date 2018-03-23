@@ -24,7 +24,7 @@
 #include "../Controllable/Parameter/ParameterContainer.h"
 #include "Manager/NodeFactory.h"
 
-#include "../Data/Data.h"
+
 
 class NodeContainer;
 class ConnectableNodeUI;
@@ -49,8 +49,7 @@ public:
     virtual bool hasAudioInputs();
     virtual bool hasAudioOutputs();
 
-    virtual bool hasDataInputs();
-    virtual bool hasDataOutputs();
+
 
     //Controllables (from ControllableContainer)
 
@@ -82,16 +81,6 @@ public:
         virtual void audioOutputAdded (ConnectableNode*, int /*channel*/) {}
         virtual void audioOutputRemoved (ConnectableNode*, int /*channel*/) {}
 
-        // DATA
-        virtual void numDataInputChanged (ConnectableNode*, int /*newNumInput*/) {};
-        virtual void numDataOutputChanged (ConnectableNode*, int /*newNumOutput*/) {};
-
-        virtual void dataInputAdded (ConnectableNode*, Data*) {}
-        virtual void dataInputRemoved (ConnectableNode*, Data*) {}
-        virtual void dataOutputAdded (ConnectableNode*, Data*) {}
-        virtual void dataOutputRemoved (ConnectableNode*, Data*) {}
-        virtual void nodeInputDataChanged (ConnectableNode*, Data*) {}
-        virtual void nodeOutputDataUpdated (ConnectableNode*, Data*) {}
 
 
     };
@@ -149,21 +138,6 @@ public:
 
 
 
-    //DATA
-    virtual Data* getInputData (int dataIndex);
-    virtual Data* getOutputData (int dataIndex);
-
-    virtual int getTotalNumInputData();
-    virtual int getTotalNumOutputData();
-
-    virtual StringArray getInputDataInfos();
-    virtual StringArray getOutputDataInfos();
-
-    virtual Data::DataType getInputDataType (const String& dataName, const String& elementName);
-    virtual Data::DataType getOutputDataType (const String& dataName, const String& elementName);
-
-    virtual Data* getOutputDataByName (const String& dataName);
-    virtual Data* getInputDataByName (const String& dataName);
 
 
 protected:

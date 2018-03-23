@@ -116,10 +116,6 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/ControllerUI_b58e1c01.o \
   $(JUCE_OBJDIR)/Controller_5be1e7f0.o \
   $(JUCE_OBJDIR)/ControllerManager_2352be27.o \
-  $(JUCE_OBJDIR)/Data_4df474f0.o \
-  $(JUCE_OBJDIR)/DataInNode_c3d0d217.o \
-  $(JUCE_OBJDIR)/DataInNodeUI_53e5222b.o \
-  $(JUCE_OBJDIR)/DataProcessorGraph_1fde6fac.o \
   $(JUCE_OBJDIR)/FastMap_ac551777.o \
   $(JUCE_OBJDIR)/FastMapper_28fa4950.o \
   $(JUCE_OBJDIR)/FastMapperUI_148daf24.o \
@@ -490,26 +486,6 @@ $(JUCE_OBJDIR)/Controller_5be1e7f0.o: ../../Source/Controller/Controller.cpp
 $(JUCE_OBJDIR)/ControllerManager_2352be27.o: ../../Source/Controller/ControllerManager.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling ControllerManager.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/Data_4df474f0.o: ../../Source/Data/Data.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling Data.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/DataInNode_c3d0d217.o: ../../Source/Data/DataInNode.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling DataInNode.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/DataInNodeUI_53e5222b.o: ../../Source/Data/DataInNodeUI.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling DataInNodeUI.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/DataProcessorGraph_1fde6fac.o: ../../Source/Data/DataProcessorGraph.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling DataProcessorGraph.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/FastMap_ac551777.o: ../../Source/FastMapper/FastMap.cpp
