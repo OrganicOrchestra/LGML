@@ -67,7 +67,7 @@ jobs:
         environment:
           PKG_CONFIG_PATH: /usr/lib/i386-linux-gnu/pkgconfig/
           CROSS_ARCH: i386
-          ARCH_FLAGS: -m32 # arch for JUCEs linux makefile
+          ARCH_FLAGS: -m32 -march=i386 # arch for JUCEs linux makefile
           DST_LGML_PATH: /tmp/build32
 
     steps:

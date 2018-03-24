@@ -508,7 +508,7 @@ timerTicks(0){
     audioCpu->isEditable = false;
     audioCpu->isSavable = false;
 
-//    startTimer(300);
+    startTimer(300);
 
 //TODO implement UI Monitoring tool
 //    activateGlobalStats(true);
