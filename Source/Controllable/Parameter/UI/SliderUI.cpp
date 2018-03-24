@@ -369,6 +369,6 @@ void SliderUI<T>::editorHidden (Label*, TextEditor&) {
 };
 
 template class SliderUI<int>;
-template class SliderUI<double>;
+template class SliderUI<floatParamType>;
 
 #endif

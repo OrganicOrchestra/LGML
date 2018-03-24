@@ -84,7 +84,7 @@ void StepperUI<T>::rangeChanged ( ParameterBase* p)
 }
 
 
-template class StepperUI<double>;
+template class StepperUI<floatParamType>;
 template class StepperUI<int>;
 
 #endif

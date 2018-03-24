@@ -597,9 +597,9 @@ void OSCController::sendOSCForAddress (const Controllable* c, const String& cAdd
             auto point = static_cast<const Point2DParameter<int> *>(p);
             sendOSC (cAddress, point->getX(),point->getY());
         }
-        else if (targetType == Point2DParameter<float>::_factoryType) {
-            auto point = static_cast<const Point2DParameter<float> *>(p);
-            sendOSC (cAddress, point->getX(),point->getY());
+        else if (targetType == Point2DParameter<floatParamType>::_factoryType) {
+            auto point = static_cast<const Point2DParameter<floatParamType> *>(p);
+            sendOSC (cAddress, (float)point->getX(),(float)point->getY());
         }
         else
         {

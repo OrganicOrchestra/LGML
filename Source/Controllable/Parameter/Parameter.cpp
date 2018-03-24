@@ -69,7 +69,11 @@ void ParameterBase::setValue (const var & _value, bool silentSet, bool force)
 }
 void ParameterBase::setValueFrom(Listener * notifier,const var & _value, bool silentSet , bool force ){
     jassert(!isCommitableParameter);
+    // reentrancy check
+    if(notifier !=nullptr && (_valueSetter.get()==notifier) ) force=true;
+    _valueSetter = notifier;
      tryToSetValue (_value, silentSet, alwaysNotify || force,notifier);
+    _valueSetter = nullptr;
 
 }
 
@@ -194,7 +198,9 @@ DynamicObject* ParameterBase::createDynamicObject()
 {
     auto dObject = Controllable::createDynamicObject();
     static const Identifier _jsSetIdentifier ("set");
-    dObject->setMethod (_jsSetIdentifier, setControllableValueFromJS);
+    dObject->setMethod (_jsSetIdentifier,
+                        setControllableValueFromJS
+                        );
     return dObject;
 }
 

@@ -79,6 +79,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/ControllableIndexedContainer_32b95300.o \
   $(JUCE_OBJDIR)/UndoableHelper_584c3b19.o \
   $(JUCE_OBJDIR)/ParameterContainerSync_5c3cffa0.o \
+  $(JUCE_OBJDIR)/Point2DParameterUI_29e77233.o \
   $(JUCE_OBJDIR)/GenericParameterContainerEditor_282bb6ae.o \
   $(JUCE_OBJDIR)/BetterStepper_3cf8b0d3.o \
   $(JUCE_OBJDIR)/BoolToggleUI_b0447c2a.o \
@@ -301,6 +302,11 @@ $(JUCE_OBJDIR)/UndoableHelper_584c3b19.o: ../../Source/Controllable/Parameter/Un
 $(JUCE_OBJDIR)/ParameterContainerSync_5c3cffa0.o: ../../Source/Controllable/Parameter/ParameterContainerSync.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling ParameterContainerSync.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/Point2DParameterUI_29e77233.o: ../../Source/Controllable/Parameter/UI/Point2DParameterUI.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling Point2DParameterUI.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/GenericParameterContainerEditor_282bb6ae.o: ../../Source/Controllable/Parameter/UI/GenericParameterContainerEditor.cpp

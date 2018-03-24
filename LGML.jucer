@@ -76,6 +76,10 @@
           <FILE id="zSQQ5G" name="ParameterContainerSync.h" compile="0" resource="0"
                 file="Source/Controllable/Parameter/ParameterContainerSync.h"/>
           <GROUP id="y1gtRH" name="UI">
+            <FILE id="QucC2P" name="Point2DParameterUI.cpp" compile="1" resource="0"
+                  file="Source/Controllable/Parameter/UI/Point2DParameterUI.cpp"/>
+            <FILE id="aSq0F3" name="Point2DParameterUI.h" compile="0" resource="0"
+                  file="Source/Controllable/Parameter/UI/Point2DParameterUI.h"/>
             <FILE compile="1" file="Source/Controllable/Parameter/UI/GenericParameterContainerEditor.cpp"
                   id="YhmjKH" name="GenericParameterContainerEditor.cpp" resource="0"/>
             <FILE compile="0" file="Source/Controllable/Parameter/UI/GenericParameterContainerEditor.h"

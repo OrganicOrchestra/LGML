@@ -19,6 +19,11 @@
 #include "../Controllable.h"
 #include "../../Utils/QueuedNotifier.h"
 
+#if USE_FLOAT_FOR_PARAMS
+typedef float floatParamType;
+#else
+typedef double floatParamType;
+#endif
 
 class ParameterBase : public Controllable, private AsyncUpdater
 {
@@ -158,6 +163,7 @@ public:
 protected:
     bool waitOrDeffer (const var& _value, bool silentSet, bool force);
     Atomic<bool> _isSettingValue;
+    Atomic<ParameterBase::Listener * > _valueSetter;
     
 private:
 

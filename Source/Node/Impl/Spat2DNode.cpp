@@ -16,6 +16,9 @@
 #include "Spat2DNode.h"
 
 REGISTER_NODE_TYPE (Spat2DNode)
+
+constexpr int minSpatX = -1.5;
+constexpr int maxSpatX = 2;
 Spat2DNode::Spat2DNode (StringRef name) :
 NodeBase (name),
 numSpatInputs (nullptr), numSpatOutputs (nullptr), spatMode (nullptr), shapeMode (nullptr)
@@ -44,7 +47,7 @@ numSpatInputs (nullptr), numSpatOutputs (nullptr), spatMode (nullptr), shapeMode
     numSpatOutputs = addNewParameter<IntParameter> ("Num Outputs", "Number of spatialized outputs", 3, 0, 16);
 
     useGlobalTarget = addNewParameter<BoolParameter> ("Use Global Target", "Use a global target that will act as a max influence and affect all targets.", false);
-    globalTargetPosition = addNewParameter<Point2DParameter<float>> ("Global Target Position", "Position of the Global Target");
+    globalTargetPosition = addNewParameter<Point2DParameter<floatParamType>> ("Global Target Position", "Position of the Global Target",0,0,(Array<var>){minSpatX,minSpatX},(Array<var>){maxSpatX,maxSpatX});
     globalTargetRadius = addNewParameter<FloatParameter> ("Global Target Radius", "Radius for the global target", .5f, 0.f, 1.f);
     useLogCurve = addNewParameter<BoolParameter>("logCurve", "use log curve for volume", false);
 
@@ -56,10 +59,10 @@ numSpatInputs (nullptr), numSpatOutputs (nullptr), spatMode (nullptr), shapeMode
     computeAllInfluences();
 }
 
-void Spat2DNode::setSourcePosition (int index, const Point<float>& position)
+void Spat2DNode::setSourcePosition (int index, const Point<floatParamType>& position)
 {
 
-    Point2DParameter<float>* d = inputsPositionsParams.getReference(index);
+    Point2DParameter<floatParamType>* d = inputsPositionsParams.getReference(index);
 
     if (d == nullptr) return;
 
@@ -68,7 +71,7 @@ void Spat2DNode::setSourcePosition (int index, const Point<float>& position)
     computeAllInfluences();
 }
 
-void Spat2DNode::setTargetPosition (int index, const Point<float>& position)
+void Spat2DNode::setTargetPosition (int index, const Point<floatParamType>& position)
 {
     if (index == -1)
     {
@@ -96,7 +99,7 @@ void Spat2DNode::updateTargetsFromShape()
         case CIRCLE:
             for (int i = 0; i < numSpatOutputs->intValue(); i++)
             {
-                Point2DParameter<float>* p = targetPositions[i];
+                Point2DParameter<floatParamType>* p = targetPositions[i];
                 float angle = (i * 1.f / (numSpatOutputs->intValue()) + circleRotation->floatValue() / 360.f) * float_Pi * 2;
                 p->setPoint (.5f + cosf (angle)*circleRadius->floatValue()*.5f, .5f + sinf (angle)*circleRadius->floatValue()*.5f);
             }
@@ -146,8 +149,8 @@ void Spat2DNode::computeInfluence (int sourceIndex, int targetIndex)
 
     if (targetIndex >= outputsIntensities.size()) return;
 
-    Point2DParameter<float>* inputPos = inputsPositionsParams.getReference(sourceIndex);
-    Point<float> sPos = inputPos->getPoint();
+    Point2DParameter<floatParamType>* inputPos = inputsPositionsParams.getReference(sourceIndex);
+    Point<floatParamType> sPos = inputPos->getPoint();
     FloatParameter* outputVal = outputsIntensities.getReference(targetIndex);
 
     float minValue = 0;
@@ -159,7 +162,7 @@ void Spat2DNode::computeInfluence (int sourceIndex, int targetIndex)
 
     if (numSpatInputs->intValue() > 0)
     {
-        Point<float> tPos = targetPositions[targetIndex]->getPoint();
+        Point<floatParamType> tPos = targetPositions[targetIndex]->getPoint();
 
         float val = jmax<float> (minValue, getValueForSourceAndTargetPos (sPos, tPos, targetRadius->floatValue()));
         outputVal->setValue (val);
@@ -170,7 +173,7 @@ void Spat2DNode::computeInfluence (int sourceIndex, int targetIndex)
     }
 }
 
-float Spat2DNode::getValueForSourceAndTargetPos (const Point<float>& sourcePosition, const Point<float>& targetPosition, float radius)
+float Spat2DNode::getValueForSourceAndTargetPos (const Point<floatParamType>& sourcePosition, const Point<floatParamType>& targetPosition, float radius)
 {
     if (radius == 0) return 0;
 
@@ -187,11 +190,11 @@ void Spat2DNode::numChannelsChanged (bool /*isInput*/)
 void Spat2DNode::updateIOParams(){
 
     for(int i = inputsPositionsParams.size() ;i<numSpatInputs->intValue(); i ++){
-        auto np = addNewParameter<Point2DParameter<float> >
+        auto np = addNewParameter<Point2DParameter<floatParamType> >
         ("input spat : "+String(i),
          "param for controlling spat position "+String(i),
          0.5+juce::Random().nextFloat()*.2f,0.5+juce::Random().nextFloat()*.2f,
-         (Array<var>){0,0},(Array<var>){1,1}
+         (Array<var>){minSpatX,minSpatX},(Array<var>){maxSpatX,maxSpatX}
          );
         inputsPositionsParams.add(np);
 
@@ -212,7 +215,10 @@ void Spat2DNode::updateIOParams(){
          0.0f,0.0f,1.0f
          );
         np->isEditable = false;
-        auto po = addNewParameter<Point2DParameter<float>>("target"+String(i), "target pos param");
+        auto po = addNewParameter<Point2DParameter<floatParamType>>("target"+String(i), "target pos param",
+                                                           0,0,
+                                                           (Array<var>){minSpatX,minSpatX},(Array<var>){maxSpatX,maxSpatX}
+                                                           );
         targetPositions.add(po);
         outputsIntensities.add(np);
         influences.set(i, 0);
@@ -265,7 +271,7 @@ void Spat2DNode::onContainerParameterChanged ( ParameterBase* p)
     {
         computeAllInfluences();
     }
-    else if(inputsPositionsParams.contains((Point2DParameter<float> *)p)){
+    else if(inputsPositionsParams.contains((Point2DParameter<floatParamType> *)p)){
         //        int i = inputsPositionsParams.indexOf(p);
         computeAllInfluences();
     }

@@ -67,7 +67,7 @@ ParameterBase* saveSession,*loadSession,*closeEngine;
         EngineStats(Engine *);
         void activateGlobalStats(bool);
         float getAudioCPU() const;
-        Point2DParameter<float> * audioCpu;
+        Point2DParameter<floatParamType> * audioCpu;
         bool isListeningGlobal;
         typedef OwnedFeedbackListener<EngineStats> GlobalListener;
         typedef HashMap<String, Array<int>,DefaultHashFunctions,CriticalSection> CountMapType;

@@ -173,7 +173,7 @@ void Spat2DViewer::nodeParameterChanged (ConnectableNode*, ParameterBase* p)
     if (p == node->numSpatInputs) updateNumSources();
     else if (p == node->numSpatOutputs) updateNumTargets();
     else if (p == node->targetRadius) updateTargetRadius();
-    else if (p->isType<Point2DParameter<float>>())
+    else if (p->isType<Point2DParameter<floatParamType>>())
     {
         if (p == node->globalTargetPosition)
         {
@@ -186,7 +186,7 @@ void Spat2DViewer::nodeParameterChanged (ConnectableNode*, ParameterBase* p)
 
         else
         {
-            Point2DParameter<float>* p2d = (Point2DParameter<float>*)p;
+            Point2DParameter<floatParamType>* p2d = (Point2DParameter<floatParamType>*)p;
             if(node->targetPositions.contains(p2d)){
                 int index = node->targetPositions.indexOf (p2d);
                 updateTargetPosition (index);
@@ -247,15 +247,15 @@ void Spat2DViewer::nodeParameterChanged (ConnectableNode*, ParameterBase* p)
 
 void Spat2DViewer::controllableAdded (ControllableContainer*, Controllable* c)
 {
-    if (c->isType<Point2DParameter<float>>()) updateNumTargets();
+    if (c->isType<Point2DParameter<floatParamType>>()) updateNumTargets();
 }
 
 void Spat2DViewer::controllableRemoved (ControllableContainer*, Controllable* c)
 {
-    if (c->isType<Point2DParameter<float>>()) updateNumTargets();
+    if (c->isType<Point2DParameter<floatParamType>>()) updateNumTargets();
 }
 
-void Spat2DViewer::handleUserMoved (Spat2DHandle* handle, const Point<float>& newPos)
+void Spat2DViewer::handleUserMoved (Spat2DHandle* handle, const Point<floatParamType>& newPos)
 {
     if (handle->type == Spat2DHandle::HandleType::SOURCE)
     {
@@ -318,7 +318,7 @@ void Spat2DHandle::mouseDown (const MouseEvent& e)
 {
     if (e.mods.isRightButtonDown())
     {
-        handleListeners.call (&Listener::handleUserMoved, this, Point<float> (.5f, .5f));
+        handleListeners.call (&Listener::handleUserMoved, this, Point<floatParamType> (.5, .5));
     }
 
     toFront (true);
@@ -330,7 +330,7 @@ void Spat2DHandle::mouseDrag (const MouseEvent& e)
 
     if (e.mods.isLeftButtonDown())
     {
-        Point<float> newPos = Point<float> (jlimit<float> (0, 1, parent->getMouseXYRelative().x * 1. / parent->getWidth()), jlimit<float> (0, 1, parent->getMouseXYRelative().y * 1. / parent->getHeight()));
+        Point<floatParamType> newPos = Point<floatParamType> (jlimit<float> (0, 1, parent->getMouseXYRelative().x * 1. / parent->getWidth()), jlimit<float> (0, 1, parent->getMouseXYRelative().y * 1. / parent->getHeight()));
         handleListeners.call (&Listener::handleUserMoved, this, newPos);
     }
 }
@@ -340,7 +340,7 @@ void Spat2DHandle::resized()
     repaint();
 }
 
-void Spat2DHandle::setPosition (Point<float> newPosition)
+void Spat2DHandle::setPosition (Point<floatParamType> newPosition)
 {
     Component* parent = getParentComponent();
     position.setXY (newPosition.x, newPosition.y);

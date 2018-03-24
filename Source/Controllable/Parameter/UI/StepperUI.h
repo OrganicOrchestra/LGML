@@ -53,6 +53,6 @@ protected:
 
 
 typedef StepperUI<int> IntStepperUI;
-typedef StepperUI<double> FloatStepperUI;
+typedef StepperUI<floatParamType> FloatStepperUI;
 
 #endif  // FLOATSTEPPERUI_H_INCLUDED

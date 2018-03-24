@@ -33,6 +33,7 @@
 		76BC7AF0F4DD662F91AA5491 = {isa = PBXBuildFile; fileRef = B53FE1801A20D137E4AD0FAC; };
 		0860E6A9528B43AA711D9E5C = {isa = PBXBuildFile; fileRef = 07BBD52759F300DABBA46635; };
 		9870EC2174EF123A69A756B1 = {isa = PBXBuildFile; fileRef = F12B30C71CEAAC024F62DC25; };
+		687FE4B666F92209E3A27F3E = {isa = PBXBuildFile; fileRef = D8F52D902897CFF472A93452; };
 		23B41906FCEA05733D391BF8 = {isa = PBXBuildFile; fileRef = 59AD637EBC01DE0167C23164; };
 		1585CBBDD702781E33168DF6 = {isa = PBXBuildFile; fileRef = 536C04FA2CE757888068C3B6; };
 		70D75C05FB637F3BAFEE9532 = {isa = PBXBuildFile; fileRef = F75FCCDBBFC3B0AA81F0651F; };
@@ -290,6 +291,7 @@
 		3F3204D72F5BA2994190D611 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = FastMap.cpp; path = ../../Source/FastMapper/FastMap.cpp; sourceTree = "SOURCE_ROOT"; };
 		3F60827520AF648346E4BAD9 = {isa = PBXFileReference; lastKnownFileType = file; name = "juce_audio_basics"; path = "../../../JUCE/modules/juce_audio_basics"; sourceTree = "SOURCE_ROOT"; };
 		404AFEFD731386AC55CF9A0F = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NodeContainer.h; path = ../../Source/Node/NodeContainer/NodeContainer.h; sourceTree = "SOURCE_ROOT"; };
+		4113F6C811A4CE7684F092D3 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Point2DParameterUI.h; path = ../../Source/Controllable/Parameter/UI/Point2DParameterUI.h; sourceTree = "SOURCE_ROOT"; };
 		41595111F15F9F7BF8A595F0 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = "include_juce_audio_basics.mm"; path = "../../JuceLibraryCode/include_juce_audio_basics.mm"; sourceTree = "SOURCE_ROOT"; };
 		4173450517ABE7487206602B = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LooperTrack.h; path = ../../Source/Node/Impl/LooperTrack.h; sourceTree = "SOURCE_ROOT"; };
 		419EE82605A0071491557591 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GenericParameterContainerEditor.h; path = ../../Source/Controllable/Parameter/UI/GenericParameterContainerEditor.h; sourceTree = "SOURCE_ROOT"; };
@@ -493,6 +495,7 @@
 		D63FE7B556B29ECE2209954C = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Main.cpp; path = ../../Source/Main.cpp; sourceTree = "SOURCE_ROOT"; };
 		D715964179776B77711C3235 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = VSTManager.h; path = ../../Source/Audio/VSTManager.h; sourceTree = "SOURCE_ROOT"; };
 		D75A21EEA901A320DBF46D01 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = LooperNodeUI.cpp; path = ../../Source/Node/Impl/LooperNodeUI.cpp; sourceTree = "SOURCE_ROOT"; };
+		D8F52D902897CFF472A93452 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Point2DParameterUI.cpp; path = ../../Source/Controllable/Parameter/UI/Point2DParameterUI.cpp; sourceTree = "SOURCE_ROOT"; };
 		DA15374957FB6B4F737E6F9B = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TimeMasterCandidate.h; path = ../../Source/Time/TimeMasterCandidate.h; sourceTree = "SOURCE_ROOT"; };
 		DA194809982A59E92562537C = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = BufferBlockList.cpp; path = ../../Source/Audio/BufferBlockList.cpp; sourceTree = "SOURCE_ROOT"; };
 		DAA437121E6ED2911A782CD2 = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
@@ -582,6 +585,8 @@
 					2EB7DD273F97C8C64053F819,
 					D715964179776B77711C3235, ); name = Audio; sourceTree = "<group>"; };
 		9302F6CAA4843524949EA164 = {isa = PBXGroup; children = (
+					D8F52D902897CFF472A93452,
+					4113F6C811A4CE7684F092D3,
 					59AD637EBC01DE0167C23164,
 					419EE82605A0071491557591,
 					536C04FA2CE757888068C3B6,
@@ -1271,6 +1276,7 @@
 					76BC7AF0F4DD662F91AA5491,
 					0860E6A9528B43AA711D9E5C,
 					9870EC2174EF123A69A756B1,
+					687FE4B666F92209E3A27F3E,
 					23B41906FCEA05733D391BF8,
 					1585CBBDD702781E33168DF6,
 					70D75C05FB637F3BAFEE9532,

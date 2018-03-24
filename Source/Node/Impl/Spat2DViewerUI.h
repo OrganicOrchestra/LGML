@@ -38,7 +38,7 @@ public:
     float size;
     Point<float> position;
 
-    void setPosition (Point<float> newPosition);
+    void setPosition (Point<floatParamType> newPosition);
 
     virtual bool hitTest (int x, int y) override;
 
@@ -48,7 +48,7 @@ public:
 
         /** Destructor. */
         virtual ~Listener() {}
-        virtual void handleUserMoved (Spat2DHandle* handle, const Point<float>& newPosition) = 0;
+        virtual void handleUserMoved (Spat2DHandle* handle, const Point<floatParamType>& newPosition) = 0;
     };
 
     ListenerList<Listener> handleListeners;
@@ -110,7 +110,7 @@ public:
     void controllableRemoved (ControllableContainer*, Controllable*) override;
 
     // Inherited via Listener (Spat2DHandle)
-    virtual void handleUserMoved (Spat2DHandle* handle, const Point<float>& newPosition) override;
+    virtual void handleUserMoved (Spat2DHandle* handle, const Point<floatParamType>& newPosition) override;
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Spat2DViewer)

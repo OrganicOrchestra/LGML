@@ -36,7 +36,7 @@ public:
     virtual ~AudioDeviceOutNodeContentUI();
 
     OwnedArray<ParameterUI> muteToggles;
-    OwnedArray<SliderUI<double> >  volumes;
+    OwnedArray<SliderUI<floatParamType> >  volumes;
     OwnedArray<VuMeter> vuMeters;
 
     AudioDeviceOutNode* audioOutNode;

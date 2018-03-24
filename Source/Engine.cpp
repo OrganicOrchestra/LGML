@@ -475,12 +475,13 @@ ParameterContainer("stats"),
 isListeningGlobal(false),
 timerTicks(0){
     setUserDefined(false);
-    audioCpu = addNewParameter<Point2DParameter<float>>("audioCpu",
+    audioCpu = addNewParameter<Point2DParameter<floatParamType>>("audioCpu",
                                                         "cpu percentage used by Audio",
                                                         0,0);
     audioCpu->isEditable = false;
     audioCpu->isSavable = false;
-    startTimer(300);
+
+//    startTimer(300);
 
 //TODO implement UI Monitoring tool
 //    activateGlobalStats(true);

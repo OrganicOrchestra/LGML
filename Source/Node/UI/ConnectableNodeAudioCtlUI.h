@@ -23,8 +23,10 @@ class ConnectableNode;
 class ConnectableNodeUI;
 
 #include "../../JuceHeaderUI.h"//keep
+#include "../../Controllable/Parameter/UI/SliderUI.h"
+//template<typename T> class SliderUI;
 
-template<typename T> class SliderUI;
+
 class ConnectableNodeAudioCtlUI: public juce::Component
 {
 
@@ -36,7 +38,7 @@ public:
 
     void resized() override;
 
-    ScopedPointer<SliderUI<double> >  outputVolume;
+    ScopedPointer<SliderUI<floatParamType> >  outputVolume;
     //ScopedPointer<BoolToggleUI>  bypassUI;
 
 

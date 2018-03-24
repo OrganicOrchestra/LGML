@@ -304,6 +304,7 @@
     <ClCompile Include="..\..\Source\Controllable\ControllableIndexedContainer.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\UndoableHelper.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\ParameterContainerSync.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\Point2DParameterUI.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\UI\GenericParameterContainerEditor.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\UI\BetterStepper.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\UI\BoolToggleUI.cpp"/>
@@ -2187,6 +2188,7 @@
     <ClInclude Include="..\..\Source\Controllable\ControllableIndexedContainer.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\UndoableHelper.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\ParameterContainerSync.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\Point2DParameterUI.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\UI\GenericParameterContainerEditor.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\UI\BetterStepper.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\UI\BoolToggleUI.h"/>

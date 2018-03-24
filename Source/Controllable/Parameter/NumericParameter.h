@@ -29,34 +29,34 @@ public:
 
     void setValueInternal (const var& _value) override;
 
-    void setNormalizedValue (const float  normalizedValue, bool silentSet = false, bool force = false);
+    void setNormalizedValue (const floatParamType  normalizedValue, bool silentSet = false, bool force = false);
 
-    float getNormalizedValue() const;
+    floatParamType getNormalizedValue() const;
 
     DECLARE_OBJ_TYPE (NumericParameter,"Numeric parameter")
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NumericParameter)
 };
 
 typedef NumericParameter<int> IntParameter;
-typedef NumericParameter<double> FloatParameter;
+typedef NumericParameter<floatParamType> FloatParameter;
 
 // template implementation
 
 template<class T>
-float NumericParameter<T>::getNormalizedValue() const
+floatParamType NumericParameter<T>::getNormalizedValue() const
 {
     if ((T)minimumValue == (T)maximumValue)
     {
-        return 0.0f;
+        return (floatParamType)0;
     }
     else
-        return (float)(jmap<float> ((float)value, (float)minimumValue, (float)maximumValue, 0.f, 1.f));
+        return (floatParamType)(jmap<floatParamType> ((floatParamType)value, (floatParamType)minimumValue, (floatParamType)maximumValue, (floatParamType)0, (floatParamType)1));
 }
 
 template<class T>
-void NumericParameter<T>::setNormalizedValue (const float  normalizedValue, bool silentSet, bool force)
+void NumericParameter<T>::setNormalizedValue (const floatParamType  normalizedValue, bool silentSet, bool force)
 {
-    setValue ((T)(jmap<float> (normalizedValue, (float)minimumValue, (float)maximumValue)), silentSet, force);
+    setValue ((T)(jmap<floatParamType> (normalizedValue, (floatParamType)minimumValue, (floatParamType)maximumValue)), silentSet, force);
 }
 
 #endif  // INTPARAMETER_H_INCLUDED

@@ -41,23 +41,23 @@ public:
     FloatParameter* circleRotation;
     BoolParameter * useLogCurve;
 
-    Array<Point2DParameter<float> *> targetPositions;
+    Array<Point2DParameter<floatParamType> *> targetPositions;
 
     BoolParameter* useGlobalTarget;
-    Point2DParameter<float>* globalTargetPosition;
-    Array<Point2DParameter<float>*> inputsPositionsParams;
+    Point2DParameter<floatParamType>* globalTargetPosition;
+    Array<Point2DParameter<floatParamType>*> inputsPositionsParams;
     Array<FloatParameter*> outputsIntensities;
     FloatParameter* globalTargetRadius;
 
-    void setSourcePosition (int index, const Point<float>& position);
-    void setTargetPosition (int index, const Point<float>& position);
+    void setSourcePosition (int index, const Point<floatParamType>& position);
+    void setTargetPosition (int index, const Point<floatParamType>& position);
     
     void updateIOParams();
     void updateTargetsFromShape();
     void computeAllInfluences();
     void computeInfluencesForTarget (int targetIndex);
     void computeInfluence (int sourceIndex, int targetIndex);
-    float getValueForSourceAndTargetPos (const Point<float>& sourcePosition, const Point<float>& targetPosition, float radius);
+    float getValueForSourceAndTargetPos (const Point<floatParamType>& sourcePosition, const Point<floatParamType>& targetPosition, float radius);
 
     bool modeIsBeam();
 

@@ -34,6 +34,9 @@ public:
     var minimumValue;
     var maximumValue;
 
+    bool hasFiniteBounds() const{
+        return !minimumValue.isUndefined() && !maximumValue.isUndefined();
+    }
 
     DynamicObject* getObject() override
     {
@@ -59,12 +62,12 @@ public:
         }
     }
 
-    void setMinMax (var min, var max)
+    virtual void setMinMax (var min, var max,ParameterBase::Listener * notifier = nullptr)
     {
         minimumValue = min;
         maximumValue = max;
         //  check validity of parameter
-        setValue(value,false,true);
+        setValueFrom(notifier,value,false,true);
         listeners.call (&Listener::parameterRangeChanged, this);
         var arr;
         arr.append (minimumValue);

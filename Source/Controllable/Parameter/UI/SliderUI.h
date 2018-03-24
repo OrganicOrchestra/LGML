@@ -71,6 +71,6 @@ protected:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SliderUI)
 };
 
-typedef SliderUI<double> FloatSliderUI;
+typedef SliderUI<floatParamType> FloatSliderUI;
 typedef SliderUI<int> IntSliderUI;
 #endif  // SliderUI_H_INCLUDED
