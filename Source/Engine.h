@@ -60,6 +60,7 @@ public:
     void createNewGraph();
     void clear();
     void initAudio();
+    bool fadeAudioOut();
     void closeAudio();
 ParameterBase* saveSession,*loadSession,*closeEngine;
     class EngineStats : public ParameterContainer ,public Timer{

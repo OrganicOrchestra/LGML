@@ -15,7 +15,7 @@
 template<class T>
 class Point2DParameterUI : public ParameterUI{
 public:
-    Point2DParameterUI(Point2DParameter<T> *p):ParameterUI(p),sliderX(p->xParam),sliderY(p->yParam){
+    Point2DParameterUI(Point2DParameter<T> *p):ParameterUI(p),sliderX(p->getXParam()),sliderY(p->getYParam()){
         addAndMakeVisible(sliderX);
         addAndMakeVisible(sliderY);
     }

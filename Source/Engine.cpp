@@ -23,6 +23,7 @@
 #include "Utils/DebugHelpers.h"
 
 #include "Node/NodeContainer/NodeContainer.h"
+#include "Node/Impl/AudioDeviceOutNode.h" //  for fade out on quit
 #include "Utils/AudioDebugPipe.h"
 #include "Utils/AudioDebugCrack.h"
 #include "Controllable/Parameter/ParameterFactory.h"
@@ -116,7 +117,7 @@ Engine::~Engine()
     engineListeners.clear();
     controllableContainerListeners.clear();
 
-
+    jassert(fadeAudioOut());
     closeAudio();
 
     threadPool.removeAllJobs(true, -1);
@@ -152,6 +153,32 @@ Engine::~Engine()
     AudioDebugCrack::deleteInstanciated();
 #endif
 
+
+}
+
+bool Engine::fadeAudioOut(){
+    auto * nm =NodeManager::getInstanceWithoutCreating();
+    if(!nm) return false;
+    AudioDeviceOutNode * outNode = nullptr;
+    for(auto n:nm->nodes){
+        if(auto on = dynamic_cast<AudioDeviceOutNode*>(n)){
+            outNode = on;
+            outNode->globalFader.startFadeOut();
+        }
+    }
+    if(!outNode){
+        return false;
+    }
+
+    int maxCount = 100;
+    while(outNode->globalFader.getLastFade()!=0){
+        maxCount--;
+        if(maxCount<=0){
+            return false;
+        }
+        Thread::sleep(10);
+    }
+    return true;
 
 }
 

@@ -21,7 +21,8 @@ constexpr int minSpatX = -1.5;
 constexpr int maxSpatX = 2;
 Spat2DNode::Spat2DNode (StringRef name) :
 NodeBase (name),
-numSpatInputs (nullptr), numSpatOutputs (nullptr), spatMode (nullptr), shapeMode (nullptr)
+numSpatInputs (nullptr), numSpatOutputs (nullptr), spatMode (nullptr), shapeMode (nullptr),
+alphaFilter(1)
 {
     spatMode = addNewParameter<EnumParameter> ("Mode", "Spatialization Mode (2D/3D, Beam/Proxy)");
     spatMode->isEditable=false;
@@ -134,7 +135,12 @@ void Spat2DNode::computeAllInfluences()
             break;
     }
 }
-
+void Spat2DNode::prepareToPlay (double sampleRate,int maximumExpectedSamplesPerBlock) {
+    NodeBase::prepareToPlay(sampleRate, maximumExpectedSamplesPerBlock);
+    double dt = maximumExpectedSamplesPerBlock/sampleRate;
+    constexpr double targetT = 0.025;
+    alphaFilter = jmax<double>(0.0001,jmin<double>(1,dt/targetT));
+}
 void Spat2DNode::computeInfluencesForTarget (int targetIndex)
 {
     for (int i = 0; i < numSpatInputs->intValue(); i++)
@@ -309,9 +315,9 @@ void Spat2DNode::processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer&)
 
     for (int i = 0; i < numOut; i++)
     {
-        constexpr float alpha = 0.5;
+
         float lastInfluence = influences[i];
-        float influence = alpha*lastInfluence + (1-alpha)*computeGain(outputsIntensities.getReference(i)->floatValue(),logCurve);
+        float influence = (1-alphaFilter)*lastInfluence + (alphaFilter)*computeGain(outputsIntensities.getReference(i)->floatValue(),logCurve);
 
         for(int j = 0 ; j < numIn ; j++ ){
             buffer.copyFromWithRamp (i, 0, tempBuf.getReadPointer (j), numSamples, lastInfluence,influence);

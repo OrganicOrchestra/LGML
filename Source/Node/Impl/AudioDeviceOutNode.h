@@ -45,6 +45,7 @@ public:
     void numChannelsChanged (bool isInput)override;
 
     void onContainerParameterChanged ( ParameterBase* p) override;
+    FadeInOut globalFader;
 private :
     void updateVolMutes();
     int lastNumberOfOutputs;

@@ -25,7 +25,8 @@ AudioDeviceManager& getAudioDeviceManager();
 
 AudioDeviceOutNode::AudioDeviceOutNode (StringRef name) :
     NodeBase (name, false),
-    AudioGraphIOProcessor (AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioOutputNode)
+    AudioGraphIOProcessor (AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioOutputNode),
+    globalFader(1000,1000,false,1)
 {
     //CanHavePresets = false;
 
@@ -43,6 +44,7 @@ AudioDeviceOutNode::AudioDeviceOutNode (StringRef name) :
 
     setPreferedNumAudioInput (desiredNumAudioOutput->intValue());
     setPreferedNumAudioOutput (0);
+    globalFader.startFadeIn();
 }
 
 void AudioDeviceOutNode::setParentNodeContainer (NodeContainer* parent)
@@ -117,10 +119,11 @@ void AudioDeviceOutNode::processBlockInternal (AudioBuffer<float>& buffer, MidiB
 
     int numChannels = jmin (NodeBase::getTotalNumInputChannels(), AudioProcessorGraph::AudioGraphIOProcessor::getTotalNumInputChannels());
     int numSamples = buffer.getNumSamples();
-
+    globalFader.incrementFade(numSamples);
+    const double globalFaderValue = globalFader.getCurrentFade();
     for (int i = 0; i < numChannels; i++)
     {
-        float gain = i < outMutes.size() ? (outMutes[i]->boolValue() ? 0.f : logVolumes[i]) : 0.0f;
+        float gain = i < outMutes.size() ? (outMutes[i]->boolValue() ? 0.f : logVolumes[i]*globalFaderValue) : 0.0f;
         buffer.applyGainRamp (i, 0, numSamples, lastVolumes[i], gain);
         lastVolumes.set (i, gain);
     }

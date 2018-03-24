@@ -28,9 +28,10 @@
 
 
 
-namespace juce {class Component;};
+
 class StringParameter;
 class Trigger;
+
 class ParameterContainer: public ControllableContainer,
     public ParameterBase::Listener,
     public ParameterBase::AsyncListener,

@@ -66,13 +66,14 @@ public:
 
 
     //AUDIO
+    void prepareToPlay (double sampleRate,int maximumExpectedSamplesPerBlock) override;
     void updateChannelNames();
     void numChannelsChanged (bool isInput)override;
     virtual void processBlockInternal (AudioBuffer<float>& /*buffer*/, MidiBuffer& /*midiMessage*/) override;
 
     AudioBuffer<float> tempBuf;
     Array<float> influences;
-
+    float alphaFilter;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Spat2DNode)
 };
 
