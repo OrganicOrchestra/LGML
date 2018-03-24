@@ -63,7 +63,7 @@ jobs:
   build32:
     working_directory: ~/LGML
     docker:
-      - image: dockcross/linux-x86
+      - image: ubuntu
         environment:
           PKG_CONFIG_PATH: /usr/lib/i386-linux-gnu/pkgconfig/
           CROSS_ARCH: i386
@@ -76,6 +76,7 @@ jobs:
           name: install LGML32 dependencies
           command: |
             apt-get -qq update
+            apt-get install -y g++-5:i386 pkg-config
             sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh 
             apt-get install -y git
             git submodule update --init --recursive
