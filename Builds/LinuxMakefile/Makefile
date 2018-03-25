@@ -79,7 +79,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/ControllableIndexedContainer_32b95300.o \
   $(JUCE_OBJDIR)/UndoableHelper_584c3b19.o \
   $(JUCE_OBJDIR)/ParameterContainerSync_5c3cffa0.o \
-  $(JUCE_OBJDIR)/Point2DParameterUI_29e77233.o \
+  $(JUCE_OBJDIR)/ParameterListUI_d20d268d.o \
   $(JUCE_OBJDIR)/GenericParameterContainerEditor_282bb6ae.o \
   $(JUCE_OBJDIR)/BetterStepper_3cf8b0d3.o \
   $(JUCE_OBJDIR)/BoolToggleUI_b0447c2a.o \
@@ -99,8 +99,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/ParameterFactory_a5d3362e.o \
   $(JUCE_OBJDIR)/ParameterProxy_b9e78d52.o \
   $(JUCE_OBJDIR)/NumericParameter_4d6542a9.o \
-  $(JUCE_OBJDIR)/Point2DParameter_298067f4.o \
-  $(JUCE_OBJDIR)/Point3DParameter_835bd235.o \
+  $(JUCE_OBJDIR)/ParameterList_1d3f3b44.o \
   $(JUCE_OBJDIR)/RangeParameter_69c98879.o \
   $(JUCE_OBJDIR)/StringParameter_567a2b75.o \
   $(JUCE_OBJDIR)/Trigger_3deda295.o \
@@ -304,9 +303,9 @@ $(JUCE_OBJDIR)/ParameterContainerSync_5c3cffa0.o: ../../Source/Controllable/Para
 	@echo "Compiling ParameterContainerSync.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/Point2DParameterUI_29e77233.o: ../../Source/Controllable/Parameter/UI/Point2DParameterUI.cpp
+$(JUCE_OBJDIR)/ParameterListUI_d20d268d.o: ../../Source/Controllable/Parameter/UI/ParameterListUI.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling Point2DParameterUI.cpp"
+	@echo "Compiling ParameterListUI.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/GenericParameterContainerEditor_282bb6ae.o: ../../Source/Controllable/Parameter/UI/GenericParameterContainerEditor.cpp
@@ -404,14 +403,9 @@ $(JUCE_OBJDIR)/NumericParameter_4d6542a9.o: ../../Source/Controllable/Parameter/
 	@echo "Compiling NumericParameter.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/Point2DParameter_298067f4.o: ../../Source/Controllable/Parameter/Point2DParameter.cpp
+$(JUCE_OBJDIR)/ParameterList_1d3f3b44.o: ../../Source/Controllable/Parameter/ParameterList.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling Point2DParameter.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/Point3DParameter_835bd235.o: ../../Source/Controllable/Parameter/Point3DParameter.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling Point3DParameter.cpp"
+	@echo "Compiling ParameterList.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/RangeParameter_69c98879.o: ../../Source/Controllable/Parameter/RangeParameter.cpp

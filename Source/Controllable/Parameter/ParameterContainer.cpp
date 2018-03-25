@@ -16,8 +16,7 @@
 //#include "../Parameter/StringParameter.h"
 //#include "../Parameter/EnumParameter.h"
 //#include "../Parameter/RangeParameter.h"
-//#include "../Parameter/Point2DParameter.h"
-//#include "../Parameter/Point3DParameter.h"
+//#include "../Parameter/ParameterList.h"
 //#include "../Parameter/Trigger.h"
 const Identifier ParameterContainer::presetIdentifier ("preset");
 const Identifier ParameterContainer::uidIdentifier ("uid");

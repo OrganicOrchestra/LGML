@@ -53,12 +53,8 @@ public:
     Point2DParameter (const String& niceName, const String& description = "", T x = T (0), T y = T (0), var minPoint = var::undefined(), var maxPoint = var::undefined(), bool enabled = true);
     ~Point2DParameter() {}
 
-    
-
-
     void setPoint (const Point<T>& value,ParameterBase::Listener * notifier = nullptr);
     void setPoint (const T x, const T y,ParameterBase::Listener * notifier = nullptr);
-
 
     Point<T> getPoint() const;
 

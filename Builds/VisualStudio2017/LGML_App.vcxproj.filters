@@ -532,7 +532,7 @@
     <ClCompile Include="..\..\Source\Controllable\Parameter\ParameterContainerSync.cpp">
       <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\Point2DParameterUI.cpp">
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\ParameterListUI.cpp">
       <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Controllable\Parameter\UI\GenericParameterContainerEditor.cpp">
@@ -592,10 +592,7 @@
     <ClCompile Include="..\..\Source\Controllable\Parameter\NumericParameter.cpp">
       <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Controllable\Parameter\Point2DParameter.cpp">
-      <Filter>LGML\Source\Controllable\Parameter</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Controllable\Parameter\Point3DParameter.cpp">
+    <ClCompile Include="..\..\Source\Controllable\Parameter\ParameterList.cpp">
       <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Controllable\Parameter\RangeParameter.cpp">
@@ -2880,7 +2877,7 @@
     <ClInclude Include="..\..\Source\Controllable\Parameter\ParameterContainerSync.h">
       <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\Point2DParameterUI.h">
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\ParameterListUI.h">
       <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Controllable\Parameter\UI\GenericParameterContainerEditor.h">
@@ -2943,10 +2940,7 @@
     <ClInclude Include="..\..\Source\Controllable\Parameter\NumericParameter.h">
       <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Controllable\Parameter\Point2DParameter.h">
-      <Filter>LGML\Source\Controllable\Parameter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Controllable\Parameter\Point3DParameter.h">
+    <ClInclude Include="..\..\Source\Controllable\Parameter\ParameterList.h">
       <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Controllable\Parameter\RangeParameter.h">

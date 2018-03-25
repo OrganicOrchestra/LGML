@@ -62,7 +62,7 @@ public:
     void initAudio();
     bool fadeAudioOut();
     void closeAudio();
-ParameterBase* saveSession,*loadSession,*closeEngine;
+    ParameterBase* saveSession,*loadSession,*closeEngine;
     class EngineStats : public ParameterContainer ,public Timer{
     public:
         EngineStats(Engine *);

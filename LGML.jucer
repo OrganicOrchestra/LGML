@@ -76,10 +76,10 @@
           <FILE id="zSQQ5G" name="ParameterContainerSync.h" compile="0" resource="0"
                 file="Source/Controllable/Parameter/ParameterContainerSync.h"/>
           <GROUP id="y1gtRH" name="UI">
-            <FILE id="QucC2P" name="Point2DParameterUI.cpp" compile="1" resource="0"
-                  file="Source/Controllable/Parameter/UI/Point2DParameterUI.cpp"/>
-            <FILE id="aSq0F3" name="Point2DParameterUI.h" compile="0" resource="0"
-                  file="Source/Controllable/Parameter/UI/Point2DParameterUI.h"/>
+            <FILE id="EPzCSu" name="ParameterListUI.cpp" compile="1" resource="0"
+                  file="Source/Controllable/Parameter/UI/ParameterListUI.cpp"/>
+            <FILE id="aSq0F3" name="ParameterListUI.h" compile="0" resource="0"
+                  file="Source/Controllable/Parameter/UI/ParameterListUI.h"/>
             <FILE compile="1" file="Source/Controllable/Parameter/UI/GenericParameterContainerEditor.cpp"
                   id="YhmjKH" name="GenericParameterContainerEditor.cpp" resource="0"/>
             <FILE compile="0" file="Source/Controllable/Parameter/UI/GenericParameterContainerEditor.h"
@@ -159,14 +159,10 @@
                 id="dp1zQw" name="NumericParameter.cpp" resource="0"/>
           <FILE compile="0" file="Source/Controllable/Parameter/NumericParameter.h"
                 id="lPXC3o" name="NumericParameter.h" resource="0"/>
-          <FILE compile="1" file="Source/Controllable/Parameter/Point2DParameter.cpp"
-                id="a5r2Zc" name="Point2DParameter.cpp" ressource="0"/>
-          <FILE compile="0" file="Source/Controllable/Parameter/Point2DParameter.h"
-                id="tJzyRR" name="Point2DParameter.h" ressource="0"/>
-          <FILE compile="1" file="Source/Controllable/Parameter/Point3DParameter.cpp"
-                id="r8dTdx" name="Point3DParameter.cpp" ressource="0"/>
-          <FILE compile="0" file="Source/Controllable/Parameter/Point3DParameter.h"
-                id="SFl38K" name="Point3DParameter.h" ressource="0"/>
+          <FILE compile="1" file="Source/Controllable/Parameter/ParameterList.cpp"
+                id="a5r2Zc" name="ParameterList.cpp" ressource="0"/>
+          <FILE compile="0" file="Source/Controllable/Parameter/ParameterList.h"
+                id="tJzyRR" name="ParameterList.h" ressource="0"/>
           <FILE compile="1" file="Source/Controllable/Parameter/RangeParameter.cpp"
                 id="bCnENJ" name="RangeParameter.cpp" ressource="0"/>
           <FILE compile="0" file="Source/Controllable/Parameter/RangeParameter.h"

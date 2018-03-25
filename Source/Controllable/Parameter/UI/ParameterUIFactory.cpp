@@ -38,14 +38,13 @@
 #include "../RangeParameter.h"
 #include "RangeParameterUI.h"
 
-#include "../Point2DParameter.h"
-#include "Point2DParameterUI.h"
+#include "../ParameterList.h"
+#include "ParameterListUI.h"
 
 
 
 #define CHKNRETURN(p,classN,UIN)  if(p->isType< classN >()) {return new UIN((classN*)p);}
-#define CHKNRETURNSLIDER(p,classN,UIN)      if(t->isType<classN >()){ \
-                                                auto s = (classN*)(t); \
+#define CHKNRETURNSLIDER(p,classN,UIN)      if(auto s = dynamic_cast<classN *>(t)){ \
                                                 if(s->hasFiniteBounds()){ \
                                                     return new UIN(s); \
                                                 } \
@@ -63,10 +62,9 @@ ParameterUI* ParameterUIFactory::createDefaultUI ( ParameterBase* t)
     CHKNRETURN (t, EnumParameter, EnumParameterUI)
     CHKNRETURN (t, RangeParameter, RangeParameterUI)
     CHKNRETURN (t, ParameterProxy, ParameterProxyUI)
-    CHKNRETURNSLIDER(t,Point2DParameter<int>, Point2DParameterUI<int>)
-    CHKNRETURNSLIDER(t,Point2DParameter<floatParamType>, Point2DParameterUI<floatParamType>)
-    CHKNRETURN(t,Point2DParameter<int>, StringParameterUI);
-    CHKNRETURN(t,Point2DParameter<floatParamType>, StringParameterUI);
+    CHKNRETURNSLIDER(t,ParameterList<int>, ParameterListUI<int>)
+    CHKNRETURNSLIDER(t,ParameterList<floatParamType>, ParameterListUI<floatParamType>)
+    
     jassertfalse;
     return new StringParameterUI(t);
 

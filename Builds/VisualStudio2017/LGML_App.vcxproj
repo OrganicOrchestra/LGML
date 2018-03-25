@@ -302,7 +302,7 @@
     <ClCompile Include="..\..\Source\Controllable\ControllableIndexedContainer.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\UndoableHelper.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\ParameterContainerSync.cpp"/>
-    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\Point2DParameterUI.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\ParameterListUI.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\UI\GenericParameterContainerEditor.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\UI\BetterStepper.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\UI\BoolToggleUI.cpp"/>
@@ -322,8 +322,7 @@
     <ClCompile Include="..\..\Source\Controllable\Parameter\ParameterFactory.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\ParameterProxy.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\NumericParameter.cpp"/>
-    <ClCompile Include="..\..\Source\Controllable\Parameter\Point2DParameter.cpp"/>
-    <ClCompile Include="..\..\Source\Controllable\Parameter\Point3DParameter.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\ParameterList.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\RangeParameter.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\StringParameter.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\Trigger.cpp"/>
@@ -2186,7 +2185,7 @@
     <ClInclude Include="..\..\Source\Controllable\ControllableIndexedContainer.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\UndoableHelper.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\ParameterContainerSync.h"/>
-    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\Point2DParameterUI.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\ParameterListUI.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\UI\GenericParameterContainerEditor.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\UI\BetterStepper.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\UI\BoolToggleUI.h"/>
@@ -2207,8 +2206,7 @@
     <ClInclude Include="..\..\Source\Controllable\Parameter\ParameterProxy.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\MinMaxParameter.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\NumericParameter.h"/>
-    <ClInclude Include="..\..\Source\Controllable\Parameter\Point2DParameter.h"/>
-    <ClInclude Include="..\..\Source\Controllable\Parameter\Point3DParameter.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\ParameterList.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\RangeParameter.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\StringParameter.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\Trigger.h"/>
