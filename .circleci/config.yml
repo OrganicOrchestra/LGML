@@ -35,7 +35,7 @@ jobs:
   buildu16:
     working_directory: ~/LGML
     docker:
-      - image: tintamarajah/ubuntu16juce
+      - image: ubuntu:16.04
         environment:
           ARCH_FLAGS: -m64 # arch for linux makefile
           DST_LGML_PATH: /tmp/build

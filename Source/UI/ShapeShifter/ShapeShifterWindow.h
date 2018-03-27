@@ -19,6 +19,9 @@
 #include "ShapeShifterPanel.h"
 #include "../Style.h" // for USE_GL
 
+// significantly slower on osx
+// TODO benchmark use of GL
+#define USE_GL_FOR_WINDOWS 0
 
 class ShapeShifterWindow :
     public ResizableWindow,
@@ -53,8 +56,7 @@ public:
     void panelEmptied (ShapeShifterPanel*) override;
 
 
-
-#if USE_GL
+#if USE_GL_FOR_WINDOWS
     OpenGLContext openGLContext;
 #endif
 
