@@ -49,7 +49,7 @@ TimeManager::TimeManager():
     beatTimeGuessRange (.4, .85),
     BPMRange (40, 250),
     _isLocked (false),
-    currentBeatPeriod (.5),
+    currentBeatPeriod (0),
     lastTaped (0),
     tapInRow (0),
     hasJumped (false),
