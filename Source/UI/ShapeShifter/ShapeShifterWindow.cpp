@@ -136,6 +136,7 @@ void ShapeShifterWindow::mouseDown (const MouseEvent& e)
     {
         dragMode = NONE;
     }
+    setAlwaysOnTop(true);
 
 }
 
@@ -147,17 +148,18 @@ void ShapeShifterWindow::mouseDrag (const MouseEvent& e)
     jassert(panel->currentContent->contentComponent->isShowing());
     panel->setTransparentBackground (true);
 
-    ShapeShifterManager::getInstance()->checkCandidateTargetForPanel (panel);
-    DBG(e.position.toString() + " " + String((int) dragMode));
-    // auto ne = e.withNewPosition(e.position + Point<float>(10,10));
-    dragger.dragComponent(this, e, nullptr);//getConstrainer());
-    setTopLeftPosition(getPosition() + Point < int > (2, 0));
+    ShapeShifterManager::getInstance()->checkCandidateTargetForPanel(panel, panel->getLocalPoint(e.originalComponent,
+                                                                                                 e.position));
+
+    dragger.dragComponent(this, e, nullptr);
+    setTopLeftPosition(getPosition());
 }
 
 void ShapeShifterWindow::mouseUp(const MouseEvent &e) {
     //ResizableWindow::mouseUp(e);
-    panel->setTransparentBackground (false);
 
+    panel->setTransparentBackground (false);
+    setAlwaysOnTop(false);
     checking = true;
     bool found = ShapeShifterManager::getInstance()->checkDropOnCandidateTarget (panel);
     checking = false;
@@ -167,6 +169,7 @@ void ShapeShifterWindow::mouseUp(const MouseEvent &e) {
         clear();
         ShapeShifterManager::getInstance()->closePanelWindow (this, false);
     }
+
 
 }
 

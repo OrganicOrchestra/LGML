@@ -186,7 +186,8 @@ ShapeShifterContent* ShapeShifterManager::getContentForName (PanelName contentNa
     return nullptr;
 }
 
-ShapeShifterPanel* ShapeShifterManager::checkCandidateTargetForPanel (ShapeShifterPanel* panel)
+ShapeShifterPanel *
+ShapeShifterManager::checkCandidateTargetForPanel(ShapeShifterPanel *panel, Point<float> relativeMousePoint)
 {
     ShapeShifterPanel* candidate = nullptr;
 
@@ -194,7 +195,7 @@ ShapeShifterPanel* ShapeShifterManager::checkCandidateTargetForPanel (ShapeShift
     {
         if (p == panel) continue;
 
-        if (p->getLocalBounds().contains (p->getLocalPoint (panel, Point<float>()).toInt()))
+        if (p->getLocalBounds().contains(p->getLocalPoint(panel, relativeMousePoint).toInt()))
         {
             candidate = p;
         }
@@ -202,7 +203,7 @@ ShapeShifterPanel* ShapeShifterManager::checkCandidateTargetForPanel (ShapeShift
 
     setCurrentCandidatePanel (candidate);
 
-    if (currentCandidatePanel != nullptr) currentCandidatePanel->checkAttachZone (panel);
+    if (currentCandidatePanel != nullptr) currentCandidatePanel->checkAttachZone(panel, relativeMousePoint);
 
 
     return candidate;

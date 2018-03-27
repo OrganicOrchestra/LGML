@@ -353,12 +353,11 @@ bool ShapeShifterPanel::attachPanel (ShapeShifterPanel* panel)
 }
 
 
-
-ShapeShifterPanel::AttachZone ShapeShifterPanel::checkAttachZone (ShapeShifterPanel* source)
+ShapeShifterPanel::AttachZone ShapeShifterPanel::checkAttachZone(ShapeShifterPanel *source, Point<float> relativePoint)
 {
     AttachZone z = AttachZone::NONE;
 
-    candidateTargetPoint = getLocalPoint (source, Point<float>());
+    candidateTargetPoint = getLocalPoint(source, relativePoint);
 
     float rx = candidateTargetPoint.x / getWidth() - 0.5f;
     float ry = candidateTargetPoint.y / getHeight() - 0.5f;

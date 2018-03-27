@@ -72,7 +72,7 @@ public:
 
     //Attach helpers
 
-    AttachZone checkAttachZone (ShapeShifterPanel* source);
+    AttachZone checkAttachZone(ShapeShifterPanel *source, Point<float> relativePoint);
     void setCandidateZone (AttachZone zone);
 
     virtual var getCurrentLayout() override;
