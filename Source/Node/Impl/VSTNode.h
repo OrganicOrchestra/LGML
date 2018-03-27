@@ -75,7 +75,7 @@ public:
     void loadPresetInternal (PresetManager::Preset* preset)override;
     void savePresetInternal (PresetManager::Preset* preset)override;
 
-    void initParametersFromProcessor (AudioProcessor* p);
+    void initParametersFromProcessor (AudioPluginInstance* p);
 
 
     // load state on message thread (some plugin crash if not)

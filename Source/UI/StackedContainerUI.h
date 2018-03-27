@@ -106,7 +106,10 @@ public:
         return nullptr;
     }
 
+    void childBoundsChanged (Component* child)override{
+    updateSize();
 
+    }
 
 private:
 

@@ -112,6 +112,8 @@ public:
     bool showHiddenContainers; //include or exclude in treeview the "skipInAddress" containers (may be later exposed to user as an option)
 
     void resized() override;
+
+    int getTargetHeight();
     void paint (Graphics& g) override;
 
     void textEditorTextChanged (TextEditor&)override;

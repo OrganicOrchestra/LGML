@@ -79,14 +79,19 @@ void Outliner::resized()
 {
     ShapeShifterContentComponent::resized();
     Rectangle<int> r = getLocalBounds();
-    r.removeFromTop (20);
+
     if(filterTextEditor.isVisible()){
+        r.removeFromTop(10);
         auto headerArea = r.removeFromTop(30);
         linkToSelected.setBounds(headerArea.removeFromLeft(headerArea.getHeight()));
         filterTextEditor.setBounds (headerArea);
 
     }
     treeView.setBounds (r);
+}
+
+int Outliner::getTargetHeight(){
+    return  (filterTextEditor.isVisible()?(10+30):0) + treeView.getViewport()->getViewedComponent()->getHeight();
 }
 
 void Outliner::paint (Graphics& g)

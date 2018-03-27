@@ -40,7 +40,7 @@ controllersUI(new StackedContainerUI<ControllerUI, Controller>
                false)
               )
 {
-    addAndMakeVisible (addControllerBt);
+
     addControllerBt.setTooltip (juce::translate("Add controller"));
     addControllerBt.addListener (this);
 
@@ -50,6 +50,9 @@ controllersUI(new StackedContainerUI<ControllerUI, Controller>
     {
         addControllerUI (c);
     }
+
+    // should be last
+    addAndMakeVisible (addControllerBt);
 
 }
 
@@ -145,6 +148,7 @@ int ControllerManagerUI::getContentHeight() const
 
 
 }
+
 
 void ControllerManagerUI::mouseDown (const MouseEvent& event)
 {

@@ -100,7 +100,8 @@ ControllerUI::ControllerUI (Controller* controller) :
     userParamsUI = new Outliner("usr_"+controller->shortName,&controller->userContainer,false);
     userParamsUI->showUserContainer = true;
     addAndMakeVisible(userParamsUI);
-
+    userParamsUI->treeView.getViewport()->getViewedComponent()->addComponentListener(this);
+    userParamsUI->treeView.setOpenCloseButtonsVisible(false);
     showUserParams = getArrowButton("showParams");
     addAndMakeVisible(showUserParams);
     showUserParams->setTooltip(juce::translate("show this controller registered parameters"));
@@ -112,7 +113,7 @@ ControllerUI::ControllerUI (Controller* controller) :
 
 ControllerUI::~ControllerUI()
 {
-
+    userParamsUI->treeView.getViewport()->getViewedComponent()->removeComponentListener(this);
 }
 
 void ControllerUI::paint (Graphics& g)
@@ -123,8 +124,15 @@ void ControllerUI::paint (Graphics& g)
 }
 
 const int headerHeight = 20;
-const int usrParamHeight = 200;
+const int maxUsrParamHeight = 200;
 
+void ControllerUI::componentMovedOrResized (Component& component,
+                              bool wasMoved,
+                              bool wasResized) {
+    if(&component==userParamsUI->treeView.getViewport()->getViewedComponent()){
+        setSize(getWidth(),getTargetHeight());
+    }
+}
 void ControllerUI::resized()
 {
     Rectangle<int> area = getLocalBounds();
@@ -148,23 +156,13 @@ void ControllerUI::resized()
 
 }
 
-int ControllerUI::getHeight(){
-    return   headerHeight + (showUserParams->getToggleState()?jmax(usrParamHeight,userParamsUI->treeView.getViewport()->getViewArea().getHeight()):0);
+int ControllerUI::getTargetHeight(){
+    return   headerHeight + (showUserParams->getToggleState()?jmin(maxUsrParamHeight,userParamsUI->getTargetHeight()):0);
 }
 
 
 
-Component * getViewportOrParent( Component * c){
-    Component * ic = c;
-    while(ic){
-        if(auto v = dynamic_cast<Viewport*>(ic)){
-            return v->getParentComponent();
-        }
-        ic = ic->getParentComponent();
-    }
-    return c->getParentComponent();
 
-}
 
 void ControllerUI::buttonClicked (Button* b)
 {
@@ -173,8 +171,7 @@ void ControllerUI::buttonClicked (Button* b)
         controller->remove();
     }
     else if(b==showUserParams){
-        if(auto p = getViewportOrParent(this))
-            p->resized();
+        setSize(getWidth(),getTargetHeight());
         
     }
 }

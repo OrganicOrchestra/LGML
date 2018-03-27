@@ -127,7 +127,7 @@ bool StackedContainerBase::isHorizontal()const {return _isHorizontal;}
 
 Component * StackedContainerBase::getRelatedStackedComponent(Component * c){
     for(auto cc:stackedUIs){
-        if((cc == c )|| cc->isParentOf(c)){
+        if((cc == c )|| (dynamic_cast<Label*>(c) && cc->isParentOf(c))){
             return cc;
         }
     }

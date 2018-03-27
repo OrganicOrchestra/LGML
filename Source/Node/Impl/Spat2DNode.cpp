@@ -17,8 +17,8 @@
 
 REGISTER_NODE_TYPE (Spat2DNode)
 
-constexpr int minSpatX = -1.5;
-constexpr int maxSpatX = 2;
+constexpr float minSpatX = -1.5;
+constexpr float maxSpatX = 2;
 Spat2DNode::Spat2DNode (StringRef name) :
 NodeBase (name),
 numSpatInputs (nullptr), numSpatOutputs (nullptr), spatMode (nullptr), shapeMode (nullptr),

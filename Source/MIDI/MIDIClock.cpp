@@ -158,9 +158,7 @@ void MIDIClock::timeJumped (sample_clk_t time) {
     if(!state.isPlaying){
         sendCurrentSPP();
     }
-    else{
-        int dbg;dbg++;
-    }
+
 }
 
 void MIDIClock::playStop (bool playStop) {
