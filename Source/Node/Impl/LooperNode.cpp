@@ -220,6 +220,7 @@ void LooperNode::processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer& m
 void LooperNode::TrackGroup::addTrack()
 {
     LooperTrack* t = new LooperTrack (owner, tracks.size());
+    t->setNumChannels(owner->numberOfAudioChannelsIn->intValue());
     tracks.add (t);
     owner->selectTrack->getAs<MinMaxParameter>()->setMinMax (-1, tracks.size() - 1);
     addChildIndexedControllableContainer (t);

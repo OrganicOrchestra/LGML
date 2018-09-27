@@ -36,7 +36,7 @@ quantizedRecordStart (NO_QUANTIZE),
 quantizedRecordEnd (NO_QUANTIZE),
 quantizedPlayStart (NO_QUANTIZE),
 quantizedPlayEnd (NO_QUANTIZE),
-playableBuffer (2, 44100 * 10, looperNode->getSampleRate(), looperNode->getBlockSize()),
+playableBuffer (looperNode->numberOfAudioChannelsIn->intValue(), 44100 * 10, looperNode->getSampleRate(), looperNode->getBlockSize()),
 trackState (CLEARED),
 desiredState (CLEARED),
 trackIdx (_trackIdx),
@@ -115,9 +115,9 @@ void LooperTrack::processBlock (AudioBuffer<float>& buffer, MidiBuffer&)
     handleStartOfRecording();
 
 
-    TimeManager* tm = TimeManager::getInstance();
-    sample_clk_t curTime = tm->getTimeInSample();
-    int offset = startPlayBeat * tm->beatTimeInSample;
+    TimeManager* tm ( TimeManager::getInstance());
+    sample_clk_t curTime ( tm->getTimeInSample());
+    sample_clk_t offset ( startPlayBeat * tm->beatTimeInSample);
 
     if (getQuantization() == 0)
     {
@@ -166,7 +166,7 @@ void LooperTrack::processBlock (AudioBuffer<float>& buffer, MidiBuffer&)
         }
     }
 
-    if (playableBuffer.wasLastRecordingFrame())
+    if (trackState != CLEARED && playableBuffer.wasLastRecordingFrame())
     {
         handleEndOfRecording();
     }
@@ -462,12 +462,14 @@ void LooperTrack::handleEndOfRecording()
     jassert (playableBuffer.wasLastRecordingFrame());
     //            DBG("a:firstPlay");
     // get howMuch we have allready played in playableBuffer
-    int offsetForPlay = (int)playableBuffer.getPlayPos();
+
 
     TimeManager* tm = TimeManager::getInstance();
 
     if (isMasterTempoTrack())
     {
+        int offsetForPlay = (int)playableBuffer.getPlayPos() - parentLooper->getBlockSize();
+        jassert(offsetForPlay>=0);
 
         //                DBG("release predelay : "+String (trackIdx));
         int sampleToRemove = (int) (parentLooper->preDelayMs->intValue() * 0.001f * parentLooper->getSampleRate());
@@ -989,7 +991,7 @@ void LooperTrack::loadAudioSample (const String& path)
                 int destNumChannels = playableBuffer.getNumChannels();//audioReader->numChannels;
                 AudioSampleBuffer tempBuf;
                 tempBuf.setSize (destNumChannels, inSampleLength);
-                audioReader->read (&tempBuf, 0, inSampleLength, 0, true, playableBuffer.getNumChannels() > 1 ? true : false);
+                audioReader->read (&tempBuf, 0, inSampleLength, 0, true, playableBuffer.getNumChannels() > 1 );
                 sample_clk_t destSize = importSize;
 
                 if (sampleRateRatio != 1)
