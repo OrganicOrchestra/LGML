@@ -75,9 +75,14 @@ void NodeContainer::clear ()
         connections[0]->remove();
     }
 
-
+    while(nodeContainers.size()){
+        auto * n = nodeContainers[0];
+        removeNode(n);
+    }
 
     nodes.clear();
+
+    if(auto * g = getAudioGraph())g->clear();
 
 
 
@@ -289,7 +294,7 @@ ParameterContainer*   NodeContainer::addContainerFromObject (const String& /*nam
 void NodeContainer::configureFromObject (DynamicObject* data)
 {
     // do we really need that ???
-    //    clear (false);
+//        clear ();
 
 
 

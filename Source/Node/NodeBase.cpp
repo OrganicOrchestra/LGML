@@ -38,7 +38,7 @@ NodeBase::NodeBase (const String& name, bool _hasMainAudioControl) :
     canHavePresets = true;
 
 
-    lastVolume = hasMainAudioControl ? outputVolume->floatValue() : 0;
+    lastVolume = 0;//hasMainAudioControl ? outputVolume->floatValue() : 0;
     dryWetFader.setFadedIn();
     muteFader.startFadeIn();
 
@@ -114,6 +114,7 @@ void NodeBase::onContainerParameterChanged ( ParameterBase* p)
 
 void NodeBase::clear()
 {
+    ConnectableNode::clear();
     clearInternal();
 
 
@@ -201,7 +202,7 @@ void NodeBase::removeFromAudioGraph()
             pG->removeNode (audioNode);
         }
 
-        parentNodeContainer->updateAudioGraph (false);
+        parentNodeContainer->updateAudioGraph (true);
     }
 }
 
@@ -298,7 +299,8 @@ void NodeBase::processBlock (AudioBuffer<float>& buffer,
             processBlockInternal (buffer, midiMessages);
         }
 
-        if (crossfadeValue != 1 || hasMainAudioControl)
+        if ((crossfadeValue != 1 || hasMainAudioControl) &&
+            (lastVolume!=1 || curVolume!=1))
         {
             buffer.applyGainRamp (0, numSample, lastVolume, (float)curVolume);
 
