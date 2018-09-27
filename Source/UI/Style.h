@@ -95,7 +95,7 @@ public:
 class CachedGlyph {
 public:
 
-    CachedGlyph(const String &t="",const Font & f = Font());
+    explicit CachedGlyph(const String &t="",const Font & f = Font());
     void setSize(int w, int h);
     void setFont(const Font & );
     void setText(const String & t);
@@ -103,7 +103,7 @@ public:
 
     class CachedFont : public ReferenceCountedObject{
     public:
-        CachedFont(const Font &f);
+        explicit CachedFont(const Font &f);
         ~CachedFont();
         typedef ReferenceCountedObjectPtr<CachedFont> Ptr ;
         Font font;

@@ -24,7 +24,7 @@
 class BufferBlockList : public OwnedArray<AudioSampleBuffer>
 {
 public:
-    BufferBlockList (int numChannels = 1, int minNumSample = 44100 * 2, int blockSize = DEFAULT_BUFFER_BLOCK_SIZE );
+    explicit BufferBlockList (int numChannels = 1, int minNumSample = 44100 * 2, int blockSize = DEFAULT_BUFFER_BLOCK_SIZE );
     void allocateSamples (int numChannels, int numSamples );
     int getAllocatedNumSample() const;
     int getNumSamples() const;

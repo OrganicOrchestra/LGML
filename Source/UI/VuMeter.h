@@ -40,7 +40,7 @@ public:
     Colour colorHigh;
     Colour colorLow;
 
-    VuMeter (Type _type) : type (_type)
+    explicit VuMeter (Type _type) : type (_type)
     {
         targetChannel = -1;
         setSize (8, 20);

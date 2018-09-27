@@ -11,7 +11,7 @@
 #include "StackedContainerUI.h"
 class SwapComponents : public DrawableImage{
 public:
-    SwapComponents(Component * originComp,StackedContainerBase * rootOfDrag,Point<int> _moffset):root(rootOfDrag),moffset(_moffset){
+    SwapComponents(Component * originComp,StackedContainerBase * rootOfDrag, const Point<int> &_moffset):root(rootOfDrag),moffset(_moffset){
         auto draggedImg = originComp->createComponentSnapshot(originComp->getLocalBounds());
         draggedImg.multiplyAllAlphas(0.7);
         setImage(draggedImg);

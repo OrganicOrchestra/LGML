@@ -34,8 +34,8 @@ public:
 
 
 
-    bool isEnabled;
-    void setEnabled (bool value);
+    bool isListening;
+    void shouldListen(bool value);
 
 
     void clear();
@@ -81,7 +81,7 @@ private:
     void controllableContainerRemoved(ControllableContainer * , ControllableContainer * ) override;
     void containerWillClear(ControllableContainer * )override;
 
-    // controllableListner
+    // controllableListener
     void controllableRemoved (Controllable* ) override;
 };
 

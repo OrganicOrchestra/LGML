@@ -309,7 +309,9 @@ void LooperNodeContentUI::TrackUI::TimeStateUI::paint (Graphics& g)
     g.setColour(Colours::white.withAlpha(0.5f));
     for(auto  o:track->getNormalizedOnsets()){
         float oAngle = o*2*float_Pi - float_Pi/2;
-        g.drawLine (r.getCentreX(), r.getCentreY(), r.getCentreX() + cosf (oAngle)*r.getWidth() / 2, r.getCentreX() + sinf (oAngle)*r.getHeight() / 2, 2);
+        g.drawLine (r.getCentreX(), r.getCentreY(),
+                    r.getCentreX() + cosf (oAngle)*r.getWidth() / 2, r.getCentreX() + sinf (oAngle)*r.getHeight() / 2,
+                    .5);
     }
 
 

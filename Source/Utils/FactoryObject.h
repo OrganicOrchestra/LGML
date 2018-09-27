@@ -54,7 +54,7 @@ static const Identifier & typeId() {return _factoryType;}\
 const Identifier & getFactoryTypeId() const override{return typeId();}\
 const String & getFactoryTypeName() const override {return _factoryType.toString();}\
 const String & getFactoryInfo() const override{static String i(INFO);return i;}\
-T(StringRef name=DEFAULTNAME); \
+explicit T(StringRef name=DEFAULTNAME); \
 
 
 #define DECLARE_OBJ_TYPE(T,INFO) DECLARE_OBJ_TYPE_DEFAULTNAME(T,#T,INFO)

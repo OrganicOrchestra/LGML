@@ -27,7 +27,7 @@ class ShapeShifterPanel : public ShapeShifter, public ShapeShifterPanelHeader::L
 public:
     enum AttachZone { NONE, TOP, BOTTOM, LEFT, RIGHT, CENTER };
 
-    ShapeShifterPanel (ShapeShifterContent* innerComponent = nullptr, ShapeShifterPanelTab* sourceTab = nullptr);
+    explicit ShapeShifterPanel (ShapeShifterContent* innerComponent = nullptr, ShapeShifterPanelTab* sourceTab = nullptr);
     virtual ~ShapeShifterPanel();
 
     const int headerHeight = 20;

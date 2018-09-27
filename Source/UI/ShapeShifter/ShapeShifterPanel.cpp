@@ -128,21 +128,21 @@ void ShapeShifterPanel::paintOverChildren (Graphics& g)
     Colour nc = findColour (TextButton::buttonColourId).withAlpha (.3f);
 
     static float sideMinSize(10);
-    float zoneHeight =jmax<float> (sideMinSize, r.getHeight() * panelRelativeAttachSize);
-    float zoneWidth = jmax<float> (sideMinSize, r.getWidth() * panelRelativeAttachSize);
+    auto zoneHeight =jmax<float> (sideMinSize, r.getHeight() * panelRelativeAttachSize);
+    auto zoneWidth = jmax<float> (sideMinSize, r.getWidth() * panelRelativeAttachSize);
     static constexpr float pixGap = 10.0f;
     float scaleX = 1.0f - jmax<float>(0.f,pixGap/r.getWidth());
     float scaleY =  1.0f - jmax<float>(0.f,pixGap/r.getHeight());
     if (!isDetached())
     {
-        auto symetryTransform = AffineTransform::rotation(juce::float_Pi, (float)r.getCentreX(),(float)r.getCentreY());
+        auto symetryTransform = AffineTransform::rotation(juce::float_Pi, r.getCentreX(), r.getCentreY());
         g.setColour (candidateZone == AttachZone::TOP ? hc : nc);
         Path pt ;
         pt.addQuadrilateral(0.0f,0.0f,
                             zoneWidth, zoneHeight,
                             r.getWidth()-zoneWidth, zoneHeight,
                             r.getWidth(),0.0f);
-        pt.applyTransform(AffineTransform::scale(scaleX ,scaleY, (float)r.getCentreX(), 0.0f));
+        pt.applyTransform(AffineTransform::scale(scaleX , scaleY, r.getCentreX(), 0.0f));
         g.fillPath(pt);
 
         g.setColour (candidateZone == AttachZone::BOTTOM ? hc : nc);
@@ -196,6 +196,9 @@ void ShapeShifterPanel::attachTab (ShapeShifterPanelTab* tab)
     if(tab && tab->content){
     Component::setName(Component::getName()+":"+tab->content->contentName);
     }
+    else{
+        jassertfalse;
+    }
     header.attachTab (tab);
 
     contents.add (tab->content);
@@ -207,6 +210,9 @@ void ShapeShifterPanel::detachTab (ShapeShifterPanelTab* tab, bool createNewPane
 {
     if(tab && tab->content){
         Component::setName(Component::getName().replaceFirstOccurrenceOf(":"+tab->content->contentName, ""));
+    }
+    else{
+        jassertfalse;
     }
     ShapeShifterContent* content = tab->content;
 

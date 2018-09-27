@@ -63,7 +63,7 @@ public:
     void resetViewFilter();
     bool mapPassViewFilter (FastMap*);
 
-    FastMapUI* getUIForFastMap (FastMap*);
+
 
     const int mapHeight = 35;
     const int gap = 5;

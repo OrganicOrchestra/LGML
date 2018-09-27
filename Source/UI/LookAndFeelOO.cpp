@@ -84,7 +84,7 @@ LookAndFeelOO::~LookAndFeelOO()  {}
 
 //==============================================================================
 
-static void drawButtonShape (Graphics& g, const Path& outline, Colour baseColour, float height, bool isToggle)
+static void drawButtonShape (Graphics& g, const Path& outline, const Colour &baseColour, float height, bool isToggle)
 {
     const float mainBrightness = baseColour.getBrightness();
     const float mainAlpha = baseColour.getFloatAlpha();
@@ -93,7 +93,7 @@ static void drawButtonShape (Graphics& g, const Path& outline, Colour baseColour
 
     if (isToggle)
     {
-        g.setGradientFill (ColourGradient (baseColour.brighter(), (float)bounds.getCentreX(), (float)bounds.getCentreY(), baseColour.darker(), 2.f, 2.f, true));
+        g.setGradientFill (ColourGradient (baseColour.brighter(), bounds.getCentreX(), bounds.getCentreY(), baseColour.darker(), 2.f, 2.f, true));
     }
     else
     {

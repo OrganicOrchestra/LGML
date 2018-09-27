@@ -26,10 +26,10 @@
 #include "../Utils/AutoUpdater.h" // for version checking
 
 juce_ImplementSingleton(AppPropertiesUI);
-
+/*
 extern Engine* getEngine();
 extern AudioDeviceManager& getAudioDeviceManager();
-
+*/
 String AppPropertiesUI::GeneralPageName("General");
 String AppPropertiesUI::AudioPageName("Audio");
 String AppPropertiesUI::AdvancedPageName("Advanced");
@@ -38,7 +38,7 @@ String AppPropertiesUI::PluginsPageName("Plugins");
 
 class BoolPropUI : public BooleanPropertyComponent{
 public:
-    BoolPropUI(const String & _name):BooleanPropertyComponent(juce::translate(_name),"1","0"),name(_name){
+    explicit BoolPropUI(const String & _name):BooleanPropertyComponent(juce::translate(_name),"1","0"),name(_name){
         jassert(getAppProperties()->getUserSettings()->containsKey(name));
     }
     bool getState() const override{
@@ -57,11 +57,11 @@ public:
 class EnumPropUI : public ChoicePropertyComponent{
 public:
     typedef std::function<void(const String &)> CBType;
-    EnumPropUI(const String & _name,const StringArray & _choices,CBType _cb,const String & suffix=String::empty):
+    EnumPropUI(const String & _name, StringArray _choices,CBType _cb,const String & suffix=String::empty):
     ChoicePropertyComponent(juce::translate(_name)+(suffix.isEmpty()?"":" "+juce::translate(suffix))),
     name(_name),
-    cb(_cb),
-    nonTranslatedChoices (_choices)
+    cb(std::move(_cb)),
+    nonTranslatedChoices (std::move(_choices))
     {
 
 
@@ -158,7 +158,7 @@ namespace{
         if(aw.runModalLoop()==1){
             LOGW(juce::translate("reseted user preferences"));
             auto fl = {getAppProperties()->getUserSettings()->getFile()};
-            for(auto f:fl){
+            for(const auto &f:fl){
                 if(f.exists()){
 #if JUCE_MAC
                     f.moveToTrash();
@@ -188,7 +188,7 @@ namespace{
         void timerCallback() override{
             if(isChecking()){
                 if(bt.get()){
-                    float alpha = jmap<float>((1.0+cos(count*float_Pi/5.0f))/2,0.3,1.) ;
+                    auto alpha = jmap<float>((1.0f+ std::cos(count*float_Pi/5.0f))/2.0f,0.3f,1.f) ;
                     bt->setAlpha(alpha);
                     count++;
                 }
@@ -202,7 +202,7 @@ namespace{
         }
         ScopedPointer<LatestVersionChecker>  latestVChecker;
         WeakReference<Component> bt;
-        int count;
+        int count{};
     };
     VersionChecker* versionChecker = new VersionChecker();
     void checkUpdatesNow(ButtonPropertyComponent * bt){
@@ -289,7 +289,7 @@ static ScopedPointer<DrawableComposite>  createIcon(const String &n,PrefPanel * 
     //    res->addAndMakeVisible(border);
 
 
-    DrawableText * text = new DrawableText();
+    auto * text = new DrawableText();
     text->setText(n.substring(0,1));
     text->setColour(parent->findColour(color>0? color:TextButton::ColourIds::textColourOffId));
     text->setJustification(juce::Justification::centred);

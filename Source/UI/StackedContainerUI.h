@@ -10,6 +10,7 @@
 
 #pragma once
 
+
 #include "../JuceHeaderUI.h"
 
 
@@ -18,7 +19,7 @@
 class SwapComponents;
 class StackedContainerBase : public Component{
 public:
-    StackedContainerBase(int _minElemSize=20,bool isHorizontal=false,int _gap=2):_isHorizontal(isHorizontal),gap(_gap),minElemSize(_minElemSize){
+    explicit StackedContainerBase(int _minElemSize=20,bool isHorizontal=false,int _gap=2):_isHorizontal(isHorizontal),gap(_gap),minElemSize(_minElemSize){
         addMouseListener(this,true);
     }
     virtual ~StackedContainerBase(){};
@@ -63,7 +64,7 @@ public:
     typedef std::function<void(int,int)> SwapElemsF;
     StackedContainerUI(GetTFromUITTYPE f,SwapElemsF sw,int _minElemSize=20,bool isHorizontal=false,int _gap=2):StackedContainerBase(_minElemSize,isHorizontal,_gap),
     toUIT(f),
-    swapElemF(sw)
+    swapElemF(std::move(sw))
 
     {
 
@@ -125,7 +126,7 @@ private:
 template<class UIT, class T>
 class StackedContainerViewport : public Viewport{
 public:
-    StackedContainerViewport(StackedContainerUI<UIT,T> * _stUI):
+    explicit StackedContainerViewport(StackedContainerUI<UIT,T> * _stUI):
     stUI(_stUI){
 
         setViewedComponent (stUI, false);

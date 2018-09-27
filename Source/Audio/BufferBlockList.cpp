@@ -183,7 +183,7 @@ void BufferBlockList::copyFrom (const AudioSampleBuffer& inBuf, int listStartSam
 float BufferBlockList::getSample (int c, int n)
 {
     int readI = n % bufferBlockSize ;
-    int readBI = (int)floor (n * 1.0 / bufferBlockSize);
+    auto readBI = (int)floor (n * 1.0 / bufferBlockSize);
     jassert (readBI < size());
     return  OwnedArray::getUnchecked (readBI)->getSample (c, readI);
 }

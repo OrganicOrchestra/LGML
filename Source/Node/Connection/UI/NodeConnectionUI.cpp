@@ -313,8 +313,12 @@ void NodeConnectionUI::mouseDown (const MouseEvent& e)
         if (isEditing() && candidateDropConnector)
         {
             auto nodeViewer = findParentComponentOfClass<NodeContainerViewer>();
-            jassert ( nodeViewer);
-            nodeViewer->finishEditingConnection();
+            if( nodeViewer) {
+                nodeViewer->finishEditingConnection();
+            }
+            else{
+                jassertfalse;
+            }
         }
         else if (!isEditing())
         {
@@ -323,12 +327,16 @@ void NodeConnectionUI::mouseDown (const MouseEvent& e)
             if (anchorSource.isVisible() || anchorDest.isVisible())
             {
                 auto nodeViewer = findParentComponentOfClass<NodeContainerViewer>();
-                jassert ( nodeViewer);
+                if ( nodeViewer) {
 
-                if (connection->connectionType == NodeConnection::ConnectionType::AUDIO)
-                {
-                    nodeViewer->createAudioConnectionFromConnector (anchorSource.isVisible() ? destConnector : sourceConnector, connection);
-                    connection->remove();
+                    if (connection->connectionType == NodeConnection::ConnectionType::AUDIO) {
+                        nodeViewer->createAudioConnectionFromConnector(
+                                anchorSource.isVisible() ? destConnector : sourceConnector, connection);
+                        connection->remove();
+                    }
+                }
+                else{
+                    jassertfalse;
                 }
             }
 

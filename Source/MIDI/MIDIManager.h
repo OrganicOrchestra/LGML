@@ -20,6 +20,7 @@
 #define MIDIMANAGER_H_INCLUDED
 #pragma once
 
+
 #include "../JuceHeaderAudio.h"//keep
 
 class MIDIListener;
@@ -33,7 +34,7 @@ public:
     struct DeviceUsageCount
     {
     public:
-        DeviceUsageCount (const String& name) : deviceName (name), usageCount (0) {}
+        explicit DeviceUsageCount (String name) : deviceName (std::move(name)), usageCount (0) {}
         String deviceName;
         int usageCount;
     };

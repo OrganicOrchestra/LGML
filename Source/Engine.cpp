@@ -276,18 +276,21 @@ void Engine::suspendAudio (bool shouldBeSuspended)
 {
 
 
-    if (AudioProcessor* ap = graphPlayer.getCurrentProcessor())
+    if (auto* ap = dynamic_cast<AudioProcessorGraph*>(graphPlayer.getCurrentProcessor()))
     {
         ap->suspendProcessing (shouldBeSuspended);
         const ScopedLock lk (ap->getCallbackLock());
 
 
-        if (shouldBeSuspended)ap->releaseResources();
+        if (shouldBeSuspended){
+            ap->releaseResources();
+        }
         else
         {
             if (AudioIODevice* dev = getAudioDeviceManager().getCurrentAudioDevice())
             {
                 NodeManager::getInstance()->setRateAndBufferSizeDetails(dev->getCurrentSampleRate(), dev->getCurrentBufferSizeSamples());
+                ap->releaseResources();
                 ap->prepareToPlay (dev->getCurrentSampleRate(), dev->getCurrentBufferSizeSamples());
             }
             else

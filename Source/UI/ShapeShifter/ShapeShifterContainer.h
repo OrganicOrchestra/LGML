@@ -47,7 +47,7 @@ public:
     enum Direction { NONE, HORIZONTAL, VERTICAL};
     enum Position { TOP, BOTTOM, LEFT, RIGHT };
 
-    ShapeShifterContainer (Direction _direction);
+    explicit ShapeShifterContainer (Direction _direction);
     virtual ~ShapeShifterContainer();
 
     Direction direction;

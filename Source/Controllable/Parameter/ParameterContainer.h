@@ -89,7 +89,7 @@ public:
     virtual var getPresetValueFor ( ParameterBase* p);//Any parameter that is part of a this preset can use this function
 
 
-    void setUserDefined (bool v);
+    void setUserDefined (bool v) override;
 
     ParameterBase* addParameter ( ParameterBase* );
     Array<WeakReference<ParameterBase>> getAllParameters (bool recursive = false, bool getNotExposed = false);

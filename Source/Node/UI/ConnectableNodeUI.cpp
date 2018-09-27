@@ -193,7 +193,8 @@ int ConnectableNodeUI::getMiniModeWidth (bool forMiniMode)
     return forMiniMode ? 130 : (getContentContainer()->getWidth() +
                                 inputContainer.isVisible()*inputContainer.getWidth() +
                                 outputContainer.isVisible()*outputContainer.getWidth() +
-                                (mainComponentContainer.audioCtlUIContainer ? mainComponentContainer.audioCtlUIContainer->getWidth() + mainComponentContainer.audioCtlContainerPadRight : 0));
+                                (mainComponentContainer.audioCtlUIContainer ? mainComponentContainer.audioCtlUIContainer->getWidth() +
+                                        ConnectableNodeUI::MainComponentContainer::audioCtlContainerPadRight : 0));
 }
 
 int ConnectableNodeUI::getMiniModeHeight (bool forMiniMode)

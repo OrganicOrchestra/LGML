@@ -32,7 +32,7 @@ DummyNode::DummyNode (StringRef name) :
 {
 
     clickFade.setFadedOut();
-    freq1Param = addNewParameter<FloatParameter> ("Freq 1", "This is a test int slider", .23f);
+    freq1Param = addNewParameter<FloatParameter> ("Freq 1", "This is a test int slider", .23f,20.f,4000.f);
     freq2Param = addNewParameter<FloatParameter> ("Freq 2", "This is a test int slider", .55f);
 
     testTrigger =  addNewParameter<Trigger> ("Test Trigger", "Youpi");
@@ -66,7 +66,7 @@ void DummyNode::onContainerParameterChanged ( ParameterBase* p)
     if (p == freq1Param)
     {
         //       ((DummyAudioProcessor*)audioProcessor)->amp = p->getNormalizedValue();
-        period1 = (int) (44100.0f / (1.0f + 440.0f * freq1Param->getNormalizedValue()));
+        period1 = (int) (44100.0f / ( freq1Param->floatValue()));
     }
     else if (p == freq2Param)
     {

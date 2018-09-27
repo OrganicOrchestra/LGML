@@ -118,7 +118,7 @@ public:
 
 
 
-    AudioSampleBuffer buf;
+    AudioSampleBuffer buf{};
 private:
     void safeCopy (const float* b, int numSample, int channel)
     {
@@ -139,8 +139,8 @@ private:
     int phantomSize;
     int bufSize;
     int numChannels ;
-    AudioBuffer<float> contiguousBuffer;
-    Array<float*> pointers ;
+    AudioBuffer<float> contiguousBuffer{};
+    Array<float*> pointers{};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PhantomBuffer);
 

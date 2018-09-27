@@ -44,7 +44,7 @@ public:
     Model model;
 
     NodeConnection (ConnectableNode* sourceNode, ConnectableNode* destNode, ConnectionType connectionType, Model* root = nullptr);
-    NodeConnection getCopy();
+
     virtual ~NodeConnection();
 
     DECLARE_OBJ_TYPE (NodeConnection,"connect nodes together")

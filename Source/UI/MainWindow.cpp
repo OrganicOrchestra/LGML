@@ -100,13 +100,13 @@ latestVChecker(nullptr)
 
 
 }
-void MainWindow::focusGained (FocusChangeType cause)
+void MainWindow::focusGained (FocusChangeType /*cause*/)
 {
     //mainComponent->grabKeyboardFocus();
 
 }
 
-void MainWindow::changeListenerCallback (ChangeBroadcaster* source) {
+void MainWindow::changeListenerCallback (ChangeBroadcaster* /*source*/) {
     getEngine()->setChangedFlag(getAppUndoManager().canUndo());
 };
 

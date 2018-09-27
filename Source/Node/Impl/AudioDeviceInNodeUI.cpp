@@ -62,7 +62,7 @@ void AudioDeviceInNodeContentUI::resized()
     Rectangle<int> r = getLocalBounds().reduced (10);
 
     int gap = 0;
-    int vWidth = jmin<int> ((r.getWidth() / vuMeters.size()) - gap, 30);
+    auto vWidth = jmin<int> ((r.getWidth() / vuMeters.size()) - gap, 30);
 
     for (int i = 0; i < vuMeters.size(); i++)
     {
@@ -106,7 +106,7 @@ void AudioDeviceInNodeContentUI::updateVuMeters()
 
 void AudioDeviceInNodeContentUI::addVuMeter()
 {
-    VuMeter* v = new VuMeter (VuMeter::Type::OUT);
+    auto * v = new VuMeter (VuMeter::Type::OUT);
     v->targetChannel = vuMeters.size();
     audioInNode->addRMSChannelListener (v);
     addAndMakeVisible (v);
@@ -120,7 +120,7 @@ void AudioDeviceInNodeContentUI::addVuMeter()
     addAndMakeVisible (b);
 
 
-    FloatSliderUI* vol  = new FloatSliderUI (audioInNode->volumes[curVuMeterNum]);
+    auto * vol  = new FloatSliderUI (audioInNode->volumes[curVuMeterNum]);
     vol->orientation = FloatSliderUI::Direction::VERTICAL;
     volumes.add (vol);
     addAndMakeVisible (vol);

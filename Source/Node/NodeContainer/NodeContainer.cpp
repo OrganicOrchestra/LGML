@@ -550,7 +550,7 @@ void NodeContainer::processBlockBypassed (AudioBuffer<float>& /*buffer*/, MidiBu
 
 void NodeContainer::removeIllegalConnections()
 {
-    getAudioGraph()->removeIllegalConnections();
+    if( auto * g = getAudioGraph())g->removeIllegalConnections();
     
     for (auto& c : nodeContainers)
     {

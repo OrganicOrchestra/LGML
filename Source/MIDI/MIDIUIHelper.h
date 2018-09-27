@@ -26,7 +26,7 @@
 class MIDIDeviceChooser : public ComboBox, public MIDIManager::MIDIManagerListener
 {
 public:
-    MIDIDeviceChooser (bool isInputChooser);
+    explicit MIDIDeviceChooser (bool isInputChooser);
     virtual ~MIDIDeviceChooser();
 
     bool isInputChooser;

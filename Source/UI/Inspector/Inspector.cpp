@@ -21,7 +21,7 @@ juce_ImplementSingleton (Inspector)
 Inspector::Inspector() :
     currentEditor (nullptr),
     currentComponent (nullptr),
-    isEnabled (true)
+    isListening (true)
 {
 }
 
@@ -30,13 +30,13 @@ Inspector::~Inspector()
     clear();
 }
 
-void Inspector::setEnabled (bool value)
+void Inspector::shouldListen (bool value)
 {
-    if (isEnabled == value) return;
+    if (isListening == value) return;
 
     if (!value) setCurrentComponent (nullptr);
 
-    isEnabled = value;
+    isListening = value;
 }
 
 void Inspector::clear()
@@ -49,7 +49,7 @@ void Inspector::setCurrentComponent (InspectableComponent* c)
     jassert(MessageManager::getInstance()->currentThreadHasLockedMessageManager());
     if (c == currentComponent) return;
 
-    if (!isEnabled) return;
+    if (!isListening) return;
 
     // avoid selection from inspector that will get self-deleted
     if(isParentOf(c)){return;}

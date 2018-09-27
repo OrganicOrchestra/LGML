@@ -22,9 +22,9 @@
 class CommandLineElement
 {
 public:
-    CommandLineElement (const String& name = ""): command (name) {}
-    String command;
-    StringArray args;
+    explicit CommandLineElement (const String& name = ""): command (name) {}
+    String command{};
+    StringArray args{};
 
     bool isEmpty() {return (command == "") && (args.size() == 0);}
     CommandLineElement& operator= (const CommandLineElement& rhs)
@@ -36,7 +36,7 @@ public:
         args = rhs.args;
         return *this;
     }
-    operator bool()
+    explicit operator bool()
     {
         return !isEmpty();
     }

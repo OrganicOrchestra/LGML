@@ -53,10 +53,8 @@ bool MIDIClock::setOutput(MIDIListener * _midiOut)
 bool MIDIClock::start()
 {
     startThread(realtimeAudioPriority);
-    if(!midiOut)
-        return false;
+    return midiOut != nullptr;
 
-    return true;
 }
 
 void MIDIClock::stop()

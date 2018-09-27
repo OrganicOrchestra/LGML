@@ -33,7 +33,7 @@ public:
     ControllableContainer (StringRef niceName);
     virtual ~ControllableContainer();
 
-    void setUserDefined (bool);
+    virtual void setUserDefined (bool);
     
     void setAutoShortName();
 

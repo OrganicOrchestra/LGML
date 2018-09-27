@@ -33,7 +33,7 @@ class ConnectableNode :
     public ParameterContainer
 {
 public:
-    ConnectableNode (const String& name, bool _hasMainAudioControl = true);
+    explicit ConnectableNode (const String& name, bool _hasMainAudioControl = true);
     virtual ~ConnectableNode();
 
 

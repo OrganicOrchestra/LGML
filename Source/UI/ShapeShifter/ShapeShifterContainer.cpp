@@ -14,7 +14,6 @@
 #if !ENGINE_HEADLESS
 
 #include "ShapeShifterContainer.h"
-#include "../Style.h"
 #include "ShapeShifterManager.h"
 
 
@@ -40,7 +39,7 @@ void ShapeShifterContainer::insertShifterAt (ShapeShifter* shifter, int index, b
 
     if (shifters.size() > 1)
     {
-        GapGrabber* gg = new GapGrabber (direction == HORIZONTAL ? GapGrabber::HORIZONTAL : GapGrabber::VERTICAL);
+        auto * gg = new GapGrabber (direction == HORIZONTAL ? GapGrabber::HORIZONTAL : GapGrabber::VERTICAL);
         grabbers.add (gg);
         addAndMakeVisible (gg);
         gg->addGrabberListener (this);
@@ -170,7 +169,7 @@ void ShapeShifterContainer::movePanelsInContainer (ShapeShifterPanel* newPanel, 
     int targetIndex = shifters.indexOf (containedPanel);
     removeShifter (containedPanel, false, true, false);
 
-    ShapeShifterContainer* newContainer = new ShapeShifterContainer (_newDir);
+    auto * newContainer = new ShapeShifterContainer (_newDir);
     newContainer->insertPanelAt (containedPanel, 0, true);
     newContainer->insertPanelAt (newPanel, secondBeforeFirst ? -1 : 0, false);
 
@@ -200,8 +199,8 @@ bool ShapeShifterContainer::isFlexible()
 class ShapeShifterResolver{
 public:
     typedef ShapeShifterContainer::Direction Direction ;
-    ShapeShifterResolver(Array<ShapeShifter*> _s,int _totalSpace,Direction _direction):
-    shifters(_s),
+    ShapeShifterResolver(Array<ShapeShifter*>  _s,int _totalSpace,Direction _direction):
+    shifters(std::move(_s)),
     direction(_direction),
     totalSpace(_totalSpace){
     }
@@ -275,7 +274,7 @@ public:
                 jassert(maxEdge>0);
                 if ( (curEdge+cL >= maxEdge ) || isLast)
                 {
-                    int bestEdge = averageSize*(idx+1);
+                    int bestEdge = static_cast<int>(averageSize * (idx + 1));
                     if(isLast){
                         cL = totalSpace - curEdge;
                     }
@@ -457,7 +456,7 @@ void ShapeShifterContainer::loadLayoutInternal (var layout)
     {
         for (auto& sData : *sArray)
         {
-            Type t = (Type) (int) (sData.getDynamicObject()->getProperty ("type"));
+            auto t = (ShapeShifter::Type) (int) (sData.getDynamicObject()->getProperty ("type"));
 
             if (t == PANEL)
             {
@@ -468,7 +467,7 @@ void ShapeShifterContainer::loadLayoutInternal (var layout)
             else if (t == CONTAINER)
             {
                 Direction dir = (Direction) (int)sData.getDynamicObject()->getProperty ("direction");
-                ShapeShifterContainer* sc = new ShapeShifterContainer (dir);
+                auto * sc = new ShapeShifterContainer (dir);
                 insertContainerAt (sc, -1, false);
                 sc->loadLayout (sData);
             }

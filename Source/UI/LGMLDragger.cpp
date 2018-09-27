@@ -33,7 +33,7 @@ juce_ImplementSingleton (LGMLDragger);
 class DraggedComponent : public juce::Component
 {
 public:
-    DraggedComponent (ParameterUI* c): originComp (c)
+    explicit DraggedComponent (ParameterUI* c): originComp (c)
     {
         Rectangle<int > bounds = c->getScreenBounds();
         bounds -= LGMLDragger::getInstance()->mainComp->getScreenBounds().getTopLeft();
@@ -298,7 +298,7 @@ void LGMLDragger::toggleMappingMode()
 
 
 bool LGMLDragger::keyPressed (const KeyPress& key,
-                              Component* originatingComponent){
+                              Component* /*originatingComponent*/){
     if(key==KeyPress::escapeKey && isMappingActive){
         setMappingActive(false);
         return true;
@@ -363,7 +363,7 @@ void LGMLDragger::dragComponent (Component* const componentToDrag, const MouseEv
         }
     }
 }
-void LGMLDragger::endDraggingComponent (Component*   componentToDrag, const MouseEvent& e)
+void LGMLDragger::endDraggingComponent (Component*   /*componentToDrag*/, const MouseEvent& e)
 {
     //  jassert(!target || componentToDrag==target);
     auto target_C = dynamic_cast<ParameterProxyUI*> (dropCandidate);

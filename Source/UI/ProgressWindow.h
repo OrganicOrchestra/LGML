@@ -27,7 +27,7 @@ class ProgressWindow : public juce::Component, public ProgressNotifier::Progress
 {
 public:
 
-    ProgressWindow (const String& title, ProgressNotifier* notifier = nullptr);
+    explicit ProgressWindow (const String& title, ProgressNotifier* notifier = nullptr);
     ~ProgressWindow();
 
 

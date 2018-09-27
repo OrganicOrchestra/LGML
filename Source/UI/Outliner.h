@@ -37,7 +37,7 @@ private Controllable::Listener, // for name of controllables
 private ParameterBase::AsyncListener // for nameParam(container)
 {
 public:
-    OutlinerItemComponent (OutlinerItem* item);
+    explicit OutlinerItemComponent (OutlinerItem* item);
     ~OutlinerItemComponent();
     WeakReference<OutlinerItem> item;
 
@@ -96,7 +96,7 @@ Inspector::InspectorListener
 {
 public:
 
-    Outliner (const String& contentName,ParameterContainer* root=nullptr,bool showFilterText = true);
+    explicit Outliner (const String& contentName,ParameterContainer* root=nullptr,bool showFilterText = true);
     ~Outliner();
     void clear();
 

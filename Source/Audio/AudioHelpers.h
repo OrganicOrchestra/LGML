@@ -28,8 +28,8 @@
 typedef int sample_clk_t;
 constexpr sample_clk_t MAX_NUMSAMPLES = std::numeric_limits<sample_clk_t>::max();
 
-#define DB0_FOR_01 0.8f
-#define MIN_DB -70.0f
+#define DB0_FOR_01 (0.8f)
+#define MIN_DB (-70.0f)
 
 // create a gain value for a float  between 0 and 1
 // DB0_FOR_01   -> 0dB
@@ -62,7 +62,8 @@ public:
         fadeOutCount = 0;
         fadeInCount = -1;
     }
-    FadeInOut (int numSample): fadeInNumSamples (numSample), fadeOutNumSamples (numSample), crossFade (false), skew (1.0)
+
+    explicit FadeInOut (int numSample): fadeInNumSamples (numSample), fadeOutNumSamples (numSample), crossFade (false), skew (1.0)
     {
 
     }
@@ -154,8 +155,8 @@ public:
 
     const int fadeInNumSamples;
     const int fadeOutNumSamples;
-    int fadeInCount, fadeOutCount;
-    double lastFade;
+    int fadeInCount{}, fadeOutCount{};
+    double lastFade{};
     double skew;
     const bool crossFade;
 

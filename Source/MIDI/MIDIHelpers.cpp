@@ -108,7 +108,7 @@ namespace MIDIHelpers{
                 removeOption(mc->getNiceName(), true);
             }
         };
-        void parameterValueChanged ( ParameterBase* p, ParameterBase::Listener * notifier=nullptr) override{
+        void parameterValueChanged ( ParameterBase* p, ParameterBase::Listener * /*notifier*/) override{
             auto c = p->parentContainer.get();
             if(auto cont = dynamic_cast<MIDIController*>(c)){
                 jassert(p==cont->nameParam);
@@ -216,7 +216,7 @@ namespace MIDIHelpers{
         else if(isValid && isSelected){
             owner->setCurrentDevice(ep->getFirstSelectedValue().toString());
         }
-        else if (!isSelected || !isValid){
+        else {//if (!isSelected || !isValid){
             owner->setCurrentDevice(String::empty);
         }
         

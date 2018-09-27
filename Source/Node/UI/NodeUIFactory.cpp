@@ -55,7 +55,7 @@
 #include "../Impl/VSTNodeUI.h"
 
 //#define CHKNRETURN_HEADER(p,A,B,C) if(p->getFactoryTypeId()==A::_factoryType){return new ConnectableNodeUI(p, B,C);}
-#define CHKNRETURN(p,A,B) if(p->getFactoryTypeId()==A::_factoryType){return new ConnectableNodeUI(p, uip,B);}
+#define CHKNRETURN(p,A,B) if((p)->getFactoryTypeId()==A::_factoryType){return new ConnectableNodeUI(p, uip,B);}
 
 ConnectableNodeUI* NodeUIFactory::createDefaultUI (ConnectableNode* t,ConnectableNodeUIParams *uip)
 {

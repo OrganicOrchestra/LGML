@@ -22,7 +22,7 @@
 class BoolToggleUI : public ParameterUI
 {
 public:
-    BoolToggleUI ( ParameterBase* parameter);
+    explicit BoolToggleUI ( ParameterBase* parameter);
     virtual ~BoolToggleUI();
 
 

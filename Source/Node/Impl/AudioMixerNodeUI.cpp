@@ -26,7 +26,7 @@ void AudioMixerNodeUI::resized()
     if (mixerNode->oneToOne->boolValue())
     {
         int diagoNum = jmin (mixerNode->numberOfInput->intValue(), mixerNode->numberOfOutput->intValue());
-        float step = (float) (area.getWidth() / diagoNum);
+        auto step = (float) (area.getWidth() / diagoNum);
         const int pad = 1;
 
         for (int i = 0 ; i < outputBusUIs.size() ; i ++)
@@ -120,7 +120,7 @@ void AudioMixerNodeUI::numAudioOutputChangedUI (ConnectableNode*, int newNum)
     {
         for (int i = lastNum ; i < newNum ; i++)
         {
-            OutputBusUI* oo = new OutputBusUI (mixerNode->outBuses[i]);
+            auto * oo = new OutputBusUI (mixerNode->outBuses[i]);
             outputBusUIs.add (oo);
             addAndMakeVisible (oo);
         }
@@ -185,7 +185,7 @@ void AudioMixerNodeUI::OutputBusUI::setNumInput (int numInput)
     {
         for (int  i = lastSize ; i < numInput; i++ )
         {
-            FloatSliderUI* v = new FloatSliderUI (owner->volumes[i]);
+            auto * v = new FloatSliderUI (owner->volumes[i]);
             v->setCustomText(  String(i+1)+ ">" +String(owner->outputIndex+1));
             v->orientation = FloatSliderUI::Direction::VERTICAL;
             inputVolumes.add (v);

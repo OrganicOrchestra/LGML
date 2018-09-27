@@ -23,7 +23,7 @@ class ShapeShifterPanelTab :
     public SettableTooltipClient
 {
 public:
-    ShapeShifterPanelTab (ShapeShifterContent* _content);
+    explicit ShapeShifterPanelTab (ShapeShifterContent* _content);
     ~ShapeShifterPanelTab();
 
     ShapeShifterContent* content;

@@ -17,7 +17,7 @@ private TextEditor::Listener,
 private Inspector::InspectorListener
 {
 public:
-    TooltipPanel(const String & n):ShapeShifterContentComponent(n,"See whats under your mouse"),comp(nullptr){
+    explicit TooltipPanel(const String & n):ShapeShifterContentComponent(n,"See whats under your mouse"),comp(nullptr){
 
         startTimer(50);
 
@@ -126,10 +126,10 @@ public:
         auto labelHeight = descriptionLabel.getFont().getHeight();
         if( userDescription.isVisible() ){
             auto half = area.removeFromTop(area.getHeight()/2);
-            descriptionLabel.setBounds(half.removeFromTop(labelHeight));
+            descriptionLabel.setBounds(half.removeFromTop(static_cast<int>(labelHeight)));
             userDescription.setBounds( half);
         }
-        helpLabel.setBounds(area.removeFromTop(labelHeight));
+        helpLabel.setBounds(area.removeFromTop(static_cast<int>(labelHeight)));
         label.setBounds(area);
     }
 
@@ -153,9 +153,9 @@ public:
         updateLabel();
     };
 
-    WeakReference<Component> comp;
-    Label descriptionLabel,helpLabel;
-    TextEditor label;
-    TextEditor userDescription;
-    WeakReference<ParameterBase> descriptionParameter;
+    WeakReference<Component> comp{};
+    Label descriptionLabel{},helpLabel{};
+    TextEditor label{};
+    TextEditor userDescription{};
+    WeakReference<ParameterBase> descriptionParameter{};
 };

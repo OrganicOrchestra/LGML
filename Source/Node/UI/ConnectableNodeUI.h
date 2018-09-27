@@ -28,8 +28,9 @@ class ConnectableNodeHeaderUI;
 
 class ConnectableNodeUIParams: public ParameterContainer{
 public:
-    ConnectableNodeUIParams(ConnectableNodeUIParams * _origin);
-    ConnectableNodeUIParams(StringRef n);
+    explicit ConnectableNodeUIParams(ConnectableNodeUIParams * _origin);
+
+    explicit ConnectableNodeUIParams(StringRef n);
     void initFromParams();
     void notifyFromParams();
     virtual ~ConnectableNodeUIParams();
@@ -72,7 +73,7 @@ public:
         ConnectorComponent::ConnectorDisplayLevel displayLevel;
         ConnectorComponent::ConnectorIOType type;
 
-        ConnectorContainer (ConnectorComponent::ConnectorIOType type);
+        explicit ConnectorContainer (ConnectorComponent::ConnectorIOType type);
 
         void setConnectorsFromNode (ConnectableNode* node);
         void addConnector (ConnectorComponent::ConnectorIOType ioType, NodeConnection::ConnectionType dataType, ConnectableNode* node);

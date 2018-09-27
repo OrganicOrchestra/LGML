@@ -27,9 +27,9 @@ class InspectorEditor;
 class InspectableComponent : public juce::Component,public TooltipClient
 {
 public:
-    InspectableComponent (ParameterContainer* relatedContainer , const String& inspectableType = "none");
-    InspectableComponent ( ParameterBase* relatedParameter , const String& inspectableType = "none");
-    InspectableComponent (const String& inspectableType );
+    explicit InspectableComponent (ParameterContainer* relatedContainer , const String& inspectableType = "none");
+    explicit InspectableComponent ( ParameterBase* relatedParameter , const String& inspectableType = "none");
+    explicit InspectableComponent (const String& inspectableType );
 
     virtual ~InspectableComponent();
 

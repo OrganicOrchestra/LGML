@@ -59,12 +59,12 @@ void ProgressWindow::startedProgress (ProgressTask* task)
 {
     titleLabel.setText (task->getAddress().joinIntoString (" / "), NotificationType::dontSendNotification);
 }
-void ProgressWindow::endedProgress (ProgressTask* task)
+void ProgressWindow::endedProgress (ProgressTask* /*task*/)
 {
 
 }
 
-void ProgressWindow::newProgress (ProgressTask* task, float advance)
+void ProgressWindow::newProgress (ProgressTask* task, float /*advance*/)
 {
     setProgress (task->getNormalizedProgress());
 };

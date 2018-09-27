@@ -55,13 +55,13 @@ String getPNameFromKey(const KeyPress & key){
 }
 bool KeyboardController::keyPressed (const KeyPress& key, Component* /*originatingComponent*/)
 {
-    const char c = key.getTextCharacter();
+    const char ch = key.getTextCharacter();
     const uint32 time = Time::getMillisecondCounter();
     // avoid repetition on holded keys
     for ( auto k:keysDown){if(k->key == key){ return false;}}
     keysDown.add(new KeyPressTime{key,time});
 
-    if(logIncoming->boolValue()){LOG(juce::translate("keyPress : 123").replace("123" ,String(c)));}
+    if(logIncoming->boolValue()){LOG(juce::translate("keyPress : 123").replace("123" ,String(ch)));}
 
     const String paramName=getPNameFromKey(key);
     if (Controllable* c = userContainer.getControllableByName(paramName))

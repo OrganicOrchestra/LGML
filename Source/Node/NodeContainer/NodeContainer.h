@@ -110,7 +110,7 @@ public:
 
     ReferenceCountedArray<NodeBase> nodes; //Not OwnedArray anymore because NodeBase is AudioProcessor, therefore owned by AudioProcessorGraph
     OwnedArray<NodeConnection> connections;
-    Array<NodeContainer*> nodeContainers; //so they are delete on "RemoveNode" (because they don't have an audio processor)
+    Array<NodeContainer*> nodeContainers; //so they are deleted on "RemoveNode" (because they don't have an audio processor)
 
 
 
@@ -136,8 +136,7 @@ public:
     // called to bypass this container
     void bypassNode (bool bypass);
 
-    ParameterProxy* addParamProxy();
-    void removeParamProxy (ParameterProxy* pp);
+
 
     //save / load
     DynamicObject* getObject() override;

@@ -32,7 +32,8 @@ public:
     struct LGMLVersionTriple
     {
         LGMLVersionTriple();
-        LGMLVersionTriple (int lgmlVersionNumber);
+
+        explicit LGMLVersionTriple (int lgmlVersionNumber);
         LGMLVersionTriple (int majorInt, int minorInt, int buildNumber);
 
         static bool fromString (const String& versionString, LGMLVersionTriple& result);
@@ -71,7 +72,7 @@ public:
                                  bool hasDirectDownload);
     bool hasEnded;
 
-    void askUserForLocationToDownload (URL& newVersionToDownload, const String& extraHeaders);
+
     virtual Result performUpdate (const MemoryBlock& data, File& targetFolder);
 
 protected:

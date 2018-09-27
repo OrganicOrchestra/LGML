@@ -32,7 +32,7 @@ namespace LookAndFeelHelpers
 
 
 
-forcedinline static Colour createBaseColour (Colour buttonColour,
+forcedinline static Colour createBaseColour (const Colour &buttonColour,
                                              bool hasKeyboardFocus,
                                              bool isMouseOverButton,
                                              bool isButtonDown) noexcept

@@ -170,7 +170,7 @@ void RemoveElementButton::paintButton (Graphics& g,
     g.drawEllipse (area.toFloat().reduced (stroke / 2), stroke);
     g.setColour (Colours::red);
     const float hw = stroke;//area.getHeight()/18.0;
-    const float offset = area.getWidth() / 4.0 ;
+    const float offset = area.getWidth() / 4.0f ;
 
     const float corner = hw;
 
