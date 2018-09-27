@@ -74,6 +74,7 @@ hasDefaultOSCControl(false)
 {
     nameParam->isEditable = false;
     ControllableContainer::globalRoot = this;
+    ParameterFactory::registerExtraTypes();
     ParameterFactory::logAllTypes();
     saveSession = addNewParameter<StringParameter>("save", "save current session");
     saveSession->alwaysNotify = true;
@@ -332,7 +333,7 @@ void Engine::clear()
 
     ControllerManager::getInstance()->clear();
     //  JsGlobalEnvironment::getInstance()->getEnv()->clear();
-    //  graphPlayer.setProcessor(nullptr);
+//      graphPlayer.setProcessor(nullptr);
 
     PresetManager::getInstance()->clear();
 

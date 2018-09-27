@@ -72,7 +72,7 @@ public :
         void async_stop();
         void async_newBeat ( int b);
         void async_beatPerBarChanged (int bpb);
-        void async_isSettingTempo ( bool b) ;
+
 
 
         void zeroOutBeatComponents();

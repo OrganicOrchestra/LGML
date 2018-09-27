@@ -242,7 +242,7 @@ private:
 
     };
     bool _isLocked;
-    void updateCurrentPositionInfo();
+
 
     CurrentPositionInfo currentPositionInfo;
 

@@ -89,7 +89,7 @@ Result Engine::loadDocument (const File& file)
     isLoadingFile = true;
     engineListeners.call (&EngineListener::startLoadFile);
 #if !ENGINE_HEADLESS
-    if (Inspector::getInstanceWithoutCreating() != nullptr) Inspector::getInstance()->setEnabled (false); //avoid creation of inspector editor while recreating all nodes, controllers, rules,etc. from file
+    if (Inspector::getInstanceWithoutCreating() != nullptr) Inspector::getInstance()->shouldListen (false); //avoid creation of inspector editor while recreating all nodes, controllers, rules,etc. from file
 #endif
 
 #ifdef MULTITHREADED_LOADING
@@ -139,17 +139,16 @@ void Engine::loadDocumentAsync (const File& file)
 
     file.getParentDirectory().setAsCurrentWorkingDirectory();
 
-    {
-        parseTask->start();
-        jsonData = JSON::parse (*is);
-        parseTask->end();
-        loadTask->start();
-        loadJSONData (jsonData, loadTask);
-        loadTask->end();
+
+    parseTask->start();
+    jsonData = JSON::parse (*is);
+    parseTask->end();
+    loadTask->start();
+    loadJSONData (jsonData, loadTask);
+    loadTask->end();
 
 
-    }// deletes data before launching audio, (data not needed after loaded)
-
+    // deletes data before launching audio, (data not needed after loaded)
     jsonData = var();
 }
 
@@ -348,7 +347,7 @@ void Engine::loadJSONData (const var& data, ProgressTask* loadingTask)
     //Clean unused presets
     PresetManager::getInstance()->deleteAllUnusedPresets (this);
 #if !ENGINE_HEADLESS
-    if (auto inspector = Inspector::getInstanceWithoutCreating() ) inspector->setEnabled (true); //Re enable editor
+    if (auto inspector = Inspector::getInstanceWithoutCreating() ) inspector->shouldListen (true); //Re enable editor
 #endif
 
 }

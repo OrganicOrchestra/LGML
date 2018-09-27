@@ -113,7 +113,7 @@ public:
     void loadJSONData (const var& data, ProgressTask* loadingTask);
 
     bool checkFileVersion (DynamicObject* metaData);
-    int versionStringToInt (const String& version);
+
     String getMinimumRequiredFileVersion();
 
     void  stimulateAudio (bool);
@@ -127,7 +127,7 @@ public:
         void changeListenerCallback (ChangeBroadcaster* )override;
         void saveCurrent();
         String getConfigName();
-        void load();
+
         String lastConfigName;
         void timerCallback()override;
 
