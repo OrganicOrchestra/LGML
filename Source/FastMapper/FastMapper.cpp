@@ -198,6 +198,9 @@ void FastMapper::removeFastmap (FastMap* f)
 ParameterContainer*   FastMapper::addContainerFromObject (const String& /*name*/, DynamicObject*   fData)
 {
     FastMap* f = addFastMap();
+    if(f){
+        f->configureFromObject(fData);
+    }
     return f;
 
 
