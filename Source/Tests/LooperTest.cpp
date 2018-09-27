@@ -190,14 +190,14 @@ public:
                         "wrong quantization");
             }
 
-            expect (track1->playableBuffer.playNeedle == (curWallTime % track1->playableBuffer.recordNeedle), "unaligned PlayNeedle : " + String (track1->playableBuffer.playNeedle) + " , " + String (curWallTime % track1->playableBuffer.recordNeedle) );
+            expect (track1->playableBuffer.playNeedle == (nextWallTime % track1->playableBuffer.recordNeedle), "unaligned PlayNeedle : " + String (track1->playableBuffer.playNeedle) + " , " + String (nextWallTime % track1->playableBuffer.recordNeedle) );
 
             float magnitude = testBuffer.getMagnitude (0, testBuffer.getNumSamples());
             expect (magnitude > 0, "not Playing");
             int localTime = ((i+1) * blockSize) % (recordSizeInBlock * blockSize);
 
-            expect (localTime == curWallTime, "localTime not aligned : " + String (localTime) + "," + String (curWallTime));
-            expect (checkBufferAlignedForTime (testBuffer, curWallTime), "buffer not aligned with time : " + String (curWallTime));
+            expect (localTime == nextWallTime, "localTime not aligned : " + String (localTime) + "," + String (nextWallTime));
+            expect (checkBufferAlignedForTime (testBuffer, nextWallTime), "buffer not aligned with time : " + String (nextWallTime));
 
         }
 
