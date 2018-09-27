@@ -327,11 +327,11 @@ inline bool PlayableBuffer::readNextBlock (AudioBuffer<float>& buffer, sample_cl
     if (state == BUFFER_PLAYING && !isStretchPending && !wasLastRecordingFrame())
     {
         jassert (multiNeedle.loopSize == getRecordedLength() );
-        sample_clk_t targetTime = (time  + getRecordedLength()-numSamples) % getRecordedLength();
+        sample_clk_t targetTime = (time  + getRecordedLength()) % getRecordedLength();
 
         if (targetTime != playNeedle)
         {
-            //      jassertfalse;
+//                  jassertfalse;
             setPlayNeedle (targetTime);
 
         }
@@ -350,12 +350,13 @@ inline bool PlayableBuffer::readNextBlock (AudioBuffer<float>& buffer, sample_cl
     {
         if (isPlaying() && multiNeedle.currentPos != playNeedle && !isStretchPending)
         {
-            multiNeedle.jumpTo (playNeedle);
             jassertfalse;
+            multiNeedle.jumpTo (playNeedle);
+
         }
 
 
-        hasAdded = multiNeedle.addToBuffer (bufferBlockList, buffer, buffer.getNumSamples(), isPlaying());
+        hasAdded = multiNeedle.addToBuffer (bufferBlockList, buffer,fromSample,numSamples, isPlaying());
         //    }
 
     }
@@ -519,12 +520,19 @@ void PlayableBuffer::setState (BufferState newState, int _sampleOffsetBeforeNewS
             break;
 
         case BUFFER_PLAYING:
-            jassert (getRecordedLength() >= getMinRecordSampleLength());
-            multiNeedle.setLoopSize (getRecordedLength());
-            setPlayNeedle ( -_sampleOffsetBeforeNewState );
+        {
+            // if was recording adjust multineedle loopsize
+            if(state==BUFFER_RECORDING){
+                jassert (getRecordedLength() >= getMinRecordSampleLength());
+                auto targetRecordedLength =getRecordedLength()+_sampleOffsetBeforeNewState;
+                multiNeedle.setLoopSize (targetRecordedLength);
+                jassert(_sampleOffsetBeforeNewState>=0);
+            }
+
+            setPlayNeedle (0);
             globalPlayNeedle = 0;
             break;
-
+        }
         case BUFFER_STOPPED:
             jassert (getRecordedLength() == 0 || getRecordedLength() >= getMinRecordSampleLength());
             numTimePlayed = 0;
@@ -729,8 +737,8 @@ void PlayableBuffer::setTimeRatio (const double ratio,bool now)
                                                     bufferBlockList.getAllocatedNumChannels(),//size_t channels,
                                                     RubberBandStretcher::OptionProcessRealTime
                                                     //
-                                                    //                                            | RubberBandStretcher::OptionTransientsSmooth
-                                                    | RubberBandStretcher::OptionTransientsMixed
+                                                    | RubberBandStretcher::OptionTransientsCrisp
+//                                                    | RubberBandStretcher::OptionTransientsMixed
 
                                                     //| RubberBandStretcher::OptionPhaseAdaptive
                                                     | RubberBandStretcher::OptionThreadingNever

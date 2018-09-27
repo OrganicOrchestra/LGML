@@ -89,7 +89,7 @@ public:
     FadeNeedle*   consumeNextNeedle (int numSamples);
     void fadeAllOut();
     void resetAll();
-    bool addToBuffer ( BufferBlockList& originBuffer, AudioBuffer<float>& destBuffer, int numSamples, bool isLooping);
+    bool addToBuffer ( BufferBlockList& originBuffer, AudioBuffer<float>& destBuffer,int destStartSample, int numSamples, bool isLooping);
 
 
 

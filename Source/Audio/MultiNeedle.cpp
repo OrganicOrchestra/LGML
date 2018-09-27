@@ -379,7 +379,7 @@ void MultiNeedle::resetAll()
     }
 }
 
-bool MultiNeedle::addToBuffer ( BufferBlockList& originBufferList, AudioBuffer<float>& destBuffer, int numSamples, bool isLooping)
+bool MultiNeedle::addToBuffer ( BufferBlockList& originBufferList, AudioBuffer<float>& destBuffer,int destStartSample, int numSamples, bool isLooping)
 {
     //    jassert(destBuffer.getNumChannels()>=originBuffer.getNumChannels());
     const int minComonChannels = jmin (destBuffer.getNumChannels(), originBufferList.getAllocatedNumChannels());
@@ -473,7 +473,7 @@ bool MultiNeedle::addToBuffer ( BufferBlockList& originBufferList, AudioBuffer<f
 
         for (int  i = minComonChannels - 1; i >= 0  ; i--)
         {
-            destBuffer.addFromWithRamp (i, 0, tmpContiguous.getReadPointer (i), numSamples,  fN->getFadeValueStart(), fN->getFadeValueEnd());
+            destBuffer.addFromWithRamp (i, destStartSample, tmpContiguous.getReadPointer (i), numSamples,  fN->getFadeValueStart(), fN->getFadeValueEnd());
         }
 
         //    if(fN->reverse){
