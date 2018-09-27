@@ -21,6 +21,11 @@ class ParameterBase;
 class  ParameterFactory: public FactoryBase<ParameterBase>
 {
 public:
+    static void registerExtraTypes(){
+        // legacy param
+        jassert(getFactory().contains("t_NumericParameter_floatParamType"));
+        getFactory().set("t_NumericParameter_double",getFactory()["t_NumericParameter_floatParamType"]);
+    }
     //  default creation for simple types
     static ParameterBase* createBaseFromVar (StringRef name, const var&);
 };

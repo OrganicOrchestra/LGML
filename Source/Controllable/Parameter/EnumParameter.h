@@ -171,7 +171,7 @@ public:
 
 
 private:
-    DynamicObject* getValuesMap (const var& v) ;
+
     Array<Identifier> getSelectedSetIds (const var& v) const;
     Array<var>* getSelectedSet (const var& v) const;
 

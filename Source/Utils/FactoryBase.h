@@ -154,10 +154,19 @@ public:
         return res;
     }
 
+protected:
+    typedef CLASSNAME* (*CreatorFunc) (const String& niceName, DynamicObject* d);
+    typedef CreatorFunc Entry;
+    static  HashMap< String, Entry >& getFactory()
+    {
+        static HashMap< String, Entry > factory;
+        return factory;
+    }
+
 private:
 
 
-    typedef CLASSNAME* (*CreatorFunc) (const String& niceName, DynamicObject* d);
+
 
     template <typename T>
     static CLASSNAME* createFromObject ( const String& niceName, DynamicObject* d)
@@ -174,7 +183,7 @@ private:
 
 
 
-    typedef CreatorFunc Entry;
+
 
     static  HashMap<String, String> & getShortNamesMap(){
         static HashMap<String, String> shortNamesMap; // readable class names (without suffixes)
@@ -186,11 +195,7 @@ private:
 //        return infoMap;
 //    }
 
-    static  HashMap< String, Entry >& getFactory()
-    {
-        static HashMap< String, Entry > factory;
-        return factory;
-    }
+
 
 };
 
