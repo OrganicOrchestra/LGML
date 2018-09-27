@@ -32,6 +32,7 @@ public:
 
 
     void changeListenerCallback (ChangeBroadcaster* source)override;
+    void processBlockBypassed(AudioBuffer<float>& buffer, MidiBuffer& midiMessages) override;
     void processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer& midiMessages) override;
 
     Array<BoolParameter*> outMutes;

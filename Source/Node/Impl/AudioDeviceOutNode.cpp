@@ -113,9 +113,16 @@ void AudioDeviceOutNode::updateVolMutes()
 
 }
 
+void AudioDeviceOutNode::processBlockBypassed(AudioBuffer<float>& buffer, MidiBuffer& ){
+    buffer.clear();
+}
 void AudioDeviceOutNode::processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
-    if (!enabledParam->boolValue()) return;
+    if (!enabledParam->boolValue()) {
+        buffer.clear();
+        AudioProcessorGraph::AudioGraphIOProcessor::processBlock (buffer, midiMessages);
+        return;
+    }
 
     int numChannels = jmin (NodeBase::getTotalNumInputChannels(), AudioProcessorGraph::AudioGraphIOProcessor::getTotalNumInputChannels());
     int numSamples = buffer.getNumSamples();
