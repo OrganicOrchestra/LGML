@@ -68,8 +68,8 @@ void StretcherJob::initStretcher (int sampleRate, int numChannels)
     stretcher = new    RubberBandStretcher (sampleRate, //size_t sampleRate,
                                             numChannels,//size_t channels,
                                             RubberBandStretcher::OptionProcessOffline
-                                            //                                       | RubberBandStretcher::OptionTransientsMixed
-                                            | RubberBandStretcher::OptionTransientsSmooth
+                                            | RubberBandStretcher::OptionTransientsCrisp
+//                                            | RubberBandStretcher::OptionTransientsMixed
                                             //| RubberBandStretcher::OptionPhaseAdaptive
                                             | RubberBandStretcher::OptionThreadingNever
                                             | RubberBandStretcher::OptionWindowStandard
