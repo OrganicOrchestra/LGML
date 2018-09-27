@@ -108,6 +108,7 @@ public :
         addNodeBt.setTooltip (juce::translate("Add Node"));
         //    setOpaque(true);
         vp.setScrollOnDragEnabled (false);
+        vp.addMouseListener(this,true);
 
     }
 
@@ -157,6 +158,29 @@ public :
 
         resized();
     }
+    void mouseDown(const MouseEvent & e)override{
+        if(nmui->isParentOf(e.originalComponent)) {
+            beginDragAutoRepeat(40);
+        }
+    }
+    void mouseDrag(const MouseEvent & e)override{
+        Component *c  = e.originalComponent;
+        if(nmui->currentViewer && nmui->currentViewer->isParentOf(c)){
+            auto r = vp.getLocalArea(c->getParentComponent(),c->getBoundsInParent());
+            //auto mouse = vp.getLocalPoint(e.originalComponent,e.position);
+            vp.autoScroll(r.getRight(),r.getBottom(),140,10);
+        }
+    }
+    void mouseUp(const MouseEvent & e)override{
+        if(nmui->currentViewer) {
+            auto nb = nmui->currentViewer->getNodesBoundingBox();
+            auto maxP = vp.getLocalArea(nmui->currentViewer,nb);
+            nmui->currentViewer->resizeToFitNodes(maxP.getTopLeft());
+        }
+        beginDragAutoRepeat(-1);
+
+    }
+
 
     void paint (Graphics& g) override
     {

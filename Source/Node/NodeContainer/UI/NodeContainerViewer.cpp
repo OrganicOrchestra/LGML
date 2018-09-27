@@ -24,16 +24,27 @@
 
 UndoManager & getAppUndoManager();
 
+class NodeLayerComponent : public Component{
+public:
+
+    void childBoundsChanged(Component *c) override{
+        auto nv = static_cast<NodeContainerViewer *>( getParentComponent());
+        nv->resizeToFitNodes();
+    }
+
+};
+
 NodeContainerViewer::NodeContainerViewer (NodeContainer* container,ParameterContainer * uiP) :
-InspectableComponent (container, "node"),
-nodeContainer (container),
-editingConnection (nullptr),
-uiParams(uiP),
-ParameterContainer(container->getNiceName())
+        InspectableComponent (container, "node"),
+        nodeContainer (container),
+        editingConnection (nullptr),
+        uiParams(uiP),
+        ParameterContainer(container->getNiceName()),
+        nodesLayer(new NodeLayerComponent())
 {
     selectedItems.addChangeListener(this);
     setInterceptsMouseClicks (true, true);
-    nodesLayer.addMouseListener(this, true);
+    nodesLayer->addMouseListener(this, true);
     nodeContainer->addNodeContainerListener (this);
 
     canInspectChildContainersBeyondRecursion = false;
@@ -41,7 +52,7 @@ ParameterContainer(container->getNiceName())
     minimizeAll = addNewParameter<BoolParameter>("minimize all", "minimize all visible nodes", false);
 
     addAndMakeVisible(nodesLayer);
-    nodesLayer.setInterceptsMouseClicks(false,true);
+    nodesLayer->setInterceptsMouseClicks(false,true);
     for (auto& n : nodeContainer->nodes)
     {
         addNodeUI (n);
@@ -92,7 +103,7 @@ void NodeContainerViewer::clear()
 
 void NodeContainerViewer::resized()
 {
-    nodesLayer.setBounds(getLocalBounds());
+    nodesLayer->setBounds(getLocalBounds());
     //    auto area = getLocalBounds();
     //    auto header  =area.removeFromTop(20);
     //
@@ -126,8 +137,8 @@ void NodeContainerViewer::addNodeUI (ConnectableNode* node)
     {
 
         ConnectableNodeUI* nui =
-        NodeUIFactory::createDefaultUI (node,
-                                        dynamic_cast<ConnectableNodeUIParams*>(uiParams->getControllableContainerByName(node->shortName)));
+                NodeUIFactory::createDefaultUI (node,
+                                                dynamic_cast<ConnectableNodeUIParams*>(uiParams->getControllableContainerByName(node->shortName)));
 
         if(nui){
             nodesUI.add (nui);
@@ -138,7 +149,7 @@ void NodeContainerViewer::addNodeUI (ConnectableNode* node)
             else{
                 nui->setMiniMode(nui->miniModeParam->boolValue());
             }
-            nodesLayer.addAndMakeVisible (nui);
+            nodesLayer->addAndMakeVisible (nui);
         }
 
     }
@@ -158,7 +169,7 @@ void NodeContainerViewer::removeNodeUI (ConnectableNode* node)
 
     if (nui != nullptr)
     {
-        nodesLayer.removeChildComponent (nui);
+        nodesLayer->removeChildComponent (nui);
         removeChildControllableContainer(nui);
         nodesUI.removeObject (nui);
 
@@ -210,7 +221,7 @@ void NodeContainerViewer::addConnectionUI (NodeConnection* connection)
     NodeConnectionUI* cui = new NodeConnectionUI (connection, c1, c2);
     connectionsUI.add (cui);
 
-    nodesLayer.addAndMakeVisible (cui, 0);
+    nodesLayer->addAndMakeVisible (cui, 0);
     cui->resized();
 }
 
@@ -225,7 +236,7 @@ void NodeContainerViewer::removeConnectionUI (NodeConnection* connection)
     }
 
     connectionsUI.removeObject (nui);
-    nodesLayer.removeChildComponent (nui);
+    nodesLayer->removeChildComponent (nui);
 }
 
 NodeConnectionUI* NodeContainerViewer::getUIForConnection (NodeConnection* connection)
@@ -241,33 +252,6 @@ NodeConnectionUI* NodeContainerViewer::getUIForConnection (NodeConnection* conne
 }
 
 
-void NodeContainerViewer::createDataConnectionFromConnector (Connector* baseConnector)
-{
-
-    //DBG("Create Data connection from connector");
-
-    if (editingConnection != nullptr)
-    {
-        DBG ("Already editing a connection !");
-        return;
-    }
-
-    bool isOutputConnector = baseConnector->ioType == Connector::ConnectorIOType::OUTPUT;
-
-
-    if (isOutputConnector)
-    {
-        editingConnection = new NodeConnectionUI (nullptr, baseConnector, nullptr);
-    }
-    else
-    {
-        editingConnection = new NodeConnectionUI (nullptr, nullptr, baseConnector);
-    }
-
-    nodesLayer.addAndMakeVisible (editingConnection);
-
-    baseConnector->addMouseListener (this, false);
-}
 
 void NodeContainerViewer::createAudioConnectionFromConnector (Connector* baseConnector, NodeConnection* root)
 {
@@ -293,7 +277,7 @@ void NodeContainerViewer::createAudioConnectionFromConnector (Connector* baseCon
 
     baseConnector->addMouseListener (this, false);
 
-    nodesLayer.addAndMakeVisible (editingConnection);
+    nodesLayer->addAndMakeVisible (editingConnection);
 }
 
 void NodeContainerViewer::updateEditingConnection()
@@ -370,7 +354,7 @@ void NodeContainerViewer::finishEditingConnection()
 
     bool isAudioConnection = editingConnection->getBaseConnector()->dataType == NodeConnection::ConnectionType::AUDIO;
 
-    if (isAudioConnection) 
+    if (isAudioConnection)
     {
         bool success = editingConnection->finishEditing();
 
@@ -380,7 +364,7 @@ void NodeContainerViewer::finishEditingConnection()
         }
     }
 
-    nodesLayer.removeChildComponent (editingConnection);
+    nodesLayer->removeChildComponent (editingConnection);
     delete editingConnection;
     editingConnection = nullptr;
 
@@ -423,7 +407,7 @@ void NodeContainerViewer::mouseDown (const MouseEvent& event)
 
             Point<int> mousePos = getMouseXYRelative();
             PopupMenu   menu;//(new PopupMenu());
-            
+
             ScopedPointer<PopupMenu> addNodeMenu (FactoryUIHelpers::getFactoryTypesMenu<NodeFactory> ());
 
             menu.addSubMenu ("Add Node", *addNodeMenu);
@@ -568,13 +552,13 @@ void NodeContainerViewer::mouseUp (const MouseEvent& e)
 
     }
     else {
-        for( auto i:selectedItems){
-            i->setVisuallySelected(false);
+        for( auto & i:selectedItems){
+            if(i.get())i->setVisuallySelected(false);
         }
     }
 
     selectedInitBounds.clear();
-    for(auto s: selectedItems){
+    for(auto& s: selectedItems){
         if(s.get()){
             Component * tSize = s->mainComponentContainer.contentContainer;
             selectedInitBounds.set(s, s->getBoundsInParent().withSize(tSize->getWidth(), tSize->getHeight()));
@@ -632,25 +616,48 @@ void NodeContainerViewer::onContainerParameterChanged( ParameterBase* p) {
 
 };
 
-void NodeContainerViewer::resizeToFitNodes()
+Rectangle<int> NodeContainerViewer::getNodesBoundingBox(){
+    Rectangle<int> _bounds(0, 0, 0,0);
+        for (auto &n : nodesUI) {
+            _bounds = _bounds.getUnion(getLocalArea(nodesLayer,n->getBoundsInParent()));
+        }
+
+    return _bounds;
+}
+void NodeContainerViewer::resizeToFitNodes(Point<int> maxStartP)
 {
-    
-    
-    Rectangle<int> _bounds (0, 0, 1, 1);
-    
-    if (auto* p = findParentComponentOfClass<Viewport>())
-    {
-        _bounds = p->getBounds();
+
+    static bool isResizing = false;
+    if(!isResizing) {
+        isResizing = true;
+        auto _bounds = getNodesBoundingBox();
+
+
+            auto minPP = _bounds.getTopLeft();
+            Point<int> delta;
+
+            delta.x = -jmin(minPP.x-maxStartP.x,0);
+            delta.y = -jmin(minPP.y-maxStartP.y,0);
+            int step=10;
+            if(delta.x!=0 || delta.y!=0) {
+                if(delta.x!=0)delta.x =delta.x>0?step:-step;
+                if(delta.y!=0)delta.y =delta.y>0?step:-step;
+
+                for (auto &n : nodesUI) {
+                    n->setTopLeftPosition(n->getPosition() +delta);
+                }
+            }
+            if(auto vp =findParentComponentOfClass<Viewport>()){
+                _bounds = _bounds.getUnion(vp->getBounds().withLeft(0).withTop(0));
+            }
+            setSize(_bounds.getWidth(), _bounds.getHeight());
+
+
+
+        isResizing = false;
     }
-    
-    for (auto& n : nodesUI)
-    {
-        _bounds = _bounds.getUnion (n->getBoundsInParent().withLeft (0).withTop (0));
-        
-    }
-    
-    setSize (_bounds.getWidth(), _bounds.getHeight());
-    
+
+
 }
 
 void NodeContainerViewer::findLassoItemsInArea (Array<SelectedUIType>& itemsFound,const Rectangle<int>& area) {
@@ -659,7 +666,7 @@ void NodeContainerViewer::findLassoItemsInArea (Array<SelectedUIType>& itemsFoun
             itemsFound.add(n);
         }
     }
-    
+
     auto insp = Inspector::getInstance();
     if(itemsFound.size()){
         // unselect this if needed
@@ -668,7 +675,7 @@ void NodeContainerViewer::findLassoItemsInArea (Array<SelectedUIType>& itemsFoun
         }
     }
     else{
-        insp->setCurrentComponent(nullptr); 
+        insp->setCurrentComponent(nullptr);
     }
 };
 
@@ -682,31 +689,31 @@ void NodeContainerViewer::changeListenerCallback (ChangeBroadcaster* source){
             n->setVisuallySelected(selectedItems.getItemArray().contains(n));
         }
     }
-    
+
 }
 
 void NodeContainerViewer::addNodeUndoable(const String & tid,const Point<int> & mousePos){
     getAppUndoManager().beginNewTransaction("add Node :"+tid);
     getAppUndoManager().perform(new FactoryUIHelpers::UndoableFactoryCreate<NodeBase>
-                                (tid,
-                                 [=](NodeBase* c){
-                                     if(c)
-                                     {
-                                         ConnectableNode* n = (ConnectableNode*)nodeContainer->addNode (c);
-                                         jassert (n != nullptr);
-                                         if(auto m = getUIForNode(n)){
-                                             m->nodePosition->setPoint (mousePos - m->nodeSize->getPoint() / 2);
-                                             m->nodeMinimizedPosition->setPoint (mousePos - m->nodeSize->getPoint() / 2);
-                                         }
+                                        (tid,
+                                         [=](NodeBase* c){
+                                             if(c)
+                                             {
+                                                 ConnectableNode* n = (ConnectableNode*)nodeContainer->addNode (c);
+                                                 jassert (n != nullptr);
+                                                 if(auto m = getUIForNode(n)){
+                                                     m->nodePosition->setPoint (mousePos - m->nodeSize->getPoint() / 2);
+                                                     m->nodeMinimizedPosition->setPoint (mousePos - m->nodeSize->getPoint() / 2);
+                                                 }
 
-                                     }
-                                     else
-                                     {
-                                         jassertfalse;
-                                     }
-                                 },
-                                 [=](NodeBase *c){nodeContainer->removeNode(c);}
-                                 ));
+                                             }
+                                             else
+                                             {
+                                                 jassertfalse;
+                                             }
+                                         },
+                                         [=](NodeBase *c){nodeContainer->removeNode(c);}
+                                        ));
 
 }
 

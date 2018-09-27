@@ -37,8 +37,6 @@ public :
 
 
 
-    void updateSize();
-
     void init()override;
     void resized() override;
 

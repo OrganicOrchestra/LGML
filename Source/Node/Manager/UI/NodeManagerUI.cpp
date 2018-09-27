@@ -45,10 +45,17 @@ public:
     NodeManagerUIFactory():ParameterContainer("NodesUI"){}
 
     ParameterContainer* addContainerFromObject (const String& name, DynamicObject*   data) override{
+        ParameterContainer * res;
         if(auto c = getControllableContainerByName("NodeManagerUI")){
-            return dynamic_cast<NodeManagerUI*>(c);
+            res = dynamic_cast<NodeManagerUI*>(c);
         }
-        return new NodeManagerUI(NodeManager::getInstance());
+        else{
+            res= new NodeManagerUI(NodeManager::getInstance());
+        }
+        if(res){
+            res->configureFromObject(data);
+        }
+        return res;
     };
 };
 
@@ -102,12 +109,14 @@ void NodeManagerUI::clear()
 void NodeManagerUI::resized()
 {
 
-    Rectangle<int> r = getLocalBounds();
+
 
     if (currentViewer != nullptr)
     {
-        currentViewer->setTopLeftPosition (0, 0);
-        currentViewer->setSize (jmax<int> (getWidth(), currentViewer->getWidth()), jmax<int> (getHeight(), currentViewer->getHeight()));
+        Rectangle<int> r = getLocalBounds();
+        currentViewer->setBounds(r);
+        //currentViewer->setTopLeftPosition (0, 0);
+        //currentViewer->setSize (jmax<int> (getWidth(), currentViewer->getWidth()), jmax<int> (getHeight(), currentViewer->getHeight()));
     }
 }
 
