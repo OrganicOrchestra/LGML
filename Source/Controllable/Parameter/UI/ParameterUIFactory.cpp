@@ -65,7 +65,7 @@ ParameterUI* ParameterUIFactory::createDefaultUI ( ParameterBase* t)
     CHKNRETURNSLIDER(t,ParameterList<int>, ParameterListUI<int>)
     CHKNRETURNSLIDER(t,ParameterList<floatParamType>, ParameterListUI<floatParamType>)
     
-    jassertfalse;
+    //jassertfalse;
     return new StringParameterUI(t);
 
 

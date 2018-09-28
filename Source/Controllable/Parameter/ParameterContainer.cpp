@@ -291,7 +291,7 @@ void ParameterContainer::configureFromObject (DynamicObject* dyn)
 
                         if (c)
                         {
-                            c->configureFromObject (o.value.getDynamicObject());
+//                            c->configureFromObject (o.value.getDynamicObject());
                         }
                         else
                         {
