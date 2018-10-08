@@ -450,6 +450,16 @@ void OSCController::oscBundleReceived (const OSCBundle& bundle)
 
 inline bool compareOSCArg (const OSCArgument& a, const OSCArgument& b)
 {
+    // if floats and ints : compare their values independently of their types
+    if  (a.getType() == OSCTypes::float32 && b.getType() == OSCTypes::int32)
+    {
+        return a.getFloat32() == b.getInt32();
+    }
+
+    if(a.getType() == OSCTypes::int32 && b.getType() == OSCTypes::float32){
+        return a.getInt32() == b.getFloat32();
+    }
+
     if (a.getType() != b.getType())
     {
         return false;
