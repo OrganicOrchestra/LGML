@@ -74,7 +74,7 @@ public :
     void removeTaskListener (TaskListener* l) {taskListeners.remove (l);}
 
 
-
+private:
     friend class WeakReference<ProgressTask>;
     WeakReference<ProgressTask>::Master masterReference;
 };

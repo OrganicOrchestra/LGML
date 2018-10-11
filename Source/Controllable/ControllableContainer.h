@@ -245,6 +245,8 @@ public:
 
     static ControllableContainer * globalRoot;
 
+    WeakReference<ControllableContainer >::SharedPointer* getMasterRefPtr(){return ControllableContainer::masterReference.getSharedPointer (this);}
+
 
 protected :
 
@@ -262,11 +264,12 @@ protected :
     void notifyStructureChanged (ControllableContainer* origin,bool isAdded);
     void notifyChildAddressChanged (ControllableContainer* origin);
 
-    typename  WeakReference< ControllableContainer >::Master masterReference;
+
+
+
+private:
+    WeakReference< ControllableContainer >::Master masterReference;
     friend class WeakReference<ControllableContainer>;
-
-
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ControllableContainer)
 
 

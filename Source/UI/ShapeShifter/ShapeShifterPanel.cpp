@@ -57,7 +57,7 @@ ShapeShifterPanel::~ShapeShifterPanel()
 
     header.removeHeaderListener (this);
     listeners.call (&Listener::panelDestroyed, this);
-    masterReference.clear();
+    ShapeShifterPanel::masterReference.clear();
 }
 
 

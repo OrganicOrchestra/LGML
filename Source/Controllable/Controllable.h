@@ -115,9 +115,10 @@ public:
     static var setControllableValueFromJS (const juce::var::NativeFunctionArgs& a);
 
 
+    WeakReference<Controllable >::SharedPointer* getMasterRefPtr(){return masterReference.getSharedPointer (this);}
 private:
 
-    typename WeakReference<Controllable >::Master masterReference;
+    WeakReference<Controllable >::Master masterReference;
     friend class WeakReference<Controllable >;
     
 

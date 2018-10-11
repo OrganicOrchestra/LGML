@@ -110,11 +110,12 @@ public:
     bool isLoadingPreset = false;
     friend class PresetManager;
 
+
+    WeakReference<ParameterContainer >::SharedPointer* getMasterRefPtr(){return masterReference.getSharedPointer (this);}
+private:
     WeakReference< ParameterContainer >::Master masterReference;
     friend class WeakReference<ParameterContainer>;
 
-
-private:
     // internal callback that a controllableContainer can override to react to any of it's parameter change
     // this is to avoid either:
     //      adding controllableContainerListener for each implementation

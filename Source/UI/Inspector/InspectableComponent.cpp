@@ -63,7 +63,7 @@ bringToFrontOnSelect (true)
 }
 InspectableComponent::~InspectableComponent()
 {
-    masterReference.clear();
+    InspectableComponent::masterReference.clear();
 
 }
 

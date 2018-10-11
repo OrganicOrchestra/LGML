@@ -529,7 +529,7 @@ EnumParameterModel::EnumParameterModel(): addFunction (nullptr)
 
 EnumParameterModel::~EnumParameterModel()
 {
-    masterReference.clear();
+    EnumParameterModel::masterReference.clear();
 
 }
 

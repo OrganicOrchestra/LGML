@@ -100,7 +100,7 @@ public:
 
     AudioProcessorGraph* getParentGraph();
 
-protected:
+private:
     WeakReference<NodeConnection >::Master masterReference;
     friend class WeakReference<NodeConnection>;
 

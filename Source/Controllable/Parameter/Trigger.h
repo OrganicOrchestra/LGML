@@ -23,7 +23,7 @@ class Trigger : public ParameterBase
 {
 public:
     Trigger (const String& niceName, const String& description, bool enabled = true);
-    ~Trigger() {masterReference.clear();}
+    ~Trigger() {Trigger::masterReference.clear();}
 
 
 

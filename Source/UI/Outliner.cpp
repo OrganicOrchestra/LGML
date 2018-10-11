@@ -342,7 +342,7 @@ OutlinerItem::~OutlinerItem(){
         }
         }
     }
-    masterReference.clear();
+    OutlinerItem::masterReference.clear();
 }
 
 bool OutlinerItem::mightContainSubItems()

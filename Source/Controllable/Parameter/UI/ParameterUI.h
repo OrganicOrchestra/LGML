@@ -92,7 +92,7 @@ private:
 
 
     bool isMappingDest;
-
+private:
     WeakReference<ParameterUI>::Master masterReference;
     friend class WeakReference<ParameterUI>;
 

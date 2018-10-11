@@ -22,7 +22,7 @@
 
 
 ProgressTask::ProgressTask (String _taskName, ProgressTask* _parentTask ): parentTask (_parentTask), taskName (_taskName), progress (0) {}
-ProgressTask::~ProgressTask() {masterReference.clear();}
+ProgressTask::~ProgressTask() {ProgressTask::masterReference.clear();}
 
 int ProgressTask::getTaskPositionInParent()
 {

@@ -160,6 +160,7 @@ public:
     template<typename T> T* getAs() {return dynamic_cast<T*> (this);}
 
 
+    WeakReference<ParameterBase >::SharedPointer* getMasterRefPtr(){return ParameterBase::masterReference.getSharedPointer (this);}
 protected:
     bool waitOrDeffer (const var& _value, bool silentSet, bool force);
     Atomic<bool> _isSettingValue;

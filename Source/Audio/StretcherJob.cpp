@@ -53,7 +53,7 @@ tmpStretchBuf (1, 44100, process_blocksize)
 StretcherJob::~StretcherJob (){
 
     ScopedLock lk (jobLock);
-    masterReference.clear();
+    StretcherJob::masterReference.clear();
 
 };
 

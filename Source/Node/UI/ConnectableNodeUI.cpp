@@ -145,7 +145,7 @@ ConnectableNodeUI::~ConnectableNodeUI()
 {
 
     connectableNode->removeConnectableNodeListener (this);
-    masterReference.clear();
+    ConnectableNodeUI::masterReference.clear();
 }
 
 

@@ -67,7 +67,7 @@ ConnectableNode::~ConnectableNode()
 {
     if (parentNodeContainer)
         remove();
-    masterReference.clear();
+    ConnectableNode::masterReference.clear();
     parentNodeContainer = nullptr;
 }
 

@@ -70,7 +70,7 @@ ParameterUI::~ParameterUI()
         parameter->removeAsyncParameterListener (this);
     }
 
-    masterReference.clear();
+    ParameterUI::masterReference.clear();
 }
 
 

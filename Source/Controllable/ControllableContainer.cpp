@@ -61,7 +61,7 @@ ControllableContainer::~ControllableContainer()
 
 
     clearContainer();
-    masterReference.clear();
+    ControllableContainer::masterReference.clear();
 }
 ControllableContainer * ControllableContainer::getRoot(bool global){
     if(global){

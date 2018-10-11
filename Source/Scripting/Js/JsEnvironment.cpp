@@ -75,6 +75,7 @@ JsEnvironment::~JsEnvironment()
 
     if (localEnv)
     {localEnv->clear();}
+    JsEnvironment::masterReference.clear();
 
 
 
@@ -803,7 +804,7 @@ ParameterContainer ("jsParams"), jsEnv (pEnv)
 }
 
 JSEnvContainer::~JSEnvContainer(){
-    masterReference.clear();
+    JSEnvContainer::masterReference.clear();
 }
 
 void JSEnvContainer::onContainerParameterChanged ( ParameterBase* p)

@@ -86,7 +86,7 @@ NodeConnection::~NodeConnection()
 
     }
 
-    masterReference.clear();
+    NodeConnection::masterReference.clear();
 }
 AudioProcessorGraph* NodeConnection::getParentGraph()
 {
