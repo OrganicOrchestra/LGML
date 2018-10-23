@@ -8,7 +8,7 @@ branches:
 environment:
   ASIOSDK: C:\projects\ASIOSDK2.3
   OWNCLOUDPASS:
-    secure: WMAPpQn8AuyEvSENma5wNQhsEYAxz87oJhgxiLRvtXg
+    secure: WMAPpQn8AuyEvSENma5wNQhsEYAxz87oJhgxiLRvtXg=
   OWNCLOUDUSER:
     secure: hGxoNrHEyHNyt12RjZ9cOQ==
   image: Visual Studio 2015
