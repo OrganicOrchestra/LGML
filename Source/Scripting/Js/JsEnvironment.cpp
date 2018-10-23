@@ -42,8 +42,7 @@ _hasValidJsFile (false),
 autoWatch (false),
 _isInSyncWithLGML (false),
 isLoadingFile (false),
-isEnabled (true),
-jsObject(new JsObjectRef<JsEnvironment>(this))
+isEnabled (true)
 
 {
     jsParameters = new JSEnvContainer (this);
@@ -115,7 +114,7 @@ DynamicObject* JsEnvironment::getGlobalObject(){
 }
 
 var getLocal(const juce::var::NativeFunctionArgs &a){
-    auto c = castPtrFromJS<JsEnvironment> (a);
+    auto c = JsHelpers::castPtrFromJS<JsEnvironment> (a);
     if (c != nullptr)
     {
         return c->getGlobalObject();
@@ -134,6 +133,7 @@ void JsEnvironment::clearNamespace()
 {
     const  ScopedLock lk (engineLock);
 
+    JsHelpers::clearRefsFromObj(localEnv);
     localEnv->clear();
 
     jsEngine = new JavascriptEngine();
@@ -141,12 +141,12 @@ void JsEnvironment::clearNamespace()
 
     static Identifier createParamListenerId ("createParameterListener");
     localEnv->setMethod (createParamListenerId, &JsEnvironment::createParameterListenerObject);
-    localEnv->setProperty (jsPtrIdentifier, -1);//(int64)(JsEnvironment*)this);
+//    localEnv->setProperty (jsPtrIdentifier, -1);//(int64)(JsEnvironment*)this);
     if(linkedContainer.get()){
         localEnv->setMethod("getLocal",&getLocal );
     }
-    jsEngine->registerNativeObject (jsLocalIdentifier, localEnv);
-    jsEngine->registerNativeObject (jsGlobalIdentifier, getGlobalEnv());
+    jsEngine->registerNativeObject (JsHelpers::jsLocalIdentifier, localEnv);
+    jsEngine->registerNativeObject (JsHelpers::jsGlobalIdentifier, getGlobalEnv());
 
 
 
@@ -157,7 +157,7 @@ void JsEnvironment::clearNamespace()
 
 void JsEnvironment::removeNamespace (const String& jsNamespace)
 {
-    removeNamespaceFromObject (jsNamespace, localEnv);
+    JsHelpers::removeNamespaceFromObject (jsNamespace, localEnv);
 }
 
 String JsEnvironment::getParentName()
@@ -466,7 +466,7 @@ const NamedValueSet& JsEnvironment::getRootObjectProperties()
 
 void JsEnvironment::addToLocalNamespace (const String& elem, DynamicObject* target)
 {
-    addToNamespace (elem, target, localEnv);
+    JsHelpers::addToNamespace (elem, target, localEnv);
 }
 
 void JsEnvironment::setLocalNamespace (DynamicObject& target)
@@ -480,7 +480,7 @@ void JsEnvironment::setLocalNamespace (DynamicObject& target)
         localEnv->setProperty (n, target.getProperty (n));
     }
 
-    assignPtrToObject(jsObject.get(),localEnv);
+    JsHelpers::assignPtrToObject(this,localEnv);
 
 }
 
@@ -488,7 +488,7 @@ void JsEnvironment::setNamespaceName (const String& s)
 {
     if (s != localNamespace)
     {
-        DynamicObject* d = getNamespaceFromObject (getParentName(), getGlobalEnv());
+        DynamicObject* d = JsHelpers::getNamespaceFromObject (getParentName(), getGlobalEnv());
         jassert (d != nullptr);
 
         if (localEnv.get())
@@ -551,7 +551,7 @@ void JsEnvironment::timerCallback (int timerID)
 String JsEnvironment::printAllNamespace()
 {
     const ScopedLock lk (engineLock);
-    return namespaceToString (jsEngine->getRootObjectProperties(), 0, true, false);
+    return JsHelpers::namespaceToString (jsEngine->getRootObjectProperties(), 0, true, false);
 }
 
 
@@ -731,7 +731,7 @@ void JsEnvironment::controllableFeedbackUpdate (ControllableContainer* originCon
 #if NON_BLOCKING
     auto f=[this,originContainer,argList](){
 #endif
-        callFunction ("on_" + getJsFunctionNameFromAddress (originContainer->getControlAddress()), argList, false);
+        callFunction ("on_" + JsHelpers::getJsFunctionNameFromAddress (originContainer->getControlAddress()), argList, false);
 #if NON_BLOCKING
     };
 
@@ -785,13 +785,13 @@ void JsEnvironment::sendAllParametersToJS()
 var JsEnvironment::createParameterListenerObject (const var::NativeFunctionArgs& a)
 {
     if (a.numArguments == 0) { return var::undefined(); }
-    auto* originEnv =castPtrFromJS<JsEnvironment> (a);
+    auto* originEnv =JsHelpers::castPtrFromJS<JsEnvironment> (a);
     if (originEnv)
     {
 
         DynamicObject* ob = a.arguments->getArray()->getUnchecked(0).getDynamicObject();
        if(ob) {
-        auto*  p = castPtrFromObject<ParameterBase>(ob) ;
+        auto*  p = JsHelpers::castPtrFromObject<ParameterBase>(ob) ;
         if ( p)
         {
                 JsParameterListenerObject* ob = new JsParameterListenerObject (originEnv, p);

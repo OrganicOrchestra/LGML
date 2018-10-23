@@ -116,7 +116,7 @@ ParameterBase* ParameterProxy::get()
 void ParameterProxy::setParamToReferTo ( ParameterBase* p)
 {
 
-    String targetAddress = p ? p->getControlAddress (getRoot()) : String::empty;
+    String targetAddress = p ? p->getControlAddress (getRoot()) : "";
 
     if ( targetAddress != stringValue())
     {

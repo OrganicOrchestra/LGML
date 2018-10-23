@@ -33,8 +33,7 @@ MIDIDeviceChooser::~MIDIDeviceChooser()
 
 void MIDIDeviceChooser::fillDeviceList()
 {
-    String currentSelected = currentDeviceName;// getSelectedId() > 1 ? getItemText(getSelectedItemIndex()) : String::empty;
-
+    String currentSelected = currentDeviceName;
 
     clear();
     addItem (juce::translate("Choose a MIDI Device"), 1);

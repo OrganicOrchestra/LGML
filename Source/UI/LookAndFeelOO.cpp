@@ -219,7 +219,7 @@ void LookAndFeelOO::positionComboBoxText (ComboBox& box, Label& label)
 class LookAndFeelOO::SliderLabelComp  : public Label
 {
 public:
-    SliderLabelComp() : Label (String::empty, String::empty) {}
+    SliderLabelComp() : Label ("", "") {}
 
     void mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& d)
     {

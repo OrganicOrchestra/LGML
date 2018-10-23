@@ -101,7 +101,7 @@ void NodeContainer::clear ()
 
 ConnectableNode* NodeContainer::addNodeFromJSONData (DynamicObject* data)
 {
-    ConnectableNode* n = NodeFactory::createBaseFromObject (String::empty, data);
+    ConnectableNode* n = NodeFactory::createBaseFromObject ("", data);
     return addNode (n, n->getNiceName(), data);
 }
 
@@ -282,7 +282,7 @@ ParameterContainer*   NodeContainer::addContainerFromObject (const String& /*nam
 {
     //  ConnectableNode * node = addNodeFromJSONData(data);
 
-    ConnectableNode* node = NodeFactory::createBaseFromObject ( String::empty, data);
+    ConnectableNode* node = NodeFactory::createBaseFromObject ( "", data);
 
     if (auto n = dynamic_cast<ContainerInNode*> (node)) containerInNode = n;
     else if (auto n = dynamic_cast<ContainerOutNode*> (node)) containerOutNode = n;

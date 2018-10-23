@@ -101,10 +101,10 @@ public:
 
         TooltipClient* tc = getItOrParent<TooltipClient>(comp);
 
-        String newTT = tc?tc->getTooltip():String::empty;
+        String newTT = tc?tc->getTooltip():"";
         if(newTT.isEmpty()){
             InspectableComponent* ic = getItOrParent<InspectableComponent>(comp);
-            newTT=ic?ic->getTooltip():String::empty;
+            newTT=ic?ic->getTooltip():"";
         }
         auto hs  = juce::translate("Help");
         if(newTT.isNotEmpty()){

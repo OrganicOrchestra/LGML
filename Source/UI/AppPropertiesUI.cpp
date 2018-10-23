@@ -57,7 +57,7 @@ public:
 class EnumPropUI : public ChoicePropertyComponent{
 public:
     typedef std::function<void(const String &)> CBType;
-    EnumPropUI(const String & _name, StringArray _choices,CBType _cb,const String & suffix=String::empty):
+    EnumPropUI(const String & _name, StringArray _choices,CBType _cb,const String & suffix=String()):
     ChoicePropertyComponent(juce::translate(_name)+(suffix.isEmpty()?"":" "+juce::translate(suffix))),
     name(_name),
     cb(std::move(_cb)),

@@ -126,6 +126,7 @@
 		A53EB8B2D9F91F26B9BBF761 = {isa = PBXBuildFile; fileRef = 23825DBD0730125A0ADBF07D; };
 		17F12D24C474ED20E5BCC097 = {isa = PBXBuildFile; fileRef = 8CDF813500AF5053B24996A8; };
 		B429EE95B6F8D7CE1A16B9E0 = {isa = PBXBuildFile; fileRef = 4222ED8976A401FDCA852E47; };
+		BE1037D59D0007CC876E5750 = {isa = PBXBuildFile; fileRef = FA5A890B2E624531C5806774; };
 		209498ED4828D770454791E0 = {isa = PBXBuildFile; fileRef = 1981B009CF328FF8D91EABB9; };
 		800E5B916E95233CD78F37D8 = {isa = PBXBuildFile; fileRef = 6D40AC1F80DA93C3FD996451; };
 		DD0B2FFD9609C6D73C7A9B67 = {isa = PBXBuildFile; fileRef = 68116CA84B74FA6D90AC3326; };
@@ -553,6 +554,7 @@
 		F5828AC6465501C028A0F9A1 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = AudioDeviceOutNode.cpp; path = ../../Source/Node/Impl/AudioDeviceOutNode.cpp; sourceTree = "SOURCE_ROOT"; };
 		F75FCCDBBFC3B0AA81F0651F = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = BoolToggleUI.cpp; path = ../../Source/Controllable/Parameter/UI/BoolToggleUI.cpp; sourceTree = "SOURCE_ROOT"; };
 		F957D85A7EA8E0A7CBA2875A = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MIDIListener.cpp; path = ../../Source/MIDI/MIDIListener.cpp; sourceTree = "SOURCE_ROOT"; };
+		FA5A890B2E624531C5806774 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = JsHelpers.cpp; path = ../../Source/Scripting/Js/JsHelpers.cpp; sourceTree = "SOURCE_ROOT"; };
 		FA704AD71D2BE93117E2F30C = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Version.cpp; path = ../../Source/Version.cpp; sourceTree = "SOURCE_ROOT"; };
 		FB69C272F09120F9ED8867BB = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = AudioDebugPipe.cpp; path = ../../Source/Utils/AudioDebugPipe.cpp; sourceTree = "SOURCE_ROOT"; };
 		FB792A8350AAB124981DF05C = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = LooperNode.cpp; path = ../../Source/Node/Impl/LooperNode.cpp; sourceTree = "SOURCE_ROOT"; };
@@ -815,6 +817,7 @@
 					ED9B5E42B8A0B661CD110706,
 					4222ED8976A401FDCA852E47,
 					930A5ADBB10AD732CFFF7320,
+					FA5A890B2E624531C5806774,
 					DBC1D96D92EB8B94FAF5E1A5, ); name = Js; sourceTree = "<group>"; };
 		9D96AC329A2F20C8AAA73025 = {isa = PBXGroup; children = (
 					3099F1D8F6A975B4F895C295, ); name = Scripting; sourceTree = "<group>"; };
@@ -1364,6 +1367,7 @@
 					A53EB8B2D9F91F26B9BBF761,
 					17F12D24C474ED20E5BCC097,
 					B429EE95B6F8D7CE1A16B9E0,
+					BE1037D59D0007CC876E5750,
 					209498ED4828D770454791E0,
 					800E5B916E95233CD78F37D8,
 					DD0B2FFD9609C6D73C7A9B67,

@@ -489,6 +489,7 @@
                 id="Ibrvlw" name="JsGlobalEnvironment.cpp" resource="0"/>
           <FILE compile="0" file="Source/Scripting/Js/JsGlobalEnvironment.h"
                 id="PNy06u" name="JsGlobalEnvironment.h" resource="0"/>
+          <FILE id="MtzryC" name="JsHelpers.cpp" compile="1" resource="0" file="Source/Scripting/Js/JsHelpers.cpp"/>
           <FILE compile="0" file="Source/Scripting/Js/JsHelpers.h" id="WuXz4a"
                 name="JsHelpers.h" resource="0"/>
         </GROUP>

@@ -264,7 +264,7 @@ private:
 
     static Identifier onUpdateIdentifier;
 
-    ScopedPointer<JsObjectRef<JsEnvironment> > jsObject;
+
 
     OwnedArray<JsParameterListenerObject> parameterListenerObjects;
     void addJsParameterListener(JsParameterListenerObject * p){parameterListenerObjects.add(p);}
@@ -277,7 +277,7 @@ private:
 
 template<class T>
 T* castPtrFromJSEnv(const var::NativeFunctionArgs& a){
-    return castPtrFromJS<T,JsEnvironment>(a);
+    return JsHelpers::castPtrFromJS<T,JsEnvironment>(a);
 }
 
 

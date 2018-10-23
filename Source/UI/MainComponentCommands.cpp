@@ -96,22 +96,22 @@ void MainContentComponent::getCommandInfo (CommandID commandID, ApplicationComma
 
         case CommandIDs::showPluginListEditor:
             result.setInfo (juce::translate("Plug-Ins Settings..."),
-                            String::empty, category, 0);
+                            "", category, 0);
             result.addDefaultKeypress ('p', ModifierKeys::commandModifier);
             break;
 
         case CommandIDs::showAudioSettings:
-            result.setInfo (juce::translate("Audio settings..."), String::empty, category, 0);
+            result.setInfo (juce::translate("Audio settings..."), "", category, 0);
             result.addDefaultKeypress ('a', ModifierKeys::commandModifier);
             break;
         case CommandIDs::showAppSettings:
-            result.setInfo (juce::translate("Settings..."), String::empty, category, 0);
+            result.setInfo (juce::translate("Settings..."), "", category, 0);
             result.addDefaultKeypress (',', ModifierKeys::commandModifier);
             break;
 
 
         case CommandIDs::aboutBox:
-            result.setInfo (juce::translate("About..."), String::empty, category, 0);
+            result.setInfo (juce::translate("About..."), "", category, 0);
             break;
 
         case CommandIDs::allWindowsForward:
@@ -288,7 +288,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
             break;
 
         case CommandIDs::saveAs:
-            engine->saveAs (File::nonexistent, true, true, true);
+            engine->saveAs (File(), true, true, true);
             break;
 
 
@@ -406,8 +406,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
 
             var data = JSON::parse (clipboard);
 
-            if (data != var::null)
-            {
+
                 DynamicObject* d = data.getDynamicObject();
 
                 if (d != nullptr && d->hasProperty ("type"))
@@ -455,7 +454,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                             }
                         }
                     }
-                }
+                
             }
         }
             break;

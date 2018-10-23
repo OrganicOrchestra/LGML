@@ -16,7 +16,8 @@
 #ifndef JSHELPERS_H_INCLUDED
 #define JSHELPERS_H_INCLUDED
 
-
+#include "../../JuceHeaderCore.h"
+namespace JsHelpers{
 // static identifier allowing fast instanciation of js namespace identifiers
 static const Identifier jsLocalIdentifier ("local");
 static const Identifier jsGlobalIdentifier ("lgml");
@@ -42,25 +43,17 @@ static const Array<Identifier> jsCoreClasses =
 
 class JsObject{
 public:
-    virtual ~JsObject(){
-        masterReference.clear();
-    }
-    virtual bool wasObjectDeleted(){jassertfalse;return false;}
-private:
-    WeakReference<JsObject>::Master masterReference;
-    friend class WeakReference<JsObject>;
-
+    virtual ~JsObject(){}
+    virtual bool wasObjectDeleted()=0;
+    virtual void* getVoid()=0;
 };
 
 template<class T>
 class JsObjectRef : public JsObject,public WeakReference<T>{
 public:
-    
-    JsObjectRef(T* ptr):WeakReference<T>(ptr){
-
-    }
+    JsObjectRef(T* ptr):WeakReference<T>(ptr){}
     bool wasObjectDeleted() override{return WeakReference<T>::wasObjectDeleted();}
-
+    void* getVoid() override{return WeakReference<T>::get();}
 };
 
 
@@ -69,43 +62,52 @@ public:
     juce_DeclareSingleton(JsPtrStore, true);
 
 
-    typedef WeakReference<JsObject> SP;
+    typedef JsObject* SP;
     typedef int64 KeyType ;
     typedef HashMap<KeyType, SP> MapType;
 
-     KeyType create(JsObject* o,bool allowRecreation=false){
+    template<class T>
+     KeyType create(T* o,bool allowRecreation=false){
          jassert(o!=nullptr);
          KeyType k = (int64)(void*)o;
          if(map.contains(k)){
-             jassert(map[k].get()==o);
+//             handle multipe inheritance
+             if(!allowRecreation && dynamic_cast<T*>((T*)map[k]->getVoid())){
+                 return k;
+             }
+             jassert(allowRecreation );
+             deleteEntry(k,false);
          }
-         else{
-         jassert(allowRecreation || !map.contains(k));
-         }
-         map.set(k,SP(o));
+         map.set(k,new JsObjectRef<T>(o));
         return k;
     }
-
+    void deleteEntry(KeyType k,bool checkExistence = true){
+        jassert(map[k]!=nullptr);
+        if(!checkExistence || map.contains(k)){
+            SP old = map[k];
+            map.remove(k);
+            delete old;
+        }
+    }
 
     void clear(){
         MapType::Iterator i (map);
         staticHeapSize = 0;
+        Array<KeyType> toRm;
         while (i.next())
         {
-            if(i.getValue().wasObjectDeleted()){
-                map.remove(i.getKey());
-            }
-            else{
-                staticHeapSize++;
-            }
+            if(i.getValue()->wasObjectDeleted()){toRm.add(i.getKey());}
+            else{staticHeapSize++;}
         }
+        for(auto & k:toRm){deleteEntry(k,false);}
+//        DBG("js static heap" <<staticHeapSize );
 
     }
 
 
     JsObject* retrieve(KeyType k){
         jassert(map.contains(k));
-        return map[k].get();
+        return map.contains(k)?map[k]:nullptr;
 
     }
 
@@ -154,11 +156,35 @@ inline T* castPtrFromJS (const var::NativeFunctionArgs& a){
 
 
 template<class T >
-inline void assignPtrToObject(const JsObjectRef<T> * ref,DynamicObject * dob,bool allowRecreation=false){
-    dob->setProperty (jsPtrIdentifier,JsPtrStore::i()->create((JsObject*)ref,allowRecreation));
+inline void assignPtrToObject(T * ref,DynamicObject * dob,bool allowRecreation=false){
+    dob->setProperty (jsPtrIdentifier,JsPtrStore::i()->create(ref,allowRecreation));
 }
 
 
+static inline void clearRefsFromVar(var va,bool recursive=true){
+    auto * dob = va.getDynamicObject();
+    if (dob){
+        if(auto entry = (JsPtrStore::KeyType)dob->getProperty(jsPtrIdentifier)){
+            JsPtrStore::i()->deleteEntry(entry);
+        }
+    }
+    if(recursive){
+        if(dob){
+            for(auto & v : dob->getProperties()){
+                clearRefsFromVar(v.value,true);
+            }
+        }
+
+        else if(auto* dd = va.getArray()){
+            for(auto a:*dd){
+                clearRefsFromVar(a,true);
+            }
+        }
+    }
+}
+static inline void clearRefsFromObj(DynamicObject* dob,bool recursive=true){
+    clearRefsFromVar(var(dob),recursive);
+}
 
 
 inline String getJsFunctionNameFromAddress (const String& n)
@@ -368,6 +394,6 @@ inline Identifier getNumericIdentifier (int n)
 }
 
 
-
+}
 
 #endif  // JSHELPERS_H_INCLUDED

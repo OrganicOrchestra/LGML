@@ -22,7 +22,7 @@
 
 #include "../Engine.h" //for version
 
-
+static String EmptyString;
 void LGMLLoggerUI::newMessage (const String& s)
 {
     LogElement* el = new LogElement (s);
@@ -181,7 +181,7 @@ const String& LGMLLoggerUI::getSourceForRow (const int r) const
     if(auto el = getElementForRow(r)){
         return el->source;
     }
-    return String::empty;
+    return EmptyString;
 }
 const bool LGMLLoggerUI::isPrimaryRow (const int r) const
 {
@@ -221,7 +221,7 @@ const String&   LGMLLoggerUI::getContentForRow (const int r) const
         idx++;
     }
 
-    return String::empty;
+    return EmptyString;
 };
 
 const LogElement* LGMLLoggerUI::getElementForRow(const int r) const{
@@ -253,7 +253,7 @@ const String  LGMLLoggerUI::getTimeStringForRow (const int r) const
         return String (el->time.toString (false, true, true, true));
     }
 
-    return String::empty;
+    return "";
 };
 
 const Colour& LGMLLoggerUI::getSeverityColourForRow (const int r) const
@@ -332,11 +332,11 @@ void LGMLLoggerUI::LogList::paintCell (Graphics& g,
     switch (columnId)
     {
         case 1:
-            text = owner->isPrimaryRow(rowNumber)?owner->getTimeStringForRow (rowNumber):String::empty;
+            text = owner->isPrimaryRow(rowNumber)?owner->getTimeStringForRow (rowNumber):"";
             break;
 
         case 2:
-            text = owner->isPrimaryRow(rowNumber)?owner->getSourceForRow (rowNumber):String::empty;
+            text = owner->isPrimaryRow(rowNumber)?owner->getSourceForRow (rowNumber):"";
             break;
 
         case 3:
@@ -373,7 +373,7 @@ String LGMLLoggerUI::LogList::getCellTooltip (int rowNumber, int /*columnId*/)
     String sR = el->source;
     return
     (sR.isNotEmpty()?
-     sR +" ("+el->time.toString(false, true, true, true)+")"+ "\n":String::empty)
+     sR +" ("+el->time.toString(false, true, true, true)+")"+ "\n":"")
     +(el->getNumLines()< 10?el->content:owner->getSourceForRow(rowNumber));
 
 

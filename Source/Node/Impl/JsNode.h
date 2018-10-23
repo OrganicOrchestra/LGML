@@ -17,7 +17,7 @@
 #define JSNODE_H_INCLUDED
 #include "../../Scripting/Js/JsEnvironment.h"
 #include "../NodeBase.h"
-#include "../../Scripting/Js/JsHelpers.h"
+
 
 
 

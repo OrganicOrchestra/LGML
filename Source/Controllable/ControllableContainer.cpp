@@ -39,8 +39,7 @@ ControllableContainer::ControllableContainer (StringRef /*niceName*/) :
 parentContainer (nullptr),
 numContainerIndexed (0),
 localIndexedPosition (-1),
-isUserDefined (false),
-jsObject(new JsObjectRef<ControllableContainer>(this))
+isUserDefined (false)
 {
 
 

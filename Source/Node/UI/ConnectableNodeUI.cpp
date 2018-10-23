@@ -500,7 +500,7 @@ String ConnectableNodeUI::MainComponentContainer::getTooltip() {
     if(auto cn = connectableNodeUI){
         return cn->getTooltip();
     }
-    return String::empty;
+    return "";
 }
 
 

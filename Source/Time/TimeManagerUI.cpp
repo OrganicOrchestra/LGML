@@ -113,7 +113,7 @@ void TimeManagerUI::newMessage (const ParameterBase::ParamWithValue& pv)
     }
     else if (pv.parameter == timeManager->linkEnabled)
     {
-        if (!timeManager->linkEnabled->boolValue())linkEnabled->setCustomText (String::empty);
+        if (!timeManager->linkEnabled->boolValue())linkEnabled->setCustomText ("");
         else {linkEnabled->setCustomText (String (timeManager->linkNumPeers->intValue()) + " link peers");}
     }
 

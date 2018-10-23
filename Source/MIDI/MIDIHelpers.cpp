@@ -207,7 +207,7 @@ namespace MIDIHelpers{
                 owner->setCurrentDevice(listenedIn->getFirstSelectedValue().toString());
             }
             else{
-                owner->setCurrentDevice(String::empty);
+                owner->setCurrentDevice("");
             }
 
 
@@ -217,7 +217,7 @@ namespace MIDIHelpers{
             owner->setCurrentDevice(ep->getFirstSelectedValue().toString());
         }
         else {//if (!isSelected || !isValid){
-            owner->setCurrentDevice(String::empty);
+            owner->setCurrentDevice("");
         }
         
         

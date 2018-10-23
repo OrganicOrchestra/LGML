@@ -47,7 +47,7 @@ midiClock(false)
 
 MIDIController::~MIDIController()
 {
-    setCurrentDevice (String::empty);
+    setCurrentDevice ("");
 
 }
 

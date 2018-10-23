@@ -41,7 +41,7 @@ Trigger::Trigger (const String& niceName, const String& description = "", bool e
 DynamicObject* Trigger::createDynamicObject()
 {
     auto dObject = Controllable::createDynamicObject();
-    dObject->setMethod (jsTriggerIdentifier, setControllableValueFromJS);
+    dObject->setMethod (JsHelpers::jsTriggerIdentifier, setControllableValueFromJS);
 
     return dObject;
 }

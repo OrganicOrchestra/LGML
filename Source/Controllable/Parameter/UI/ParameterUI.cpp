@@ -26,7 +26,7 @@ ParameterUI::ParameterUI ( ParameterBase* _parameter) :
     parameter (_parameter),
     showLabel (true),
     showValue (true),
-    customTextDisplayed (String::empty),
+    customTextDisplayed (""),
     isMappingDest (false),
     isDraggable (true),
     isSelected (false),

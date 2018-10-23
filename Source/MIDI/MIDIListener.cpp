@@ -25,8 +25,8 @@ int commonNamePartWithInName (String& s,const String & midiPortName);
 
 MIDIListener::MIDIListener():hasValidPort(true)
 {
-    midiPortName = String::empty;
-    outPortName = String::empty;
+    midiPortName = "";
+    outPortName = "";
     MIDIManager::getInstance()->addMIDIListener (this);
 
 }
@@ -55,7 +55,7 @@ void MIDIListener::setCurrentDevice (const String& deviceName)
         if (mm->inputDevices.indexOf (deviceName) == -1)
         {
             ghostPortName = deviceName;
-            setCurrentDevice (String::empty);
+            setCurrentDevice ("");
             return;
         }
     }
@@ -168,12 +168,12 @@ void MIDIListener::midiInputAdded (String& s)
     if (s == midiPortName)
     {
         setCurrentDevice (midiPortName);
-        ghostPortName = String::empty;
+        ghostPortName = "";
     }
     else if (s == ghostPortName)
     {
         setCurrentDevice (ghostPortName);
-        ghostPortName = String::empty;
+        ghostPortName = "";
     }
 }
 
@@ -182,7 +182,7 @@ void MIDIListener::midiInputRemoved (String& s)
     if (s == midiPortName)
     {
         ghostPortName = s;
-        setCurrentDevice (String::empty);
+        setCurrentDevice ("");
     }
 }
 

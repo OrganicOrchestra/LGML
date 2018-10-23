@@ -172,6 +172,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/JsEnvironment_c8b9ce25.o \
   $(JUCE_OBJDIR)/JsEnvironmentUI_c27f52b9.o \
   $(JUCE_OBJDIR)/JsGlobalEnvironment_7ba10e42.o \
+  $(JUCE_OBJDIR)/JsHelpers_936af017.o \
   $(JUCE_OBJDIR)/BufferListTest_bc972a07.o \
   $(JUCE_OBJDIR)/LooperTest_b47de95a.o \
   $(JUCE_OBJDIR)/NodeChildProofer_ef1fcaae.o \
@@ -766,6 +767,11 @@ $(JUCE_OBJDIR)/JsEnvironmentUI_c27f52b9.o: ../../Source/Scripting/Js/JsEnvironme
 $(JUCE_OBJDIR)/JsGlobalEnvironment_7ba10e42.o: ../../Source/Scripting/Js/JsGlobalEnvironment.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling JsGlobalEnvironment.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/JsHelpers_936af017.o: ../../Source/Scripting/Js/JsHelpers.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling JsHelpers.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/BufferListTest_bc972a07.o: ../../Source/Tests/BufferListTest.cpp

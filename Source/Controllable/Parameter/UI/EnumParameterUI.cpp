@@ -99,7 +99,7 @@ String EnumParameterUI::getCBSelectedKey()
     if (cb.getSelectedId() < 0)
     {
         jassertfalse;
-        return String::empty;
+        return "";
     }
 
     return idKeyMap[cb.getSelectedId()];

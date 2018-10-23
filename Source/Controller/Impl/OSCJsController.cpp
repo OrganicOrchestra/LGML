@@ -54,7 +54,7 @@ void OSCJsController::buildLocalEnv()
 Result OSCJsController::callForMessage (const OSCMessage& msg)
 {
 
-    String functionName = "onCtl_" + getJsFunctionNameFromAddress (msg.getAddressPattern().toString());
+    String functionName = "onCtl_" + JsHelpers::getJsFunctionNameFromAddress (msg.getAddressPattern().toString());
     // here we choose to pass each argument as an element of a var Array value in function call i.e onCtl_XXX(ArrayList)
     var argArray;
 

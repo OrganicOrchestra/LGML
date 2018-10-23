@@ -82,7 +82,7 @@ const String  getFactoryTypeNameFromMenuIdx (int idx, int menuIdOffset = 1)
     }
 
     jassertfalse;
-    return String::empty;
+    return "";
 }
 
 

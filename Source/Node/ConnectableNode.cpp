@@ -161,7 +161,7 @@ void ConnectableNode::setInputChannelName (int channelIndex, const String& name)
 {
     while (inputChannelNames.size() < (channelIndex + 1))
     {
-        inputChannelNames.add (String::empty);
+        inputChannelNames.add ("");
     }
 
     inputChannelNames.set (channelIndex, name);
@@ -171,7 +171,7 @@ void ConnectableNode::setOutputChannelName (int channelIndex, const String& name
 {
     while (outputChannelNames.size() < (channelIndex + 1))
     {
-        outputChannelNames.add (String::empty);
+        outputChannelNames.add ("");
     }
 
     outputChannelNames.set (channelIndex, name);

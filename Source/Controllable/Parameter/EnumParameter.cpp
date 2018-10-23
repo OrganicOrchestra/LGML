@@ -20,6 +20,7 @@
 
 REGISTER_PARAM_TYPE (EnumParameter)
 
+var EnumParameter::None;
 Identifier EnumParameter::modelIdentifier ("model");
 Identifier EnumParameter::selectedSetIdentifier ("selected");
 //////////////
@@ -279,7 +280,7 @@ var EnumParameter::getValueForId (const Identifier& i)
 
 NamedValueSet getModelPropsFromVar (const var& v)
 {
-    if (auto dob = v.getProperty (EnumParameter::modelIdentifier, var::null).getDynamicObject())
+    if (auto dob = v.getProperty (EnumParameter::modelIdentifier, EnumParameter::None).getDynamicObject())
     {
         return dob->getProperties();
     }
@@ -339,7 +340,7 @@ void EnumParameter::setValueInternal (const var& _value)
     }
 
     // rebuild the whole model if needed and select
-    else if (DynamicObject* dvalues = _value.getProperty (modelIdentifier, var::null).getDynamicObject())
+    else if (DynamicObject* dvalues = _value.getProperty (modelIdentifier, EnumParameter::None).getDynamicObject())
     {
 
         // if model is stored, this param should own it
