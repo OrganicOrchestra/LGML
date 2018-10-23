@@ -7,6 +7,10 @@ branches:
 
 environment:
   ASIOSDK: C:\projects\ASIOSDK2.3
+  OWNCLOUDPASS:
+    secure: RkXrenqclL8pGOVCWzpTrw==
+  OWNCLOUDUSER:
+    secure: hGxoNrHEyHNyt12RjZ9cOQ==
   image: Visual Studio 2015
   matrix:
     - platform: Win32
