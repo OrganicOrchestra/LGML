@@ -200,7 +200,7 @@ void Spat2DNode::updateIOParams(){
         ("input spat : "+String(i),
          "param for controlling spat position "+String(i),
          0.5+juce::Random().nextFloat()*.2f,0.5+juce::Random().nextFloat()*.2f,
-         (Array<var>){minSpatX,minSpatX},(Array<var>){maxSpatX,maxSpatX}
+         Array<var>{minSpatX,minSpatX},Array<var>{maxSpatX,maxSpatX}
          );
         inputsPositionsParams.add(np);
 
@@ -223,7 +223,7 @@ void Spat2DNode::updateIOParams(){
         np->isEditable = false;
         auto po = addNewParameter<Point2DParameter<floatParamType>>("target"+String(i), "target pos param",
                                                            0,0,
-                                                           (Array<var>){minSpatX,minSpatX},(Array<var>){maxSpatX,maxSpatX}
+                                                           Array<var>{minSpatX,minSpatX},Array<var>{maxSpatX,maxSpatX}
                                                            );
         targetPositions.add(po);
         outputsIntensities.add(np);
