@@ -57,7 +57,7 @@ LooperNode::LooperNode (StringRef name) :
     autoClearPreviousIfEmpty = addNewParameter<BoolParameter> ("Auto Clear Previous", "/!\\ Will only work if 'Auto Next' is enabled !\nIf enabled, it will automatically clear the previous track if 'clear' is triggered and the actual selected track is empty.", false);
 
     selectNextTrig =  addNewParameter<Trigger> ("Select Next", "Select Next Track");
-
+    autoSelectTrack =  addNewParameter<BoolParameter> ("Auto Select", "If enabled, it will select automatically the track if rec or play is triggered", true);
 
     addChildControllableContainer (&trackGroup);
     setRateAndBufferSizeDetails (44100, 256);

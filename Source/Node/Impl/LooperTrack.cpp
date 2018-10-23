@@ -601,6 +601,9 @@ void LooperTrack::onContainerTriggerTriggered (Trigger* t)
     else if (t == recPlayTrig)
     {
         recPlay();
+        if(parentLooper->autoSelectTrack->boolValue()){
+            parentLooper->selectMe (this);
+        }
     }
     else if (t == playTrig)
     {
@@ -644,7 +647,6 @@ void LooperTrack::recPlay()
         setTrackState (WILL_RECORD);
     }
     else  if (desiredState != WILL_RECORD)
-        if (desiredState != WILL_RECORD)
         {
             if (parentLooper->isOneShot->boolValue() && desiredState == RECORDING)
             {

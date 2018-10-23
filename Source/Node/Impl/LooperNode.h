@@ -91,7 +91,7 @@ public:
     BoolParameter* outputAllTracksSeparately;
     BoolParameter* autoNextTrackAfterRecord;
     BoolParameter* autoClearPreviousIfEmpty;
-
+    BoolParameter* autoSelectTrack;
     Trigger* exportAudio;
 
     AudioBuffer<float> bufferIn;
