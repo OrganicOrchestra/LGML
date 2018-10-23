@@ -48,7 +48,7 @@ alphaFilter(1)
     numSpatOutputs = addNewParameter<IntParameter> ("Num Outputs", "Number of spatialized outputs", 3, 0, 16);
 
     useGlobalTarget = addNewParameter<BoolParameter> ("Use Global Target", "Use a global target that will act as a max influence and affect all targets.", false);
-    globalTargetPosition = addNewParameter<Point2DParameter<floatParamType>> ("Global Target Position", "Position of the Global Target",0,0,(Array<var>){minSpatX,minSpatX},(Array<var>){maxSpatX,maxSpatX});
+    globalTargetPosition = addNewParameter<Point2DParameter<floatParamType>> ("Global Target Position", "Position of the Global Target",0,0,Array<var>{minSpatX,minSpatX},Array<var>{maxSpatX,maxSpatX});
     globalTargetRadius = addNewParameter<FloatParameter> ("Global Target Radius", "Radius for the global target", .5f, 0.f, 1.f);
     useLogCurve = addNewParameter<BoolParameter>("logCurve", "use log curve for volume", false);
 
