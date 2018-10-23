@@ -23,7 +23,6 @@ jobs:
       - run:
           name: build and package LGML
           command: |
-            pip3 install -U pip
             sh Scripts/linux/installExportDeps.sh
             python3 Scripts/buildScript.py --packagesuffix=ubuntu14 --configure --exportpath="$DST_LGML_PATH" --os=linux --configuration=Release
             python3 Scripts/buildScript.py --build --package --export
