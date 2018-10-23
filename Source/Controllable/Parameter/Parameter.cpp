@@ -139,7 +139,7 @@ void ParameterBase::tryToSetValue (const var & _value, bool silentSet, bool forc
 void ParameterBase::commitValue (var _value)
 {
     hasCommitedValue = value != _value;
-    commitedValue  = _value;
+    commitedValue  = _value.clone();
 
 }
 
