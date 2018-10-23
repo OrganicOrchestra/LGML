@@ -92,7 +92,7 @@ var JsNode::addIntParameter (const var::NativeFunctionArgs& a)
 var JsNode::addFloatParameter (const var::NativeFunctionArgs& a)
 {
 
-    JsNode* jsNode = getObjectPtrFromJS<JsNode> (a);
+    auto* jsNode = castPtrFromJSEnv<JsNode> (a);
 
     if (a.numArguments < 5)
     {
