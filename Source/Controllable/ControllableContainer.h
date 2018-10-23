@@ -270,6 +270,10 @@ protected :
 private:
     WeakReference< ControllableContainer >::Master masterReference;
     friend class WeakReference<ControllableContainer>;
+    friend class JsContainerSync;
+
+    ScopedPointer<JsObjectRef<ControllableContainer> > jsObject;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ControllableContainer)
 
 

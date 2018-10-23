@@ -39,20 +39,126 @@ static const Array<Identifier> jsCoreClasses =
 };
 
 
-// TODO use weakReferences
+
+class JsObject{
+public:
+    virtual ~JsObject(){
+        masterReference.clear();
+    }
+    virtual bool wasObjectDeleted(){jassertfalse;return false;}
+private:
+    WeakReference<JsObject>::Master masterReference;
+    friend class WeakReference<JsObject>;
+
+};
+
 template<class T>
-inline T* getObjectPtrFromObject ( DynamicObject* d)
+class JsObjectRef : public JsObject,public WeakReference<T>{
+public:
+    
+    JsObjectRef(T* ptr):WeakReference<T>(ptr){
+
+    }
+    bool wasObjectDeleted() override{return WeakReference<T>::wasObjectDeleted();}
+
+};
+
+
+class JsPtrStore{
+public:
+    juce_DeclareSingleton(JsPtrStore, true);
+
+
+    typedef WeakReference<JsObject> SP;
+    typedef int64 KeyType ;
+    typedef HashMap<KeyType, SP> MapType;
+
+     KeyType create(JsObject* o,bool allowRecreation=false){
+         jassert(o!=nullptr);
+         KeyType k = (int64)(void*)o;
+         if(map.contains(k)){
+             jassert(map[k].get()==o);
+         }
+         else{
+         jassert(allowRecreation || !map.contains(k));
+         }
+         map.set(k,SP(o));
+        return k;
+    }
+
+
+    void clear(){
+        MapType::Iterator i (map);
+        staticHeapSize = 0;
+        while (i.next())
+        {
+            if(i.getValue().wasObjectDeleted()){
+                map.remove(i.getKey());
+            }
+            else{
+                staticHeapSize++;
+            }
+        }
+
+    }
+
+
+    JsObject* retrieve(KeyType k){
+        jassert(map.contains(k));
+        return map[k].get();
+
+    }
+
+    static JsPtrStore * i(){return JsPtrStore::getInstance();}
+
+    int staticHeapSize = 0;
+    MapType map;
+
+};
+
+
+
+inline JsObject* getObjectPtrFromObject ( DynamicObject* d)
 {
+
     if (!d)return nullptr;
-
-    return dynamic_cast<T*> ((T*) (int64)d->getProperty (jsPtrIdentifier));
+    int64 p = (int64)d->getProperty (jsPtrIdentifier);
+    if(p==-1)return nullptr;
+    return JsPtrStore::i()->retrieve(p);
 }
 
-template<class T>
-inline T* getObjectPtrFromJS (const var::NativeFunctionArgs& a)
+
+inline JsObject* getObjectPtrFromJS (const var::NativeFunctionArgs& a)
 {
-    return getObjectPtrFromObject<T>(a.thisObject.getDynamicObject());
+    return getObjectPtrFromObject(a.thisObject.getDynamicObject());
 }
+
+
+
+template<class T,class OriginClass=T>
+inline T* castPtrFromObject ( DynamicObject* d)
+{
+    if(JsObject* p = getObjectPtrFromObject(d)){
+        if(auto *ref  = dynamic_cast<JsObjectRef<OriginClass> * > (p)){
+            return dynamic_cast<T * >(ref->get());
+        }
+    }
+    return nullptr;
+
+}
+
+template<class T,class OriginClass=T>
+inline T* castPtrFromJS (const var::NativeFunctionArgs& a){
+    return castPtrFromObject<T,OriginClass>(a.thisObject.getDynamicObject());
+}
+
+
+template<class T >
+inline void assignPtrToObject(const JsObjectRef<T> * ref,DynamicObject * dob,bool allowRecreation=false){
+    dob->setProperty (jsPtrIdentifier,JsPtrStore::i()->create((JsObject*)ref,allowRecreation));
+}
+
+
 
 
 inline String getJsFunctionNameFromAddress (const String& n)

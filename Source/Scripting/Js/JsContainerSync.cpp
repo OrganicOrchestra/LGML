@@ -91,7 +91,7 @@ bool JsContainerSync::existInContainerNamespace (const String& ns)
 // support OSC style string / arrays and lists
 var getControllableForAddress (const var::NativeFunctionArgs& a)
 {
-    ControllableContainer* callerCont = getObjectPtrFromJS<ControllableContainer> (a);
+    ControllableContainer* callerCont = castPtrFromJS<ControllableContainer> (a);
 
     if (!callerCont)return var::undefined();
 
@@ -142,7 +142,8 @@ JsContainerSync::createDynamicObjectFromContainer (ControllableContainer* contai
 
     static Identifier getControllableForAddressId ("getControllableForAddress");
     myObj->setMethod (getControllableForAddressId, getControllableForAddress);
-    myObj->setProperty (jsPtrIdentifier, (int64)container);
+    assignPtrToObject(container->jsObject.get(),myObj,true);
+//    myObj->setProperty (jsPtrIdentifier, (int64)container);
 
     for (auto& c : container->controllables)
     {

@@ -23,6 +23,8 @@
 #include "../JuceHeaderCore.h"//keep
 #include "../Utils/FactoryObject.h"
 
+template <class T>
+class JsObjectRef;
 
 class ControllableContainer;
 class ParameterBase;
@@ -116,8 +118,9 @@ public:
 
 
     WeakReference<Controllable >::SharedPointer* getMasterRefPtr(){return masterReference.getSharedPointer (this);}
-private:
 
+private:
+    ScopedPointer<JsObjectRef<Controllable>> jsObject;
     WeakReference<Controllable >::Master masterReference;
     friend class WeakReference<Controllable >;
     

@@ -42,7 +42,6 @@ DynamicObject* Trigger::createDynamicObject()
 {
     auto dObject = Controllable::createDynamicObject();
     dObject->setMethod (jsTriggerIdentifier, setControllableValueFromJS);
-    dObject->setProperty (jsPtrIdentifier, (int64)this);
 
     return dObject;
 }

@@ -17,6 +17,12 @@
 #define JAVASCRIPTENVIRONNEMENT_H_INCLUDED
 #include "../../Controllable/Parameter/ParameterContainer.h"
 
+#include "JsHelpers.h"
+// needed for T* castPtrFromJSEnv()
+
+//template<class T>
+//class JsObjectRef;
+
 
 
 
@@ -127,8 +133,10 @@ protected :
 
     static var createParameterListenerObject (const var::NativeFunctionArgs& a);
 
+
 protected :
-    Array<WeakReference<ParameterBase> > listenedParameters;
+    typedef HashMap<String ,WeakReference<ParameterBase> > ListenedParameterType ;
+    ListenedParameterType listenedParameters;
     Array<WeakReference<ControllableContainer> > listenedContainers;
     void sendAllParametersToJS();
 
@@ -256,10 +264,23 @@ private:
 
     static Identifier onUpdateIdentifier;
 
+    ScopedPointer<JsObjectRef<JsEnvironment> > jsObject;
+
     OwnedArray<JsParameterListenerObject> parameterListenerObjects;
+    void addJsParameterListener(JsParameterListenerObject * p){parameterListenerObjects.add(p);}
     friend class JsParameterListenerObject;
 
+
+
 };
+
+
+template<class T>
+T* castPtrFromJSEnv(const var::NativeFunctionArgs& a){
+    return castPtrFromJS<T,JsEnvironment>(a);
+}
+
+
 
 
 

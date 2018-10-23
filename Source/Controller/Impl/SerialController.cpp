@@ -144,7 +144,6 @@ void SerialController::buildLocalEnv()
     DynamicObject obj;
     static const Identifier jsSendMessageIdentifier ("sendMessage");
     obj.setMethod (jsSendMessageIdentifier, sendMessageFromScript);
-    //    obj.setProperty (jsPtrIdentifier, (int64)this);
 
 
 

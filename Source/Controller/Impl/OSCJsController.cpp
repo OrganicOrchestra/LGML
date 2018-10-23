@@ -163,7 +163,7 @@ var OSCJsController::sendOSCFromJS (const juce::var::NativeFunctionArgs& a)
         return var::undefined();
     }
 
-    OSCJsController* c = getObjectPtrFromJS<OSCJsController> (a);
+    OSCJsController* c = castPtrFromJSEnv<OSCJsController> (a);
     OSCMessage msg (address);
 
     for (int i = 1 ; i < a.numArguments ; i++)
@@ -191,7 +191,7 @@ var OSCJsController::sendOSCFromJS (const juce::var::NativeFunctionArgs& a)
 DynamicObject*   OSCJsController::createOSCJsObject()
 {
     DynamicObject* d = new DynamicObject();
-    d->setProperty (jsPtrIdentifier, (int64)this);
+    
     static const Identifier jsSendIdentifier ("send");
     d->setMethod (jsSendIdentifier, sendOSCFromJS);
     static Identifier createOSCJsListenerId ("createOSCListener");
@@ -266,10 +266,8 @@ var OSCJsController::createJsOSCListener (const var::NativeFunctionArgs& a)
     if (a.numArguments < 1) { return var::undefined();}
 
     OSCAddressPattern oscPattern ( a.arguments[0].toString());
+    auto * originEnv= castPtrFromJSEnv<OSCJsController> (a);
 
-    OSCJsController* originEnv = getObjectPtrFromJS<OSCJsController> (a);
-
-    if (originEnv)
     {
         JsOSCListener* ob = new JsOSCListener (originEnv, oscPattern);
         originEnv->jsOSCListeners.add (ob);

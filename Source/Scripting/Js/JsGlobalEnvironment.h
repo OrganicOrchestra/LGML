@@ -29,11 +29,11 @@ public:
     juce_DeclareSingleton (JsGlobalEnvironment, true);
 
     JsGlobalEnvironment();
-
+    ~JsGlobalEnvironment();
     void removeNamespace (const String& ns);
     DynamicObject::Ptr getNamespaceObject (const String& ns);
     DynamicObject::Ptr getEnv() override;
-
+    void clear();
 
 private:
 

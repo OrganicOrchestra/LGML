@@ -22,6 +22,8 @@
 #include "JsHelpers.h"
 juce_ImplementSingleton (JsGlobalEnvironment);
 
+// TODO move to appropriate cpp
+juce_ImplementSingleton(JsPtrStore);
 
 JsGlobalEnvironment::JsGlobalEnvironment()
 {
@@ -34,12 +36,21 @@ JsGlobalEnvironment::JsGlobalEnvironment()
     linkToControllableContainer ("time", TimeManager::getInstance());
     linkToControllableContainer ("node", NodeManager::getInstance());
     linkToControllableContainer ("controllers", ControllerManager::getInstance());
+    
 
+}
 
+JsGlobalEnvironment::~JsGlobalEnvironment(){
+    clear();
+    JsPtrStore::deleteInstance();
 }
 
 void JsGlobalEnvironment::removeNamespace (const String& ns) {removeNamespaceFromObject (ns, getEnv());}
 
+void JsGlobalEnvironment::clear(){
+    if(JsPtrStore::i())
+        JsPtrStore::i()->clear();
+}
 DynamicObject::Ptr JsGlobalEnvironment::getNamespaceObject (const String& ns) {return getNamespaceFromObject (ns, getEnv());}
 
 DynamicObject::Ptr JsGlobalEnvironment::getEnv() {return env.getDynamicObject();}

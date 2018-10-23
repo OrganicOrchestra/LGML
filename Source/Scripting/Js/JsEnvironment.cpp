@@ -18,10 +18,11 @@
 #include "../../Node/Manager/NodeManager.h"
 #include "../../Controller/ControllerManager.h"
 #include "../../Utils/DebugHelpers.h"
-#include "JsHelpers.h"
+
 
 #include "../../Engine.h"
 #include "JsGlobalEnvironment.h"
+
 
 
 
@@ -30,7 +31,6 @@ Identifier JsEnvironment::onUpdateIdentifier ("onUpdate");
 
 const JsEnvironment::JsTimerType JsEnvironment::autoWatchTimer (0, 500);
 const JsEnvironment::JsTimerType JsEnvironment::onUpdateTimer (1, 20);
-
 
 
 DynamicObject::Ptr JsEnvironment::getGlobalEnv() {return JsGlobalEnvironment::getInstance()->getEnv();}
@@ -42,7 +42,8 @@ _hasValidJsFile (false),
 autoWatch (false),
 _isInSyncWithLGML (false),
 isLoadingFile (false),
-isEnabled (true)
+isEnabled (true),
+jsObject(new JsObjectRef<JsEnvironment>(this))
 
 {
     jsParameters = new JSEnvContainer (this);
@@ -112,8 +113,9 @@ DynamicObject* JsEnvironment::getGlobalObject(){
     else
         return nullptr;
 }
+
 var getLocal(const juce::var::NativeFunctionArgs &a){
-    auto c = getObjectPtrFromJS<JsEnvironment> (a);
+    auto c = castPtrFromJS<JsEnvironment> (a);
     if (c != nullptr)
     {
         return c->getGlobalObject();
@@ -139,7 +141,7 @@ void JsEnvironment::clearNamespace()
 
     static Identifier createParamListenerId ("createParameterListener");
     localEnv->setMethod (createParamListenerId, &JsEnvironment::createParameterListenerObject);
-    localEnv->setProperty (jsPtrIdentifier, (int64)this);
+    localEnv->setProperty (jsPtrIdentifier, -1);//(int64)(JsEnvironment*)this);
     if(linkedContainer.get()){
         localEnv->setMethod("getLocal",&getLocal );
     }
@@ -153,7 +155,7 @@ void JsEnvironment::clearNamespace()
 }
 
 
-void    JsEnvironment::removeNamespace (const String& jsNamespace)
+void JsEnvironment::removeNamespace (const String& jsNamespace)
 {
     removeNamespaceFromObject (jsNamespace, localEnv);
 }
@@ -303,8 +305,10 @@ Result JsEnvironment::loadScriptContent (const String& content)
 
 void JsEnvironment::clearListeners()
 {
-    for (auto& c : listenedParameters)
+    ListenedParameterType::Iterator it(listenedParameters);
+    while (it.next())
     {
+        auto c = it.getValue();
         if (c.get()) c->removeParameterListener (this);
     }
 
@@ -475,6 +479,9 @@ void JsEnvironment::setLocalNamespace (DynamicObject& target)
         Identifier n = target.getProperties().getName (i);
         localEnv->setProperty (n, target.getProperty (n));
     }
+
+    assignPtrToObject(jsObject.get(),localEnv);
+
 }
 
 void JsEnvironment::setNamespaceName (const String& s)
@@ -602,7 +609,7 @@ Result JsEnvironment::checkUserControllableEventFunction()
 
                     if ( ParameterBase* p = dynamic_cast <ParameterBase*> (c))
                     {
-                        listenedParameters.addIfNotAlreadyThere (p);
+                        listenedParameters.set(f->splitedName.joinIntoString("_"),p);
                         found = true;
                         break;
                     }
@@ -641,10 +648,10 @@ Result JsEnvironment::checkUserControllableEventFunction()
         }
 
     }
-
-    for (auto& c : listenedParameters)
+    ListenedParameterType::Iterator it(listenedParameters);
+    while (it.next())
     {
-        c->addParameterListener (this);
+        it.getValue()->addParameterListener (this);
     }
 
     for (auto& cont : listenedContainers)
@@ -686,7 +693,15 @@ void JsEnvironment::parameterValueChanged ( ParameterBase* p, ParameterBase::Lis
 
     }
 
-    else if (p)callFunction ("on_" + getJsFunctionNameFromAddress (p->getControlAddress()), p->value, false);
+    else if (p){
+        ListenedParameterType::Iterator it(listenedParameters);
+        while (it.next())
+        {
+            if(it.getValue().get()==p){
+                callFunction (it.getKey(),p->value, false);
+            }
+        }
+    }
     else { jassertfalse; }
 
 };
@@ -748,7 +763,12 @@ void JsEnvironment::childStructureChanged (ControllableContainer* notifierC, Con
 void JsEnvironment::sendAllParametersToJS()
 {
 
-    for (auto& t : listenedParameters) { if (t.get())parameterValueChanged (t); }
+    ListenedParameterType::Iterator it(listenedParameters);
+    while (it.next())
+    {
+        auto t = it.getValue();
+        if (t.get())parameterValueChanged (t);
+    }
 
     for (auto& t : listenedContainers)
     {
@@ -765,21 +785,34 @@ void JsEnvironment::sendAllParametersToJS()
 var JsEnvironment::createParameterListenerObject (const var::NativeFunctionArgs& a)
 {
     if (a.numArguments == 0) { return var::undefined(); }
-
-    if (auto  p = getObjectPtrFromObject<ParameterBase> (a.arguments[0].getDynamicObject()))
+    auto* originEnv =castPtrFromJS<JsEnvironment> (a);
+    if (originEnv)
     {
-        JsEnvironment* originEnv = dynamic_cast<JsEnvironment*> (a.thisObject.getDynamicObject());
 
-        if (originEnv)
+        DynamicObject* ob = a.arguments->getArray()->getUnchecked(0).getDynamicObject();
+       if(ob) {
+        auto*  p = castPtrFromObject<ParameterBase>(ob) ;
+        if ( p)
         {
-            JsParameterListenerObject* ob = new JsParameterListenerObject (originEnv, p);
-            originEnv->parameterListenerObjects.add (ob);
-            return ob->object;
+                JsParameterListenerObject* ob = new JsParameterListenerObject (originEnv, p);
+                originEnv->addJsParameterListener (ob);
+                return ob->object;
         }
-    }
 
+        auto  props =a.arguments[0].getDynamicObject()->getProperties();
+        DBG(p->niceName << ", " << p->shortName);
+        for(int i = 0 ; i < props.size() ; i++){
+            DBG(props.getName(i).toString() << ":" << props.getValueAt(i).toString());
+        }
+       }
+    }
+    NLOGE("js","can't create parameterListener object");
     return var::undefined();
 };
+
+
+
+
 ////////////////////////
 // JSEnvContainer
 //#include "JsEnvironmentUI.h"
@@ -912,10 +945,10 @@ void JSEnvContainer::onContainerTriggerTriggered (Trigger* p)
         }
     }
 }
-    
-    //////////////////////
-    // JsParameterListenerObject
-    
-    
-    Identifier JsParameterListenerObject::parameterChangedFId ("parameterChanged");
-    Identifier JsParameterListenerObject::parameterObjectId ("parameter");
+
+//////////////////////
+// JsParameterListenerObject
+
+
+Identifier JsParameterListenerObject::parameterChangedFId ("parameterChanged");
+Identifier JsParameterListenerObject::parameterObjectId ("parameter");

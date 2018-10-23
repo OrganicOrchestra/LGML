@@ -122,6 +122,7 @@ Engine::~Engine()
     closeAudio();
 
     threadPool.removeAllJobs(true, -1);
+    JsGlobalEnvironment::deleteInstance(); // need to be first to avoid memory leaks
 
     NodeManager::deleteInstance();
     PresetManager::deleteInstance();
@@ -142,7 +143,7 @@ Engine::~Engine()
     LGMLLogger::deleteInstance();
 
 
-    JsGlobalEnvironment::deleteInstance();
+
     MIDIManager::deleteInstance();
 
     SerialManager::deleteInstance();
@@ -339,7 +340,7 @@ void Engine::clear()
 
     NodeManager::getInstance()->clear();
 
-
+    JsGlobalEnvironment::getInstance()->clear();
     //graphPlayer.setProcessor(NodeManager::getInstance()->getAudioGraph());
 
 
@@ -512,7 +513,7 @@ timerTicks(0){
     audioCpu->isEditable = false;
     audioCpu->isSavable = false;
 
-    startTimer(300);
+    //startTimer(300);
 
 //TODO implement UI Monitoring tool
 //    activateGlobalStats(true);

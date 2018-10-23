@@ -34,6 +34,8 @@ Controllable::Controllable ( const String& niceName, const String& description, 
 {
     setEnabled (enabled);
     setNiceName (niceName);
+    jsObject=new JsObjectRef<Controllable>(this);
+    
 }
 
 
@@ -100,8 +102,7 @@ String Controllable::getControlAddress (const ControllableContainer* relativeTo)
 DynamicObject* Controllable::createDynamicObject()
 {
     DynamicObject* dObject = new DynamicObject();
-    dObject->setProperty (jsPtrIdentifier, (int64)this);
-    //  dObject->setProperty(jsVarObjectIdentifier, getVarObject());
+    assignPtrToObject(jsObject.get(),dObject);
     dObject->setMethod (jsGetIdentifier, Controllable::getVarStateFromScript);
     return dObject;
 }
@@ -110,8 +111,8 @@ DynamicObject* Controllable::createDynamicObject()
 
 var Controllable::getVarStateFromScript (const juce::var::NativeFunctionArgs& a)
 {
-    // TODO handle with weak references
-    Controllable* c = getObjectPtrFromJS<Controllable> (a);
+
+    Controllable* c = castPtrFromJS<Controllable> (a);
 
     if (c == nullptr  ) return var();
 
@@ -126,7 +127,7 @@ var Controllable::getVarStateFromScript (const juce::var::NativeFunctionArgs& a)
 var Controllable::setControllableValueFromJS (const juce::var::NativeFunctionArgs& a)
 {
 
-    Controllable* c = getObjectPtrFromJS<Controllable> (a);
+    Controllable* c = castPtrFromJS<Controllable> (a);
     //    bool success = false;
 
     if (c != nullptr)

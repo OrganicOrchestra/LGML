@@ -120,8 +120,7 @@ void KeyboardController::buildLocalEnv()
 
     static const Identifier createKeyboardListener ("createKeyboardListener");
     obj.setMethod (createKeyboardListener, &KeyboardController::createJsKeyboardListener);
-
-    obj.setProperty (jsPtrIdentifier, (int64)this);
+ 
     setLocalNamespace (obj);
 
 };

@@ -52,7 +52,7 @@ void JsNode::buildLocalEnv()
     static Identifier addTriggerIdentifier ("addTrigger");
 
     DynamicObject d;
-    d.setProperty (jsPtrIdentifier, (int64)this);
+
     d.setMethod (addIntParameterIdentifier, JsNode::addIntParameter);
     d.setMethod (addFloatParameterIdentifier, JsNode::addFloatParameter);
     d.setMethod (addStringParameterIdentifier, JsNode::addStringParameter);
@@ -76,7 +76,7 @@ void JsNode::onContainerParameterChanged ( ParameterBase* p)
 var JsNode::addIntParameter (const var::NativeFunctionArgs& a)
 {
 
-    JsNode* jsNode = getObjectPtrFromJS<JsNode> (a);
+    JsNode* jsNode = castPtrFromJSEnv<JsNode> (a);
 
     if (a.numArguments < 5)
     {
@@ -108,7 +108,7 @@ var JsNode::addFloatParameter (const var::NativeFunctionArgs& a)
 var JsNode::addStringParameter (const var::NativeFunctionArgs& a)
 {
 
-    JsNode* jsNode = getObjectPtrFromJS<JsNode> (a);
+    JsNode* jsNode = castPtrFromJSEnv<JsNode> (a);
 
     if (a.numArguments < 3)
     {
@@ -124,7 +124,7 @@ var JsNode::addStringParameter (const var::NativeFunctionArgs& a)
 var JsNode::addBoolParameter (const var::NativeFunctionArgs& a)
 {
 
-    JsNode* jsNode = getObjectPtrFromJS<JsNode> (a);
+    JsNode* jsNode = castPtrFromJSEnv<JsNode> (a);
 
     if (a.numArguments < 3)
     {
@@ -140,7 +140,7 @@ var JsNode::addBoolParameter (const var::NativeFunctionArgs& a)
 var JsNode::addTriggerParameter (const var::NativeFunctionArgs& a)
 {
 
-    JsNode* jsNode = getObjectPtrFromJS<JsNode> (a);
+    JsNode* jsNode = castPtrFromJSEnv<JsNode> (a);
 
     if (a.numArguments < 2)
     {

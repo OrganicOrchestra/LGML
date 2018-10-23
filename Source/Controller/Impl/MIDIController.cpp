@@ -267,7 +267,7 @@ void MIDIController::buildLocalEnv()
     static const Identifier jsGetNoteListenerObject ("createNoteListener");
     obj.setMethod (jsGetNoteListenerObject, &MIDIController::createJsNoteListener);
 
-    obj.setProperty (jsPtrIdentifier, (int64)this);
+    
     setLocalNamespace (obj);
 
 
@@ -286,7 +286,7 @@ void MIDIController::newJsFileLoaded()
 var MIDIController::sendNoteOnFromJS (const var::NativeFunctionArgs& a )
 {
 
-    MIDIController* c = getObjectPtrFromJS<MIDIController> (a);
+    MIDIController* c = castPtrFromJSEnv<MIDIController> (a);
 
     if (a.numArguments < 3)
     {
@@ -302,7 +302,7 @@ var MIDIController::sendNoteOnFromJS (const var::NativeFunctionArgs& a )
 var MIDIController::sendNoteOffFromJS (const var::NativeFunctionArgs& a)
 {
 
-    MIDIController* c = getObjectPtrFromJS<MIDIController> (a);
+    MIDIController* c = castPtrFromJSEnv<MIDIController> (a);
 
     if (a.numArguments < 3)
     {
@@ -316,7 +316,7 @@ var MIDIController::sendNoteOffFromJS (const var::NativeFunctionArgs& a)
 
 var MIDIController::sendCCFromJS (const var::NativeFunctionArgs& a)
 {
-    MIDIController* c = getObjectPtrFromJS<MIDIController> (a);
+    MIDIController* c = castPtrFromJSEnv<MIDIController> (a);
 
     if (a.numArguments < 3)
     {
@@ -334,7 +334,7 @@ var MIDIController::sendCCFromJS (const var::NativeFunctionArgs& a)
 
 var MIDIController::sendSysExFromJS (const var::NativeFunctionArgs& a)
 {
-    MIDIController* c = getObjectPtrFromJS<MIDIController> (a);
+    MIDIController* c = castPtrFromJSEnv<MIDIController> (a);
 
     if (a.numArguments > 8)
     {
