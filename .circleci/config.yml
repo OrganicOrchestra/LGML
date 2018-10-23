@@ -23,6 +23,7 @@ jobs:
       - run:
           name: build and package LGML
           command: |
+            pip3 install -U pip
             sh Scripts/linux/installExportDeps.sh
             python3 Scripts/buildScript.py --packagesuffix=ubuntu14 --configure --exportpath="$DST_LGML_PATH" --os=linux --configuration=Release
             python3 Scripts/buildScript.py --build --package --export
@@ -85,6 +86,7 @@ jobs:
       - run:
           name: build and package LGML32
           command: |
+            pip3 install -U pip
             sh Scripts/linux/installExportDeps.sh
             python3 Scripts/buildScript.py --configure --exportpath="$DST_LGML_PATH" --os=linux --configuration=Release --build --package --export
             ldd /root/LGML/Builds/LinuxMakefile/build/LGML > "$DST_LGML_PATH/dependencies.txt"
@@ -125,6 +127,7 @@ jobs:
       - run:
           name: build and package LGMLRasp
           command: |
+            pip3 install -U pip
             set -x
             export CXX=arm-linux-gnueabihf-g++-5
             sh Scripts/linux/installExportDeps.sh
