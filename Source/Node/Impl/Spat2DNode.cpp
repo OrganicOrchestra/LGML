@@ -51,7 +51,7 @@ alphaFilter(1)
     globalTargetPosition = addNewParameter<Point2DParameter<floatParamType>> ("Global Target Position", "Position of the Global Target",0,0,Array<var>{minSpatX,minSpatX},Array<var>{maxSpatX,maxSpatX});
     globalTargetRadius = addNewParameter<FloatParameter> ("Global Target Radius", "Radius for the global target", .5f, 0.f, 1.f);
     useLogCurve = addNewParameter<BoolParameter>("logCurve", "use log curve for volume", false);
-
+    constantPower = addNewParameter<BoolParameter>("constantPower", "in a perfect rosace the sum of the squares of the volumes stay to one", false);
     setPreferedNumAudioInput (numSpatInputs->intValue());
     setPreferedNumAudioOutput (numSpatOutputs->intValue() );
 
@@ -184,6 +184,7 @@ float Spat2DNode::getValueForSourceAndTargetPos (const Point<floatParamType>& so
     if (radius == 0) return 0;
 
     float dist = jlimit<float> (0, radius, sourcePosition.getDistanceFrom (targetPosition));
+
     return 1 - (dist / radius);
 }
 
@@ -296,8 +297,9 @@ void Spat2DNode::updateChannelNames()
     }
 }
 
-inline float computeGain(float g,bool useLog){
-    return useLog?Decibels::decibelsToGain(jmap<float>(g,0,1,-101,0)):g;
+inline float computeGain(float g,bool useLog,bool constantPow){
+    return  constantPow?sqrt(g):useLog?Decibels::decibelsToGain(jmap<float>(g,0,1,-101,0)):g;
+
 }
 
 void Spat2DNode::processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer&)
@@ -308,6 +310,7 @@ void Spat2DNode::processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer&)
     int numIn = numSpatInputs->intValue();
     int numOut = numSpatOutputs->intValue();
     bool logCurve = useLogCurve->boolValue();
+    bool constantP = constantPower->boolValue();
     tempBuf.setSize(numIn, numSamples);
     for(int j = 0 ; j < getTotalNumInputChannels() ; j++ ){
         tempBuf.copyFrom(j, 0, buffer.getReadPointer(j),  numSamples);
@@ -317,7 +320,7 @@ void Spat2DNode::processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer&)
     {
 
         float lastInfluence = influences[i];
-        float influence = (1-alphaFilter)*lastInfluence + (alphaFilter)*computeGain(outputsIntensities.getReference(i)->floatValue(),logCurve);
+        float influence = (1-alphaFilter)*lastInfluence + (alphaFilter)*computeGain(outputsIntensities.getReference(i)->floatValue(),logCurve,constantP);
 
         for(int j = 0 ; j < numIn ; j++ ){
             buffer.copyFromWithRamp (i, 0, tempBuf.getReadPointer (j), numSamples, lastInfluence,influence);

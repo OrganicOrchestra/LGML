@@ -43,7 +43,7 @@ public:
 
     Array<Point2DParameter<floatParamType> *> targetPositions;
 
-    BoolParameter* useGlobalTarget;
+    BoolParameter* useGlobalTarget,*constantPower;
     Point2DParameter<floatParamType>* globalTargetPosition;
     Array<Point2DParameter<floatParamType>*> inputsPositionsParams;
     Array<FloatParameter*> outputsIntensities;
