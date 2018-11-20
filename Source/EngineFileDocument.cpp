@@ -271,7 +271,7 @@ DynamicObject* Engine::getObject()
 
     data->setProperty ("nodeManager", NodeManager::getInstance()->getObject());
     data->setProperty ("controllerManager", ControllerManager::getInstance()->getObject());
-
+    data->setProperty("timeManager" , TimeManager::getInstance()->getObject());
     data->setProperty ("fastMapper", FastMapper::getInstance()->getObject());
 
     return data;
@@ -300,6 +300,7 @@ void Engine::loadJSONData (const var& data, ProgressTask* loadingTask)
 
     DynamicObject* d = data.getDynamicObject();
     ProgressTask* presetTask = loadingTask->addTask (juce::translate("presetManager"));
+    ProgressTask* timeManagerTask = loadingTask->addTask(juce::translate("timeManager"));
     ProgressTask* nodeManagerTask = loadingTask->addTask (juce::translate("nodeManager"));
     ProgressTask* controllerManagerTask = loadingTask->addTask (juce::translate("controllerManager"));
     ProgressTask* fastMapperTask = loadingTask->addTask (juce::translate("fastMapper"));
@@ -309,6 +310,11 @@ void Engine::loadJSONData (const var& data, ProgressTask* loadingTask)
     if (d->hasProperty ("presetManager")) PresetManager::getInstance()->configureFromObject (d->getProperty ("presetManager").getDynamicObject());
 
     presetTask->end();
+
+    timeManagerTask->start();
+    if (d->hasProperty ("timeManager")) TimeManager::getInstance()->configureFromObject(d->getProperty("timeManager").getDynamicObject());
+    timeManagerTask->end();
+
     nodeManagerTask->start();
 
     if (d->hasProperty ("nodeManager")) NodeManager::getInstance()->configureFromObject (d->getProperty ("nodeManager").getDynamicObject());

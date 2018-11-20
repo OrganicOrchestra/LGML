@@ -63,10 +63,13 @@ TimeManager::TimeManager():
     BPM = addNewParameter<FloatParameter> ("bpm", "current BPM", 120.f, (float)BPMRange.getStart(), (float)BPMRange.getEnd());
     BPM->isCommitableParameter = true;
     playState = addNewParameter<BoolParameter> ("PlayStop", "play or stop global transport", false);
+    playState->isSavable=false;
     BPMLocked = addNewParameter<BoolParameter> ("bpmLocked", "bpm is locked by somebody", false);
+    BPMLocked->isSavable = false;
     BPMLocked->isEditable = false;
     isSettingTempo = addNewParameter<BoolParameter> ("isSettingTempo", "is someone setting tempo (recording first loop)", false);
     isSettingTempo->isEditable = false;
+    isSettingTempo->isSavable = false;
     currentBar  = addNewParameter<IntParameter> ("currentBar", "currentBar in transport", 0, 0, 9999999);
     currentBeat  = addNewParameter<IntParameter> ("currentBeat", "currentBeat in transport", 0, 0, 999999);
     beatPerBar = addNewParameter<IntParameter> ("beatPerBar", "beat Per Bar", 4, 1, 8);
@@ -82,12 +85,13 @@ TimeManager::TimeManager():
     linkEnabled->enabled = LINK_SUPPORT;
 
     linkNumPeers = addNewParameter<IntParameter> ("linkNumPeers", "number of connected link devices", 0, 0, 32);
+    linkNumPeers->isSavable = false;
     linkNumPeers->enabled = LINK_SUPPORT;
     linkNumPeers->isEditable = false;
 
 
 #if LINK_SUPPORT
-    linkEnabled->setValue (false);
+
     linkPimpl = new LinkImpl (this);
 
 #endif
