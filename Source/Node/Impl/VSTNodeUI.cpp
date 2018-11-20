@@ -33,8 +33,10 @@ VSTNodeContentUI::VSTNodeContentUI():
 VSTNodeContentUI::~VSTNodeContentUI()
 {
     closePluginWindow();
+    if(vstNode){
     vstNode->removeVSTNodeListener (this);
     vstNode->removeControllableContainerListener (this);
+    }
 
 }
 
