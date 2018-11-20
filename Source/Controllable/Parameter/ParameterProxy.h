@@ -66,7 +66,7 @@ public:
 
     DECLARE_OBJ_TYPE (ParameterProxy,"proxy parameter (can become any given parameter)")
 private:
-    void controllableAdded (ControllableContainer*, Controllable* /*notifier*/) override;
+    void childControllableAdded (ControllableContainer*, Controllable* /*notifier*/) override;
     void controllableRemoved (Controllable* ) override;
     bool resolveAddress();
 

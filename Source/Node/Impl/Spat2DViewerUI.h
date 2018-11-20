@@ -106,8 +106,8 @@ public:
 
     void nodeParameterChanged (ConnectableNode*, ParameterBase* p) override;
 
-    void controllableAdded (ControllableContainer*, Controllable*) override;
-    void controllableRemoved (ControllableContainer*, Controllable*) override;
+    void childControllableAdded (ControllableContainer*, Controllable*) override;
+    void childControllableRemoved (ControllableContainer*, Controllable*) override;
 
     // Inherited via Listener (Spat2DHandle)
     virtual void handleUserMoved (Spat2DHandle* handle, const Point<floatParamType>& newPosition) override;

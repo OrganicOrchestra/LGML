@@ -73,8 +73,8 @@ public:
     String getUniqueName() const override;
     void controllableContainerAdded(ControllableContainer * notif,ControllableContainer * ori)override;
     void controllableContainerRemoved(ControllableContainer * notif,ControllableContainer * ori)override;
-    void controllableAdded (ControllableContainer*, Controllable*) override;
-    void controllableRemoved (ControllableContainer*, Controllable*)override;
+    void childControllableAdded (ControllableContainer*, Controllable*) override;
+    void childControllableRemoved (ControllableContainer*, Controllable*)override;
     bool mightContainSubItems() override;
     void itemSelectionChanged (bool isNowSelected) override;
     Component* createItemComponent() override;

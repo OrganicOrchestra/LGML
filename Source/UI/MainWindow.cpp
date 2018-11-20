@@ -139,7 +139,7 @@ void MainWindow::closeButtonPressed()
     }
 
     var boundsVar = var (new DynamicObject());
-    Rectangle<int> r = getScreenBounds();
+
 
     getAppProperties()->getCommonSettings (true)->setValue ("winSettings", getWindowStateAsString());
     getAppProperties()->getCommonSettings (true)->saveIfNeeded();

@@ -304,7 +304,6 @@ void PdNode::parseParameters(){
                                         auto fp = addNewParameter<FloatParameter>(sname, "pd float param "+label, 0,min,max);
                                         pdParameters.add(fp);
                                         fp->setNormalizedValue(value);
-
                                     }
                                 }
 

@@ -492,7 +492,7 @@ void CCInnerContainerUI::clear()
     lowerContainerLinks.clear();
 }
 
-void CCInnerContainerUI::controllableAdded (ControllableContainer*, Controllable* c)
+void CCInnerContainerUI::childControllableAdded (ControllableContainer*, Controllable* c)
 {
     if (c->parentContainer != container) return;
 
@@ -502,7 +502,7 @@ void CCInnerContainerUI::controllableAdded (ControllableContainer*, Controllable
     addParameterUI (pc);
 }
 
-void CCInnerContainerUI::controllableRemoved (ControllableContainer*, Controllable* c)
+void CCInnerContainerUI::childControllableRemoved (ControllableContainer*, Controllable* c)
 {
     auto pc = static_cast <ParameterBase*> (c);
     removeParameterUI (pc);

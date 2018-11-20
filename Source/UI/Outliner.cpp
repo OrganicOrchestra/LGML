@@ -396,7 +396,7 @@ void OutlinerItem::controllableContainerRemoved(ControllableContainer * notif,Co
 
 
 
-void OutlinerItem::controllableAdded (ControllableContainer* notif, Controllable* ori) {
+void OutlinerItem::childControllableAdded (ControllableContainer* notif, Controllable* ori) {
     if(notif && notif==container){
         MessageManager::callAsync([this , ori](){addSubItem(new OutlinerItem (dynamic_cast <ParameterBase*>(ori),true));});
     }
@@ -404,7 +404,7 @@ void OutlinerItem::controllableAdded (ControllableContainer* notif, Controllable
         jassertfalse;
     }
 }
-void OutlinerItem::controllableRemoved (ControllableContainer* notif, Controllable* ori) {
+void OutlinerItem::childControllableRemoved (ControllableContainer* notif, Controllable* ori) {
     if(notif && notif==container){
     int i = 0;
     while( i < getNumSubItems()){

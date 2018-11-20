@@ -144,7 +144,7 @@ void ParameterContainer::containerWillClear (ControllableContainer* c)
     if (c == this)cleanUpPresets();
 }
 
-void ParameterContainer::controllableRemoved (ControllableContainer*, Controllable* c)
+void ParameterContainer::childControllableRemoved (ControllableContainer*, Controllable* c)
 {
 
     if (auto p = ParameterBase::fromControllable (c))
@@ -158,7 +158,7 @@ ParameterBase*   ParameterContainer::addParameter ( ParameterBase* p)
 
     p->setParentContainer (this);
     controllables.add (p);
-    controllableContainerListeners.call (&ControllableContainerListener::controllableAdded, this, p);
+    controllableContainerListeners.call (&ControllableContainerListener::childControllableAdded, this, p);
     notifyStructureChanged (this,true);
     addControllableInternal (p);
     p->addParameterListener (this);

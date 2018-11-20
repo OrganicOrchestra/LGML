@@ -245,12 +245,12 @@ void Spat2DViewer::nodeParameterChanged (ConnectableNode*, ParameterBase* p)
 }
 
 
-void Spat2DViewer::controllableAdded (ControllableContainer*, Controllable* c)
+void Spat2DViewer::childControllableAdded (ControllableContainer*, Controllable* c)
 {
     if (c->isType<Point2DParameter<floatParamType>>()) updateNumTargets();
 }
 
-void Spat2DViewer::controllableRemoved (ControllableContainer*, Controllable* c)
+void Spat2DViewer::childControllableRemoved (ControllableContainer*, Controllable* c)
 {
     if (c->isType<Point2DParameter<floatParamType>>()) updateNumTargets();
 }

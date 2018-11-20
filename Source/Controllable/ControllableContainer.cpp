@@ -105,7 +105,7 @@ void ControllableContainer::removeFromParent()
 
 void ControllableContainer::removeControllable (Controllable* c)
 {
-    controllableContainerListeners.call (&Listener::controllableRemoved, this, c);
+    controllableContainerListeners.call (&Listener::childControllableRemoved, this, c);
 
 
     controllables.removeObject (c);

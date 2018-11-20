@@ -76,8 +76,8 @@ public:
     CCInnerContainerUI* getInnerContainerForCC (ParameterContainer* cc);
     CCLinkBT* getCCLinkForCC (ParameterContainer* cc);
 
-    void controllableAdded (ControllableContainer*, Controllable*)override;
-    void controllableRemoved (ControllableContainer*, Controllable*)override;
+    void childControllableAdded (ControllableContainer*, Controllable*)override;
+    void childControllableRemoved (ControllableContainer*, Controllable*)override;
     void controllableContainerAdded (ControllableContainer*, ControllableContainer*)override;
     void controllableContainerRemoved (ControllableContainer*, ControllableContainer*)override;
     void childStructureChanged (ControllableContainer*, ControllableContainer*,bool isAdded)override;

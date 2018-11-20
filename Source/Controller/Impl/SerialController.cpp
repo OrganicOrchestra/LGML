@@ -175,14 +175,14 @@ void SerialController::serialDataReceived (const var& data)
 
 }
 
-void SerialController::controllableAdded (ControllableContainer*, Controllable* c)
+void SerialController::childControllableAdded (ControllableContainer*, Controllable* c)
 {
     if (c->isUserDefined)
     {
         reloadFile();
     }
 }
-void SerialController::controllableRemoved (ControllableContainer*, Controllable* c)
+void SerialController::childControllableRemoved (ControllableContainer*, Controllable* c)
 {
     if (c->isUserDefined)
     {

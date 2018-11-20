@@ -110,8 +110,8 @@ void VSTNodeContentUI::updateVSTParameters()
     resized();
 }
 
-void VSTNodeContentUI::controllableAdded (ControllableContainer*, Controllable*) {};
-void VSTNodeContentUI::controllableRemoved (ControllableContainer*, Controllable* c)
+void VSTNodeContentUI::childControllableAdded (ControllableContainer*, Controllable*) {};
+void VSTNodeContentUI::childControllableRemoved (ControllableContainer*, Controllable* c)
 {
     for (auto& p : paramSliders)
     {

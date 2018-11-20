@@ -176,7 +176,7 @@ bool ParameterProxy::resolveAddress()
     return linkedParam != nullptr;
 }
 
-void ParameterProxy::controllableAdded (ControllableContainer*, Controllable* c)
+void ParameterProxy::childControllableAdded (ControllableContainer*, Controllable* c)
 {
     jassert (linkedParam == nullptr);
 

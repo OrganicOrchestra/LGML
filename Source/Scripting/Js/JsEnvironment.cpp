@@ -108,7 +108,7 @@ void JsEnvironment::setScriptEnabled (bool t)
 DynamicObject* JsEnvironment::getGlobalObject(){
     String ns = localNamespace;
     if(ns.length())
-        return JsGlobalEnvironment::getInstance()->getNamespaceObject(ns).getObject();
+        return JsGlobalEnvironment::getInstance()->getNamespaceObject(ns).get();
     else
         return nullptr;
 }

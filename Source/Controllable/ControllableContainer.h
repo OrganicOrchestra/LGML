@@ -180,8 +180,8 @@ public:
                     listenedContainers.removeLast();
             }
         }
-        virtual void controllableAdded (ControllableContainer*, Controllable*) {}
-        virtual void controllableRemoved (ControllableContainer*, Controllable*) {}
+        virtual void childControllableAdded (ControllableContainer*, Controllable*) {}
+        virtual void childControllableRemoved (ControllableContainer*, Controllable*) {}
         virtual void controllableContainerAdded (ControllableContainer*, ControllableContainer*) {}
         virtual void controllableContainerRemoved (ControllableContainer*, ControllableContainer*) {}
         virtual void childStructureChanged (ControllableContainer* /*notifier*/, ControllableContainer* /*origin*/,bool /*isAdded*/) {}

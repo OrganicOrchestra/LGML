@@ -58,7 +58,7 @@ void JsNodeUI::newJsFileLoaded (bool v)
 //    {
         for (auto& c : jsNode->jsDynamicParameters)
         {
-            controllableAdded (jsNode, c);
+            childControllableAdded (jsNode, c);
         }
 //    }
 };
@@ -80,7 +80,7 @@ void JsNodeUI::layoutUI()
 
 }
 
-void JsNodeUI::controllableAdded (ControllableContainer*, Controllable* c)
+void JsNodeUI::childControllableAdded (ControllableContainer*, Controllable* c)
 {
     JsNode* jsNode = (JsNode*) node.get();
 
@@ -100,7 +100,7 @@ void JsNodeUI::controllableAdded (ControllableContainer*, Controllable* c)
     }
 
 }
-void JsNodeUI::controllableRemoved (ControllableContainer*, Controllable* c)
+void JsNodeUI::childControllableRemoved (ControllableContainer*, Controllable* c)
 {
     ParameterBase* pToComp = ParameterBase::fromControllable (c);
 
