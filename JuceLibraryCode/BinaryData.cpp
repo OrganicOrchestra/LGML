@@ -3884,11 +3884,11 @@ static const unsigned char temp_binary_data_5[] =
 const char* wolf_footprint_debug_png = (const char*) temp_binary_data_5;
 
 
-const char* getNamedResource (const char*, int&) throw();
-const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) throw()
+const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
 {
     unsigned int hash = 0;
-    if (resourceNameUTF8 != 0)
+
+    if (resourceNameUTF8 != nullptr)
         while (*resourceNameUTF8 != 0)
             hash = 31 * hash + (unsigned int) *resourceNameUTF8++;
 
@@ -3904,7 +3904,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) throw
     }
 
     numBytes = 0;
-    return 0;
+    return nullptr;
 }
 
 const char* namedResourceList[] =
@@ -3916,5 +3916,26 @@ const char* namedResourceList[] =
     "wolf_footprint_png",
     "wolf_footprint_debug_png"
 };
+
+const char* originalFilenames[] =
+{
+    "little-red-riding-hood-md.png",
+    "default.lgmllayout",
+    "removeBT.png",
+    "grandlouloup.png",
+    "wolf_footprint.png",
+    "wolf_footprint_debug.png"
+};
+
+const char* getNamedResourceOriginalFilename (const char* resourceNameUTF8)
+{
+    for (unsigned int i = 0; i < (sizeof (namedResourceList) / sizeof (namedResourceList[0])); ++i)
+    {
+        if (namedResourceList[i] == resourceNameUTF8)
+            return originalFilenames[i];
+    }
+
+    return nullptr;
+}
 
 }
