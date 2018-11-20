@@ -22,6 +22,8 @@ before_build:
   - ps: |
       echo "submodule"
       git submodule -q update --init --recursive
+      cd C:\projects\lgml\third_party\libpd
+      cmake . -DPD_MULTI=1
       cd C:\projects\lgml\third_party\rubberband
       echo 'building rubberband'
       msbuild C:\projects\lgml\third_party\rubberband\rubberband-library.sln /p:Configuration=Release /m:4

@@ -730,7 +730,7 @@
                        headerPath="" isDebug="0" linkTimeOptimisation="1" name="Release"
                        optimisation="3" osxArchitecture="32BitUniversal" osxCompatibility="10.8 SDK"
                        targetName="LGML" enablePluginBinaryCopyStep="1"/>
-        <CONFIGURATION cppLanguageStandard="c++11" cppLibType="libc++" customXcodeFlags="ONLY_ACTIVE_ARCH=1, GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE,GCC_PRECOMPILE_PREFIX_HEADER=1,GCC_PREFIX_HEADER=PrefixHeader.pch"
+        <CONFIGURATION cppLanguageStandard="c++11" cppLibType="libc++" customXcodeFlags="ONLY_ACTIVE_ARCH=1,GCC_PRECOMPILE_PREFIX_HEADER=1,GCC_PREFIX_HEADER=PrefixHeader.pch"
                        defines="" headerPath="" isDebug="1" name="Debug" osxArchitecture="32BitUniversal"
                        osxCompatibility="10.7 SDK" targetName="LGML" enablePluginBinaryCopyStep="1"/>
         <CONFIGURATION cppLanguageStandard="c++11" cppLibType="libc++" customXcodeFlags="ONLY_ACTIVE_ARCH=1"
@@ -786,29 +786,29 @@
         <MODULEPATH id="juce_dsp" path="../JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_IPHONE>
-    <VS2015 bigIcon="SL4b92" externalLibraries="setupapi.lib&#10;rubberband-library.lib"
+    <VS2015 bigIcon="SL4b92" externalLibraries="setupapi.lib&#10;rubberband-library.lib&#10;libpd-multi.lib"
             extraDefs="LINK_PLATFORM_WINDOWS=1" smallIcon="SL4b92" targetFolder="Builds/VisualStudio2015"
             vst3Folder="third_party/VST3_SDK" vstFolder="D:\Documents\Ressources\SDKs\VST3 SDK"
             windowsTargetPlatformVersion="8.1">
       <CONFIGURATIONS>
         <CONFIGURATION defines="" generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"
-                       isDebug="1" libraryPath="..\..\third_party\rubberband\Debug_x64"
+                       isDebug="1" libraryPath="..\..\third_party\rubberband\Debug_x64&#10;..\..\third_party\libpd\build"
                        name="Debug" optimisation="1" targetName="LGML" winArchitecture="x64"
                        winWarningLevel="4" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" useRuntimeLibDLL="0"/>
         <CONFIGURATION defines="" generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"
-                       isDebug="1" libraryPath="..\..\third_party\rubberband\Debug"
+                       isDebug="1" libraryPath="..\..\third_party\rubberband\Debug&#10;..\..\third_party\libpd\build"
                        name="Debug32" optimisation="1" targetName="LGML" winArchitecture="Win32"
                        winWarningLevel="4" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" useRuntimeLibDLL="0"/>
         <CONFIGURATION generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"
-                       isDebug="0" libraryPath="..\..\third_party\rubberband\Release_x64"
+                       isDebug="0" libraryPath="..\..\third_party\rubberband\Release_x64&#10;..\..\third_party\libpd\build"
                        name="Release" optimisation="3" targetName="LGML" winArchitecture="x64"
                        winWarningLevel="4" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" linkTimeOptimisation="1" alwaysGenerateDebugSymbols="1"
                        useRuntimeLibDLL="0"/>
         <CONFIGURATION generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"
-                       isDebug="0" libraryPath="..\..\third_party\rubberband\Release"
+                       isDebug="0" libraryPath="..\..\third_party\rubberband\Release&#10;..\..\third_party\libpd\build"
                        name="Release32" optimisation="3" targetName="LGML" winArchitecture="Win32"
                        winWarningLevel="4" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" linkTimeOptimisation="1" alwaysGenerateDebugSymbols="1"
@@ -883,28 +883,31 @@
     </CLION>
     <VS2017 targetFolder="Builds/VisualStudio2017" vst3Folder="third_party/VST3_SDK"
             windowsTargetPlatformVersion="10.0.16299.0" extraDefs="LINK_PLATFORM_WINDOWS=1"
-            externalLibraries="setupapi.lib&#10;rubberband-library.lib" smallIcon="SL4b92"
-            bigIcon="SL4b92" toolset="v141">
+            externalLibraries="setupapi.lib&#10;rubberband-library.lib&#10;libpd-multi.lib"
+            smallIcon="SL4b92" bigIcon="SL4b92" toolset="v141">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
                        linkTimeOptimisation="0" isDebug="1" optimisation="1" targetName="LGML"
                        headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"
-                       libraryPath="..\..\third_party\rubberband\Debug_x64" useRuntimeLibDLL="0"/>
+                       libraryPath="..\..\third_party\rubberband\Debug_x64&#10;..\..\third_party\libpd\build"
+                       useRuntimeLibDLL="0"/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
                        linkTimeOptimisation="1" isDebug="0" optimisation="3" targetName="LGML"
-                       libraryPath="..\..\third_party\rubberband\Release_x64" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"
+                       libraryPath="..\..\third_party\rubberband\Release_x64&#10;..\..\third_party\libpd\build"
+                       headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"
                        useRuntimeLibDLL="0"/>
         <CONFIGURATION name="Debug32" winWarningLevel="4" generateManifest="1" winArchitecture="Win32"
                        debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
                        linkTimeOptimisation="0" isDebug="1" targetName="LGML" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"
-                       libraryPath="..\..\third_party\rubberband\Debug" useRuntimeLibDLL="0"/>
+                       libraryPath="..\..\third_party\rubberband\Debug&#10;..\..\third_party\libpd\build"
+                       useRuntimeLibDLL="0"/>
         <CONFIGURATION name="Release32" winWarningLevel="4" generateManifest="1" winArchitecture="Win32"
                        debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
                        linkTimeOptimisation="1" targetName="LGML" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"
-                       libraryPath="..\..\third_party\rubberband\Release" isDebug="0"
-                       useRuntimeLibDLL="0"/>
+                       libraryPath="..\..\third_party\rubberband\Release&#10;..\..\third_party\libpd\build"
+                       isDebug="0" useRuntimeLibDLL="0"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_osc" path="../JUCE/modules"/>

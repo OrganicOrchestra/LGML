@@ -4236,7 +4236,6 @@
 					"JucePlugin_Build_Unity=0",
 				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_UNINITIALIZED_AUTOS = "YES_AGGRESSIVE";
 				HEADER_SEARCH_PATHS = (
 					"../../third_party/VST3_SDK",
 					"../../JuceLibraryCode",

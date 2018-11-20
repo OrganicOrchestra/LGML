@@ -71,22 +71,22 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\App\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">LGML</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(LibraryPath);..\..\third_party\rubberband\Debug_x64</LibraryPath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(LibraryPath);..\..\third_party\rubberband\Debug_x64;..\..\third_party\libpd\build</LibraryPath>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)$(Platform)\$(Configuration)\App\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\App\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">LGML</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(LibraryPath);..\..\third_party\rubberband\Release_x64</LibraryPath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(LibraryPath);..\..\third_party\rubberband\Release_x64;..\..\third_party\libpd\build</LibraryPath>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug32|Win32'">$(SolutionDir)$(Platform)\$(Configuration)\App\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug32|Win32'">$(Platform)\$(Configuration)\App\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug32|Win32'">LGML</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug32|Win32'">true</GenerateManifest>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug32|Win32'">$(LibraryPath);..\..\third_party\rubberband\Debug</LibraryPath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug32|Win32'">$(LibraryPath);..\..\third_party\rubberband\Debug;..\..\third_party\libpd\build</LibraryPath>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release32|Win32'">$(SolutionDir)$(Platform)\$(Configuration)\App\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release32|Win32'">$(Platform)\$(Configuration)\App\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release32|Win32'">LGML</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release32|Win32'">true</GenerateManifest>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release32|Win32'">$(LibraryPath);..\..\third_party\rubberband\Release</LibraryPath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release32|Win32'">$(LibraryPath);..\..\third_party\rubberband\Release;..\..\third_party\libpd\build</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Midl>
@@ -122,17 +122,17 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(IntDir)\LGML.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>..\..\third_party\rubberband\Debug_x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\third_party\rubberband\Debug_x64;..\..\third_party\libpd\build;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LargeAddressAware>true</LargeAddressAware>
-      <AdditionalDependencies>setupapi.lib;rubberband-library.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>setupapi.lib;rubberband-library.lib;libpd-multi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>$(IntDir)\LGML.bsc</OutputFile>
     </Bscmake>
     <Lib>
-      <AdditionalDependencies>setupapi.lib;rubberband-library.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\third_party\rubberband\Debug_x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>setupapi.lib;rubberband-library.lib;libpd-multi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\third_party\rubberband\Debug_x64;..\..\third_party\libpd\build;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -170,17 +170,17 @@
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <AdditionalLibraryDirectories>..\..\third_party\rubberband\Release_x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\third_party\rubberband\Release_x64;..\..\third_party\libpd\build;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LargeAddressAware>true</LargeAddressAware>
-      <AdditionalDependencies>setupapi.lib;rubberband-library.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>setupapi.lib;rubberband-library.lib;libpd-multi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>$(IntDir)\LGML.bsc</OutputFile>
     </Bscmake>
     <Lib>
-      <AdditionalDependencies>setupapi.lib;rubberband-library.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\third_party\rubberband\Release_x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>setupapi.lib;rubberband-library.lib;libpd-multi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\third_party\rubberband\Release_x64;..\..\third_party\libpd\build;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug32|Win32'">
@@ -218,17 +218,17 @@
       <ProgramDatabaseFile>$(IntDir)\LGML.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalLibraryDirectories>..\..\third_party\rubberband\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\third_party\rubberband\Debug;..\..\third_party\libpd\build;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LargeAddressAware>true</LargeAddressAware>
-      <AdditionalDependencies>setupapi.lib;rubberband-library.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>setupapi.lib;rubberband-library.lib;libpd-multi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>$(IntDir)\LGML.bsc</OutputFile>
     </Bscmake>
     <Lib>
-      <AdditionalDependencies>setupapi.lib;rubberband-library.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\third_party\rubberband\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>setupapi.lib;rubberband-library.lib;libpd-multi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\third_party\rubberband\Debug;..\..\third_party\libpd\build;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release32|Win32'">
@@ -267,17 +267,17 @@
       <TargetMachine>MachineX86</TargetMachine>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <AdditionalLibraryDirectories>..\..\third_party\rubberband\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\third_party\rubberband\Release;..\..\third_party\libpd\build;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LargeAddressAware>true</LargeAddressAware>
-      <AdditionalDependencies>setupapi.lib;rubberband-library.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>setupapi.lib;rubberband-library.lib;libpd-multi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>$(IntDir)\LGML.bsc</OutputFile>
     </Bscmake>
     <Lib>
-      <AdditionalDependencies>setupapi.lib;rubberband-library.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\third_party\rubberband\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>setupapi.lib;rubberband-library.lib;libpd-multi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\third_party\rubberband\Release;..\..\third_party\libpd\build;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
