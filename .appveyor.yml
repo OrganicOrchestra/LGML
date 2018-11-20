@@ -23,7 +23,8 @@ before_build:
       echo "submodule"
       git submodule -q update --init --recursive
       cd C:\projects\lgml\third_party\libpd
-      cmake . -DPD_MULTI=1
+      cmake . -G "Visual Studio 14 2015" -DPD_MULTI:BOOL=ON
+      msbuild C:\projects\lgml\third_party\libpd\libpd.sln /p:Configuration=Release /m:4
       cd C:\projects\lgml\third_party\rubberband
       echo 'building rubberband'
       msbuild C:\projects\lgml\third_party\rubberband\rubberband-library.sln /p:Configuration=Release /m:4
