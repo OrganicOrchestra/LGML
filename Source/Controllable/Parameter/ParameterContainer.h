@@ -116,12 +116,13 @@ private:
     WeakReference< ParameterContainer >::Master masterReference;
     friend class WeakReference<ParameterContainer>;
 
+
+protected:
     // internal callback that a controllableContainer can override to react to any of it's parameter change
     // this is to avoid either:
     //      adding controllableContainerListener for each implementation
     //      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)
-    //      
-
+    //
     virtual void onContainerParameterChanged ( ParameterBase*) {};
     virtual void onContainerTriggerTriggered (Trigger*) {};
     virtual void onContainerParameterChangedAsync ( ParameterBase*, const var& /*value*/) {};
