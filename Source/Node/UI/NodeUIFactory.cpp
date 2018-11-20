@@ -53,6 +53,8 @@
 #include "../Impl/Spat2DNodeUI.h"
 #include "../Impl/VSTNode.h"
 #include "../Impl/VSTNodeUI.h"
+#include "../Impl/PdNode.h"
+#include "../Impl/PdNodeUI.h"
 
 //#define CHKNRETURN_HEADER(p,A,B,C) if(p->getFactoryTypeId()==A::_factoryType){return new ConnectableNodeUI(p, B,C);}
 #define CHKNRETURN(p,A,B) if((p)->getFactoryTypeId()==A::_factoryType){return new ConnectableNodeUI(p, uip,B);}
@@ -74,7 +76,7 @@ ConnectableNodeUI* NodeUIFactory::createDefaultUI (ConnectableNode* t,Connectabl
     CHKNRETURN (t, NodeContainer, new NodeContainerContentUI); // recursiveInspectionLevel = 1; canInspectChildContainersBeyondRecursion = true;
     CHKNRETURN (t, Spat2DNode, new Spat2DNodeContentUI);
     CHKNRETURN (t, VSTNode,  new VSTNodeContentUI); //, new VSTNodeHeaderUI);
-
+    CHKNRETURN(t, PdNode, new PdNodeContentUI);
 
     // set default for ContainerIn/Out
     if(t->getFactoryTypeId()==ContainerInNode::_factoryType){

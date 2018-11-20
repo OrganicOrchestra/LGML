@@ -3,8 +3,9 @@
 <JUCERPROJECT bundleIdentifier="org.anic.orchestra.LGML" companyName="Organic Orchestra"
               companyWebsite="http://www.organic-orchestra.com" cppLanguageStandard="14"
               displaySplashScreen="1" id="a1hJPO" includeBinaryInAppConfig="1"
-              jucerVersion="5.3.0" name="LGML" projectType="guiapp" reportAppUsage="1"
-              splashScreenColour="Dark" version="1.2.8" companyCopyright="Organic Orchestra">
+              jucerVersion="5.4.1" name="LGML" projectType="guiapp" reportAppUsage="1"
+              splashScreenColour="Dark" version="1.2.8" companyCopyright="Organic Orchestra"
+              headerPath="third_party/VST3_SDK/">
   <MAINGROUP id="RYpQgZ" name="LGML">
     <GROUP id="{C4A5CA13-B090-453E-F1E3-DE9F74C715E2}" name="Assets">
       <FILE compile="0" file="Resources/little-red-riding-hood-md.png" id="SL4b92"
@@ -313,6 +314,10 @@
                 name="NodeConnection.h" resource="0"/>
         </GROUP>
         <GROUP id="{4F432EA8-66F6-D32D-6EB3-A98879F7814E}" name="Impl">
+          <FILE id="tWkAxk" name="PdNodeUI.cpp" compile="1" resource="0" file="Source/Node/Impl/PdNodeUI.cpp"/>
+          <FILE id="g7jaCC" name="PdNodeUI.h" compile="0" resource="0" file="Source/Node/Impl/PdNodeUI.h"/>
+          <FILE id="V4197i" name="PdNode.cpp" compile="1" resource="0" file="Source/Node/Impl/PdNode.cpp"/>
+          <FILE id="DqUnGV" name="PdNode.h" compile="0" resource="0" file="Source/Node/Impl/PdNode.h"/>
           <FILE compile="1" file="Source/Node/Impl/AudioDeviceInNode.cpp" id="Ae5kff"
                 name="AudioDeviceInNode.cpp" resource="0"/>
           <FILE compile="0" file="Source/Node/Impl/AudioDeviceInNode.h" id="PZ4uvg"
@@ -715,17 +720,17 @@
   </MAINGROUP>
   <EXPORTFORMATS>
     <XCODE_MAC bigIcon="jsU7Hw" documentExtensions="lgml" externalLibraries=""
-               extraCompilerFlags="-Wno-reorder&#10;-I../../third_party/serial/include&#10;-I../../third_party/rubberband/&#10;-I../../third_party/link/include/&#10;-I../../third_party/link/modules/asio-standalone/asio/include"
+               extraCompilerFlags="-Wno-reorder&#10;-I../../third_party/serial/include&#10;-I../../third_party/rubberband/&#10;-I../../third_party/link/include/&#10;-I../../third_party/link/modules/asio-standalone/asio/include&#10;-I../../third_party/libpd/pure-data/src&#10;"
                extraDefs="LINK_PLATFORM_MACOSX=1&#10;" extraLinkerFlags="../../third_party/rubberband/lib/librubberband.a"
                keepCustomXcodeSchemes="1" postbuildCommand="" prebuildCommand=""
                smallIcon="jsU7Hw" targetFolder="Builds/MacOSX" vst3Folder="third_party/VST3_SDK"
-               vstFolder="">
+               vstFolder="" microphonePermissionNeeded="1" xcodeSubprojects="third_party/libpd/libpd.xcodeproj:libpd-osx-multi">
       <CONFIGURATIONS>
         <CONFIGURATION binaryPath="" cppLanguageStandard="c++11" cppLibType="libc++"
                        headerPath="" isDebug="0" linkTimeOptimisation="1" name="Release"
                        optimisation="3" osxArchitecture="32BitUniversal" osxCompatibility="10.8 SDK"
                        targetName="LGML" enablePluginBinaryCopyStep="1"/>
-        <CONFIGURATION cppLanguageStandard="c++11" cppLibType="libc++" customXcodeFlags="ONLY_ACTIVE_ARCH=1, GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE"
+        <CONFIGURATION cppLanguageStandard="c++11" cppLibType="libc++" customXcodeFlags="ONLY_ACTIVE_ARCH=1, GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE,GCC_PRECOMPILE_PREFIX_HEADER=1,GCC_PREFIX_HEADER=PrefixHeader.pch"
                        defines="" headerPath="" isDebug="1" name="Debug" osxArchitecture="32BitUniversal"
                        osxCompatibility="10.7 SDK" targetName="LGML" enablePluginBinaryCopyStep="1"/>
         <CONFIGURATION cppLanguageStandard="c++11" cppLibType="libc++" customXcodeFlags="ONLY_ACTIVE_ARCH=1"
@@ -938,11 +943,11 @@
     <MODULE id="juce_osc" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
   <JUCEOPTIONS JUCE_ALSA="1" JUCE_ASIO="1" JUCE_DIRECTSOUND="1" JUCE_JACK="1"
-               JUCE_LOG_ASSERTIONS="1" JUCE_PLUGINHOST_AU="1" JUCE_PLUGINHOST_VST="1"
-               JUCE_PLUGINHOST_VST3="1" JUCE_USE_CDBURNER="0" JUCE_USE_CDREADER="0"
-               JUCE_USE_FLAC="1" JUCE_USE_LAME_AUDIO_FORMAT="1" JUCE_USE_MP3AUDIOFORMAT="1"
-               JUCE_USE_OGGVORBIS="1" JUCE_USE_WINDOWS_MEDIA_FORMAT="1" JUCE_WASAPI="1"
-               JUCE_WEB_BROWSER="0"/>
+               JUCE_LOG_ASSERTIONS="1" JUCE_PLUGINHOST_AU="1" JUCE_PLUGINHOST_VST3="1"
+               JUCE_USE_CDBURNER="0" JUCE_USE_CDREADER="0" JUCE_USE_FLAC="1"
+               JUCE_USE_LAME_AUDIO_FORMAT="1" JUCE_USE_MP3AUDIOFORMAT="1" JUCE_USE_OGGVORBIS="1"
+               JUCE_USE_WINDOWS_MEDIA_FORMAT="1" JUCE_WASAPI="1" JUCE_WEB_BROWSER="0"
+               JUCE_PLUGINHOST_LADSPA="1"/>
   <LIVE_SETTINGS>
     <WINDOWS headerPath="..\..\External\serial\include"/>
     <OSX/>

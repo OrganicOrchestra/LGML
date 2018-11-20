@@ -27,9 +27,9 @@
 
 juce_ImplementSingleton(AppPropertiesUI);
 /*
-extern Engine* getEngine();
-extern AudioDeviceManager& getAudioDeviceManager();
-*/
+ extern Engine* getEngine();
+ extern AudioDeviceManager& getAudioDeviceManager();
+ */
 String AppPropertiesUI::GeneralPageName("General");
 String AppPropertiesUI::AudioPageName("Audio");
 String AppPropertiesUI::AdvancedPageName("Advanced");
@@ -286,10 +286,12 @@ class PrefPanel : public PreferencesPanel{
 
         else if(pageName==juce::translate(AppPropertiesUI::AdvancedPageName)){
             auto res =  new PropertyPanel();
+
             res->addProperties(
                                {new BoolPropUI("multiThreadedLoading"),
                                    createActionProp(juce::translate("reset preferences"),resetPreferences),
                                    createUnsavedPropUI(juce::translate("stimulate Audio"),stimulateAudio),
+                                   new FileListPropertyComponent("PureDataExternalPaths")
 
                                }
                                );
@@ -426,11 +428,11 @@ int AppPropertiesUI::getDesktopWindowStyleFlags() const {
     return
     (ResizableWindow::getDesktopWindowStyleFlags() | ComponentPeer::windowHasCloseButton )
     & ~ComponentPeer::windowHasMaximiseButton & ~ComponentPeer::windowHasMinimiseButton;
-
+    
 }
 void AppPropertiesUI::closeAppSettings(){
     deleteInstance();
-
+    
 }
 
 #endif
