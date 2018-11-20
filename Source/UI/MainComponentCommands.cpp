@@ -487,11 +487,11 @@ void MainContentComponent::menuItemSelected (int menuItemID, int topLevelMenuInd
 StringArray MainContentComponent::getMenuBarNames()
 {
     
-    StringArray namesArray ({
+    StringArray namesArray (
         juce::translate("File"),
         juce::translate("Edit"),
         juce::translate("Options"),
-        juce::translate("Windows") });
+        juce::translate("Windows") );
     return namesArray;
 }
 
