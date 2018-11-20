@@ -298,8 +298,11 @@ void PdNode::parseParameters(){
                                     // auto rname = sp[12];
                                     auto label = sp[13];
                                     if(label=="empty")label=sname;
-                                    float value = sp[21].getIntValue();
-                                    value/=12700.0;
+
+                                    float value = sp[21].getFloatValue();
+                                    if(type!="nbx"){value/=12700.0;}
+                                    min = jmax(-1e5f,min);
+                                    max = jmin(1e5f,min);
                                     if(sname!="empty" &&!getControllableByName(sname)){
                                         auto fp = addNewParameter<FloatParameter>(sname, "pd float param "+label, 0,min,max);
                                         pdParameters.add(fp);
