@@ -16,9 +16,9 @@ jobs:
           name: install LGML dependencies
           command: |
             apt-get -qq update
-            sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh
             apt-get install -y git
             git submodule update --init --recursive
+            sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh
 
       - run:
           name: build and package LGML
@@ -45,9 +45,9 @@ jobs:
           name: install LGML dependencies
           command: |
             apt-get -qq update
-            sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh
             apt-get install -y git
             git submodule update --init --recursive
+            sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh
 
       - run:
           name: build and package LGML
@@ -77,10 +77,10 @@ jobs:
           name: install LGML32 dependencies
           command: |
             apt-get -qq update
-            apt-get install -y pkg-config gcc-multilib g++-multilib
-            sh Scripts/linux/installDevDeps.sh && sh Scripts/linux/installDeps.sh
             apt-get install -y git
             git submodule update --init --recursive
+            apt-get install -y pkg-config gcc-multilib g++-multilib
+            sh Scripts/linux/installDevDeps.sh && sh Scripts/linux/installDeps.sh
 
       - run:
           name: build and package LGML32
@@ -119,9 +119,10 @@ jobs:
             . /etc/lsb-release
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports $DISTRIB_CODENAME main universe" >> /etc/apt/sources.list
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports $DISTRIB_CODENAME-updates main universe" >> /etc/apt/sources.list
-            sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh
             apt-get install -y git
             git submodule update --init --recursive
+            sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh
+            
 
       - run:
           name: build and package LGMLRasp

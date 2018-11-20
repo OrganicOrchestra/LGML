@@ -39,9 +39,9 @@ ifeq ($(CONFIG),Debug)
   JUCE_CPPFLAGS_APP := -DJucePlugin_Build_VST=0 -DJucePlugin_Build_VST3=0 -DJucePlugin_Build_AU=0 -DJucePlugin_Build_AUv3=0 -DJucePlugin_Build_RTAS=0 -DJucePlugin_Build_AAX=0 -DJucePlugin_Build_Standalone=0 -DJucePlugin_Build_Unity=0
   JUCE_TARGET_APP := LGML
 
-  JUCE_CFLAGS += $(JUCE_CPPFLAGS) $(TARGET_ARCH) -g -ggdb -O2 -Wno-reorder -I../../third_party/serial/include -I../../third_party/rubberband/ -I../../third_party/link/include/ -I../../third_party/link/modules/asio-standalone/asio/include $(CFLAGS)
+  JUCE_CFLAGS += $(JUCE_CPPFLAGS) $(TARGET_ARCH) -g -ggdb -O2 -Wno-reorder -I../../third_party/serial/include -I../../third_party/rubberband/ -I../../third_party/link/include/ -I../../third_party/link/modules/asio-standalone/asio/include -I../../third_party/libpd/pure-data/src $(CFLAGS)
   JUCE_CXXFLAGS += $(JUCE_CFLAGS) -std=c++14 $(CXXFLAGS)
-  JUCE_LDFLAGS += $(TARGET_ARCH) -L$(JUCE_BINDIR) -L$(JUCE_LIBDIR) -L/usr/X11R6/lib/ $(shell pkg-config --libs alsa freetype2 x11 xext xinerama libcurl) -lGL -ldl -lpthread -lrt -lrubberband -ldns_sd $(LDFLAGS)
+  JUCE_LDFLAGS += $(TARGET_ARCH) -L$(JUCE_BINDIR) -L$(JUCE_LIBDIR) -L/usr/X11R6/lib/ $(shell pkg-config --libs alsa freetype2 x11 xext xinerama libcurl) ../../third_party/libpd/build/libpd-multi.a -lGL -ldl -lpthread -lrt -lrubberband -ldns_sd $(LDFLAGS)
 
   CLEANCMD = rm -rf $(JUCE_OUTDIR)/$(TARGET) $(JUCE_OBJDIR)
 endif
@@ -60,9 +60,9 @@ ifeq ($(CONFIG),Release)
   JUCE_CPPFLAGS_APP := -DJucePlugin_Build_VST=0 -DJucePlugin_Build_VST3=0 -DJucePlugin_Build_AU=0 -DJucePlugin_Build_AUv3=0 -DJucePlugin_Build_RTAS=0 -DJucePlugin_Build_AAX=0 -DJucePlugin_Build_Standalone=0 -DJucePlugin_Build_Unity=0
   JUCE_TARGET_APP := LGML
 
-  JUCE_CFLAGS += $(JUCE_CPPFLAGS) $(TARGET_ARCH) -O3 -flto -Wno-reorder -I../../third_party/serial/include -I../../third_party/rubberband/ -I../../third_party/link/include/ -I../../third_party/link/modules/asio-standalone/asio/include $(CFLAGS)
+  JUCE_CFLAGS += $(JUCE_CPPFLAGS) $(TARGET_ARCH) -O3 -flto -Wno-reorder -I../../third_party/serial/include -I../../third_party/rubberband/ -I../../third_party/link/include/ -I../../third_party/link/modules/asio-standalone/asio/include -I../../third_party/libpd/pure-data/src $(CFLAGS)
   JUCE_CXXFLAGS += $(JUCE_CFLAGS) -std=c++14 $(CXXFLAGS)
-  JUCE_LDFLAGS += $(TARGET_ARCH) -L$(JUCE_BINDIR) -L$(JUCE_LIBDIR) -L/usr/X11R6/lib/ $(shell pkg-config --libs alsa freetype2 x11 xext xinerama libcurl) -fvisibility=hidden -flto -lGL -ldl -lpthread -lrt -lrubberband -ldns_sd $(LDFLAGS)
+  JUCE_LDFLAGS += $(TARGET_ARCH) -L$(JUCE_BINDIR) -L$(JUCE_LIBDIR) -L/usr/X11R6/lib/ $(shell pkg-config --libs alsa freetype2 x11 xext xinerama libcurl) -fvisibility=hidden -flto ../../third_party/libpd/build/libpd-multi.a -lGL -ldl -lpthread -lrt -lrubberband -ldns_sd $(LDFLAGS)
 
   CLEANCMD = rm -rf $(JUCE_OUTDIR)/$(TARGET) $(JUCE_OBJDIR)
 endif
