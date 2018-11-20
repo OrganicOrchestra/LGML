@@ -99,6 +99,51 @@ public:
     String name ;
 };
 
+class FileListPropertyComponent : public TextPropertyComponent{
+public:
+    FileListPropertyComponent(const String& propertyName,String defaultValue="",bool isMultiLine=false):
+    TextPropertyComponent (juce::translate(propertyName),//const String& propertyName,
+                           100,//int maxNumChars,
+                           isMultiLine,
+                           true)//bool isEditable = true)
+    ,name(propertyName)
+    {
+        auto savedV = getAppProperties()->getUserSettings()->getValue(name);
+
+            setText(savedV);
+        
+
+    }
+
+
+
+    void setText(const String & t)override{
+        auto files = StringArray();
+        auto oldPaths = file_paths;
+        file_paths.clear();
+        files.addTokens(t, ",\n","\"");
+        for(auto & p :files){
+            
+            if(!File(p).exists()){
+                LOGE("file " << p << " is not valid");
+            }
+            else{
+                file_paths.add(p);
+            }
+        }
+        if(oldPaths!=file_paths){
+            getAppProperties()->getUserSettings()->setValue(name,getText());
+        }
+        refresh();
+
+    }
+    String getText() const override{
+        return file_paths.joinIntoString(",");
+    }
+    StringArray file_paths;
+    String name ;
+};
+
 template<class FunctionType>
 class BoolUnsavedPropUI : public BooleanPropertyComponent{
 public:
