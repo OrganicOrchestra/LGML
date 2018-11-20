@@ -37,6 +37,7 @@ AudioMixerNode::AudioMixerNode (StringRef name) :
 
 void AudioMixerNode::setParentNodeContainer (NodeContainer* c)
 {
+    // TODO is it needed?
     NodeBase::setParentNodeContainer (c);
     updateInput();
     updateOutput();
