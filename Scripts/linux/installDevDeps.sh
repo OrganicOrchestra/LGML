@@ -93,8 +93,9 @@ apt-get update
 apt-get -y -q --assume-yes install cmake
 
 cd LGML/third_party/libpd
-cmake . -DPD_MULTI=1
-make
+mkdir build && cd build
+cmake .. -DPD_MULTI:BOOL=ON
+cmake --build .
 
 # cd ;
 # if [ ! -d "Dev/Projucer/linux" ]; then
