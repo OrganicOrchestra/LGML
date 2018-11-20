@@ -833,10 +833,11 @@
       </MODULEPATHS>
     </VS2015>
     <LINUX_MAKE bigIcon="SL4b92" cppLanguageStandard="-std=c++11" externalLibraries="rubberband&#10;dns_sd"
-                extraCompilerFlags="-Wno-reorder&#10;-I../../third_party/serial/include&#10;-I../../third_party/rubberband/&#10;-I../../third_party/link/include/&#10;-I../../third_party/link/modules/asio-standalone/asio/include"
+                extraCompilerFlags="-Wno-reorder&#10;-I../../third_party/serial/include&#10;-I../../third_party/rubberband/&#10;-I../../third_party/link/include/&#10;-I../../third_party/link/modules/asio-standalone/asio/include&#10;-I../../third_party/libpd/pure-data/src"
                 extraDefs="LINK_PLATFORM_LINUX=1&#10;JUCE_PLUGINHOST_LADSPA=1"
-                extraLinkerFlags="" smallIcon="SL4b92" targetFolder="Builds/LinuxMakefile"
-                vst3Folder="third_party/VST3_SDK" vstFolder="/home/tinmar/SDKs/VST3 SDK">
+                extraLinkerFlags="../../third_party/libpd/build/libpd-multi.a"
+                smallIcon="SL4b92" targetFolder="Builds/LinuxMakefile" vst3Folder="third_party/VST3_SDK"
+                vstFolder="/home/tinmar/SDKs/VST3 SDK">
       <CONFIGURATIONS>
         <CONFIGURATION headerPath="../../Source&#10;" isDebug="1" libraryPath="/usr/X11R6/lib/"
                        linuxArchitecture="" name="Debug" optimisation="5" targetName="LGML"/>

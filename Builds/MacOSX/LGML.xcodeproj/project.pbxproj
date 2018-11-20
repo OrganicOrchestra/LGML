@@ -4198,7 +4198,7 @@
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				OTHER_CPLUSPLUSFLAGS = "-Wno-reorder -I../../third_party/serial/include -I../../third_party/rubberband/ -I../../third_party/link/include/ -I../../third_party/link/modules/asio-standalone/asio/include -I../../third_party/libpd/pure-data/src";
-				OTHER_LDFLAGS = "../../third_party/rubberband/lib/librubberband.a ../../third_party/libpd/build/libpd-multi.a";
+				OTHER_LDFLAGS = "../../third_party/rubberband/lib/librubberband.a";
 				PRODUCT_BUNDLE_IDENTIFIER = org.anic.orchestra.LGML;
 				PRODUCT_NAME = "LGML";
 				USE_HEADERMAP = NO;
@@ -4249,7 +4249,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = "1";
 				OTHER_CPLUSPLUSFLAGS = "-Wno-reorder -I../../third_party/serial/include -I../../third_party/rubberband/ -I../../third_party/link/include/ -I../../third_party/link/modules/asio-standalone/asio/include -I../../third_party/libpd/pure-data/src";
-				OTHER_LDFLAGS = "../../third_party/rubberband/lib/librubberband.a ../../third_party/libpd/build/libpd-multi.a";
+				OTHER_LDFLAGS = "../../third_party/rubberband/lib/librubberband.a";
 				PRODUCT_BUNDLE_IDENTIFIER = org.anic.orchestra.LGML;
 				PRODUCT_NAME = "LGML";
 				USE_HEADERMAP = NO;
@@ -4300,7 +4300,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = "1";
 				OTHER_CPLUSPLUSFLAGS = "-Wno-reorder -I../../third_party/serial/include -I../../third_party/rubberband/ -I../../third_party/link/include/ -I../../third_party/link/modules/asio-standalone/asio/include -I../../third_party/libpd/pure-data/src";
-				OTHER_LDFLAGS = "../../third_party/rubberband/lib/librubberband.a ../../third_party/libpd/build/libpd-multi.a";
+				OTHER_LDFLAGS = "../../third_party/rubberband/lib/librubberband.a";
 				PRODUCT_BUNDLE_IDENTIFIER = org.anic.orchestra.LGML;
 				PRODUCT_NAME = "LGML_Debug";
 				USE_HEADERMAP = NO;
