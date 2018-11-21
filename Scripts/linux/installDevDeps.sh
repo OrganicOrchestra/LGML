@@ -85,7 +85,7 @@ apt-get -y -q --assume-yes install libavahi-compat-libdnssd-dev:$CROSS_ARCH
 
 #install add-apt-repository
 
-apt-get  -y -q --assume-yes  install software-properties-common python-software-properties
+apt-get  -y -q --assume-yes  install software-properties-common
 
 # install cmake
 add-apt-repository ppa:george-edison55/cmake-3.x -y
