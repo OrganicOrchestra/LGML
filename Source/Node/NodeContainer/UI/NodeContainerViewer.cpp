@@ -688,6 +688,10 @@ void NodeContainerViewer::changeListenerCallback (ChangeBroadcaster* source){
         for(auto n: nodesUI){
             n->setVisuallySelected(selectedItems.getItemArray().contains(n));
         }
+        if(selectedItems.getItemArray().size()){
+            // TODO : refactor inspector to global selection set
+//            inspector->setSelectedItemSet(selectedItems);
+        }
     }
 
 }
