@@ -31,14 +31,14 @@ class OSXBuilder (BuilderBase):
 	def cleanApp(self):
 		self.removeOldApp()
 		sh("cd "+self.xcodeProjPath+ " && "\
-			+' -workspace LGMLWS.xcworkspace/  -scheme "LGML - App"' \
+			+' xcodebuild -workspace LGMLWS.xcworkspace/  -scheme "LGML - App"' \
 			+" -configuration "+ self.cfg["build_cfg_name"]
 			+" clean")
 
 	def buildApp(self):
 		self.removeOldApp()
 		sh("cd "+self.xcodeProjPath+ " && " \
-			+' -workspace LGMLWS.xcworkspace/  -scheme "LGML - App"' \
+			+' xcodebuild -workspace LGMLWS.xcworkspace/  -scheme "LGML - App"' \
 			+" -configuration "+ self.cfg["build_cfg_name"]
 			+" -arch "+self.cfg["arch"]
 			+" -jobs "+str(self.cfg["njobs"]))
