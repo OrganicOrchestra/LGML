@@ -191,8 +191,16 @@ void OSCController::resolveHostnameIfNeeded()
 }
 void OSCController::processMessage (const OSCMessage& msg)
 {
+    bool isPing =msg.getAddressPattern()=="/ping";
+    if(isPing){
+        sendOSC("/pong",getControlAddress());
+        inActivityTrigger->triggerDebounced(activityTriggerDebounceTime); // only show led activity on pings
+        return;
+    }
+
+
     bool logIncoming = logIncomingOSC->boolValue();
-    if (logIncoming)
+    if ( logIncoming)
     {
         logMessage (msg, "In:");
 
@@ -207,10 +215,8 @@ void OSCController::processMessage (const OSCMessage& msg)
 
     isProcessingOSC = true;
 
-    bool isPing =msg.getAddressPattern()=="/ping";
-    if(isPing){
-        sendOSC("/pong",getControlAddress());
-    }
+
+
 
     Result result = isPing?Result::ok():processMessageInternal (msg);
     
