@@ -102,7 +102,7 @@ ControllableReferenceUI::~ControllableReferenceUI()
 void ControllableReferenceUI::setCurrentControllable (Controllable* c)
 {
 
-    if (currentControllable.get() == c) return;
+
 
     currentControllable = c;
 
@@ -117,8 +117,8 @@ void ControllableReferenceUI::setCurrentControllable (Controllable* c)
         setButtonText (juce::translate("Target"));
     }
 
-
-    listeners.call (&Listener::choosedControllableChanged, this, c);
+    if (currentControllable.get() != c)
+        listeners.call (&Listener::choosedControllableChanged, this, c);
 }
 
 void ControllableReferenceUI::buttonClicked (Button*)

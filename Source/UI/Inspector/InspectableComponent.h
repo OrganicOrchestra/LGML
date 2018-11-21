@@ -60,8 +60,8 @@ public:
     void mouseUp (const MouseEvent&) override;
 
 protected:
-    ParameterContainer* relatedParameterContainer;
-    ParameterBase* relatedParameter;
+    WeakReference<ParameterContainer> relatedParameterContainer;
+    WeakReference<ParameterBase> relatedParameter;
 private:
     WeakReference<InspectableComponent>::Master masterReference;
     friend class WeakReference<InspectableComponent>;

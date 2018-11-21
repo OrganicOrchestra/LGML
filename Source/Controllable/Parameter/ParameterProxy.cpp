@@ -124,7 +124,7 @@ void ParameterProxy::setParamToReferTo ( ParameterBase* p)
     }
     else
     {
-        if(linkedParam == p) return;
+        if(linkedParam.get() && (linkedParam == p) ) return; // always pass if ref has been destroyed
         if (linkedParam != nullptr)
         {
             linkedParam->removeParameterListener (this);

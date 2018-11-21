@@ -95,6 +95,7 @@ public:
         if(isKeyDown){return false;}
         const uint32 now = Time::getMillisecondCounter();
         int channel = 1;
+        
         int i = 0;
         int nWasDown = 0;
         while(i < keysDown.size())
