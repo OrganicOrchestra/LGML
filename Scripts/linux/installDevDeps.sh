@@ -92,8 +92,7 @@ apt-get  -y -q --assume-yes  install software-properties-common
 # apt-get update
 apt-get -y -q --assume-yes install cmake
 
-cd LGML/third_party/libpd
-mkdir build && cd build
+cd LGML/third_party/libpdBuild/Linux
 CFLAGS="$ARCH_FLAGS" LDFLAGS="$ARCH_FLAGS" cmake .. -DPD_MULTI:BOOL=ON  -DPD_UTILS:BOOL=OFF
 cmake --build .
 
