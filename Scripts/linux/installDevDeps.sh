@@ -94,7 +94,7 @@ apt-get -y -q --assume-yes install cmake
 
 cd LGML/third_party/libpd
 mkdir build && cd build
-CFLAGS="$ARCH_FLAGS" LDFLAGS="$ARCH_FLAGS" cmake .. -DPD_MULTI:BOOL=ON 
+CFLAGS="$ARCH_FLAGS" LDFLAGS="$ARCH_FLAGS" cmake .. -DPD_MULTI:BOOL=ON  -DPD_UTILS:BOOL=OFF
 cmake --build .
 
 # cd ;

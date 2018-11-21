@@ -17,13 +17,22 @@ environment:
       configuration: Release32
     - platform: x64
       configuration: Release
+init:
+- set arch=
+- if "%arch%"=="Win64" ( set arch= Win64)
+- echo %arch%
+- echo %APPVEYOR_BUILD_WORKER_IMAGE%
+- if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" ( set generator="Visual Studio 15 2017%arch%" )
+- if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2015" ( set generator="Visual Studio 14 2015%arch%" )
+- if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2013" ( set generator="Visual Studio 12 2013%arch%" )
+- echo %generator%
 
 before_build:
   - ps: |
       echo "submodule"
       git submodule -q update --init --recursive
       cd C:\projects\lgml\third_party\libpd
-      cmake . -G "Visual Studio 14 2015" -DPD_MULTI:BOOL=ON
+      cmake . -G "%generator%" -DPD_MULTI:BOOL=ON -DPD_UTILS=OFF -DMSVC_STATIC_RUNTIME=ON -DMSVC_PTHREAD_LIB="pthread.lib"
       msbuild C:\projects\lgml\third_party\libpd\libpd.sln /p:Configuration=Release /m:4
       cd C:\projects\lgml\third_party\rubberband
       echo 'building rubberband'
