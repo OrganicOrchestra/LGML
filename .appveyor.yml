@@ -64,7 +64,7 @@ before_build:
     - cd C:\projects\
     - curl https://codeload.github.com/WeAreROLI/JUCE/zip/master -o JUCE.zip
     - 7z x JUCE.zip -o"C:\projects" -y
-    - copy C:\projects\JUCE-master C:\projects\JUCE
+    - ren JUCE-master JUCE
     - dir
     - dir JUCE
     - echo 'downloading ASIOSDK'
