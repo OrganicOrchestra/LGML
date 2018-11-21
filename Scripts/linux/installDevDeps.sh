@@ -95,7 +95,7 @@ apt-get -y -q --assume-yes install cmake
 cd LGML/third_party/libpdBuild/Linux
 CFLAGS="$ARCH_FLAGS" LDFLAGS="$ARCH_FLAGS" cmake .. -DPD_MULTI:BOOL=ON  -DPD_UTILS:BOOL=OFF
 cmake --build .
-
+ls
 # cd ;
 # if [ ! -d "Dev/Projucer/linux" ]; then
 #   cd 
