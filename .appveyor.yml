@@ -14,34 +14,41 @@ environment:
   image: Visual Studio 2015
   matrix:
     - platform: Win32
-      configuration: Release32
       PTHREAD: x86
+      configuration: Release32
       COMPILER: "Visual Studio 14 2015"
     - platform: x64
-      configuration: Release
       PTHREAD: x64
+      configuration: Release
       COMPILER: "Visual Studio 14 2015 Win64"
 
 install:
     - echo "submodule"
     - git submodule -q update --init --recursive
-    - set basepd="C:\\projects\\lgml\\third_party\\libpd"
-    - cd "%basepd%"
-    - curl ftp://sourceware.org/pub/pthreads-win32/pthreads-w32-2-9-1-release.zip -o pthreads.zip
-    - 7z x -opthreads pthreads.zip  Pre-built.2/dll Pre-built.2/lib Pre-built.2/include
-    - mkdir build
-    - mkdir build\msvcstatic
-    - mkdir build\msvcdll
-    - set pthreaddir="%basepd%\\pthreads\\Pre-built.2"
-    # - set builddir="%APPVEYOR_BUILD_FOLDER%\\build\\msvcstatic"
-    - cd "%pthreaddir%\\include" && copy "*.h" "%basepd%\\pure-data\\src"
-    - cd "%pthreaddir%\\lib\\%PTHREAD%" && copy "pthreadVC2.lib" "%basepd%\\build\\msvcstatic\\pthreadVC2.lib"
-    - cd "%pthreaddir%\\lib\\%PTHREAD%" && copy "pthreadVC2.lib" "%basepd%\\build\\msvcdll\\pthreadVC2.lib"
+    - cd "%APPVEYOR_BUILD_FOLDER%\third_party\"
+    - mkdir PthreadWin32
+    - git clone -q https://github.com/GerHobbelt/pthread-win32.git PthreadWin32
+    - cd PthreadWin32
+    # bit of magic from camomille (pierreguillot)
+    - sed -i 's/4820;4668;4255;/4820;4668;4255;4711;4100;4312;4127;4296;4456;4619;4310;4311;/' pthread_lib.2015.vcxproj
+    - sed -i 's/MultiThreadedDLL/MultiThreaded/' pthread_lib.2015.vcxproj
+    - sed -i 's/MultiThreadedDebugDLL/MultiThreadedDebug/' pthread_lib.2015.vcxproj
+    - msbuild pthread.2015.sln /t:pthread_lib /nologo /verbosity:quiet /p:Configuration=Release /p:Platform=%PLATFORM% /p:OutDir=lib/
+    # Copy pthread-win32 headers and library in pure-data directory
+    - set LIBPDROOT = "%APPVEYOR_BUILD_FOLDER%\third_party\libpd"
+    - copy pthread.h %LIBPDROOT%\pure-data\src\pthread.h
+    - copy sched.h %LIBPDROOT%\pure-data\src\sched.h
+    - copy semaphore.h %LIBPDROOT%\pure-data\src\semaphore.h
+    - set PD_BUILD_DIR = "%APPVEYOR_BUILD_FOLDER%\third_party\libpdBuild"
+    - copy lib\pthread_lib.lib %PD_BUILD_DIR%\VisualStudio2015\pthread.lib
+    - copy lib\pthread_lib.lib %PD_BUILD_DIR%\pthread.lib
+
+    # Compile libpd
+    - cd %APPVEYOR_BUILD_FOLDER%\Dependencies\LibPdBuild\VisualStudio2015
+    - cmake -G "%COMPILER%" ..
+    - msbuild libpd.sln /t:libpdstatic /nologo /verbosity:quiet /p:Configuration=Release /p:Platform=%PLATFORM%
 
 before_build:
-    - cd C:\projects\lgml\third_party\libpd\build\msvcstatic
-    - cmake ../.. -G "%COMPILER%" -DPD_MULTI:BOOL=ON -DPD_UTILS=OFF -DMSVC_STATIC_RUNTIME=ON -DMSVC_PTHREAD_LIB="pthread.lib"
-    - msbuild libpd.sln /t:libpdstatic /p:Configuration=Release /p:Platform=%PLATFORM% /m:4
     - cd C:\projects\lgml\third_party\rubberband
     - echo 'building rubberband'
     - msbuild C:\projects\lgml\third_party\rubberband\rubberband-library.sln /p:Configuration=Release /m:4
