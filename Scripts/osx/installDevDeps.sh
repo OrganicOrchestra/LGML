@@ -32,8 +32,3 @@ echo $CXX
 # ./configure
 mkdir -p lib
 make -f Makefile.osx CPPFLAGS=-DNO_THREADING static -j4
-
-# build rubberband
-cd $SCRIPTPATH/../../third_party/libpd
-xcodebuild -project libpd.xcodeproj -scheme libpd-osx-multi -configuration Release
-
