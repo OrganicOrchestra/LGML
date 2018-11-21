@@ -27,6 +27,7 @@
 #include "AppPropertiesUI.h"
 
 #include "../Node/NodeContainer/UI/NodeContainerViewer.h"// for copy paste
+#include "../Node/Manager/UI/NodeManagerUI.h" // for copy paste
 
 extern UndoManager & getAppUndoManager();
 
@@ -331,38 +332,51 @@ bool MainContentComponent::perform (const InvocationInfo& info)
         case CommandIDs::copySelection:
         case CommandIDs::cutSelection:
         {
-            InspectableComponent* ic = Inspector::getInstance()->getCurrentComponent();
+            Array<InspectableComponent*> icl;
 
-            if (ic != nullptr)
-            {
-                ParameterContainer* cc = ic->getRelatedParameterContainer();
+            auto nvl = ShapeShifterManager::getInstance()->getAllSPanelsOfType<NodeManagerUIViewport>(true);
+            if(nvl.size()>0){
+                if(auto vw = nvl[0]->nmui->currentViewer.get())
+                    icl.addArray(vw->selectedItems.getItemArray());
+            }
+            if(icl.size()>0){
 
-                if (cc != nullptr)
-                {
+                var datal = Array<var>();
+                for(auto * ic : icl){
 
-                    var data (new DynamicObject());
-                    data.getDynamicObject()->setProperty ("type", ic->inspectableType);
-                    data.getDynamicObject()->setProperty ("data", cc->getObject());
-                    if(auto relatedComponent =Inspector::getInstance()->getCurrentComponent()){
+                    ParameterContainer* cc = ic->getRelatedParameterContainer();
 
-                        NodeContainerViewer *  ncv = dynamic_cast<NodeContainerViewer*>(relatedComponent);
-                        if(!ncv)ncv=relatedComponent->findParentComponentOfClass<NodeContainerViewer>();
-                        if(ncv && ncv->uiParams){
-                            auto nodeUIParams = ncv->uiParams->getControllableContainerByName(cc->shortName);
-                            data.getDynamicObject()->setProperty ("uiData",nodeUIParams->getObject());
-                        }
+                    if (cc != nullptr)
+                    {
 
-                        if (info.commandID == CommandIDs::cutSelection)
-                        {
-                            if (ic->inspectableType == "node") ((ConnectableNode*)cc)->remove();
-                            else if (ic->inspectableType == "controller") ((Controller*)cc)->remove();
+                        var data (new DynamicObject());
+                        data.getDynamicObject()->setProperty ("type", ic->inspectableType);
+                        data.getDynamicObject()->setProperty ("data", cc->getObject());
+                        auto *relatedComponent = ic;
+//                        if(auto relatedComponent =Inspector::getInstance()->getCurrentComponent()){
 
-                            //            else if (ic->inspectableType == "fastMap") ((FastMap *)cc)->remove();
-                        }
+                            NodeContainerViewer *  ncv = dynamic_cast<NodeContainerViewer*>(relatedComponent);
+                            if(!ncv)ncv=relatedComponent->findParentComponentOfClass<NodeContainerViewer>();
+                            if(ncv && ncv->uiParams){
+                                auto nodeUIParams = ncv->uiParams->getControllableContainerByName(cc->shortName);
+                                data.getDynamicObject()->setProperty ("uiData",nodeUIParams->getObject());
+                            }
 
-                        SystemClipboard::copyTextToClipboard (JSON::toString (data));
+                            if (info.commandID == CommandIDs::cutSelection)
+                            {
+                                if (ic->inspectableType == "node") ((ConnectableNode*)cc)->remove();
+                                else if (ic->inspectableType == "controller") ((Controller*)cc)->remove();
+
+                                //            else if (ic->inspectableType == "fastMap") ((FastMap *)cc)->remove();
+                            }
+                            datal.append(data);
+
+//                        }
                     }
                 }
+                auto jsonObj = new DynamicObject();
+                jsonObj->setProperty("list", datal);
+                SystemClipboard::copyTextToClipboard (JSON::toString (jsonObj));
             }
         }
             break;
@@ -404,57 +418,62 @@ bool MainContentComponent::perform (const InvocationInfo& info)
         {
             String clipboard = SystemClipboard::getTextFromClipboard();
 
-            var data = JSON::parse (clipboard);
+            var datal = JSON::parse (clipboard).getProperty("list", "");
 
+            if(datal.isArray()){
+                auto arr = datal.getArray();
+                for(auto data:*arr){
 
-                DynamicObject* d = data.getDynamicObject();
+                    DynamicObject* d = data.getDynamicObject();
 
-                if (d != nullptr && d->hasProperty ("type"))
-                {
-
-                    String type = d->getProperty ("type");
-                    auto relatedComponent =Inspector::getInstance()->getCurrentComponent();
-
-                    if (relatedComponent != nullptr)
+                    if (d != nullptr && d->hasProperty ("type"))
                     {
-                        if (type == "node" && relatedComponent->inspectableType == "node")
+
+                        String type = d->getProperty ("type");
+                        auto relatedComponent =Inspector::getInstance()->getCurrentComponent();
+
+                        if (relatedComponent != nullptr)
                         {
-                            ConnectableNode* cn = dynamic_cast<ConnectableNode*> (relatedComponent->getRelatedParameterContainer());
-                            NodeContainer* container = (dynamic_cast<NodeContainer*> (cn)) ? dynamic_cast<NodeContainer*> (cn) : cn->getParentNodeContainer();
-
-                            if (cn != nullptr)
+                            if (type == "node" && relatedComponent->inspectableType == "node")
                             {
-                                ConnectableNode* n = container->addNodeFromJSONData (d->getProperty ("data").getDynamicObject());
+                                ConnectableNode* cn = dynamic_cast<ConnectableNode*> (relatedComponent->getRelatedParameterContainer());
+                                NodeContainer* container = (dynamic_cast<NodeContainer*> (cn)) ? dynamic_cast<NodeContainer*> (cn) : cn->getParentNodeContainer();
 
-                                // ensure to have different uuid than the one from JSON
-                                if (n)
+                                if (cn != nullptr)
                                 {
-                                    n->uid = Uuid();
-                                    NodeContainerViewer *  ncv = dynamic_cast<NodeContainerViewer*>(relatedComponent);
-                                    if(!ncv)ncv=Inspector::getInstance()->getCurrentComponent()->findParentComponentOfClass<NodeContainerViewer>();
-                                    if(ncv){
-                                        auto nodeUI = ncv->getUIForNode(n);
-                                        if(nodeUI){
-                                            if(auto o = d->getProperty ("uiData").getDynamicObject()){
-                                                auto nodeUIParams = dynamic_cast<ParameterContainer*>(ncv->uiParams->getControllableContainerByName(n->shortName));
-                                                nodeUIParams->configureFromObject(o);
+                                    ConnectableNode* n = container->addNodeFromJSONData (d->getProperty ("data").getDynamicObject());
+
+                                    // ensure to have different uuid than the one from JSON
+                                    if (n)
+                                    {
+                                        n->uid = Uuid();
+                                        NodeContainerViewer *  ncv = dynamic_cast<NodeContainerViewer*>(relatedComponent);
+                                        if(!ncv)ncv=Inspector::getInstance()->getCurrentComponent()->findParentComponentOfClass<NodeContainerViewer>();
+                                        if(ncv){
+                                            auto nodeUI = ncv->getUIForNode(n);
+                                            if(nodeUI){
+                                                if(auto o = d->getProperty ("uiData").getDynamicObject()){
+                                                    auto nodeUIParams = dynamic_cast<ParameterContainer*>(ncv->uiParams->getControllableContainerByName(n->shortName));
+                                                    nodeUIParams->configureFromObject(o);
+                                                }
+                                                nodeUI->uid=Uuid();
+                                                nodeUI->nodePosition->setPoint (ncv->getMouseXYRelative());
+                                                nodeUI->nodeMinimizedPosition->setPoint (ncv->getMouseXYRelative());
                                             }
-                                            nodeUI->uid=Uuid();
-                                            nodeUI->nodePosition->setPoint (ncv->getMouseXYRelative());
-                                            nodeUI->nodeMinimizedPosition->setPoint (ncv->getMouseXYRelative());
+                                            else{
+                                                jassertfalse;
+                                            }
                                         }
                                         else{
                                             jassertfalse;
                                         }
                                     }
-                                    else{
-                                        jassertfalse;
-                                    }
                                 }
                             }
                         }
+                        
                     }
-                
+                }
             }
         }
             break;
@@ -488,10 +507,10 @@ StringArray MainContentComponent::getMenuBarNames()
 {
     
     StringArray namesArray (
-        juce::translate("File"),
-        juce::translate("Edit"),
-        juce::translate("Options"),
-        juce::translate("Windows") );
+                            juce::translate("File"),
+                            juce::translate("Edit"),
+                            juce::translate("Options"),
+                            juce::translate("Windows") );
     return namesArray;
 }
 
