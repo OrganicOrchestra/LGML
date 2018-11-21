@@ -51,6 +51,7 @@ showUserContainer(true)
         addAndMakeVisible(linkToSelected);
         linkToSelected.addListener(this);
         linkToSelected.setClickingTogglesState(true);
+        linkToSelected.setToggleState(true,sendNotification);
     }
     infoLabel.setVisible(false);
 
