@@ -791,8 +791,8 @@
       </MODULEPATHS>
     </XCODE_IPHONE>
     <VS2015 bigIcon="SL4b92" externalLibraries="setupapi.lib&#10;rubberband-library.lib&#10;libpd-multi-static.lib&#10;pthread.lib"
-            extraDefs="LINK_PLATFORM_WINDOWS=1&#10;PTW32_STATIC_LIB=1" smallIcon="SL4b92"
-            targetFolder="Builds/VisualStudio2015" vst3Folder="third_party/VST3_SDK"
+            extraDefs="LINK_PLATFORM_WINDOWS=1&#10;PTW32_STATIC_LIB=1&#10;PD_INTERNAL=1"
+            smallIcon="SL4b92" targetFolder="Builds/VisualStudio2015" vst3Folder="third_party/VST3_SDK"
             vstFolder="D:\Documents\Ressources\SDKs\VST3 SDK" windowsTargetPlatformVersion="8.1">
       <CONFIGURATIONS>
         <CONFIGURATION defines="" generateManifest="1" headerPath="$(ASIOSDK)\common"
