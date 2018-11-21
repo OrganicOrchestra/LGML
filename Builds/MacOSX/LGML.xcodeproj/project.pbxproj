@@ -626,6 +626,10 @@
 			isa = PBXBuildFile;
 			fileRef = DEFCE8C923EC489CB8ED7DE7;
 		};
+		0054FC3A0E52E9D0322B0758 = {
+			isa = PBXBuildFile;
+			fileRef = 0F4A4F62A29DE80C5CCC72E6;
+		};
 		38C50F6CDE8316ED635D77B9 = {
 			isa = PBXBuildFile;
 			fileRef = 38324E2B1A22A08A6E10B5B0;
@@ -917,6 +921,13 @@
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = Style.cpp;
 			path = ../../Source/UI/Style.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
+		0F4A4F62A29DE80C5CCC72E6 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = GlobalKeyListener.cpp;
+			path = ../../Source/Utils/GlobalKeyListener.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		0F54201675580FE925117E36 = {
@@ -2921,6 +2932,13 @@
 			path = ../../Source/Node/Impl/LooperNodeUI.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
+		D82484212B7C3F5B20489CC6 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = GlobalKeyListener.h;
+			path = ../../Source/Utils/GlobalKeyListener.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		DA15374957FB6B4F737E6F9B = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -3911,6 +3929,8 @@
 		7467E54AD807664B6E3C7879 = {
 			isa = PBXGroup;
 			children = (
+				0F4A4F62A29DE80C5CCC72E6,
+				D82484212B7C3F5B20489CC6,
 				839DA1019FA86ADAF72B2AF0,
 				38324E2B1A22A08A6E10B5B0,
 				7D7A028D24A89E5E9B76503C,
@@ -4616,6 +4636,7 @@
 				20DC1F03DC4C1F4881C5F757,
 				F72124BA0EDF8D9BE8BF375B,
 				FB14FE2D8522142D1D907FA6,
+				0054FC3A0E52E9D0322B0758,
 				38C50F6CDE8316ED635D77B9,
 				B72E5A92824EC549D8842E96,
 				85B05C36D51A85D39F12E006,

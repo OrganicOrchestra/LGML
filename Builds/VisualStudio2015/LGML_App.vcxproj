@@ -421,6 +421,7 @@
     <ClCompile Include="..\..\Source\UI\Inspector\InspectableComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Inspector\Inspector.cpp"/>
     <ClCompile Include="..\..\Source\UI\Inspector\InspectorEditor.cpp"/>
+    <ClCompile Include="..\..\Source\Utils\GlobalKeyListener.cpp"/>
     <ClCompile Include="..\..\Source\Utils\FactoryUIHelpers.cpp"/>
     <ClCompile Include="..\..\Source\Utils\AutoUpdater.cpp"/>
     <ClCompile Include="..\..\Source\Utils\FactoryBase.cpp"/>
@@ -2409,6 +2410,7 @@
     <ClInclude Include="..\..\Source\UI\Inspector\InspectableComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Inspector\Inspector.h"/>
     <ClInclude Include="..\..\Source\UI\Inspector\InspectorEditor.h"/>
+    <ClInclude Include="..\..\Source\Utils\GlobalKeyListener.h"/>
     <ClInclude Include="..\..\Source\Utils\HeadlessWrappers.h"/>
     <ClInclude Include="..\..\Source\Utils\AutoUpdater.h"/>
     <ClInclude Include="..\..\Source\Utils\FactoryUIHelpers.h"/>

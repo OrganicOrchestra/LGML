@@ -961,6 +961,9 @@
     <ClCompile Include="..\..\Source\UI\Inspector\InspectorEditor.cpp">
       <Filter>LGML\Source\UI\Inspector</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Utils\GlobalKeyListener.cpp">
+      <Filter>LGML\Source\Utils</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Utils\FactoryUIHelpers.cpp">
       <Filter>LGML\Source\Utils</Filter>
     </ClCompile>
@@ -3416,6 +3419,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Inspector\InspectorEditor.h">
       <Filter>LGML\Source\UI\Inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Utils\GlobalKeyListener.h">
+      <Filter>LGML\Source\Utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Utils\HeadlessWrappers.h">
       <Filter>LGML\Source\Utils</Filter>

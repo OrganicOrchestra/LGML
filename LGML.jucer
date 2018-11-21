@@ -626,6 +626,10 @@
         </GROUP>
       </GROUP>
       <GROUP id="{8DA61DCB-02FE-2339-7E79-2A3547284A18}" name="Utils">
+        <FILE id="ZBrDOG" name="GlobalKeyListener.cpp" compile="1" resource="0"
+              file="Source/Utils/GlobalKeyListener.cpp"/>
+        <FILE id="sVbTnG" name="GlobalKeyListener.h" compile="0" resource="0"
+              file="Source/Utils/GlobalKeyListener.h"/>
         <FILE id="KPMV0Q" name="HeadlessWrappers.h" compile="0" resource="0"
               file="Source/Utils/HeadlessWrappers.h"/>
         <FILE id="FYsUWY" name="FactoryUIHelpers.cpp" compile="1" resource="0"
