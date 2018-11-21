@@ -837,8 +837,8 @@
       </MODULEPATHS>
     </VS2015>
     <LINUX_MAKE bigIcon="SL4b92" cppLanguageStandard="-std=c++11" externalLibraries="rubberband&#10;dns_sd"
-                extraCompilerFlags="-Wno-reorder,-fPIC" extraDefs="LINK_PLATFORM_LINUX=1&#10;JUCE_PLUGINHOST_LADSPA=1"
-                extraLinkerFlags="../../third_party/libpdBuild/linux/libpd-multi.a"
+                extraCompilerFlags="-Wno-reorder -fPIC" extraDefs="LINK_PLATFORM_LINUX=1&#10;JUCE_PLUGINHOST_LADSPA=1"
+                extraLinkerFlags="../../third_party/libpdBuild/Linux/libpd-multi.a"
                 smallIcon="SL4b92" targetFolder="Builds/LinuxMakefile" vst3Folder="third_party/VST3_SDK"
                 vstFolder="/home/tinmar/SDKs/VST3 SDK">
       <CONFIGURATIONS>
