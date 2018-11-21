@@ -23,13 +23,17 @@ fi
 
 
 # build rubberband
-cd $SCRIPTPATH
+cd $SCRIPTPATH/../../third_party/rubberband
 echo "original CXX : $CXX"
 CXX=`xcodebuild -find clang++`
 CXX="$CXX -stdlib=libc++"
 ARCHFLAGS="-arch i386 -mmacosx-version-min=10.7"
 echo $CXX
-cd ../../third_party/rubberband
 # ./configure
 mkdir -p lib
 make -f Makefile.osx CPPFLAGS=-DNO_THREADING static -j4
+
+# build rubberband
+cd $SCRIPTPATH/../../third_party/libpd
+xcodebuild -project libpd.xcodeproj -scheme libpd-osx-multi -configuration Release
+
