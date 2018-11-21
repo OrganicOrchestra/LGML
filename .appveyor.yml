@@ -40,7 +40,7 @@ install:
 
 before_build:
     - cd C:\projects\lgml\third_party\libpd\build\msvcstatic
-    - cmake ../.. -G %COMPILER% -DPD_MULTI:BOOL=ON -DPD_UTILS=OFF -DMSVC_STATIC_RUNTIME=ON -DMSVC_PTHREAD_LIB="pthread.lib"
+    - cmake ../.. -G "%COMPILER%" -DPD_MULTI:BOOL=ON -DPD_UTILS=OFF -DMSVC_STATIC_RUNTIME=ON -DMSVC_PTHREAD_LIB="pthread.lib"
     - msbuild libpd.sln /t:libpdstatic /p:Configuration=Release /p:Platform=%PLATFORM% /m:4
     - cd C:\projects\lgml\third_party\rubberband
     - echo 'building rubberband'
