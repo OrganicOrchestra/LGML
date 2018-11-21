@@ -99,7 +99,7 @@ if __name__ == "__main__":
 	defaultCfg = {
 	"build_os" : args.os,
 	"build_cfg_name":args.configuration,
-	"njobs": min(8,multiprocessing.cpu_count()),
+	"njobs": min(4,multiprocessing.cpu_count()),
 	"lgml_root_path" : os.path.abspath(os.path.join(__file__,os.pardir,os.pardir)),
 	"export_path" : args.exportpath,
 	"version" : ProJucerUtils.getXmlVersion(),
