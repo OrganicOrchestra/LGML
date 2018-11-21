@@ -13,4 +13,4 @@
 	url = https://github.com/steinbergmedia/vst3sdk.git
 [submodule "third_party/libpd"]
   path = third_party/libpd
-  url = https://github.com/MartinHN/libpd.git
+  url = https://github.com/pierreguillot/libpd.git
