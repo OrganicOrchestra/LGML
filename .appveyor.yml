@@ -52,7 +52,7 @@ install:
 
     - echo "Compile libpd"
     #################
-    - cd %APPVEYOR_BUILD_FOLDER%\Dependencies\LibPdBuild\VisualStudio2015
+    - cd %PD_BUILD_DIR%\VisualStudio2015
     - cmake -G "%COMPILER%" ..
     - msbuild libpd.sln /t:libpdstatic /nologo /verbosity:quiet /p:Configuration=Release /p:Platform=%PLATFORM%
 
