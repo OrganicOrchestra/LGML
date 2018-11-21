@@ -65,7 +65,7 @@ before_build:
     - 7z x JUCE.zip -o"C:\projects" -y
     - copy "C:\projects\JUCE-master" "JUCE"
     - echo 'downloading ASIOSDK'
-    - curl http://www.steinberg.net/sdk_downloads/asiosdk2.3.zip -o ASIO_SDK.zip
+    - curl https://www.steinberg.net/sdk_downloads/asiosdk2.3.zip -o ASIO_SDK.zip
     - 7z x ASIO_SDK.zip -o"C:\projects" -y
 
 
