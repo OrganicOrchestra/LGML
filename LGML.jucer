@@ -5,7 +5,7 @@
               displaySplashScreen="1" id="a1hJPO" includeBinaryInAppConfig="1"
               jucerVersion="5.4.1" name="LGML" projectType="guiapp" reportAppUsage="1"
               splashScreenColour="Dark" version="1.2.8" companyCopyright="Organic Orchestra"
-              headerPath="../../third_party/VST3_SDK/&#10;../../third_party/libpd/pure-data/src&#10;../../third_party/serial/include&#10;../../third_party/rubberband/&#10;../../third_party/link/include/&#10;../../third_party/link/modules/asio-standalone/asio/include">
+              headerPath="../../../JUCE/modules/juce_audio_processors/format_types/VST3_SDK/&#10;../../third_party/VST2_SDK/&#10;../../third_party/libpd/pure-data/src&#10;../../third_party/serial/include&#10;../../third_party/rubberband/&#10;../../third_party/link/include/&#10;../../third_party/link/modules/asio-standalone/asio/include">
   <MAINGROUP id="RYpQgZ" name="LGML">
     <GROUP id="{C4A5CA13-B090-453E-F1E3-DE9F74C715E2}" name="Assets">
       <FILE compile="0" file="Resources/little-red-riding-hood-md.png" id="SL4b92"
@@ -952,7 +952,7 @@
                JUCE_USE_CDBURNER="0" JUCE_USE_CDREADER="0" JUCE_USE_FLAC="1"
                JUCE_USE_LAME_AUDIO_FORMAT="1" JUCE_USE_MP3AUDIOFORMAT="1" JUCE_USE_OGGVORBIS="1"
                JUCE_USE_WINDOWS_MEDIA_FORMAT="1" JUCE_WASAPI="1" JUCE_WEB_BROWSER="0"
-               JUCE_PLUGINHOST_LADSPA="1"/>
+               JUCE_PLUGINHOST_LADSPA="1" JUCE_PLUGINHOST_VST="1"/>
   <LIVE_SETTINGS>
     <WINDOWS headerPath="..\..\External\serial\include"/>
     <OSX/>
