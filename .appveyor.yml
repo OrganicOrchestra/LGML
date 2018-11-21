@@ -61,9 +61,12 @@ before_build:
     - echo 'building rubberband'
     - msbuild C:\projects\lgml\third_party\rubberband\rubberband-library.sln /p:Configuration=Release /m:4
     - echo 'dowloading JUCE'
+    - cd C:\projects\
     - curl https://codeload.github.com/WeAreROLI/JUCE/zip/master -o JUCE.zip
     - 7z x JUCE.zip -o"C:\projects" -y
-    - copy "C:\projects\JUCE-master" "JUCE"
+    - copy C:\projects\JUCE-master C:\projects\JUCE
+    - dir
+    - dir JUCE
     - echo 'downloading ASIOSDK'
     - curl https://www.steinberg.net/sdk_downloads/asiosdk2.3.zip -o ASIO_SDK.zip
     - 7z x ASIO_SDK.zip -o"C:\projects" -y
