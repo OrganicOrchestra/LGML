@@ -94,13 +94,7 @@ apt-get -y -q --assume-yes install cmake
 
 cd LGML/third_party/libpd
 mkdir build && cd build
-AFLAGS=""
-if [ $CROSS_ARCH = "i386" ]; then
-   AFLAGS="-m32"
-else
-  echo "not modifying arch for libpd"
-fi
-CFLAGS="$AFLAGS" LDFLAGS="$AFLAGS" cmake .. -DPD_MULTI:BOOL=ON 
+CFLAGS="$ARCH_FLAGS" LDFLAGS="$ARCH_FLAGS" cmake .. -DPD_MULTI:BOOL=ON 
 cmake --build .
 
 # cd ;

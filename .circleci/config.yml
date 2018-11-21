@@ -11,12 +11,15 @@ jobs:
           ARCH_FLAGS: -m64 # arch for linux makefile
           DST_LGML_PATH: /tmp/build
     steps:
+      - run:
+          name: install git
+          command: |
+            apt-get -qq update
+            apt-get install -y git
       - checkout
       - run:
           name: install LGML dependencies
           command: |
-            apt-get -qq update
-            apt-get install -y git
             git submodule update --init --recursive
             sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh
 
@@ -75,12 +78,15 @@ jobs:
           DST_LGML_PATH: /tmp/build32
 
     steps:
+      - run:
+          name: install git
+          command: |
+            apt-get -qq update
+            apt-get install -y git
       - checkout
       - run:
           name: install LGML32 dependencies
           command: |
-            apt-get -qq update
-            apt-get install -y git
             git submodule update --init --recursive
             apt-get install -y pkg-config gcc-multilib g++-multilib
             sh Scripts/linux/installDevDeps.sh && sh Scripts/linux/installDeps.sh
@@ -112,12 +118,16 @@ jobs:
           BUILDLGML_CMD_BASE: python3 Scripts/buildScript.py --configure --exportpath=/tmp/buildRasp/ --os=linux --build --package --export
 
     steps:
+      - run:
+          name: install git
+          command: |
+            apt-get -qq update
+            apt-get install -y git
       - checkout
       - run:
           name: install LGMLRasp dependencies
           command: |
             set -x
-            apt-get -qq update
             apt-get install -y g++-5-arm-linux-gnueabihf pkg-config
             . /etc/lsb-release
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports $DISTRIB_CODENAME main universe" >> /etc/apt/sources.list
