@@ -21,6 +21,7 @@
 #include "../Logger/LGMLLogger.h"
 
 #include "../Utils/DebugHelpers.h"
+#include "../Utils/GlobalKeyListener.h"
 
 juce_ImplementSingleton (MIDIManager)
 
@@ -29,20 +30,10 @@ juce_ImplementSingleton (MIDIManager)
 class ComputerKeyboardMIDIDevice:public ReferenceCountedObject,private KeyListener {
 public:
     ComputerKeyboardMIDIDevice():octave(4){
-        if(ComponentPeer::getNumPeers()>0){
-            Component * mainComp =&ComponentPeer::getPeer(0)->getComponent();
-            mainComp->addKeyListener(this);
-        }
-        else{
-            LOGE(juce::translate("can't find component for computer keyboard "));
-        }
+        GlobalKeyListener::addTraversingListener(this);
     };
     ~ComputerKeyboardMIDIDevice(){
-        if(ComponentPeer::getNumPeers()>0){
-            Component * mainComp =&ComponentPeer::getPeer(0)->getComponent();
-
-            mainComp->removeKeyListener(this);
-        };
+        GlobalKeyListener::removeTraversingListener(this);
     }
     static String deviceName;
     void addMidiInputCallback(MidiInputCallback * cb){ midiCallbacks.add(cb);}
@@ -72,11 +63,13 @@ public:
             octave--;
             octave = jmax(octave,0);
             LOG(juce::translate("computer keyboard octave = ") << String(octave));
+            return true;
         }
         else if (c=='x'){
             octave++;
             octave = jmin(octave,8);
             LOG(juce::translate("computer keyboard octave = ") << String(octave));
+            return true;
         }
         else{
             int note =keyToPitch(key.getTextCharacter());
@@ -91,17 +84,19 @@ public:
                                            .withTimeStamp(time / 1000.));
 
                 keysDown.add(new KeyPressTime{key,note,time});
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
-    bool keyStateChanged (const bool /*isKeyDown*/, Component* /*originatingComponent*/) override
+    bool keyStateChanged (const bool isKeyDown, Component* /*originatingComponent*/) override
     {
-
+        if(isKeyDown){return false;}
         const uint32 now = Time::getMillisecondCounter();
         int channel = 1;
         int i = 0;
+        int nWasDown = 0;
         while(i < keysDown.size())
         {
             auto keyd = keysDown.getUnchecked(i);
@@ -117,12 +112,13 @@ public:
                 handleIncomingMidiMessage (MidiMessage::noteOff(channel,keyd->note,(uint8)0)
                                            .withTimeStamp(now / 1000.));
                 keysDown.remove(i);
+                nWasDown++;
             }
             i++;
         }
 
 
-        return true;
+        return nWasDown>0;
     }
 
 

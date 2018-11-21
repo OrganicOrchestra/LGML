@@ -14,6 +14,8 @@
 #include "../../Scripting/Js/JsHelpers.h"
 
 #include "../ControllerFactory.h"
+#include "../../Utils/GlobalKeyListener.h"
+
 REGISTER_CONTROLLER_TYPE (KeyboardController,"Keyboard");
 Identifier JsKeyboardListener::keyRecievedId("onKey");
 
@@ -25,23 +27,13 @@ JsEnvironment ("controllers.Keyboard", this)
     logIncoming = addNewParameter<BoolParameter> ("logIncoming", "log Incoming keyboard event", false);
     logIncoming->isSavable = false;
     logIncoming->isPresettable =false;
+    GlobalKeyListener::addTraversingListener(this);
 
-    if(ComponentPeer::getNumPeers()>0){
-        Component * mainComp =&ComponentPeer::getPeer(0)->getComponent();
-        mainComp->addKeyListener(this);
         isConnected->setValue(true);
-    }
-    else{
-        isConnected->setValue(false);
-        LOGE(juce::translate("can't find component for keyboard controller "));
-    }
+
 };
 KeyboardController::~KeyboardController(){
-    if(ComponentPeer::getNumPeers()>0){
-        Component * mainComp =&ComponentPeer::getPeer(0)->getComponent();
-
-        mainComp->removeKeyListener(this);
-    };
+    GlobalKeyListener::removeTraversingListener(this);
 }
 
 void KeyboardController::onContainerParameterChanged ( ParameterBase* p){
@@ -55,6 +47,7 @@ String getPNameFromKey(const KeyPress & key){
 }
 bool KeyboardController::keyPressed (const KeyPress& key, Component* /*originatingComponent*/)
 {
+    
     const char ch = key.getTextCharacter();
     const uint32 time = Time::getMillisecondCounter();
     // avoid repetition on holded keys
@@ -67,6 +60,7 @@ bool KeyboardController::keyPressed (const KeyPress& key, Component* /*originati
     if (Controllable* c = userContainer.getControllableByName(paramName))
     {
         (( ParameterBase*)c)->setValue(key.isCurrentlyDown());
+        return true;
     }
     else if(autoAddParams){
         MessageManager::callAsync([this,key,paramName](){
@@ -77,13 +71,14 @@ bool KeyboardController::keyPressed (const KeyPress& key, Component* /*originati
                                            key.isCurrentlyDown()
                                            );
         });
+        return true;
     }
 
-
-    for (auto &l:jsKeyboardListener){
-        l->processKeyPress(key);
-    }
-    return true;
+//
+//    for (auto &l:jsKeyboardListener){
+//        l->processKeyPress(key);
+//    }
+    return false;
 }
 
 
@@ -91,6 +86,7 @@ bool KeyboardController::keyStateChanged (const bool /*isKeyDown*/, Component* /
 {
 
     int i = 0;
+    int nWasDown = 0;
     while(i < keysDown.size())
     {
         auto keyd = keysDown.getUnchecked(i);
@@ -105,12 +101,14 @@ bool KeyboardController::keyStateChanged (const bool /*isKeyDown*/, Component* /
                 (( ParameterBase*)c)->setValue(key.isCurrentlyDown());
             }
             keysDown.remove(i);
+            nWasDown++;
+
         }
         i++;
     }
 
 
-    return true;
+    return nWasDown>0;
 }
 
 void KeyboardController::buildLocalEnv()

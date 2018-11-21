@@ -325,8 +325,9 @@ void Engine::closeAudio()
 void Engine::clear()
 {
     //    do we need to stop audio?
+    // TODO check larsen on reload
     //  suspendAudio(true);
-
+    
 
     TimeManager::getInstance()->playState->setValue (false);
 
