@@ -15,35 +15,43 @@ environment:
   matrix:
     - platform: Win32
       configuration: Release32
+      PTHREAD: x86
+      COMPILER: "Visual Studio 14 2015"
     - platform: x64
       configuration: Release
-init:
-- set arch=
-- if "%arch%"=="Win64" ( set arch= Win64)
-- echo %arch%
-- echo %APPVEYOR_BUILD_WORKER_IMAGE%
-- if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" ( set generator="Visual Studio 15 2017%arch%" )
-- if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2015" ( set generator="Visual Studio 14 2015%arch%" )
-- if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2013" ( set generator="Visual Studio 12 2013%arch%" )
-- echo %generator%
+      PTHREAD: x64
+      COMPILER: "Visual Studio 14 2015 Win64"
+
+install:
+    - echo "submodule"
+    - git submodule -q update --init --recursive
+    - set basepd="C:\\projects\\lgml\\third_party\\libpd"
+    - cd "%basepd%"
+    - curl ftp://sourceware.org/pub/pthreads-win32/pthreads-w32-2-9-1-release.zip -o pthreads.zip
+    - 7z x -opthreads pthreads.zip  Pre-built.2/dll Pre-built.2/lib Pre-built.2/include
+    - mkdir build
+    - mkdir build\msvcstatic
+    - mkdir build\msvcdll
+    - set pthreaddir="%basepd%\\pthreads\\Pre-built.2"
+    # - set builddir="%APPVEYOR_BUILD_FOLDER%\\build\\msvcstatic"
+    - cd "%pthreaddir%\\include" && copy "*.h" "%basepd%\\pure-data\\src"
+    - cd "%pthreaddir%\\lib\\%PTHREAD%" && copy "pthreadVC2.lib" "%basepd%\\build\\msvcstatic\\pthreadVC2.lib"
+    - cd "%pthreaddir%\\lib\\%PTHREAD%" && copy "pthreadVC2.lib" "%basepd%\\build\\msvcdll\\pthreadVC2.lib"
 
 before_build:
-  - ps: |
-      echo "submodule"
-      git submodule -q update --init --recursive
-      cd C:\projects\lgml\third_party\libpd
-      cmake . -G "%generator%" -DPD_MULTI:BOOL=ON -DPD_UTILS=OFF -DMSVC_STATIC_RUNTIME=ON -DMSVC_PTHREAD_LIB="pthread.lib"
-      msbuild C:\projects\lgml\third_party\libpd\libpd.sln /p:Configuration=Release /m:4
-      cd C:\projects\lgml\third_party\rubberband
-      echo 'building rubberband'
-      msbuild C:\projects\lgml\third_party\rubberband\rubberband-library.sln /p:Configuration=Release /m:4
-      echo 'dowloading JUCE'
-      wget https://codeload.github.com/WeAreROLI/JUCE/zip/master -OutFile JUCE.zip
-      7z x JUCE.zip -o"C:\projects" -y
-      Rename-Item -path ‘C:\projects\JUCE-master’ -newName ‘JUCE’
-      echo 'downloading ASIOSDK'
-      wget http://www.steinberg.net/sdk_downloads/asiosdk2.3.zip -OutFile ASIO_SDK.zip
-      7z x ASIO_SDK.zip -o"C:\projects" -y
+    - cd C:\projects\lgml\third_party\libpd\build\msvcstatic
+    - cmake ../.. -G %COMPILER% -DPD_MULTI:BOOL=ON -DPD_UTILS=OFF -DMSVC_STATIC_RUNTIME=ON -DMSVC_PTHREAD_LIB="pthread.lib"
+    - msbuild libpd.sln /t:libpdstatic /p:Configuration=Release /p:Platform=%PLATFORM% /m:4
+    - cd C:\projects\lgml\third_party\rubberband
+    - echo 'building rubberband'
+    - msbuild C:\projects\lgml\third_party\rubberband\rubberband-library.sln /p:Configuration=Release /m:4
+    - echo 'dowloading JUCE'
+    - curl https://codeload.github.com/WeAreROLI/JUCE/zip/master -o JUCE.zip
+    - 7z x JUCE.zip -o"C:\projects" -y
+    - copy "C:\projects\JUCE-master" "JUCE"
+    - echo 'downloading ASIOSDK'
+    - curl http://www.steinberg.net/sdk_downloads/asiosdk2.3.zip -o ASIO_SDK.zip
+    - 7z x ASIO_SDK.zip -o"C:\projects" -y
 
 
 # after_build:
