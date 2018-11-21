@@ -40,12 +40,15 @@ jobs:
           ARCH_FLAGS: -m64 # arch for linux makefile
           DST_LGML_PATH: /tmp/build
     steps:
+      - run:
+          name: install git
+          command: |
+            apt-get -qq update
+            apt-get install -y git
       - checkout
       - run:
           name: install LGML dependencies
           command: |
-            apt-get -qq update
-            apt-get install -y git
             git submodule update --init --recursive
             sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh
 
