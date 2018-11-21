@@ -124,7 +124,7 @@ public:
 ////////////////////
 // LGMLDragger
 ///////////////
-LGMLDragger::LGMLDragger(): isMappingActive (false), selectedSSContent (nullptr)
+LGMLDragger::LGMLDragger(): isMappingActive (false), selectedSSContent (nullptr),dragCandidate(nullptr),dropCandidate(nullptr),selected(nullptr)
 {
 
 }
