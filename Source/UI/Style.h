@@ -24,11 +24,11 @@
 #include "../JuceHeaderUI.h"
 
 #ifndef USE_GL
-    #if JUCE_ARM // remove GL for arm, seems to changes ui perfs
+//    #if JUCE_ARM // remove GL for arm, seems to changes ui perfs
         #define USE_GL 0
-    #else
-        #define USE_GL 1
-    #endif
+//    #else
+//        #define USE_GL 1
+//    #endif
 #endif
 
 #if USE_GL
