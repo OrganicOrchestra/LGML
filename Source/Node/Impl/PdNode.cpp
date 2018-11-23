@@ -49,7 +49,7 @@ pdinstance(NULL),
 midiChooser(this,false,true)
 {
 
-    pdPath = addNewParameter<StringParameter>("pd path", "path where to load pd file", "");
+    pdPath = addNewParameter<StringParameter>("pd path", "path where to load pd Vanilla file , if a patch contain a subpatch named gui graphical object with send names will be added as parameters", "");
     isLoadedParam = addNewParameter<BoolParameter>("is loaded", "is file loaded", false);
     isLoadedParam->isEditable=false;
     reloadPatch = addNewParameter<Trigger>("reload Patch","reload current patch");
