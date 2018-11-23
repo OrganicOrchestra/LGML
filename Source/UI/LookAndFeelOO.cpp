@@ -172,10 +172,10 @@ void LookAndFeelOO::drawComboBox (Graphics& g, int width, int height, const bool
 
     //    const float outlineThickness = box.isEnabled() ? (isButtonDown ? 1.2f : 0.5f) : 0.3f;
 
-    const Colour baseColour (LookAndFeelHelpers::createBaseColour (box.findColour (ComboBox::buttonColourId),
-                                                                   box.hasKeyboardFocus (true),
-                                                                   false, isButtonDown)
-                             .withMultipliedAlpha (box.isEnabled() ? 1.0f : 0.5f));
+//    const Colour baseColour (LookAndFeelHelpers::createBaseColour (box.findColour (ComboBox::buttonColourId),
+//                                                                   box.hasKeyboardFocus (true),
+//                                                                   false, isButtonDown)
+//                             .withMultipliedAlpha (box.isEnabled() ? 1.0f : 0.5f));
 
 
     if (box.isEnabled())

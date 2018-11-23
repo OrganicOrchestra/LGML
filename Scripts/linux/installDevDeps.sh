@@ -93,9 +93,9 @@ apt-get  -y -q --assume-yes  install software-properties-common
 apt-get -y -q --assume-yes install cmake
 
 cd LGML/third_party/libpdBuild/Linux
-CFLAGS="$ARCH_FLAGS" LDFLAGS="$ARCH_FLAGS" cmake .. -DPD_MULTI:BOOL=ON  -DPD_UTILS:BOOL=OFF
-cmake --build .
-ls
+CFLAGS="-march $CROSS_ARCH $ARCH_FLAGS" LDFLAGS="$ARCH_FLAGS" cmake .. -DPD_MULTI:BOOL=ON  -DPD_UTILS:BOOL=OFF
+cmake --build . -- VERBOSE=1
+
 # cd ;
 # if [ ! -d "Dev/Projucer/linux" ]; then
 #   cd 

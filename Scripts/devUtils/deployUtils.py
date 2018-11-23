@@ -5,10 +5,11 @@ from shutil import copy2 , copyfileobj
 import zipfile
 import gzip
 import tempfile 
+import githubrelease
 
 raiseErrorOnDifferentSha = False;
 distPath = os.path.expanduser("~/owncloud/DEVSPECTACLES/Tools/LGML/App-Dev/dist/")
-desiredVersion = "1.2.7"
+desiredVersion = "1.2.8"
 lastVPath = os.path.join(distPath,"bleedingEdge",desiredVersion)
 publicFolder = '/Volumes/sshfs/owncloud/tools/LGML/'
 # publicFolder = '/tmp/LGML/dist'
@@ -111,8 +112,7 @@ def printReleaseMessage():
   print (msg)
 
 
-def deployBins():
-
+def deployBinsLocally():
   global allCfgs
   vpublicFolder = os.path.join(publicFolder,desiredVersion)
   if not os.path.exists(vpublicFolder):
@@ -125,7 +125,14 @@ def deployBins():
     copy2(c["local_bin"],os.path.join(vpublicFolder,os.path.basename(c["local_bin"])))
     copy2(c["local_zip"],os.path.join(vpublicFolder,c["dst_zip_name"]))
 
+def deployBinsToGithub():
+  global allCfgs
 
+  
+  for k,c in allCfgs.items():
+    print("copying : %s"%k)
+    copy2(c["local_bin"],os.path.join(vpublicFolder,os.path.basename(c["local_bin"])))
+    copy2(c["local_zip"],os.path.join(vpublicFolder,c["dst_zip_name"]))
 
 
 
@@ -133,5 +140,5 @@ if __name__ == '__main__':
   
   
   printReleaseMessage()
-  deployBins()
+  deployBinsLocally()
   

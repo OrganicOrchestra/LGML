@@ -254,7 +254,7 @@ void CachedGlyph::paint(Graphics & g){
     if(!isReady()){
         updateGlyph();
     }
-    auto area = getLocalBounds();
+//    auto area = getLocalBounds();
     
     if (text.isNotEmpty())// && g.context.clipRegionIntersects (area.getSmallestIntegerContainer()))
     {
