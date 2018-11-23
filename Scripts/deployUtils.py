@@ -1,13 +1,13 @@
 import os, glob, json
 
-import gitUtils
+from PyUtils import gitUtils
 from shutil import copy2 , copyfileobj
 import zipfile
 import gzip
 import tempfile 
-import githubrelease
+# import githubrelease
 
-raiseErrorOnDifferentSha = False;
+raiseErrorOnDifferentSha = True;
 distPath = os.path.expanduser("~/owncloud/DEVSPECTACLES/Tools/LGML/App-Dev/dist/")
 desiredVersion = "1.2.8"
 lastVPath = os.path.join(distPath,"bleedingEdge",desiredVersion)
@@ -112,11 +112,13 @@ def printReleaseMessage():
   print (msg)
 
 
-def deployBinsLocally():
+def deployBinsToOwncloud():
   global allCfgs
   vpublicFolder = os.path.join(publicFolder,desiredVersion)
   if not os.path.exists(vpublicFolder):
     os.makedirs(vpublicFolder)
+  print (vpublicFolder)
+  exit()
   jsonF = createJSON(vpublicFolder);
   copy2(changeLogPath,vpublicFolder)
 
@@ -128,7 +130,7 @@ def deployBinsLocally():
 def deployBinsToGithub():
   global allCfgs
 
-  
+
   for k,c in allCfgs.items():
     print("copying : %s"%k)
     copy2(c["local_bin"],os.path.join(vpublicFolder,os.path.basename(c["local_bin"])))
@@ -140,5 +142,5 @@ if __name__ == '__main__':
   
   
   printReleaseMessage()
-  deployBinsLocally()
+  deployBinsToOwncloud()
   
