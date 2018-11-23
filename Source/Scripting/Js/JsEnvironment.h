@@ -17,6 +17,12 @@
 #define JAVASCRIPTENVIRONNEMENT_H_INCLUDED
 #include "../../Controllable/Parameter/ParameterContainer.h"
 
+#include "JsHelpers.h"
+// needed for T* castPtrFromJSEnv()
+
+//template<class T>
+//class JsObjectRef;
+
 
 
 
@@ -26,8 +32,8 @@ class JsParameterListenerObject;
 class JSEnvContainer;
 
 class JsEnvironment : public MultiTimer, //timer for autoWatch & timer for calling update() in scripts
-    private Parameter::Listener,
-    private ControllableContainerListener
+    private ParameterBase::Listener,
+private ControllableContainer::FeedbackListener
 
 {
 public:
@@ -58,7 +64,7 @@ public:
 
     void    setLocalNamespace (DynamicObject& target);
     virtual void    clearNamespace();
-    void setEnabled (bool t);
+    void setScriptEnabled (bool t);
 
 
     bool    loadFile (const String& path);
@@ -93,6 +99,11 @@ public:
     var callFunctionFromIdentifier (const Identifier& function, const var& arg, bool logResult = true, Result* result = nullptr);
     var callFunctionFromIdentifier (const Identifier& function, const var::NativeFunctionArgs& Nargs, bool logResult = true, Result* result = nullptr);
 
+    WeakReference<JsEnvironment >::SharedPointer* getMasterRefPtr(){return masterReference.getSharedPointer (this);}
+private:
+    WeakReference<JsEnvironment>::Master masterReference;
+    friend class WeakReference<JsEnvironment>;
+
 protected :
 
 
@@ -122,8 +133,10 @@ protected :
 
     static var createParameterListenerObject (const var::NativeFunctionArgs& a);
 
+
 protected :
-    Array<WeakReference<Parameter> > listenedParameters;
+    typedef HashMap<String ,WeakReference<ParameterBase> > ListenedParameterType ;
+    ListenedParameterType listenedParameters;
     Array<WeakReference<ControllableContainer> > listenedContainers;
     void sendAllParametersToJS();
 
@@ -237,7 +250,7 @@ private:
 
     void clearListeners();
     Result checkUserControllableEventFunction();
-    void parameterValueChanged (Parameter* c) override;
+    void parameterValueChanged ( ParameterBase* c, ParameterBase::Listener * notifier=nullptr) override;
 
 
     void controllableFeedbackUpdate (ControllableContainer* originContainer, Controllable*)     override;
@@ -251,17 +264,30 @@ private:
 
     static Identifier onUpdateIdentifier;
 
+
+
     OwnedArray<JsParameterListenerObject> parameterListenerObjects;
+    void addJsParameterListener(JsParameterListenerObject * p){parameterListenerObjects.add(p);}
     friend class JsParameterListenerObject;
+
+
 
 };
 
 
+template<class T>
+T* castPtrFromJSEnv(const var::NativeFunctionArgs& a){
+    return JsHelpers::castPtrFromJS<T,JsEnvironment>(a);
+}
 
-class JsParameterListenerObject: public Parameter::AsyncListener
+
+
+
+
+class JsParameterListenerObject: public ParameterBase::AsyncListener
 {
 public :
-    JsParameterListenerObject (JsEnvironment* js, Parameter* p): jsEnv (js), parameter (p)
+    JsParameterListenerObject (JsEnvironment* js, ParameterBase* p): jsEnv (js), parameter (p)
     {
         buildVarObject();
 
@@ -272,7 +298,7 @@ public :
 
         else
         {
-            NLOG (js->localNamespace, "!!! wrong Parameter Listener type for : " + parameter->shortName);
+            NLOGE(js->localNamespace, juce::translate("wrong Parameter Listener type for : ") + parameter->shortName);
         }
     }
     static Identifier parameterChangedFId;
@@ -302,7 +328,7 @@ public :
 
     static var dummyCallback (const var::NativeFunctionArgs& /*a*/) {return var::undefined();};
 
-    void newMessage (const Parameter::ParamWithValue& pv)override
+    void newMessage (const ParameterBase::ParamWithValue& pv)override
     {
         jsEnv->callFunctionFromIdentifier (parameterChangedFId, var::NativeFunctionArgs (object, &pv.value, 1), true);
 
@@ -310,7 +336,7 @@ public :
 
 
     JsEnvironment* jsEnv;
-    WeakReference<Parameter> parameter;
+    WeakReference<ParameterBase> parameter;
     var object;
 };
 
@@ -324,13 +350,14 @@ public:
     ~JSEnvContainer();
     
 
-    void onContainerParameterChanged (Parameter* p) override;
+    void onContainerParameterChanged ( ParameterBase* p) override;
     void onContainerTriggerTriggered (Trigger* p)override;
     StringParameter* scriptPath;
     Trigger* loadT;
     Trigger* reloadT;
     Trigger* showT;
     Trigger* logT;
+    Trigger * createT;
     BoolParameter* autoWatch;
     JsEnvironment* jsEnv;
 

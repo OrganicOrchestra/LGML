@@ -22,24 +22,29 @@
 
 #include "../../UI/ShapeShifter/ShapeShifterContent.h"
 #include "../../UI/Style.h"
+
+#include "../../UI/StackedContainerUI.h"
 //==============================================================================
 /*
 */
 
-class ControllerManagerUI : public juce::Component, ControllerManager::Listener
+class ControllerManagerUI :
+ControllerManager::Listener,
+public ShapeShifterContentComponent,
+private Button::Listener
 {
 public:
-    ControllerManagerUI (ControllerManager* manager);
+    ControllerManagerUI (const String& contentName,ControllerManager* manager);
     ~ControllerManagerUI();
 
     ControllerManager* manager;
 
-    OwnedArray<ControllerUI> controllersUI;
-
+    StackedContainerViewport<ControllerUI,Controller> controllersUI;
+    AddElementButton addControllerBt;
     ControllerUI* addControllerUI (Controller* controller);
     void removeControllerUI (Controller* controller);
 
-    ControllerUI* getUIForController (Controller* controller);
+    
 
     void paint (Graphics&)override;
     void resized()override;
@@ -55,65 +60,12 @@ private:
     // Inherited via Listener
     void controllerAdded (Controller*) override;
     void controllerRemoved (Controller*) override;
-    void notifyParentViewPort() ;
-};
 
-
-class ControllerManagerUIViewport :
-    public ShapeShifterContentComponent,
-    private ButtonListener
-{
-public:
-    ControllerManagerUIViewport (const String& contentName, ControllerManagerUI* _UI) :
-        controllerManagerUI (_UI),
-        ShapeShifterContentComponent (contentName)
-    {
-        vp.setViewedComponent (controllerManagerUI, true);
-        vp.setScrollBarsShown (true, false);
-        vp.setScrollOnDragEnabled (false);
-        addAndMakeVisible (vp);
-        vp.setScrollBarThickness (10);
-        addAndMakeVisible (addControllerBt);
-        addControllerBt.setTooltip ("Add controller");
-        addControllerBt.addListener (this);
-
-
-    }
-
-    virtual ~ControllerManagerUIViewport()
-    {
-
-    }
-
-    void resized() override
-    {
-        vp.setBounds (getLocalBounds());
-        int th = jmax<int> (controllerManagerUI->getContentHeight(), getHeight());
-        Rectangle<int> targetBounds = getLocalBounds().withPosition (controllerManagerUI->getPosition()).withHeight (th);
-
-        targetBounds.removeFromRight (vp.getScrollBarThickness());
-        bool needResize = controllerManagerUI->getHeight()==th;
-
-        controllerManagerUI->setBounds (targetBounds);
-        // resize not called if no change in heights, but internal state yes
-        if(needResize){
-            controllerManagerUI->resized();
-        }
-
-        if(controllerManagerUI->controllersUI.size()==0){
-            int side = (int)( jmin(getWidth(),getHeight()) * .5);
-            addControllerBt.setBounds(getLocalBounds().withSizeKeepingCentre(side,side));
-        }
-        else{
-        addControllerBt.setFromParentBounds (getLocalBounds());
-        }
-    }
 
     void buttonClicked (Button*) override;
-
-    Viewport vp;
-    ControllerManagerUI* controllerManagerUI;
-    AddElementButton addControllerBt;
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ControllerManagerUIViewport)
+    void addControllerUndoable(const String & typeId);
 };
+
+
+
 #endif  // CONTROLLERMANAGERUI_H_INCLUDED

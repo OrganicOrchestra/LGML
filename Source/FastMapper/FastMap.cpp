@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -23,10 +23,10 @@
 
 
 FastMap::FastMap() :
-    referenceIn (nullptr),
-    referenceOut (nullptr),
-    fastMapIsProcessing (false),
-    ParameterContainer ("FastMap")
+referenceIn (nullptr),
+referenceOut (nullptr),
+fastMapIsProcessing (false),
+ParameterContainer ("FastMap")
 {
 
     referenceIn = addNewParameter<ParameterProxy> ("in param", "parameter for input");
@@ -48,7 +48,7 @@ FastMap::~FastMap()
     referenceIn->removeParameterProxyListener (this);
 
 }
-void FastMap::onContainerParameterChanged (Parameter* p)
+void FastMap::onContainerParameterChanged ( ParameterBase* p)
 {
     if (p == invertParam || p == inputRange || p == outputRange || p == fullSync)
     {
@@ -118,7 +118,7 @@ void FastMap::process (bool toReferenceOut)
 
                 if (invertParam->boolValue()) targetVal = maxOut - (targetVal - minOut);
 
-                ((Parameter*)outRef)->setValue (targetVal);
+                (( ParameterBase*)outRef)->setValue (targetVal);
             }
         }
     }
@@ -146,6 +146,43 @@ void FastMap::linkedParamValueChanged (ParameterProxy* p)
         return;
     }
 };
+
+void FastMap::linkedParamRangeChanged(ParameterProxy* p ) {
+    float newMin = 0;
+    float newMax = 1;
+    float newVmin =0;
+    float newVmax = 1;
+    RangeParameter * rangeToModify(nullptr);
+    if(p==referenceIn){
+        if(auto mmp = dynamic_cast<MinMaxParameter*> (referenceIn->linkedParam.get())){
+            newMin =  (float)mmp->minimumValue ;
+            newMax =  (float)mmp->maximumValue ;
+        }
+        rangeToModify =  inputRange;
+    }
+    else if (p==referenceOut){
+        if(auto mmp = dynamic_cast<MinMaxParameter*> (referenceOut->linkedParam.get())){
+            newMin =  (float)mmp->minimumValue ;
+            newMax =  (float)mmp->maximumValue ;
+        }
+        rangeToModify =  outputRange;
+    }
+    else{
+        jassertfalse;
+        return;
+    }
+    bool remapRange =rangeToModify->hasFiniteRange();
+    if(remapRange){
+        newVmin = rangeToModify->getNormalizedRangeMin();
+        newVmax = rangeToModify->getNormalizedRangeMax();
+    }
+    rangeToModify->setMinMax (newMin, newMax);
+    if(remapRange){
+        rangeToModify->setNormalizedRangeMinMax(newVmin,newVmax);
+    }
+
+};
+
 void FastMap::linkedParamChanged (ParameterProxy* p)
 {
 
@@ -156,10 +193,12 @@ void FastMap::linkedParamChanged (ParameterProxy* p)
             if (p->linkedParam)
             {
 
-                LOG ("!!Can't map a parameter to itself");
+                LOGW(juce::translate("Can't map a parameter to itself"));
                 // ignore assert for loopBacks
-                referenceIn->isSettingValue = false;
-                referenceIn->setParamToReferTo (nullptr);
+                //                referenceIn->isSettingValue = false;
+                MessageManager::callAsync([this](){
+                    referenceIn->setParamToReferTo (nullptr);
+                });
             }
         }
         else
@@ -176,7 +215,9 @@ void FastMap::linkedParamChanged (ParameterProxy* p)
             float newMin = mmp ? (float)mmp->minimumValue : 0;
             float newMax = mmp ? (float)mmp->maximumValue : 1;
             inputRange->setMinMax (newMin, newMax);
-            inputRange->setValue (newMin, newMax);
+
+            inputRange->setValue (jmax<float> (inputRange->getRangeMin(),newMin),
+                                  jmin<float> (inputRange->getRangeMax(),newMax));
 
 
 
@@ -189,18 +230,22 @@ void FastMap::linkedParamChanged (ParameterProxy* p)
         {
             if (p->linkedParam)
             {
-                LOG ("!!Can't map a parameter to itself");
+                LOGW(juce::translate("Can't map a parameter to itself"));
                 // ignore assert for loopBacks
-                referenceOut->isSettingValue = false;
-                referenceOut->setParamToReferTo (nullptr);
+                //                referenceOut->isSettingValue = false;
+                MessageManager::callAsync([this](){
+                    referenceOut->setParamToReferTo (nullptr);
+                });
             }
         }
         else if (p->linkedParam && !p->linkedParam->isEditable)
         {
-            LOG ("!!Parameter non editable");
+            LOGW(juce::translate("Parameter non editable"));
             // ignore assert for loopBacks
-            referenceOut->isSettingValue = false;
-            referenceOut->setParamToReferTo (nullptr);
+            //            referenceOut->isSettingValue = false;
+            MessageManager::callAsync([this](){
+                referenceOut->setParamToReferTo (nullptr);
+            });
         }
         else
         {
@@ -216,12 +261,12 @@ void FastMap::linkedParamChanged (ParameterProxy* p)
             float newMin = mmp ? (float)mmp->minimumValue : 0;
             float newMax = mmp ? (float)mmp->maximumValue : 1;
             outputRange->setMinMax (newMin, newMax);
-            outputRange->setValue (newMin, newMax);
-
-
+            outputRange->setValue (jmax<float> (outputRange->getRangeMin(),newMin),
+                                   jmin<float> (outputRange->getRangeMax(),newMax));
+            
         }
-
+        
     }
-
-
+    
+    
 };

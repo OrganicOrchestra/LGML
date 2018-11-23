@@ -38,7 +38,7 @@ public:
     float size;
     Point<float> position;
 
-    void setPosition (Point<float> newPosition);
+    void setPosition (Point<floatParamType> newPosition);
 
     virtual bool hitTest (int x, int y) override;
 
@@ -48,7 +48,7 @@ public:
 
         /** Destructor. */
         virtual ~Listener() {}
-        virtual void handleUserMoved (Spat2DHandle* handle, const Point<float>& newPosition) = 0;
+        virtual void handleUserMoved (Spat2DHandle* handle, const Point<floatParamType>& newPosition) = 0;
     };
 
     ListenerList<Listener> handleListeners;
@@ -104,19 +104,13 @@ public:
     void resized() override;
     void paint (Graphics& g) override;
 
-    void nodeParameterChanged (ConnectableNode*, Parameter* p) override;
+    void nodeParameterChanged (ConnectableNode*, ParameterBase* p) override;
 
-    void nodeInputDataChanged (ConnectableNode*, Data* d) override;
-    void nodeOutputDataUpdated (ConnectableNode*, Data* d) override;
-
-    void dataInputAdded (ConnectableNode*, Data*) override;
-    void dataInputRemoved (ConnectableNode*, Data*) override;
-
-    void controllableAdded (ControllableContainer*, Controllable*) override;
-    void controllableRemoved (ControllableContainer*, Controllable*) override;
+    void childControllableAdded (ControllableContainer*, Controllable*) override;
+    void childControllableRemoved (ControllableContainer*, Controllable*) override;
 
     // Inherited via Listener (Spat2DHandle)
-    virtual void handleUserMoved (Spat2DHandle* handle, const Point<float>& newPosition) override;
+    virtual void handleUserMoved (Spat2DHandle* handle, const Point<floatParamType>& newPosition) override;
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Spat2DViewer)

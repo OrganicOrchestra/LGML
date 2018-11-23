@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -24,34 +24,30 @@
 #include "../UI/Inspector/Inspector.h"
 #include "../UI/Style.h"
 #include "../UI/LGMLDragger.h"
+#include "../UI/StackedContainerUI.h"
 
 class FastMapper;
-class FastMapperUI;
-class FastMapperUIListener
-{
-public:
-    virtual ~FastMapperUIListener() {}
-    virtual void fastMapperContentChanged (FastMapperUI*) {}
-};
 
 class FastMapperUI :
-    public juce::Component,
     private ControllableContainerListener,
-    private ButtonListener,
+    private Button::Listener,
     private Inspector::InspectorListener,
-    private LGMLDragger::Listener
+    private LGMLDragger::Listener,
+    public ShapeShifterContentComponent
+
 {
 public:
-    FastMapperUI (FastMapper* fastMapper, ControllableContainer* viewFilterContainer = nullptr);
+    FastMapperUI (const String& contentName, FastMapper* fastMapper, ControllableContainer* viewFilterContainer = nullptr);
     virtual ~FastMapperUI();
 
     FastMapper* fastMapper;
     TextButton linkToSelection;
     Label candidateLabel;
-
+    AddElementButton addFastMapButton;
+    void addFastMapUndoable();
     
     ScopedPointer<Component> potentialIn, potentialOut;
-    OwnedArray<FastMapUI> mapsUI;
+    StackedContainerViewport<FastMapUI,FastMap> mapsUI;
 
     ControllableContainer* viewFilterContainer;
     Controllable* viewFilterControllable;
@@ -67,7 +63,7 @@ public:
     void resetViewFilter();
     bool mapPassViewFilter (FastMap*);
 
-    FastMapUI* getUIForFastMap (FastMap*);
+
 
     const int mapHeight = 35;
     const int gap = 5;
@@ -79,9 +75,7 @@ public:
     virtual void controllableContainerAdded (ControllableContainer*, ControllableContainer*) override;
     virtual void controllableContainerRemoved (ControllableContainer*, ControllableContainer*) override;
 
-    ListenerList<FastMapperUIListener> fastMapperUIListeners;
-    void addFastMapperUIListener (FastMapperUIListener* newListener) { fastMapperUIListeners.add (newListener); }
-    void removeFastMapperUIListener (FastMapperUIListener* listener) { fastMapperUIListeners.remove (listener); }
+    
 private:
 
     void buttonClicked (Button*) override;
@@ -90,71 +84,12 @@ private:
 
     // LGMLDrager
     void mappingModeChanged(bool) override;
-    void selectionChanged (Parameter*) override{};
+    void selectionChanged ( ParameterBase*) override{};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FastMapperUI)
 
 };
 
-class FastMapperViewport :
-    public ShapeShifterContentComponent,
-    public FastMapperUIListener,
-    private ButtonListener
-{
-public:
-    FastMapperViewport (const String& contentName, FastMapperUI* _fastMapperUI) :
-        fastMapperUI (_fastMapperUI),
-        ShapeShifterContentComponent (contentName)
-    {
-        vp.setViewedComponent (fastMapperUI, true);
-        vp.setScrollBarsShown (true, false);
-        vp.setScrollOnDragEnabled (false);
-        addAndMakeVisible (vp);
-        addAndMakeVisible (addFastMapButton);
-        addFastMapButton.addListener (this);
-        addFastMapButton.setTooltip ("Add FastMap");
-        vp.setScrollBarThickness (10);
-        contentIsFlexible = true;
-        fastMapperUI->addFastMapperUIListener (this);
-    }
-
-    virtual ~FastMapperViewport()
-    {
-        fastMapperUI->removeFastMapperUIListener (this);
-    }
-
-
-    void resized() override
-    {
-        vp.setBounds (getLocalBounds());
-        int th = jmax<int> (fastMapperUI->getContentHeight(), getHeight());
-        Rectangle<int> targetBounds = getLocalBounds().withPosition (fastMapperUI->getPosition()).withHeight (th);
-        targetBounds.removeFromRight (vp.getScrollBarThickness());
-        fastMapperUI->setBounds (targetBounds);
-        if(fastMapperUI->mapsUI.size()==0){
-            int side = (int)( jmin(getWidth(),getHeight()) * .5);
-            addFastMapButton.setBounds(getLocalBounds().withSizeKeepingCentre(side,side));
-        }
-        else{
-            addFastMapButton.setFromParentBounds (getLocalBounds());
-        }
-    }
-
-    void fastMapperContentChanged (FastMapperUI*)override
-    {
-        resized();
-    }
-
-    void buttonClicked (Button* b)override;
-
-
-    Viewport vp;
-    FastMapperUI* fastMapperUI;
-    AddElementButton addFastMapButton;
-
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FastMapperViewport)
-};
 
 
 #endif  // FASTMAPPERUI_H_INCLUDED

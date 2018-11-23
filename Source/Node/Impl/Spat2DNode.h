@@ -24,7 +24,7 @@
 class Spat2DNode : public NodeBase
 {
 public:
-    DECLARE_OBJ_TYPE (Spat2DNode)
+    DECLARE_OBJ_TYPE (Spat2DNode,"paint with sound in space")
     enum SpatMode {BEAM, PROXY};
     enum ShapeMode {FREE, CIRCLE};
 
@@ -33,45 +33,47 @@ public:
 
     IntParameter* numSpatInputs;
     IntParameter* numSpatOutputs;
-
+    
     FloatParameter* targetRadius;
 
     //Circle shape
     FloatParameter* circleRadius;
     FloatParameter* circleRotation;
+    BoolParameter * useLogCurve;
 
-    Array<Point2DParameter<float> *> targetPositions;
+    Array<Point2DParameter<floatParamType> *> targetPositions;
 
-    BoolParameter* useGlobalTarget;
-    Point2DParameter<float>* globalTargetPosition;
+    BoolParameter* useGlobalTarget,*constantPower;
+    Point2DParameter<floatParamType>* globalTargetPosition;
+    Array<Point2DParameter<floatParamType>*> inputsPositionsParams;
+    Array<FloatParameter*> outputsIntensities;
     FloatParameter* globalTargetRadius;
 
-    void setSourcePosition (int index, const Point<float>& position);
-    void setTargetPosition (int index, const Point<float>& position);
-    void updateInputOutputDataSlots();
-
+    void setSourcePosition (int index, const Point<floatParamType>& position);
+    void setTargetPosition (int index, const Point<floatParamType>& position);
+    
+    void updateIOParams();
     void updateTargetsFromShape();
     void computeAllInfluences();
     void computeInfluencesForTarget (int targetIndex);
     void computeInfluence (int sourceIndex, int targetIndex);
-    float getValueForSourceAndTargetPos (const Point<float>& sourcePosition, const Point<float>& targetPosition, float radius);
+    float getValueForSourceAndTargetPos (const Point<floatParamType>& sourcePosition, const Point<floatParamType>& targetPosition, float radius);
 
     bool modeIsBeam();
 
-    void onContainerParameterChanged (Parameter*) override;
-
-    void processInputDataChanged (Data*) override;
+    void onContainerParameterChanged ( ParameterBase*) override;
 
 
 
     //AUDIO
+    void prepareToPlay (double sampleRate,int maximumExpectedSamplesPerBlock) override;
     void updateChannelNames();
     void numChannelsChanged (bool isInput)override;
     virtual void processBlockInternal (AudioBuffer<float>& /*buffer*/, MidiBuffer& /*midiMessage*/) override;
 
-
-
-
+    AudioBuffer<float> tempBuf;
+    Array<float> influences;
+    float alphaFilter;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Spat2DNode)
 };
 

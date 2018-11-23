@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ namespace MIDIHelpers{
             addOption(k, k, true);
             }
             else{
-                LOG("error while checking MIDI Input");
+                LOGE(juce::translate("error while checking MIDI Input"));
             }
         };
         void midiInputRemoved (String& k)override {
@@ -81,7 +81,7 @@ namespace MIDIHelpers{
 
     class MIDIControllerModel : public EnumParameterModel,
     ControllerManager::Listener,
-    Parameter::Listener{
+    ParameterBase::Listener{
     public:
         MIDIControllerModel(){
             auto cm = ControllerManager::getInstance();
@@ -108,19 +108,15 @@ namespace MIDIHelpers{
                 removeOption(mc->getNiceName(), true);
             }
         };
-        void parameterValueChanged (Parameter* p) override{
-            auto c = p->parentContainer;
+        void parameterValueChanged ( ParameterBase* p, ParameterBase::Listener * /*notifier*/) override{
+            auto c = p->parentContainer.get();
             if(auto cont = dynamic_cast<MIDIController*>(c)){
                 jassert(p==cont->nameParam);
                 const var v = MCToValue(cont);
-                auto k = getIdForValue(v);
-                if(k){
-                    removeOption(*k, true);
-                    addOption(c->getNiceName(), v, true);
-                }
-                else{
-                    jassertfalse;
-                }
+                auto & k = getIdForValue(v);
+                removeOption(k, true);
+                addOption(c->getNiceName(), v, true);
+
             }
 
         };
@@ -211,7 +207,7 @@ namespace MIDIHelpers{
                 owner->setCurrentDevice(listenedIn->getFirstSelectedValue().toString());
             }
             else{
-                owner->setCurrentDevice(String::empty);
+                owner->setCurrentDevice("");
             }
 
 
@@ -220,8 +216,8 @@ namespace MIDIHelpers{
         else if(isValid && isSelected){
             owner->setCurrentDevice(ep->getFirstSelectedValue().toString());
         }
-        else if (!isSelected || !isValid){
-            owner->setCurrentDevice(String::empty);
+        else {//if (!isSelected || !isValid){
+            owner->setCurrentDevice("");
         }
         
         

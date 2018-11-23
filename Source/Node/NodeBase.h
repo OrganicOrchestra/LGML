@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -37,7 +37,6 @@ class NodeBase :
     public ConnectableNode,
     public ReferenceCountedObject,
     public juce::AudioProcessor
-    , public Data::DataListener //Data
 
 {
 
@@ -49,16 +48,10 @@ public:
     virtual bool hasAudioInputs() override;
     virtual bool hasAudioOutputs() override;
 
-    virtual bool hasDataInputs() override;
-    virtual bool hasDataOutputs() override;
-
-
-
-
 
     //  TODO:  this should not be implemented in Node to avoid overriding this method
-    void onContainerParameterChanged (Parameter* p) override;
-    void onContainerParameterChangedAsync (Parameter*, const var& /*value*/)override {};
+    void onContainerParameterChanged ( ParameterBase* p) override;
+    void onContainerParameterChangedAsync ( ParameterBase*, const var& /*value*/)override {};
 
 
     virtual void clear() override;
@@ -123,51 +116,6 @@ public:
     float globalRMSValueIn ;
     float globalRMSValueOut ;
 
-    //////////////
-    //DATA
-    //////////////
-
-    virtual Data* getInputData (int dataIndex) override;
-    virtual Data* getOutputData (int dataIndex) override;
-
-
-    typedef Data::DataType DataType;
-    typedef Data::DataElement DataElement;
-    OwnedArray<Data> inputDatas;
-    OwnedArray<Data> outputDatas;
-    CriticalSection numDataIOLock;
-
-    Data* addInputData (const String& name, DataType type);
-    Data* addOutputData (const String& name, DataType type);
-
-
-    bool removeInputData (const String& name);
-    bool removeOutputData (const String& name);
-
-    void removeAllInputDatas();
-    void removeAllOutputDatas();
-
-    virtual void updateOutputData (String& dataName, const float& value1, const float& value2 = 0, const float& value3 = 0);
-
-
-    int getTotalNumInputData() override;
-    int getTotalNumOutputData() override;
-
-    StringArray getInputDataInfos() override;
-    StringArray getOutputDataInfos() override;
-
-    Data::DataType getInputDataType (const String& dataName, const String& elementName) override;
-    Data::DataType getOutputDataType (const String& dataName, const String& elementName) override;
-
-
-    Data* getOutputDataByName (const String& dataName) override;
-    Data* getInputDataByName (const String& dataName) override;
-
-    virtual void dataChanged (Data*) override;
-
-    virtual void processInputDataChanged (Data*) {} // to be overriden by child classes
-    virtual void processOutputDataUpdated (Data*) {} // to be overriden by child classes
-
 protected:
     // A node need to be removed with it's remove function
     virtual ~NodeBase();
@@ -201,7 +149,7 @@ private:
     Array<float> rmsValuesIn;
     Array<float> rmsValuesOut;
 
-    SmoothedValue<double> logVolume;
+    SmoothedValue<floatParamType> logVolume;
     float lastVolume;
     friend class RMSTimer;
 
@@ -231,7 +179,7 @@ private:
     };
 
     RMSTimer rmsTimer;
-
+    friend class Engine;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeBase)
     friend struct ContainerDeletePolicy<NodeBase>;

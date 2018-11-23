@@ -13,6 +13,8 @@
 */
 
 
+#if !ENGINE_HEADLESS
+
 #include "GapGrabber.h"
 #include "../Style.h"
 
@@ -55,3 +57,6 @@ void GapGrabber::mouseDrag (const MouseEvent& e)
 {
     listeners.call (&Listener::grabberGrabUpdate, this, direction == HORIZONTAL ? e.getPosition().x : e.getPosition().y);
 }
+
+
+#endif

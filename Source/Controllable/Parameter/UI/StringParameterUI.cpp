@@ -12,10 +12,11 @@
 *
 */
 
-
+#if !ENGINE_HEADLESS
 
 #include "StringParameterUI.h"
 #include "../../../UI/Style.h"
+#include "../UndoableHelper.h"
 
 String varToString(const var &v){
     String stringValue;
@@ -33,7 +34,7 @@ String varToString(const var &v){
 
 }
 
-StringParameterUI::StringParameterUI (Parameter* p) :
+StringParameterUI::StringParameterUI ( ParameterBase* p) :
     ParameterUI (p), autoSize (false), maxFontHeight (12)
 {
 
@@ -148,10 +149,14 @@ void StringParameterUI::labelTextChanged (Label*)
                 varList.add(0);
             }
         }
+
         parameter->setValue(varList);
     }
     else{
     //String  originalString = valueLabel.getText().substring(prefix.length(), valueLabel.getText().length() - suffix.length());
-    parameter->setValue (valueLabel.getText());
+        UndoableHelpers::setValueUndoable(parameter, valueLabel.getText());
+
     }
 }
+
+#endif

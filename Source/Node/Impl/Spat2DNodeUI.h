@@ -50,7 +50,7 @@ public:
 
     void updateShapeModeView();
 
-    void nodeParameterChanged (ConnectableNode*, Parameter* p) override;
+    void nodeParameterChanged (ConnectableNode*, ParameterBase* p) override;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Spat2DNodeContentUI)
 };
 

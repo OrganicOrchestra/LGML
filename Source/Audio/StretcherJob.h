@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -34,18 +34,9 @@ class StretcherJob : public ThreadPoolJob
 {
 public:
 
-    StretcherJob (PlayableBuffer* pb, double _ratio):
-        ThreadPoolJob ("stretch"),
-        owner (pb),
-        ratio (_ratio),
-        tmpStretchBuf (1, 44100, 4096)
-
-    {
-    };
-    ~StretcherJob ()
+    StretcherJob (PlayableBuffer* pb, double _ratio);
+    ~StretcherJob ();
     
-    {masterReference.clear();
-    };
 
 
     JobStatus runJob()override;

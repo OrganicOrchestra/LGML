@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,6 +16,10 @@
  ==============================================================================
  */
 
+#if ENGINE_HEADLESS
+#error should not include that in headless builds
+#endif
+
 #pragma once
 
 #include "../JuceHeaderUI.h"
@@ -26,7 +30,7 @@
 class ParameterUI;
 class DraggedComponent;
 
-class LGMLDragger : MouseListener
+class LGMLDragger : MouseListener,KeyListener
 {
 public:
 
@@ -59,7 +63,7 @@ public:
     void toggleMappingMode();
     bool isMappingActive;
 
-    void setSelected (ParameterUI*);
+
 
     Component*  dropCandidate;
 
@@ -71,15 +75,18 @@ public:
     public:
         virtual ~Listener() {};
         virtual void mappingModeChanged(bool) = 0;
-        virtual void selectionChanged (Parameter*) = 0;
+        virtual void selectionChanged ( ParameterBase*) = 0;
     };
     void addSelectionListener (Listener* l ) {listeners.add (l);}
     void removeSelectionListener (Listener* l ) {listeners.remove (l);}
+
+    void setSelected (ParameterUI*,LGMLDragger::Listener * from = nullptr);
 private:
 
     Component* selectedSSContent;
     ListenerList<Listener> listeners;
     Point<int> mouseDownWithinTarget;
-
+    bool keyPressed (const KeyPress& key,
+                Component* originatingComponent)override;
 
 };

@@ -11,28 +11,33 @@
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 *
 */
-
+#if !ENGINE_HEADLESS
 
 #include "ParameterUI.h"
 #include "../../../Utils/DebugHelpers.h"
 #include "../../../UI/Style.h"
 #include "../../../UI/LGMLDragger.h"
 #include "../../../FastMapper/FastMapper.h"
+#include "../UndoableHelper.h"
 
 //==============================================================================
-ParameterUI::ParameterUI (Parameter* _parameter) :
+ParameterUI::ParameterUI ( ParameterBase* _parameter) :
+    InspectableComponent(_parameter,"ParameterUI"),
     parameter (_parameter),
     showLabel (true),
     showValue (true),
-    customTextDisplayed (String::empty),
+    customTextDisplayed (""),
     isMappingDest (false),
     isDraggable (true),
-    isSelected (false)
+    isSelected (false),
+    wasShowing(true)
 {
+    setBufferedToImage(true);
     if (parameter.get())
     {
         parameter->addAsyncCoalescedListener (this);
         parameter->addParameterListener (this);
+        controllableStateChanged (parameter.get());
         
     }
     else
@@ -46,15 +51,17 @@ ParameterUI::ParameterUI (Parameter* _parameter) :
     parameter->addControllableListener (this);
     mappingState = NOMAP;
     setMappingState (LGMLDragger::getInstance()->isMappingActive);
-    updateTooltip();
-    
 
+    
+    
 
 }
 
 ParameterUI::~ParameterUI()
 {
-    LGMLDragger::getInstance()->unRegisterDragCandidate (this);
+    if(auto * draggerI = LGMLDragger::getInstanceWithoutCreating()){
+        draggerI->unRegisterDragCandidate (this);
+    }
 
     if (parameter.get())
     {
@@ -63,26 +70,28 @@ ParameterUI::~ParameterUI()
         parameter->removeAsyncParameterListener (this);
     }
 
-    masterReference.clear();
+    ParameterUI::masterReference.clear();
 }
 
 
 void ParameterUI::setCustomText (const String text)
 {
-    customTextDisplayed = text;
+
+    customTextDisplayed = juce::translate(text);
     repaint();
 }
 
 
 void ParameterUI::mouseDown (const MouseEvent& e)
 {
+    UndoableHelpers::startNewTransaction(parameter,true);
     if (e.mods.isRightButtonDown())
     {
         PopupMenu p;
-        p.addItem (1, "Select Parameter (Alt+click)");
-        p.addItem (2, "Copy control address");
-        p.addItem (3, "Add FastMap To");
-        p.addItem (4, "Add FastMap From");
+        p.addItem (1, juce::translate("SelectParameterBase (Alt+click)"));
+        p.addItem (2, juce::translate("Copy control address"));
+        p.addItem (3, juce::translate("Add FastMap To"));
+        p.addItem (4, juce::translate("Add FastMap From"));
 
         int result = p.show();
 
@@ -91,17 +100,16 @@ void ParameterUI::mouseDown (const MouseEvent& e)
             case 1:
                 Inspector::getInstance()->setCurrentComponent(this);
                 break;
-                
             case 2:
                 SystemClipboard::copyTextToClipboard (parameter->controlAddress);
                 break;
 
             case 3:
-                FastMapper::getInstance()->addFastMap()->referenceOut->setParamToReferTo (Parameter::fromControllable (parameter));
+                FastMapper::getInstance()->addFastMap()->referenceOut->setParamToReferTo ( ParameterBase::fromControllable (parameter));
                 break;
 
             case 4:
-                FastMapper::getInstance()->addFastMap()->referenceIn->setParamToReferTo (Parameter::fromControllable (parameter));
+                FastMapper::getInstance()->addFastMap()->referenceIn->setParamToReferTo ( ParameterBase::fromControllable (parameter));
                 break;
 
         }
@@ -109,8 +117,11 @@ void ParameterUI::mouseDown (const MouseEvent& e)
     if(e.mods.isAltDown()){
         Inspector::getInstance()->setCurrentComponent(this);
     }
-}
 
+}
+void ParameterUI::mouseUp (const MouseEvent& e) {
+
+};
 
 bool ParameterUI::shouldBailOut()
 {
@@ -120,7 +131,7 @@ bool ParameterUI::shouldBailOut()
     if (bailOut)
     {
         // TODO : changing vst preset sometimes hit that
-        NLOG ("ParameterUI", "!!! old component still displayed : " << getName());
+        NLOGE("ParameterUI", "old component still displayed : " << getName());
         //jassertfalse;
     }
 
@@ -137,17 +148,43 @@ void ParameterUI::controllableStateChanged (Controllable* c)
 
 void ParameterUI::controllableControlAddressChanged (Controllable*)
 {
-    updateTooltip();
     repaint();
 }
 
 
-
-void ParameterUI::updateTooltip()
-{
-    setTooltip (parameter->description + "\nControl Address : " + parameter->controlAddress);
+String ParameterUI::getTooltip(){
+    return juce::translate(parameter->description) + "\n"+juce::translate("Control Address")+" : " + parameter->controlAddress;//"\nValue : "+parameter->value.toString();
 }
 
+void ParameterUI::visibilityChanged(){
+    bool _isShowing = isShowing();
+    // do nothing if already in appropriate state
+    if(_isShowing==wasShowing) return;
+    // do nothing if detached
+    if(getParentComponent()==nullptr) return;
+    if (parameter.get()){
+        if(_isShowing){
+            parameter->addAsyncCoalescedListener (this);
+            parameter->addParameterListener (this);
+            parameter->addControllableListener (this);
+            // don't trigger
+            if(!dynamic_cast<Trigger*>(parameter.get()))
+               valueChanged(parameter->value);
+        }
+        else{
+            parameter->removeAsyncParameterListener (this);
+            parameter->removeParameterListener (this);
+            parameter->removeControllableListener (this);
+        }
+    }
+    if (auto ld = LGMLDragger::getInstanceWithoutCreating())
+        setMappingState (ld->isMappingActive);
+    wasShowing =_isShowing;
+
+}
+void ParameterUI::parentHierarchyChanged(){
+    visibilityChanged();
+};
 
 class MapEffect : public ImageEffectFilter
 {
@@ -230,9 +267,18 @@ void  ParameterUI::setMappingState (const bool  b)
         }
     }
 
-    if (b)
+
+    mappingState = s;
+    updateOverlayEffect();
+
+}
+
+void ParameterUI::updateOverlayEffect(){
+    if (mappingState!=NOMAP)
     {
-        mapEffect  = new MapEffect (isMappingDest ? Colours::red : Colours::blue, 50, getName());
+        Colour c =isMappingDest ? Colours::red : Colours::blue;
+        if (isSelected) c = Colours::green;
+        mapEffect  = new MapEffect (c, isSelected? 100:50, getName());
     }
     else
     {
@@ -240,12 +286,9 @@ void  ParameterUI::setMappingState (const bool  b)
     }
 
     setComponentEffect (mapEffect);
-    mappingState = s;
     repaint();
+
 }
-
-
-
 
 void ParameterUI::setMappingDest (bool _isMappingDest)
 {
@@ -258,7 +301,7 @@ void ParameterUI::setMappingDest (bool _isMappingDest)
 
 }
 
-void ParameterUI::newMessage (const Parameter::ParamWithValue& p)
+void ParameterUI::newMessage (const ParameterBase::ParamWithValue& p)
 {
     if (p.isRange())
     {
@@ -288,7 +331,7 @@ NamedParameterUI::NamedParameterUI (ParameterUI* ui, int _labelWidth, bool label
     addAndMakeVisible (controllableLabel);
 
     controllableLabel.setJustificationType (Justification::centredLeft);
-    controllableLabel.setText (ui->parameter->niceName, dontSendNotification);
+    controllableLabel.setText (juce::translate(ui->parameter->niceName), dontSendNotification);
 
     if (ui->parameter->isUserDefined)
     {
@@ -333,3 +376,10 @@ void NamedParameterUI::labelTextChanged (Label* labelThatHasChanged)
     }
 };
 
+void  NamedParameterUI::controllableControlAddressChanged (Controllable* c){
+    if(c && c==parameter){
+    controllableLabel.setText (juce::translate(parameter->niceName), dontSendNotification);
+    }
+}
+
+#endif

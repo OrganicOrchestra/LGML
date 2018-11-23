@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -29,17 +29,17 @@
 #include "../UI/ShapeShifter/ShapeShifterContent.h"
 
 
-class TimeManagerUI : public ShapeShifterContentComponent, public Parameter::AsyncListener
+class TimeManagerUI : public ShapeShifterContentComponent, public ParameterBase::AsyncListener
 {
 
 public :
     TimeManagerUI (const String& contentName, TimeManager* _timeManager);
     ~TimeManagerUI();
 
-    void paint (Graphics& g) override;
+    
     void resized()override;
 
-    void newMessage (const Parameter::ParamWithValue& pv) override;
+    void newMessage (const ParameterBase::ParamWithValue& pv) override;
 
 
     class TimeBar : public juce::Component, private Timer
@@ -72,7 +72,7 @@ public :
         void async_stop();
         void async_newBeat ( int b);
         void async_beatPerBarChanged (int bpb);
-        void async_isSettingTempo ( bool b) ;
+
 
 
         void zeroOutBeatComponents();

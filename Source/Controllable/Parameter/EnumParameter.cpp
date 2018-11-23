@@ -1,16 +1,16 @@
 /* Copyright © Organic Orchestra, 2017
-*
-* This file is part of LGML.  LGML is a software to manipulate sound in realtime
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation (version 3 of the License).
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*/
+ *
+ * This file is part of LGML.  LGML is a software to manipulate sound in realtime
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation (version 3 of the License).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
 
 
 #include "EnumParameter.h"
@@ -20,6 +20,7 @@
 
 REGISTER_PARAM_TYPE (EnumParameter)
 
+var EnumParameter::None;
 Identifier EnumParameter::modelIdentifier ("model");
 Identifier EnumParameter::selectedSetIdentifier ("selected");
 //////////////
@@ -34,7 +35,7 @@ String dumpVarObj(const var & v ,const int indent=0){
             for(int i = 0 ; i < indent ; i++){
                 res+=" ";
             }
-             res+= vv.name.toString() +" : " + dumpVarObj(vv.value,indent+1);
+            res+= vv.name.toString() +" : " + dumpVarObj(vv.value,indent+1);
             res += "\n";
         }
     }
@@ -56,10 +57,10 @@ String dumpVarObj(const var & v ,const int indent=0){
 // EnumParameter
 
 EnumParameter::EnumParameter (const String& niceName, const String& description, EnumParameterModel* modelInstance, const var& defaultValue, bool _userCanEnterText, bool enabled) :
-    Parameter ( niceName, description, defaultValue, enabled),
-    asyncNotifier (1000),
-    userCanEnterText (_userCanEnterText),
-    enumData (new DynamicObject())
+ParameterBase ( niceName, description, defaultValue, enabled),
+asyncNotifier (1000),
+userCanEnterText (_userCanEnterText),
+enumData (new DynamicObject())
 {
 
     enumData->setProperty (selectedSetIdentifier, Array<var>());
@@ -266,7 +267,7 @@ Array<var> EnumParameter::getSelectedValues() const
         var* s =  vm.getVarPointer (i);
 
         if (s) {res.add (*s );}
-//        else  {jassertfalse;}
+        //        else  {jassertfalse;}
     }
 
     return res;
@@ -279,7 +280,7 @@ var EnumParameter::getValueForId (const Identifier& i)
 
 NamedValueSet getModelPropsFromVar (const var& v)
 {
-    if (auto dob = v.getProperty (EnumParameter::modelIdentifier, var::null).getDynamicObject())
+    if (auto dob = v.getProperty (EnumParameter::modelIdentifier, EnumParameter::None).getDynamicObject())
     {
         return dob->getProperties();
     }
@@ -339,7 +340,7 @@ void EnumParameter::setValueInternal (const var& _value)
     }
 
     // rebuild the whole model if needed and select
-    else if (DynamicObject* dvalues = _value.getProperty (modelIdentifier, var::null).getDynamicObject())
+    else if (DynamicObject* dvalues = _value.getProperty (modelIdentifier, EnumParameter::None).getDynamicObject())
     {
 
         // if model is stored, this param should own it
@@ -428,7 +429,7 @@ void EnumParameter::modelOptionAdded (EnumParameterModel*, Identifier& key )
     {
         msg->isSelectionChange = true;
         msg->isSelected = true;
-        Parameter::notifyValueChanged();
+        ParameterBase::notifyValueChanged();
     }
 
     processForMessage (*msg, enumListeners);
@@ -443,9 +444,9 @@ void EnumParameter::modelOptionRemoved (EnumParameterModel*, Identifier& key)
     {
         msg->isSelectionChange = true;
         msg->isSelected = false;
-        Parameter::notifyValueChanged();
+        ParameterBase::notifyValueChanged();
     }
-    
+
     processForMessage (*msg, enumListeners);
     asyncNotifier.addMessage (msg);
 };
@@ -485,7 +486,7 @@ void EnumParameter::processForMessage (const EnumChangeMessage& msg, ListenerLis
 
 void EnumParameter::newMessage (const EnumChangeMessage& msg)
 {
-    
+
     processForMessage (msg, asyncEnumListeners);
 
 };
@@ -529,7 +530,7 @@ EnumParameterModel::EnumParameterModel(): addFunction (nullptr)
 
 EnumParameterModel::~EnumParameterModel()
 {
-    masterReference.clear();
+    EnumParameterModel::masterReference.clear();
 
 }
 
@@ -565,27 +566,20 @@ void EnumParameterModel::setIsFileBased (bool _isFileBased)
     }
 }
 
-Identifier* EnumParameterModel::getIdForValue(const var & v){
-    Identifier* res(nullptr);
+const Identifier& EnumParameterModel::getIdForValue(const var & v){
+    static Identifier notFoundId("notFound");
+
 
     for(auto & k:userGenerated->getProperties()){
-        if(k.value == v){
-            res = &k.name;
-            break;
-        }
-
-    }
-    if(res==nullptr){
-        for(auto & k:autoGenerated->getProperties()){
-            if(k.value == v){
-                res = &k.name;
-                break;
-            }
-            
-        }
+        if(k.value == v){return k.name;}
     }
 
-    return res;
+    for(auto & k:autoGenerated->getProperties()){
+        if(k.value == v){return k.name;}
+    }
+
+
+    return notFoundId;
 
 }
 
@@ -647,19 +641,19 @@ bool EnumParameterModel::isValidId (Identifier key)
 const NamedValueSet EnumParameterModel::getProperties()noexcept
 {
     NamedValueSet res (userGenerated->getProperties());
-
+    
     for (auto k : autoGenerated->getProperties())
     {
         jassert (!res.contains (k.name));
         res.set (k.name, k.value);
     }
-
+    
     return res;
 }
 DynamicObject* EnumParameterModel::getObject()
 {
     return userGenerated;
-
+    
 }
 
 

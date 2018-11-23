@@ -6,19 +6,19 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
+		Debug32|Win32 = Debug32|Win32
 		Release|x64 = Release|x64
-		Debug_32bit|Win32 = Debug_32bit|Win32
-		Release_32bit|Win32 = Release_32bit|Win32
+		Release32|Win32 = Release32|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{6615CF5D-4D00-3586-5049-0A44CDF5D512}.Debug|x64.ActiveCfg = Debug|x64
 		{6615CF5D-4D00-3586-5049-0A44CDF5D512}.Debug|x64.Build.0 = Debug|x64
+		{6615CF5D-4D00-3586-5049-0A44CDF5D512}.Debug32|Win32.ActiveCfg = Debug32|Win32
+		{6615CF5D-4D00-3586-5049-0A44CDF5D512}.Debug32|Win32.Build.0 = Debug32|Win32
 		{6615CF5D-4D00-3586-5049-0A44CDF5D512}.Release|x64.ActiveCfg = Release|x64
 		{6615CF5D-4D00-3586-5049-0A44CDF5D512}.Release|x64.Build.0 = Release|x64
-		{6615CF5D-4D00-3586-5049-0A44CDF5D512}.Debug_32bit|Win32.ActiveCfg = Debug_32bit|Win32
-		{6615CF5D-4D00-3586-5049-0A44CDF5D512}.Debug_32bit|Win32.Build.0 = Debug_32bit|Win32
-		{6615CF5D-4D00-3586-5049-0A44CDF5D512}.Release_32bit|Win32.ActiveCfg = Release_32bit|Win32
-		{6615CF5D-4D00-3586-5049-0A44CDF5D512}.Release_32bit|Win32.Build.0 = Release_32bit|Win32
+		{6615CF5D-4D00-3586-5049-0A44CDF5D512}.Release32|Win32.ActiveCfg = Release32|Win32
+		{6615CF5D-4D00-3586-5049-0A44CDF5D512}.Release32|Win32.Build.0 = Release32|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

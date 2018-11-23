@@ -37,6 +37,7 @@ AudioMixerNode::AudioMixerNode (StringRef name) :
 
 void AudioMixerNode::setParentNodeContainer (NodeContainer* c)
 {
+    // TODO is it needed?
     NodeBase::setParentNodeContainer (c);
     updateInput();
     updateOutput();
@@ -45,7 +46,7 @@ void AudioMixerNode::setParentNodeContainer (NodeContainer* c)
 
 }
 
-void AudioMixerNode::onContainerParameterChanged (Parameter* p)
+void AudioMixerNode::onContainerParameterChanged ( ParameterBase* p)
 {
     NodeBase::onContainerParameterChanged (p);
 
@@ -76,7 +77,7 @@ void AudioMixerNode::numChannelsChanged (bool /*isInput*/)
     {
         for (int i = outBuses.size() ; i < numberOfOutput->intValue() ; i++)
         {
-            OutputBus* outB = new OutputBus (i, numberOfInput->intValue());
+            auto * outB = new OutputBus (i, numberOfInput->intValue());
             outBuses.add (outB);
             addChildControllableContainer (outB);
         }
@@ -132,7 +133,7 @@ void AudioMixerNode::processBlockInternal (AudioBuffer<float>& buffer, MidiBuffe
 
     int numBufferChannels = buffer.getNumChannels();
 
-    if (! (outBuses.size() <= numBufferChannels))
+    if ( outBuses.size() > numBufferChannels)
     {
         DBG ("mixer : dropping frame");
         return;
@@ -156,7 +157,7 @@ void AudioMixerNode::processBlockInternal (AudioBuffer<float>& buffer, MidiBuffe
                 if (i < outI->volumes.size())
                 {
                     cachedBuffer.copyFromWithRamp (i, 0, buffer.getReadPointer (0), numSamples,
-                                                   outI->lastVolumes[i], outI->logVolumes[i]);
+                                                   outI->lastVolumes.getUnchecked(i), outI->logVolumes.getUnchecked(i));
                 }
                 else
                 {
@@ -172,12 +173,12 @@ void AudioMixerNode::processBlockInternal (AudioBuffer<float>& buffer, MidiBuffe
             {
                 auto outI = outBuses.getUnchecked (i);
                 cachedBuffer.copyFromWithRamp (i, 0, buffer.getReadPointer (0), numSamples,
-                                               outI->lastVolumes[0], outI->logVolumes[0]);
+                                               outI->lastVolumes.getUnchecked(0), outI->logVolumes.getUnchecked(0));
 
                 for (int j = totalNumInputChannels - 1 ; j > 0  ; --j)
                 {
                     cachedBuffer.addFromWithRamp (i, 0, buffer.getReadPointer (j), numSamples,
-                                                  outI->lastVolumes[j], outI->logVolumes[j]);
+                                                  outI->lastVolumes.getUnchecked(j), outI->logVolumes.getUnchecked(j));
                 }
             }
         }
@@ -189,7 +190,7 @@ void AudioMixerNode::processBlockInternal (AudioBuffer<float>& buffer, MidiBuffe
 
             for (int j = totalNumInputChannels - 1 ; j >= 0 ; --j)
             {
-                outI->lastVolumes.set (j, outI->logVolumes[j]);
+                outI->lastVolumes.set (j, outI->logVolumes.getUnchecked(j));
             }
 
         }
@@ -224,7 +225,7 @@ void AudioMixerNode::OutputBus::setNumInput (int numInput)
     {
         for (int i = volumes.size(); i < numInput ; i++)
         {
-            FloatParameter* p = addNewParameter<FloatParameter> (
+            auto * p = addNewParameter<FloatParameter> (
                                                                 "in "+String (i + 1),
                                                                  "mixer volume from input" + String (i + 1) + " to output" + String (outputIndex + 1), i == outputIndex ? DB0_FOR_01 : 0);
             
@@ -249,7 +250,7 @@ void AudioMixerNode::OutputBus::setNumInput (int numInput)
     lastVolumes.resize (numInput);
 }
 
-void AudioMixerNode::OutputBus::onContainerParameterChanged (Parameter* p)
+void AudioMixerNode::OutputBus::onContainerParameterChanged ( ParameterBase* p)
 {
     ScopedLock lk (volumes.getLock());
 

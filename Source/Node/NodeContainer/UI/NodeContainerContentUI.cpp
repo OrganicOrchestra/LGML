@@ -12,11 +12,13 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "NodeContainerContentUI.h"
 #include "../../Manager/UI/NodeManagerUI.h"
 
 #include "../../../Controllable/Parameter/UI/ParameterUI.h"
+
 
 
 NodeContainerContentUI::NodeContainerContentUI() :
@@ -55,6 +57,8 @@ void NodeContainerContentUI::resized()
 }
 
 
+
+
 void NodeContainerContentUI::init()
 {
     NodeContainer* nc = dynamic_cast<NodeContainer*> (node.get());
@@ -81,3 +85,5 @@ void NodeContainerContentUI::buttonClicked (Button* b)
         }
     }
 }
+
+#endif

@@ -12,7 +12,7 @@
 *
 */
 
-
+#if !ENGINE_HEADLESS
 #include "JsNodeUI.h"
 
 #include "JsNode.h"
@@ -58,7 +58,7 @@ void JsNodeUI::newJsFileLoaded (bool v)
 //    {
         for (auto& c : jsNode->jsDynamicParameters)
         {
-            controllableAdded (jsNode, c);
+            childControllableAdded (jsNode, c);
         }
 //    }
 };
@@ -80,13 +80,13 @@ void JsNodeUI::layoutUI()
 
 }
 
-void JsNodeUI::controllableAdded (ControllableContainer*, Controllable* c)
+void JsNodeUI::childControllableAdded (ControllableContainer*, Controllable* c)
 {
     JsNode* jsNode = (JsNode*) node.get();
 
     if (!jsNode->jsDynamicParameters.contains ((Controllable*)c))return;
 
-    ParameterUI* comp = new NamedParameterUI (ParameterUIFactory::createDefaultUI (Parameter::fromControllable (c)), 100);
+    ParameterUI* comp = new NamedParameterUI (ParameterUIFactory::createDefaultUI ( ParameterBase::fromControllable (c)), 100);
     varUI.add (comp);
     addAndMakeVisible (comp);
 
@@ -100,9 +100,9 @@ void JsNodeUI::controllableAdded (ControllableContainer*, Controllable* c)
     }
 
 }
-void JsNodeUI::controllableRemoved (ControllableContainer*, Controllable* c)
+void JsNodeUI::childControllableRemoved (ControllableContainer*, Controllable* c)
 {
-    Parameter* pToComp = Parameter::fromControllable (c);
+    ParameterBase* pToComp = ParameterBase::fromControllable (c);
 
     for (auto& comp : varUI)
     {
@@ -120,3 +120,5 @@ void JsNodeUI::controllableRemoved (ControllableContainer*, Controllable* c)
 
 
 };
+
+#endif

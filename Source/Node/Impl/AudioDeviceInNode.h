@@ -28,13 +28,13 @@ class AudioDeviceInNode :
 {
 
 public:
-    DECLARE_OBJ_TYPE (AudioDeviceInNode)
+    DECLARE_OBJ_TYPE (AudioDeviceInNode,"access your sound card input")
     ~AudioDeviceInNode();
 
     void processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;
 
     void changeListenerCallback (ChangeBroadcaster* source)override;
-    void onContainerParameterChanged (Parameter*)override;
+    void onContainerParameterChanged ( ParameterBase*)override;
     void setParentNodeContainer (NodeContainer*)override;
     Array<BoolParameter*> inMutes;
     Array<FloatParameter* > volumes;

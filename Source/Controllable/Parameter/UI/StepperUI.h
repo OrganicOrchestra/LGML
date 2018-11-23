@@ -21,33 +21,38 @@
 
 
 template <typename T>
-class StepperUI : public ParameterUI, private Slider::Listener, private ComponentListener
+class StepperUI : public ParameterUI, private Slider::Listener
 {
 
 public:
-    StepperUI (Parameter* _parameter);
+    StepperUI ( ParameterBase* _parameter);
     virtual ~StepperUI();
 
 
 
     ScopedPointer<BetterStepper> slider;
 
-    void setScrollAllowed (bool );
-
     void resized() override;
+
+    void setStepInterval(T i);
+
+    void mouseDown(const MouseEvent & e)override;
 protected:
     void valueChanged (const var&) override;
-    virtual void rangeChanged (Parameter* p) override;
+    virtual void rangeChanged ( ParameterBase* p) override;
 
     // Inherited via Listener
     virtual void sliderValueChanged (Slider* slider) override;
 
-    void componentParentHierarchyChanged (Component&)override;
+    
+
+
+    T stepInterval;
 
 };
 
 
 typedef StepperUI<int> IntStepperUI;
-typedef StepperUI<double> FloatStepperUI;
+typedef StepperUI<floatParamType> FloatStepperUI;
 
 #endif  // FLOATSTEPPERUI_H_INCLUDED

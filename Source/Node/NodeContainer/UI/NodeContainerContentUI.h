@@ -22,7 +22,7 @@
 
 class NodeContainerContentUI :
     public ConnectableNodeContentUI,
-    public ButtonListener,
+    public Button::Listener,
     public NodeContainerListener
 {
 public :
@@ -37,14 +37,12 @@ public :
 
 
 
-    void updateSize();
-
     void init()override;
     void resized() override;
 
     void buttonClicked (Button* b) override;
 
-
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeContainerContentUI)
 };
 

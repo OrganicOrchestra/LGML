@@ -6,78 +6,23 @@
     "direction": 2,
     "shifters": [
       {
-        "type": 0,
-        "width": 300,
-        "height": 50,
-        "currentContent": "Time Manager",
-        "tabs": [
-          {
-            "name": "Time Manager"
-          }
-        ]
-      },
-      {
         "type": 1,
         "width": 300,
-        "height": 695,
+        "height": 945,
         "direction": 1,
         "shifters": [
           {
             "type": 1,
-            "width": 432,
+            "width": 300,
             "height": 300,
             "direction": 2,
             "shifters": [
               {
                 "type": 0,
                 "width": 300,
-                "height": 300,
-                "currentContent": "Controllers",
+                "height": 400,
+                "currentContent": "Inspector",
                 "tabs": [
-                  {
-                    "name": "Controllers"
-                  }
-                ]
-              },
-              {
-                "type": 0,
-                "width": 300,
-                "height": 389,
-                "currentContent": "Fast Mapper",
-                "tabs": [
-                  {
-                    "name": "Fast Mapper"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "type": 0,
-            "width": 463,
-            "height": 300,
-            "currentContent": "Node Manager",
-            "tabs": [
-              {
-                "name": "Node Manager"
-              }
-            ]
-          },
-          {
-            "type": 1,
-            "width": 373,
-            "height": 300,
-            "direction": 2,
-            "shifters": [
-              {
-                "type": 0,
-                "width": 389,
-                "height": 524,
-                "currentContent": "Outliner",
-                "tabs": [
-                  {
-                    "name": "Outliner"
-                  },
                   {
                     "name": "Inspector"
                   }
@@ -85,12 +30,56 @@
               },
               {
                 "type": 0,
-                "width": 576,
-                "height": 165,
-                "currentContent": "Logger",
+                "width": 302,
+                "height": 315,
+                "currentContent": "Controllers",
                 "tabs": [
                   {
-                    "name": "Logger"
+                    "name": "Controllers"
+                  },
+                  {
+                    "name": "Fast Mapper"
+                  }
+                ]
+              },
+              {
+                "type": 0,
+                "width": 1348,
+                "height": 273,
+                "currentContent": "Help",
+                "tabs": [
+                  {
+                    "name": "Help"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": 1,
+            "width": 1346,
+            "height": 300,
+            "direction": 2,
+            "shifters": [
+              {
+                "type": 0,
+                "width": 492,
+                "height": 50,
+                "currentContent": "Time Manager",
+                "tabs": [
+                  {
+                    "name": "Time Manager"
+                  }
+                ]
+              },
+              {
+                "type": 0,
+                "width": 995,
+                "height": 944,
+                "currentContent": "Node Manager",
+                "tabs": [
+                  {
+                    "name": "Node Manager"
                   }
                 ]
               }

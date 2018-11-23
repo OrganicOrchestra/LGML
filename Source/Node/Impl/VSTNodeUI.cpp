@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "VSTNodeUI.h"
 #include "../../Controllable/Parameter/UI/TriggerBlinkUI.h"
@@ -32,8 +33,10 @@ VSTNodeContentUI::VSTNodeContentUI():
 VSTNodeContentUI::~VSTNodeContentUI()
 {
     closePluginWindow();
+    if(vstNode){
     vstNode->removeVSTNodeListener (this);
     vstNode->removeControllableContainerListener (this);
+    }
 
 }
 
@@ -107,8 +110,8 @@ void VSTNodeContentUI::updateVSTParameters()
     resized();
 }
 
-void VSTNodeContentUI::controllableAdded (ControllableContainer*, Controllable*) {};
-void VSTNodeContentUI::controllableRemoved (ControllableContainer*, Controllable* c)
+void VSTNodeContentUI::childControllableAdded (ControllableContainer*, Controllable*) {};
+void VSTNodeContentUI::childControllableRemoved (ControllableContainer*, Controllable* c)
 {
     for (auto& p : paramSliders)
     {
@@ -122,7 +125,7 @@ void VSTNodeContentUI::controllableRemoved (ControllableContainer*, Controllable
 }
 void VSTNodeContentUI::controllableContainerAdded (ControllableContainer*, ControllableContainer*) {};
 void VSTNodeContentUI::controllableContainerRemoved (ControllableContainer*, ControllableContainer*) {};
-void VSTNodeContentUI::controllableFeedbackUpdate (ControllableContainer* /*originContainer*/, Controllable*) {};
+
 
 
 
@@ -230,3 +233,4 @@ void VSTNodeContentUI::buttonClicked (Button* button)
 
 
 
+#endif

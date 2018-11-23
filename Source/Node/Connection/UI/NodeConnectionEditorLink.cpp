@@ -13,7 +13,7 @@
 */
 
 
-
+#if !ENGINE_HEADLESS
 
 #include "../../../UI/Style.h"
 #include "NodeConnectionEditorLink.h"
@@ -23,7 +23,7 @@ NodeConnectionEditorLink::NodeConnectionEditorLink (NodeConnectionEditorDataSlot
     outSlot (outSlot), inSlot (inSlot), candidateDropSlot (nullptr), isSelected (false)
 {
     isEditing = (outSlot != nullptr && inSlot == nullptr) || (outSlot == nullptr && inSlot != nullptr);
-    setTooltip ("Double click to delete");
+    setTooltip (juce::translate("Double click to delete"));
     setWantsKeyboardFocus (true);
 }
 
@@ -43,7 +43,6 @@ bool NodeConnectionEditorLink::setCandidateDropSlot (NodeConnectionEditorDataSlo
 
     if (baseSlot->connectionType != slot->connectionType) return false;
 
-    if (baseSlot->isData() && ! (baseSlot->data->isTypeCompatible (slot->data->type))) return false;
 
     if (baseSlot->isConnectedTo (slot)) return false;
 
@@ -155,3 +154,5 @@ bool NodeConnectionEditorLink::keyPressed (const KeyPress& key)
 }
 
 void NodeConnectionEditorLink::remove() { listeners.call (&LinkListener::askForRemoveLink, this); }
+
+#endif

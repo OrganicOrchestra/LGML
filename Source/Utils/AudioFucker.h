@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ class AudioFucker : public AudioIODeviceCallback
 {
 
 public:
-    AudioFucker (AudioDeviceManager* _manager, double _targetCPU = 100): manager (_manager), targetCPU (_targetCPU)
+    explicit AudioFucker (AudioDeviceManager* _manager, double _targetCPU = 100): manager (_manager), targetCPU (_targetCPU)
     {
         iterationCount = 100;
         adaptationSpeed = .7;
@@ -41,11 +41,11 @@ public:
     double targetCPU;
     double adaptationSpeed;
     int iterationCount;
-    virtual void audioDeviceIOCallback (const float** /*inputChannelData*/,
+     void audioDeviceIOCallback (const float** /*inputChannelData*/,
                                         int /*numInputChannels*/,
                                         float** /*outputChannelData*/,
                                         int /*numOutputChannels*/,
-                                        int /*numSamples*/)
+                                        int /*numSamples*/) override
     {
 
         double currentCPU = manager->getCpuUsage() * 100.0;
@@ -71,10 +71,10 @@ public:
             j /= 3;
         }
     }
-    virtual void audioDeviceAboutToStart (AudioIODevice* /*device*/) {}
+     void audioDeviceAboutToStart (AudioIODevice* /*device*/) override {}
 
     /** Called to indicate that the device has stopped. */
-    virtual void audioDeviceStopped() {}
+    void audioDeviceStopped() override {}
 };
 
 

@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "ParameterUIFactory.h"
 #include "../BoolParameter.h"
@@ -37,14 +38,20 @@
 #include "../RangeParameter.h"
 #include "RangeParameterUI.h"
 
-#include "../Point2DParameter.h"
+#include "../ParameterList.h"
+#include "ParameterListUI.h"
 
 
 
 #define CHKNRETURN(p,classN,UIN)  if(p->isType< classN >()) {return new UIN((classN*)p);}
+#define CHKNRETURNSLIDER(p,classN,UIN)      if(auto s = dynamic_cast<classN *>(t)){ \
+                                                if(s->hasFiniteBounds()){ \
+                                                    return new UIN(s); \
+                                                } \
+}
 
 //#define REG(cls,meth)
-ParameterUI* ParameterUIFactory::createDefaultUI (Parameter* t)
+ParameterUI* ParameterUIFactory::createDefaultUI ( ParameterBase* t)
 {
 
     CHKNRETURN (t, BoolParameter, BoolToggleUI)
@@ -55,10 +62,14 @@ ParameterUI* ParameterUIFactory::createDefaultUI (Parameter* t)
     CHKNRETURN (t, EnumParameter, EnumParameterUI)
     CHKNRETURN (t, RangeParameter, RangeParameterUI)
     CHKNRETURN (t, ParameterProxy, ParameterProxyUI)
-    CHKNRETURN(t,Point2DParameter<int>, StringParameterUI);
-    CHKNRETURN(t,Point2DParameter<float>, StringParameterUI);
-    jassertfalse;
-    return nullptr;
+    CHKNRETURNSLIDER(t,ParameterList<int>, ParameterListUI<int>)
+    CHKNRETURNSLIDER(t,ParameterList<floatParamType>, ParameterListUI<floatParamType>)
+    
+    //jassertfalse;
+    return new StringParameterUI(t);
+
 
 
 }
+
+#endif

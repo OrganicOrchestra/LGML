@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT bundleIdentifier="org.anic.orchestra.LGML" companyName="Organic Orchestra"
-              companyWebsite="http://www.organic-orchestra.com" cppLanguageStandard="11"
+              companyWebsite="http://www.organic-orchestra.com" cppLanguageStandard="14"
               displaySplashScreen="1" id="a1hJPO" includeBinaryInAppConfig="1"
-              jucerVersion="5.2.0" name="LGML" projectType="guiapp" reportAppUsage="1"
-              splashScreenColour="Dark" version="1.2.5" companyCopyright="Organic Orchestra">
+              jucerVersion="5.4.1" name="LGML" projectType="guiapp" reportAppUsage="1"
+              splashScreenColour="Dark" version="1.2.8" companyCopyright="Organic Orchestra"
+              headerPath="../../../JUCE/modules/juce_audio_processors/format_types/VST3_SDK/&#10;../../third_party/VST2_SDK/&#10;../../third_party/libpd/pure-data/src&#10;../../third_party/serial/include&#10;../../third_party/rubberband/&#10;../../third_party/link/include/&#10;../../third_party/link/modules/asio-standalone/asio/include">
   <MAINGROUP id="RYpQgZ" name="LGML">
     <GROUP id="{C4A5CA13-B090-453E-F1E3-DE9F74C715E2}" name="Assets">
       <FILE compile="0" file="Resources/little-red-riding-hood-md.png" id="SL4b92"
@@ -67,11 +68,19 @@
         <FILE compile="0" file="Source/Controllable/ControllableIndexedContainer.h"
               id="W7C4WZ" name="ControllableIndexedContainer.h" resource="0"/>
         <GROUP id="lRGBzB" name="Parameter">
+          <FILE id="hjYavb" name="UndoableHelper.cpp" compile="1" resource="0"
+                file="Source/Controllable/Parameter/UndoableHelper.cpp"/>
+          <FILE id="qj0HsL" name="UndoableHelper.h" compile="0" resource="0"
+                file="Source/Controllable/Parameter/UndoableHelper.h"/>
           <FILE id="RCFnwU" name="ParameterContainerSync.cpp" compile="1" resource="0"
                 file="Source/Controllable/Parameter/ParameterContainerSync.cpp"/>
           <FILE id="zSQQ5G" name="ParameterContainerSync.h" compile="0" resource="0"
                 file="Source/Controllable/Parameter/ParameterContainerSync.h"/>
           <GROUP id="y1gtRH" name="UI">
+            <FILE id="EPzCSu" name="ParameterListUI.cpp" compile="1" resource="0"
+                  file="Source/Controllable/Parameter/UI/ParameterListUI.cpp"/>
+            <FILE id="aSq0F3" name="ParameterListUI.h" compile="0" resource="0"
+                  file="Source/Controllable/Parameter/UI/ParameterListUI.h"/>
             <FILE compile="1" file="Source/Controllable/Parameter/UI/GenericParameterContainerEditor.cpp"
                   id="YhmjKH" name="GenericParameterContainerEditor.cpp" resource="0"/>
             <FILE compile="0" file="Source/Controllable/Parameter/UI/GenericParameterContainerEditor.h"
@@ -151,14 +160,10 @@
                 id="dp1zQw" name="NumericParameter.cpp" resource="0"/>
           <FILE compile="0" file="Source/Controllable/Parameter/NumericParameter.h"
                 id="lPXC3o" name="NumericParameter.h" resource="0"/>
-          <FILE compile="1" file="Source/Controllable/Parameter/Point2DParameter.cpp"
-                id="a5r2Zc" name="Point2DParameter.cpp" ressource="0"/>
-          <FILE compile="0" file="Source/Controllable/Parameter/Point2DParameter.h"
-                id="tJzyRR" name="Point2DParameter.h" ressource="0"/>
-          <FILE compile="1" file="Source/Controllable/Parameter/Point3DParameter.cpp"
-                id="r8dTdx" name="Point3DParameter.cpp" ressource="0"/>
-          <FILE compile="0" file="Source/Controllable/Parameter/Point3DParameter.h"
-                id="SFl38K" name="Point3DParameter.h" ressource="0"/>
+          <FILE compile="1" file="Source/Controllable/Parameter/ParameterList.cpp"
+                id="a5r2Zc" name="ParameterList.cpp" ressource="0"/>
+          <FILE compile="0" file="Source/Controllable/Parameter/ParameterList.h"
+                id="tJzyRR" name="ParameterList.h" ressource="0"/>
           <FILE compile="1" file="Source/Controllable/Parameter/RangeParameter.cpp"
                 id="bCnENJ" name="RangeParameter.cpp" ressource="0"/>
           <FILE compile="0" file="Source/Controllable/Parameter/RangeParameter.h"
@@ -175,6 +180,10 @@
       </GROUP>
       <GROUP id="{425F36E7-B164-8711-1CD8-33AD246A21F4}" name="Controller">
         <GROUP id="{865F397A-4E13-425D-CB67-29BA8CAAEB5C}" name="Impl">
+          <FILE id="NH0r1m" name="KeyboardController.cpp" compile="1" resource="0"
+                file="Source/Controller/Impl/KeyboardController.cpp"/>
+          <FILE id="cAgaN1" name="KeyboardController.h" compile="0" resource="0"
+                file="Source/Controller/Impl/KeyboardController.h"/>
           <FILE compile="1" file="Source/Controller/Impl/MIDIController.cpp"
                 id="tr7GNk" name="MIDIController.cpp" resource="0"/>
           <FILE compile="0" file="Source/Controller/Impl/MIDIController.h" id="xcmTdk"
@@ -229,24 +238,6 @@
         <FILE compile="0" file="Source/Controller/ControllerManager.h" id="oYmvxL"
               name="ControllerManager.h" resource="0"/>
       </GROUP>
-      <GROUP id="{1401E4C2-39E3-0241-D6B9-DBF594ED8AAE}" name="Data">
-        <FILE compile="1" file="Source/Data/Data.cpp" id="fFqNdW" name="Data.cpp"
-              resource="0"/>
-        <FILE compile="0" file="Source/Data/Data.h" id="wvv0zz" name="Data.h"
-              resource="0"/>
-        <FILE compile="1" file="Source/Data/DataInNode.cpp" id="hoIim5" name="DataInNode.cpp"
-              resource="0"/>
-        <FILE compile="0" file="Source/Data/DataInNode.h" id="SI0vgm" name="DataInNode.h"
-              resource="0"/>
-        <FILE compile="1" file="Source/Data/DataInNodeUI.cpp" id="ugNxJC" name="DataInNodeUI.cpp"
-              resource="0"/>
-        <FILE compile="0" file="Source/Data/DataInNodeUI.h" id="Ormw5C" name="DataInNodeUI.h"
-              resource="0"/>
-        <FILE compile="1" file="Source/Data/DataProcessorGraph.cpp" id="ud3lGi"
-              name="DataProcessorGraph.cpp" resource="0"/>
-        <FILE compile="0" file="Source/Data/DataProcessorGraph.h" id="XH6Tlx"
-              name="DataProcessorGraph.h" resource="0"/>
-      </GROUP>
       <GROUP id="{685A0515-C610-B837-2B3E-BE8DD42E2F55}" name="FastMapper">
         <FILE compile="1" file="Source/FastMapper/FastMap.cpp" id="mfgKTy"
               name="FastMap.cpp" resource="0"/>
@@ -278,6 +269,8 @@
               resource="0"/>
       </GROUP>
       <GROUP id="{BABE227E-3F55-4167-4753-EF3FDC471CBC}" name="MIDI">
+        <FILE id="par2aL" name="MIDIClock.cpp" compile="1" resource="0" file="Source/MIDI/MIDIClock.cpp"/>
+        <FILE id="RtFlEj" name="MIDIClock.h" compile="0" resource="0" file="Source/MIDI/MIDIClock.h"/>
         <FILE compile="1" file="Source/MIDI/MIDIHelpers.cpp" id="uGWAOY" name="MIDIHelpers.cpp"
               resource="0"/>
         <FILE compile="0" file="Source/MIDI/MIDIHelpers.h" id="MahA84" name="MIDIHelpers.h"
@@ -321,6 +314,10 @@
                 name="NodeConnection.h" resource="0"/>
         </GROUP>
         <GROUP id="{4F432EA8-66F6-D32D-6EB3-A98879F7814E}" name="Impl">
+          <FILE id="tWkAxk" name="PdNodeUI.cpp" compile="1" resource="0" file="Source/Node/Impl/PdNodeUI.cpp"/>
+          <FILE id="g7jaCC" name="PdNodeUI.h" compile="0" resource="0" file="Source/Node/Impl/PdNodeUI.h"/>
+          <FILE id="V4197i" name="PdNode.cpp" compile="1" resource="0" file="Source/Node/Impl/PdNode.cpp"/>
+          <FILE id="DqUnGV" name="PdNode.h" compile="0" resource="0" file="Source/Node/Impl/PdNode.h"/>
           <FILE compile="1" file="Source/Node/Impl/AudioDeviceInNode.cpp" id="Ae5kff"
                 name="AudioDeviceInNode.cpp" resource="0"/>
           <FILE compile="0" file="Source/Node/Impl/AudioDeviceInNode.h" id="PZ4uvg"
@@ -497,6 +494,7 @@
                 id="Ibrvlw" name="JsGlobalEnvironment.cpp" resource="0"/>
           <FILE compile="0" file="Source/Scripting/Js/JsGlobalEnvironment.h"
                 id="PNy06u" name="JsGlobalEnvironment.h" resource="0"/>
+          <FILE id="MtzryC" name="JsHelpers.cpp" compile="1" resource="0" file="Source/Scripting/Js/JsHelpers.cpp"/>
           <FILE compile="0" file="Source/Scripting/Js/JsHelpers.h" id="WuXz4a"
                 name="JsHelpers.h" resource="0"/>
         </GROUP>
@@ -510,6 +508,7 @@
               name="NodeChildProofer.cpp" resource="0"/>
       </GROUP>
       <GROUP id="{ED4CCFF9-43D5-64BD-A2D6-39CFD039E6B0}" name="Time">
+        <FILE id="nQSRZm" name="LinkImpl.hpp" compile="0" resource="0" file="Source/Time/LinkImpl.hpp"/>
         <FILE compile="1" file="Source/Time/TimeManager.cpp" id="VcFFPP" name="TimeManager.cpp"
               resource="0"/>
         <FILE compile="0" file="Source/Time/TimeManager.h" id="a3Z4Kc" name="TimeManager.h"
@@ -524,6 +523,10 @@
               name="TimeMasterCandidate.h" resource="0"/>
       </GROUP>
       <GROUP id="{02F30C9F-B8EE-F4A9-F9F8-5309911C4D05}" name="UI">
+        <FILE id="KM6eDx" name="StackedContainerUI.cpp" compile="1" resource="0"
+              file="Source/UI/StackedContainerUI.cpp"/>
+        <FILE id="U23xRa" name="StackedContainerUI.h" compile="0" resource="0"
+              file="Source/UI/StackedContainerUI.h"/>
         <FILE id="VZcR0o" name="AppPropertiesUI.cpp" compile="1" resource="0"
               file="Source/UI/AppPropertiesUI.cpp"/>
         <FILE id="uXtuKD" name="AppPropertiesUI.h" compile="0" resource="0"
@@ -623,6 +626,14 @@
         </GROUP>
       </GROUP>
       <GROUP id="{8DA61DCB-02FE-2339-7E79-2A3547284A18}" name="Utils">
+        <FILE id="ZBrDOG" name="GlobalKeyListener.cpp" compile="1" resource="0"
+              file="Source/Utils/GlobalKeyListener.cpp"/>
+        <FILE id="sVbTnG" name="GlobalKeyListener.h" compile="0" resource="0"
+              file="Source/Utils/GlobalKeyListener.h"/>
+        <FILE id="KPMV0Q" name="HeadlessWrappers.h" compile="0" resource="0"
+              file="Source/Utils/HeadlessWrappers.h"/>
+        <FILE id="FYsUWY" name="FactoryUIHelpers.cpp" compile="1" resource="0"
+              file="Source/Utils/FactoryUIHelpers.cpp"/>
         <FILE id="LxYBN2" name="AutoUpdater.cpp" compile="1" resource="0" file="Source/Utils/AutoUpdater.cpp"/>
         <FILE id="mwaNCH" name="AutoUpdater.h" compile="0" resource="0" file="Source/Utils/AutoUpdater.h"/>
         <FILE compile="0" file="Source/Utils/FactoryUIHelpers.h" id="qi3kyB"
@@ -671,6 +682,8 @@
       <FILE id="RhPCNk" name="JuceHeaderUI.h" compile="0" resource="0" file="Source/JuceHeaderUI.h"/>
       <FILE compile="1" file="Source/Main.cpp" id="zO82Cw" name="Main.cpp"
             resource="0"/>
+      <FILE id="svlAPQ" name="Version.cpp" compile="1" resource="0" file="Source/Version.cpp"/>
+      <FILE id="Czij22" name="Version.h" compile="0" resource="0" file="Source/Version.h"/>
     </GROUP>
     <GROUP id="{4ECB17E4-3FE1-7FC4-41D8-E3545696264E}" name="third_party">
       <GROUP id="{ECEFEFCB-D0B9-57BA-D46A-FD221094E9C7}" name="serial">
@@ -711,24 +724,23 @@
   </MAINGROUP>
   <EXPORTFORMATS>
     <XCODE_MAC bigIcon="jsU7Hw" documentExtensions="lgml" externalLibraries=""
-               extraCompilerFlags="-Wno-reorder&#10;-I../../third_party/serial/include&#10;-I../../third_party/rubberband/&#10;-I../../third_party/link/include/&#10;-I../../third_party/link/modules/asio-standalone/asio/include"
-               extraDefs="LINK_PLATFORM_MACOSX=1&#10;" extraLinkerFlags="../../third_party/rubberband/lib/librubberband.a"
+               extraCompilerFlags="-Wno-reorder&#10;&#10;&#10;" extraDefs="LINK_PLATFORM_MACOSX=1&#10;"
+               extraLinkerFlags="../../third_party/rubberband/lib/librubberband.a"
                keepCustomXcodeSchemes="1" postbuildCommand="" prebuildCommand=""
                smallIcon="jsU7Hw" targetFolder="Builds/MacOSX" vst3Folder="third_party/VST3_SDK"
-               vstFolder="">
+               vstFolder="" microphonePermissionNeeded="1" xcodeSubprojects="third_party/libpd/libpd.xcodeproj:libpd-osx-multi">
       <CONFIGURATIONS>
         <CONFIGURATION binaryPath="" cppLanguageStandard="c++11" cppLibType="libc++"
                        headerPath="" isDebug="0" linkTimeOptimisation="1" name="Release"
                        optimisation="3" osxArchitecture="32BitUniversal" osxCompatibility="10.8 SDK"
-                       osxSDK="default" targetName="LGML" enablePluginBinaryCopyStep="1"/>
-        <CONFIGURATION cppLanguageStandard="c++11" cppLibType="libc++" customXcodeFlags="ONLY_ACTIVE_ARCH=1, GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE"
+                       targetName="LGML" enablePluginBinaryCopyStep="1"/>
+        <CONFIGURATION cppLanguageStandard="c++11" cppLibType="libc++" customXcodeFlags="ONLY_ACTIVE_ARCH=1,GCC_PRECOMPILE_PREFIX_HEADER=1,GCC_PREFIX_HEADER=PrefixHeader.pch"
                        defines="" headerPath="" isDebug="1" name="Debug" osxArchitecture="32BitUniversal"
-                       osxCompatibility="10.7 SDK" osxSDK="default" targetName="LGML"
-                       enablePluginBinaryCopyStep="1"/>
+                       osxCompatibility="10.7 SDK" targetName="LGML" enablePluginBinaryCopyStep="1"/>
         <CONFIGURATION cppLanguageStandard="c++11" cppLibType="libc++" customXcodeFlags="ONLY_ACTIVE_ARCH=1"
                        defines="LGML_UNIT_TESTS=1&#10;" headerPath="../../Source" isDebug="1"
                        name="Test" osxArchitecture="32BitUniversal" osxCompatibility="10.7 SDK"
-                       osxSDK="default" targetName="LGML_Debug" enablePluginBinaryCopyStep="1"/>
+                       targetName="LGML_Debug" enablePluginBinaryCopyStep="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../JUCE/modules"/>
@@ -745,33 +757,66 @@
         <MODULEPATH id="juce_audio_processors" path="../JUCE/modules"/>
         <MODULEPATH id="juce_audio_utils" path="../JUCE/modules"/>
         <MODULEPATH id="juce_osc" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="../JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
-    <VS2015 bigIcon="SL4b92" externalLibraries="setupapi.lib&#10;rubberband-library.lib"
-            extraDefs="LINK_PLATFORM_WINDOWS=1" smallIcon="SL4b92" targetFolder="Builds/VisualStudio2015"
-            vst3Folder="third_party/VST3_SDK" vstFolder="D:\Documents\Ressources\SDKs\VST3 SDK"
-            windowsTargetPlatformVersion="8.1">
+    <XCODE_IPHONE targetFolder="Builds/iOS" iosScreenOrientation="portraitlandscape"
+                  iPadScreenOrientation="portraitlandscape" iosDeviceFamily="1,2"
+                  vst3Folder="third_party/VST3_SDK" extraCompilerFlags="-Wno-reorder"
+                  extraLinkerFlags="../../third_party/rubberband/lib/librubberband.a"
+                  extraDefs="LINK_PLATFORM_IOS=1&#10;" microphonePermissionNeeded="1"
+                  iosBackgroundAudio="1" iosBackgroundBle="1" extraFrameworks=" IOKit">
       <CONFIGURATIONS>
-        <CONFIGURATION defines="" generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"
-                       isDebug="1" libraryPath="..\..\third_party\rubberband\Debug_x64"
-                       name="Debug" optimisation="1" targetName="LGML_x64_Debug" winArchitecture="x64"
+        <CONFIGURATION name="Debug" enablePluginBinaryCopyStep="1" isDebug="1" optimisation="1"
+                       linkTimeOptimisation="0" targetName="LGML"/>
+        <CONFIGURATION name="Release" enablePluginBinaryCopyStep="1" isDebug="0" optimisation="3"
+                       linkTimeOptimisation="1" targetName="LGML"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_osc" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_cryptography" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="../JUCE/modules"/>
+      </MODULEPATHS>
+    </XCODE_IPHONE>
+    <VS2015 bigIcon="SL4b92" externalLibraries="setupapi.lib&#10;rubberband-library.lib&#10;libpd-multi-static.lib&#10;pthread.lib"
+            extraDefs="LINK_PLATFORM_WINDOWS=1&#10;PTW32_STATIC_LIB=1&#10;PD_INTERNAL=1"
+            smallIcon="SL4b92" targetFolder="Builds/VisualStudio2015" vst3Folder="third_party/VST3_SDK"
+            vstFolder="D:\Documents\Ressources\SDKs\VST3 SDK" windowsTargetPlatformVersion="8.1">
+      <CONFIGURATIONS>
+        <CONFIGURATION defines="" generateManifest="1" headerPath="$(ASIOSDK)\common"
+                       isDebug="1" libraryPath="..\..\third_party\rubberband\Debug_x64&#10;..\..\third_party\libpdBuild"
+                       name="Debug" optimisation="1" targetName="LGML" winArchitecture="x64"
                        winWarningLevel="4" debugInformationFormat="ProgramDatabase"
-                       enablePluginBinaryCopyStep="0"/>
-        <CONFIGURATION generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"
-                       isDebug="0" libraryPath="..\..\third_party\rubberband\Release_x64"
-                       name="Release" optimisation="3" targetName="LGML_x64" winArchitecture="x64"
+                       enablePluginBinaryCopyStep="0" useRuntimeLibDLL="0"/>
+        <CONFIGURATION defines="" generateManifest="1" headerPath="$(ASIOSDK)\common"
+                       isDebug="1" libraryPath="..\..\third_party\rubberband\Debug&#10;..\..\third_party\libpdBuild"
+                       name="Debug32" optimisation="1" targetName="LGML" winArchitecture="Win32"
                        winWarningLevel="4" debugInformationFormat="ProgramDatabase"
-                       enablePluginBinaryCopyStep="0" linkTimeOptimisation="1" alwaysGenerateDebugSymbols="0"/>
-        <CONFIGURATION generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"
-                       isDebug="1" libraryPath="..\..\third_party\rubberband\Debug"
-                       name="Debug_32bit" optimisation="1" targetName="LGML_32_Debug"
-                       winArchitecture="Win32" winWarningLevel="4" debugInformationFormat="ProgramDatabase"
-                       enablePluginBinaryCopyStep="0"/>
-        <CONFIGURATION generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"
-                       isDebug="0" libraryPath="..\..\third_party\rubberband\Release"
-                       name="Release_32bit" optimisation="3" targetName="LGML_32" winArchitecture="Win32"
+                       enablePluginBinaryCopyStep="0" useRuntimeLibDLL="0"/>
+        <CONFIGURATION generateManifest="1" headerPath="$(ASIOSDK)\common" isDebug="0"
+                       libraryPath="..\..\third_party\rubberband\Release_x64&#10;..\..\third_party\libpdBuild"
+                       name="Release" optimisation="3" targetName="LGML" winArchitecture="x64"
                        winWarningLevel="4" debugInformationFormat="ProgramDatabase"
-                       enablePluginBinaryCopyStep="0" linkTimeOptimisation="1"/>
+                       enablePluginBinaryCopyStep="0" linkTimeOptimisation="1" alwaysGenerateDebugSymbols="1"
+                       useRuntimeLibDLL="0"/>
+        <CONFIGURATION generateManifest="1" headerPath="$(ASIOSDK)\common" isDebug="0"
+                       libraryPath="..\..\third_party\rubberband\Release&#10;..\..\third_party\libpdBuild"
+                       name="Release32" optimisation="3" targetName="LGML" winArchitecture="Win32"
+                       winWarningLevel="4" debugInformationFormat="ProgramDatabase"
+                       enablePluginBinaryCopyStep="0" linkTimeOptimisation="1" alwaysGenerateDebugSymbols="1"
+                       useRuntimeLibDLL="0"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../JUCE/modules"/>
@@ -788,13 +833,14 @@
         <MODULEPATH id="juce_audio_processors" path="../JUCE/modules"/>
         <MODULEPATH id="juce_audio_utils" path="../JUCE/modules"/>
         <MODULEPATH id="juce_osc" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="../JUCE/modules"/>
       </MODULEPATHS>
     </VS2015>
     <LINUX_MAKE bigIcon="SL4b92" cppLanguageStandard="-std=c++11" externalLibraries="rubberband&#10;dns_sd"
-                extraCompilerFlags="-Wno-reorder&#10;-I../../third_party/serial/include&#10;-I../../third_party/rubberband/&#10;-I../../third_party/link/include/&#10;-I../../third_party/link/modules/asio-standalone/asio/include"
-                extraDefs="LINK_PLATFORM_LINUX=1&#10;JUCE_PLUGINHOST_LADSPA=1"
-                extraLinkerFlags="" smallIcon="SL4b92" targetFolder="Builds/LinuxMakefile"
-                vst3Folder="third_party/VST3_SDK" vstFolder="/home/tinmar/SDKs/VST3 SDK">
+                extraCompilerFlags="-Wno-reorder -fPIC" extraDefs="LINK_PLATFORM_LINUX=1&#10;JUCE_PLUGINHOST_LADSPA=1"
+                extraLinkerFlags="../../third_party/libpdBuild/libpd-multi.a"
+                smallIcon="SL4b92" targetFolder="Builds/LinuxMakefile" vst3Folder="third_party/VST3_SDK"
+                vstFolder="/home/tinmar/SDKs/VST3 SDK">
       <CONFIGURATIONS>
         <CONFIGURATION headerPath="../../Source&#10;" isDebug="1" libraryPath="/usr/X11R6/lib/"
                        linuxArchitecture="" name="Debug" optimisation="5" targetName="LGML"/>
@@ -817,6 +863,7 @@
         <MODULEPATH id="juce_audio_formats" path="../JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../JUCE/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="../JUCE/modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
     <CLION targetFolder="Builds/CLion" clionXcodeEnabled="1" clionMakefileEnabled="1">
@@ -835,22 +882,34 @@
         <MODULEPATH id="juce_audio_formats" path="../JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../JUCE/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="../JUCE/modules"/>
       </MODULEPATHS>
     </CLION>
     <VS2017 targetFolder="Builds/VisualStudio2017" vst3Folder="third_party/VST3_SDK"
             windowsTargetPlatformVersion="10.0.16299.0" extraDefs="LINK_PLATFORM_WINDOWS=1"
-            externalLibraries="setupapi.lib&#10;rubberband-library.lib" smallIcon="SL4b92"
-            bigIcon="SL4b92">
+            externalLibraries="setupapi.lib&#10;rubberband-library.lib&#10;libpd-multi.lib"
+            smallIcon="SL4b92" bigIcon="SL4b92" toolset="v141">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
-                       linkTimeOptimisation="0" isDebug="1" optimisation="1" targetName="LGML_x64_Debug"
-                       headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"
-                       libraryPath="..\..\third_party\rubberband\Debug_x64"/>
+                       linkTimeOptimisation="0" isDebug="1" optimisation="1" targetName="LGML"
+                       headerPath="$(ASIOSDK)\common" libraryPath="..\..\third_party\rubberband\Debug_x64&#10;..\..\third_party\libpd\build"
+                       useRuntimeLibDLL="0"/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
                        linkTimeOptimisation="1" isDebug="0" optimisation="3" targetName="LGML"
-                       libraryPath="..\..\third_party\rubberband\Release_x64" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"/>
+                       libraryPath="..\..\third_party\rubberband\Release_x64&#10;..\..\third_party\libpd\build"
+                       headerPath="$(ASIOSDK)\common" useRuntimeLibDLL="0"/>
+        <CONFIGURATION name="Debug32" winWarningLevel="4" generateManifest="1" winArchitecture="Win32"
+                       debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
+                       linkTimeOptimisation="0" isDebug="1" targetName="LGML" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"
+                       libraryPath="..\..\third_party\rubberband\Debug&#10;..\..\third_party\libpd\build"
+                       useRuntimeLibDLL="0"/>
+        <CONFIGURATION name="Release32" winWarningLevel="4" generateManifest="1" winArchitecture="Win32"
+                       debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
+                       linkTimeOptimisation="1" targetName="LGML" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"
+                       libraryPath="..\..\third_party\rubberband\Release&#10;..\..\third_party\libpd\build"
+                       isDebug="0" useRuntimeLibDLL="0"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_osc" path="../JUCE/modules"/>
@@ -867,6 +926,7 @@
         <MODULEPATH id="juce_audio_formats" path="../JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../JUCE/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="../JUCE/modules"/>
       </MODULEPATHS>
     </VS2017>
   </EXPORTFORMATS>
@@ -879,6 +939,7 @@
     <MODULE id="juce_core" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_cryptography" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_dsp" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_events" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0"/>
@@ -886,13 +947,12 @@
     <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_osc" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
-  <JUCEOPTIONS JUCE_ALSA="enabled" JUCE_ASIO="enabled" JUCE_DIRECTSOUND="enabled"
-               JUCE_JACK="enabled" JUCE_LOG_ASSERTIONS="enabled" JUCE_PLUGINHOST_AU="enabled"
-               JUCE_PLUGINHOST_VST="enabled" JUCE_PLUGINHOST_VST3="enabled"
-               JUCE_USE_CDBURNER="disabled" JUCE_USE_CDREADER="disabled" JUCE_USE_FLAC="enabled"
-               JUCE_USE_LAME_AUDIO_FORMAT="enabled" JUCE_USE_MP3AUDIOFORMAT="enabled"
-               JUCE_USE_OGGVORBIS="enabled" JUCE_USE_WINDOWS_MEDIA_FORMAT="enabled"
-               JUCE_WASAPI="enabled" JUCE_WEB_BROWSER="disabled"/>
+  <JUCEOPTIONS JUCE_ALSA="1" JUCE_ASIO="1" JUCE_DIRECTSOUND="1" JUCE_JACK="1"
+               JUCE_LOG_ASSERTIONS="1" JUCE_PLUGINHOST_AU="1" JUCE_PLUGINHOST_VST3="1"
+               JUCE_USE_CDBURNER="0" JUCE_USE_CDREADER="0" JUCE_USE_FLAC="1"
+               JUCE_USE_LAME_AUDIO_FORMAT="1" JUCE_USE_MP3AUDIOFORMAT="1" JUCE_USE_OGGVORBIS="1"
+               JUCE_USE_WINDOWS_MEDIA_FORMAT="1" JUCE_WASAPI="1" JUCE_WEB_BROWSER="0"
+               JUCE_PLUGINHOST_LADSPA="1" JUCE_PLUGINHOST_VST="1"/>
   <LIVE_SETTINGS>
     <WINDOWS headerPath="..\..\External\serial\include"/>
     <OSX/>

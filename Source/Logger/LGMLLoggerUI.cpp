@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,12 +16,13 @@
  ==============================================================================
  */
 
+#if !ENGINE_HEADLESS
 #include "LGMLLoggerUI.h"
 #include "../UI/Style.h"
 
-#include "JuceHeader.h" // for version
+#include "../Engine.h" //for version
 
-
+static String EmptyString;
 void LGMLLoggerUI::newMessage (const String& s)
 {
     LogElement* el = new LogElement (s);
@@ -34,7 +35,16 @@ void LGMLLoggerUI::newMessage (const String& s)
 
     //bool overFlow = false;
 
-    if (totalLogRow > maxNumElement)
+    //coalesce messages
+    if(!Timer::isTimerRunning()){
+        startTimer(200);
+    }
+
+};
+void LGMLLoggerUI::timerCallback()
+{
+    stopTimer();
+    if (totalLogRow.get() > maxNumElement)
     {
         int curCount = 0;
         int idxToRemove = -1;
@@ -57,39 +67,49 @@ void LGMLLoggerUI::newMessage (const String& s)
         }
 
         if (idxToRemove >= 0)logElements.removeRange (0, idxToRemove + 1);
-
+        
         totalLogRow = maxNumElement;
-
-
+        
+        
     }
-
-    //coalesce messages
-    triggerAsyncUpdate();
-
-};
-void LGMLLoggerUI::handleAsyncUpdate()
-{
     //DBG("Handle Async Update");
-    logListComponent->updateContent();
-    logListComponent->scrollToEnsureRowIsOnscreen (totalLogRow - 1);
-    repaint();
+//    auto cTime = Time::getMillisecondCounter();
+//    if(cTime - lastUpdateTime < 500 ){
+//        triggerAsyncUpdate();
+//    }
+//    else{
+//        lastUpdateTime = cTime;
+
+        logListComponent->updateContent();
+        logListComponent->scrollToEnsureRowIsOnscreen (totalLogRow.get() - 1);
+#if USE_CACHED_GLYPH
+        logList.cleanUnusedGlyphs();
+#endif
+        repaint();
+
+
+//    }
 }
 
 LGMLLoggerUI::LGMLLoggerUI (const String& contentName, LGMLLogger* l) :
 logger (l),
-ShapeShifterContentComponent (contentName),
+ShapeShifterContentComponent (contentName,
+                              "See events occuring in LGML"),
 logList (this),
-maxNumElement (1000),
-totalLogRow (0)
+maxNumElement (100),
+totalLogRow (0),
+lastUpdateTime(0)
 {
+    
     logger->addLogListener (this);
     TableHeaderComponent* thc = new TableHeaderComponent();
-    thc->addColumn ("Time", 1, 60);
-    thc->addColumn ("Source", 2, 80);
-    thc->addColumn ("Content", 3, 400);
+    thc->addColumn (juce::translate("Time"), 1, 60);
+    thc->addColumn (juce::translate("Source"), 2, 80);
+    thc->addColumn (juce::translate("Content"), 3, 400);
 
 
     logListComponent = new TableListBox ("LGMLLogger", &logList);
+    logListComponent->setOpaque(true);
     logListComponent->setRowHeight (13);
     logListComponent->setHeaderHeight (20);
     logListComponent->getViewport()->setScrollBarThickness (10);
@@ -98,31 +118,32 @@ totalLogRow (0)
     logListComponent->setHeader (thc);
     addAndMakeVisible (logListComponent);
 
-    LOG ("LGML v" + String (ProjectInfo::versionString) + " : (" + String (Time::getCompilationDate().formatted("%d/%m/%y (%R)")) + ")" + "\nby OrganicOrchestra");
+    LOG (l->getWelcomeMessage());
 #if USE_FILE_LOGGER
-    LOG ("please provide logFile for any bug report :\nlogFile in " + l->fileWriter.getFilePath());
+    LOG (juce::translate("please provide logFile for any bug report :\nlogFile in 123").replace("123", l->fileWriter.getFilePath()));
 #endif
-    clearB.setButtonText ("Clear");
+    clearB.setButtonText (juce::translate("Clear"));
     clearB.addListener (this);
     addAndMakeVisible (clearB);
 
-    copyB.setButtonText("Copy to Clipboard");
+    copyB.setButtonText(juce::translate("Copy to Clipboard"));
     copyB.addListener(this);
     addAndMakeVisible(copyB);
 
 }
 
+
 LGMLLoggerUI::~LGMLLoggerUI()
 {
-    handleAsyncUpdate();
+    stopTimer();
     //        logListComponent.setModel(nullptr);
     logger->removeLogListener (this);
 }
 
 void LGMLLoggerUI::resized()
 {
-
-    Rectangle<int> area = getLocalBounds();
+    ShapeShifterContentComponent::resized();
+    Rectangle<int> area = getLocalBounds().withTop(5);
     auto footer =area.removeFromBottom (30).reduced (5);
     clearB.setBounds (footer.removeFromLeft(footer.getWidth()/2).reduced(2));
     copyB.setBounds(footer.reduced(2));
@@ -160,7 +181,7 @@ const String& LGMLLoggerUI::getSourceForRow (const int r) const
     if(auto el = getElementForRow(r)){
         return el->source;
     }
-    return String::empty;
+    return EmptyString;
 }
 const bool LGMLLoggerUI::isPrimaryRow (const int r) const
 {
@@ -200,7 +221,7 @@ const String&   LGMLLoggerUI::getContentForRow (const int r) const
         idx++;
     }
 
-    return String::empty;
+    return EmptyString;
 };
 
 const LogElement* LGMLLoggerUI::getElementForRow(const int r) const{
@@ -232,7 +253,7 @@ const String  LGMLLoggerUI::getTimeStringForRow (const int r) const
         return String (el->time.toString (false, true, true, true));
     }
 
-    return String::empty;
+    return "";
 };
 
 const Colour& LGMLLoggerUI::getSeverityColourForRow (const int r) const
@@ -271,14 +292,14 @@ const Colour& LGMLLoggerUI::getSeverityColourForRow (const int r) const
 //////////////
 // logList
 
-LGMLLoggerUI::LogList::LogList (LGMLLoggerUI* o) : owner (o)
+LGMLLoggerUI::LogList::LogList (LGMLLoggerUI* o) : owner (o),minRow(0),maxRow(0)
 {
 }
 
 int LGMLLoggerUI::LogList::getNumRows()
 {
 
-    return owner->totalLogRow;
+    return owner->totalLogRow.get();
 };
 
 void LGMLLoggerUI::LogList::paintRowBackground (Graphics& g,
@@ -291,24 +312,31 @@ void LGMLLoggerUI::LogList::paintRowBackground (Graphics& g,
     g.fillRect (0, 0, width, height);
 };
 
+
+// use as function to prevent juce leak detection
+const Font  getLogFont(){
+    static Font  f(12);
+    return f;
+}
 void LGMLLoggerUI::LogList::paintCell (Graphics& g,
                                        int rowNumber,
                                        int columnId,
                                        int width, int height,
                                        bool)
 {
-    g.setFont (12);
+
     g.setColour (owner->findColour (Label::textColourId));
     String text;
+
 
     switch (columnId)
     {
         case 1:
-            text = owner->isPrimaryRow(rowNumber)?owner->getTimeStringForRow (rowNumber):String::empty;
+            text = owner->isPrimaryRow(rowNumber)?owner->getTimeStringForRow (rowNumber):"";
             break;
 
         case 2:
-            text = owner->isPrimaryRow(rowNumber)?owner->getSourceForRow (rowNumber):String::empty;
+            text = owner->isPrimaryRow(rowNumber)?owner->getSourceForRow (rowNumber):"";
             break;
 
         case 3:
@@ -316,7 +344,25 @@ void LGMLLoggerUI::LogList::paintCell (Graphics& g,
             break;
     }
 
-    g.drawFittedText (text, 0, 0, width, height, Justification::left, 1);
+#if USE_CACHED_GLYPH
+    if(cachedG.contains(text)){
+        auto & cg  = cachedG.getReference(text);
+        cg.paint(g);
+        return;
+    }
+
+
+    auto & cg  = cachedG.getReference(text);
+    cg.setFont(getLogFont());
+    cg.setText(text);
+    cg.setSize(width, height);
+    cg.paint(g);
+#else
+    g.setFont (getLogFont());
+
+    g.drawText(text, 0, 0, width,height, Justification::left,true);
+#endif
+//    g.drawFittedText (text, 0, 0, width, height, Justification::left, 1);
 
 };
 
@@ -327,23 +373,53 @@ String LGMLLoggerUI::LogList::getCellTooltip (int rowNumber, int /*columnId*/)
     String sR = el->source;
     return
     (sR.isNotEmpty()?
-     sR +" ("+el->time.toString(false, true, true, true)+")"+ "\n":String::empty)
+     sR +" ("+el->time.toString(false, true, true, true)+")"+ "\n":"")
     +(el->getNumLines()< 10?el->content:owner->getSourceForRow(rowNumber));
 
 
 };
 
+#if USE_CACHED_GLYPH
+void LGMLLoggerUI::LogList::cleanUnusedGlyphs(){
+    int nminRow = owner->logListComponent->getRowContainingPosition (1,1);
+    int nmaxRow = owner->logListComponent->getRowContainingPosition (1, owner->logListComponent->getHeight());
+    if(nminRow==-1)return;
+    if(nmaxRow==-1)nmaxRow = owner->totalLogRow.get();
+
+    int min=0,max=0;
+    if(nminRow>minRow){
+        min = minRow;max=nminRow;
+    }
+    if(nmaxRow<maxRow){
+        min = nmaxRow;max = maxRow;
+    }
+
+    for(int i = min; i < max ; i++){
+        cachedG.remove(owner->getContentForRow (i));
+        if(owner->isPrimaryRow(i)){
+            cachedG.remove(owner->getSourceForRow (i));
+            cachedG.remove(owner->getTimeStringForRow(i));
+        }
+    }
+
+    minRow = nminRow;
+    maxRow = nmaxRow;
+
+
+}
+#endif
+
 void LGMLLoggerUI::buttonClicked (Button* b)
 {
-    
+
     if (b == &clearB)
     {
         logElements.clear();
         totalLogRow = 0;
         logListComponent->updateContent();
-        LOG ("Cleared.");
+        LOG (juce::translate("Cleared."));
     }
-
+    
     else if (b == &copyB){
         String s;
         for(auto & el: logElements){
@@ -357,3 +433,4 @@ void LGMLLoggerUI::buttonClicked (Button* b)
         SystemClipboard::copyTextToClipboard (s);
     }
 }
+#endif

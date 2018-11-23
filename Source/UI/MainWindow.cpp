@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,27 +16,31 @@
  ==============================================================================
  */
 
+#if !ENGINE_HEADLESS
+
 #include "MainWindow.h"
 #include "MainComponent.h"
 #include "../Engine.h"
 
-#include "JuceHeader.h" // for ProjectInfo
+
 #include "../Utils/AutoUpdater.h"
 
 
 MainContentComponent* createMainContentComponent (Engine* e);
 MainWindow::~MainWindow(){
+    LGMLDragger::deleteInstance();
     stopTimer();
     latestVChecker = nullptr;
+    getAppUndoManager().removeChangeListener(this);
 }
 
 
 MainWindow::MainWindow (String name, Engine* e)  :
-    DocumentWindow (name,Colours::lightgrey,DocumentWindow::allButtons),
-    latestVChecker(nullptr)
+DocumentWindow (name,Colours::lightgrey,DocumentWindow::allButtons),
+latestVChecker(nullptr)
 {
 
-
+    getAppUndoManager().addChangeListener(this);
     mainComponent = createMainContentComponent (e);
     setContentOwned (mainComponent, false);
     // shapeshifter does'nt handle well if size are really small (under its min Size)
@@ -44,11 +48,11 @@ MainWindow::MainWindow (String name, Engine* e)  :
     getConstrainer()->setMinimumOnscreenAmounts(100, 100, 100, 100);
 
 #ifdef JUCE_LINUX
-    // lots of bug with nativetitlebar on ubuntu  \
-    - no display            \
-    - wrong rebuilding of windows position / size \
-    - double clicks sent to titlebar
-
+    /* lots of bug with nativetitlebar on ubuntu
+     - no display
+     - wrong rebuilding of windows position / size
+     - double clicks sent to titlebar
+     */
     setUsingNativeTitleBar (false);
 
 #else
@@ -60,7 +64,7 @@ MainWindow::MainWindow (String name, Engine* e)  :
     setMenuBar (mainComponent);
 #endif
 
-#if JUCE_OPENGL && USE_GL
+#if USE_GL
     openGLContext.setContinuousRepainting (false);
     openGLContext.attachTo (*getTopLevelComponent());
 #endif
@@ -92,15 +96,19 @@ MainWindow::MainWindow (String name, Engine* e)  :
     LGMLDragger::getInstance()->setMainComponent (mainComponent);
 
 
-    startTimer (10000);
+    startTimer (4000);
 
 
 }
-void MainWindow::focusGained (FocusChangeType cause)
+void MainWindow::focusGained (FocusChangeType /*cause*/)
 {
     //mainComponent->grabKeyboardFocus();
 
 }
+
+void MainWindow::changeListenerCallback (ChangeBroadcaster* /*source*/) {
+    getEngine()->setChangedFlag(getAppUndoManager().canUndo());
+};
 
 
 void MainWindow::closeButtonPressed()
@@ -109,35 +117,35 @@ void MainWindow::closeButtonPressed()
     // ask the app to quit when this happens, but you can change this to do
     // whatever you need.
 
-    //@martin added but commented for testing (relou behavior)
-    int result = AlertWindow::showYesNoCancelBox (AlertWindow::QuestionIcon, "Save document", "Do you want to save the document before quitting ?");
+    if(getEngine()->hasChangedSinceSaved()){
+        int result = AlertWindow::showYesNoCancelBox (AlertWindow::QuestionIcon, juce::translate("Save document"), juce::translate("Do you want to save the document before quitting ?"));
 
-    if (result == 0)  return; //prevent exit
+        if (result == 0)  return; //prevent exit
 
-    if (result == 1)
-    {
-        juce::FileBasedDocument::SaveResult sr = getEngine()->save (true, true);
-
-        switch (sr)
+        if (result == 1)
         {
-            case juce::FileBasedDocument::SaveResult::userCancelledSave:
-            case juce::FileBasedDocument::SaveResult::failedToWriteToFile:
-                return;
+            juce::FileBasedDocument::SaveResult sr = getEngine()->save (true, true);
 
-            case FileBasedDocument::SaveResult::savedOk:
-                break;
+            switch (sr)
+            {
+                case juce::FileBasedDocument::SaveResult::userCancelledSave:
+                case juce::FileBasedDocument::SaveResult::failedToWriteToFile:
+                    return;
+
+                case FileBasedDocument::SaveResult::savedOk:
+                    break;
+            }
         }
     }
 
-
     var boundsVar = var (new DynamicObject());
-    Rectangle<int> r = getScreenBounds();
+
 
     getAppProperties()->getCommonSettings (true)->setValue ("winSettings", getWindowStateAsString());
     getAppProperties()->getCommonSettings (true)->saveIfNeeded();
 
 
-#if JUCE_OPENGL && USE_GL
+#if USE_GL
     openGLContext.detach();
 #endif
     JUCEApplication::getInstance()->systemRequestedQuit();
@@ -155,9 +163,10 @@ void MainWindow::timerCallback()
         latestVChecker = nullptr;
     }
     setName (getEngine()->getDocumentTitle() + " : LGML "
-             + String (ProjectInfo::versionString) + String (" (CPU : ") +
-             String ((int) (getAudioDeviceManager().getCpuUsage() * 100)) + String ("%)"));
+             + Engine::versionString + String (" (CPU : ") +
+             String ((int) getEngine()->engineStats->getAudioCPU()) + String ("%)"));
 }
 
 
 
+#endif

@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@
  ==============================================================================
  */
 
+#if !ENGINE_HEADLESS
 #include "FastMapUI.h"
 #include "../Controllable/Parameter/UI/ParameterUIFactory.h"
 #include "FastMapper.h"
@@ -65,7 +66,7 @@ FastMapUI (FastMap* f) :
     linkedParamChanged (f->referenceIn);
     linkedParamChanged (f->referenceOut);
 
-    setSize (100, 40);
+//    setSize (100, 40);
 }
 
 FastMapUI::~FastMapUI()
@@ -119,10 +120,6 @@ void FastMapUI::buttonClicked (Button* b)
     if (b == &removeBT) FastMapper::getInstance()->removeFastmap (fastMap);
 }
 
-void FastMapUI::mouseDown (const MouseEvent&)
-{
-    selectThis();
-};
 
 
 void FastMapUI::linkedParamChanged (ParameterProxy* p )
@@ -145,3 +142,4 @@ void FastMapUI::linkedParamChanged (ParameterProxy* p )
         resized();
     }
 };
+#endif

@@ -27,7 +27,7 @@ class ShapeShifterPanel : public ShapeShifter, public ShapeShifterPanelHeader::L
 public:
     enum AttachZone { NONE, TOP, BOTTOM, LEFT, RIGHT, CENTER };
 
-    ShapeShifterPanel (ShapeShifterContent* innerComponent = nullptr, ShapeShifterPanelTab* sourceTab = nullptr);
+    explicit ShapeShifterPanel (ShapeShifterContent* innerComponent = nullptr, ShapeShifterPanelTab* sourceTab = nullptr);
     virtual ~ShapeShifterPanel();
 
     const int headerHeight = 20;
@@ -72,7 +72,7 @@ public:
 
     //Attach helpers
 
-    AttachZone checkAttachZone (ShapeShifterPanel* source);
+    AttachZone checkAttachZone(ShapeShifterPanel *source, Point<float> relativePoint);
     void setCandidateZone (AttachZone zone);
 
     virtual var getCurrentLayout() override;
@@ -100,7 +100,9 @@ public:
     ListenerList<Listener> listeners;
     void addShapeShifterPanelListener (Listener* newListener)
     {
-        if (header.tabs.size() > 0) DBG ("Panel, addListener (" << header.tabs[0]->content->contentName << ")");
+        if (header.tabs.size() > 0){
+            DBG ("Panel, addListener (" << header.tabs[0]->content->contentName << ")");
+        }
 
         listeners.add (newListener);
     }

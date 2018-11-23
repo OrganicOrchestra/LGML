@@ -1,9 +1,14 @@
+lgml (1.2.5-beta.2) xenial; urgency=medium
+
+  * true LGML1.2.5
+
+ -- martin Hermant <martin.hermant@gmail.com>  Tue, 30 Mar 2016 18:25:42 -0300
+
 lgml (1.2.5-beta.1) xenial; urgency=medium
 
   * remove hidden OSX files from tar
 
  -- martin Hermant <martin.hermant@gmail.com>  Tue, 30 Mar 2016 18:25:42 -0300
-
 
 lgml (1.2.4-beta.2) xenial; urgency=medium
 

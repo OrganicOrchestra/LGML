@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -21,26 +21,19 @@
 #include "../Logger/LGMLLogger.h"
 
 #include "../Utils/DebugHelpers.h"
+#include "../Utils/GlobalKeyListener.h"
 
 juce_ImplementSingleton (MIDIManager)
 
+#if !ENGINE_HEADLESS
+#include "../JuceHeaderUI.h" // for key listener
 class ComputerKeyboardMIDIDevice:public ReferenceCountedObject,private KeyListener {
 public:
     ComputerKeyboardMIDIDevice():octave(4){
-        if(ComponentPeer::getNumPeers()>0){
-            Component * mainComp =&ComponentPeer::getPeer(0)->getComponent();
-            mainComp->addKeyListener(this);
-        }
-        else{
-            LOG("!!! can't find component for computer keyboard ");
-        }
+        GlobalKeyListener::addTraversingListener(this);
     };
     ~ComputerKeyboardMIDIDevice(){
-        if(ComponentPeer::getNumPeers()>0){
-            Component * mainComp =&ComponentPeer::getPeer(0)->getComponent();
-
-            mainComp->removeKeyListener(this);
-        };
+        GlobalKeyListener::removeTraversingListener(this);
     }
     static String deviceName;
     void addMidiInputCallback(MidiInputCallback * cb){ midiCallbacks.add(cb);}
@@ -50,7 +43,7 @@ public:
         for (auto callback:midiCallbacks){callback->handleIncomingMidiMessage (nullptr, message);}
     }
 
-    int keyToPitch(int kc,int octave){
+    int keyToPitch(int kc){
 
         constexpr int numpitches = 12;
         static int pitches[numpitches] = {'q','z','s','e','d','f','t','g','y','h','u','j'};
@@ -62,22 +55,24 @@ public:
         return -1;
     }
     //==============================================================================
-    bool keyPressed (const KeyPress& key, Component* const /*originatingComponent*/)
+    bool keyPressed (const KeyPress& key, Component* /*originatingComponent*/) override
     {
         const uint32 time = Time::getMillisecondCounter();
         const char c = key.getTextCharacter();
         if(c=='w'){
             octave--;
             octave = jmax(octave,0);
-            LOG("computer keyboard octave = " << String(octave));
+            LOG(juce::translate("computer keyboard octave = ") << String(octave));
+            return true;
         }
         else if (c=='x'){
             octave++;
             octave = jmin(octave,8);
-            LOG("computer keyboard octave = " << String(octave));
+            LOG(juce::translate("computer keyboard octave = ") << String(octave));
+            return true;
         }
         else{
-            int note =keyToPitch(key.getTextCharacter(),octave);
+            int note =keyToPitch(key.getTextCharacter());
             int channel  = 1;
             static const uint8 vel = 127;
 
@@ -89,17 +84,20 @@ public:
                                            .withTimeStamp(time / 1000.));
 
                 keysDown.add(new KeyPressTime{key,note,time});
+                return true;
             }
         }
         return false;
     }
 
-    bool keyStateChanged (const bool /*isKeyDown*/, Component* /*originatingComponent*/)
+    bool keyStateChanged (const bool isKeyDown, Component* /*originatingComponent*/) override
     {
-
+        if(isKeyDown){return false;}
         const uint32 now = Time::getMillisecondCounter();
         int channel = 1;
+        
         int i = 0;
+        int nWasDown = 0;
         while(i < keysDown.size())
         {
             auto keyd = keysDown.getUnchecked(i);
@@ -115,12 +113,13 @@ public:
                 handleIncomingMidiMessage (MidiMessage::noteOff(channel,keyd->note,(uint8)0)
                                            .withTimeStamp(now / 1000.));
                 keysDown.remove(i);
+                nWasDown++;
             }
             i++;
         }
 
 
-        return false;
+        return nWasDown>0;
     }
 
 
@@ -138,7 +137,16 @@ public:
 };
 
 
-String ComputerKeyboardMIDIDevice::deviceName("ComputerKeyboard");
+#else
+class ComputerKeyboardMIDIDevice:public ReferenceCountedObject{
+public:
+    void addMidiInputCallback(MidiInputCallback * cb){jassertfalse;}
+    void removeMidiInputCallback(MidiInputCallback * cb){jassertfalse;}
+    static String deviceName;
+};
+#endif
+String ComputerKeyboardMIDIDevice::deviceName(juce::translate("Computer Keyboard"));
+
 
 constexpr int MIDICheckInterval(1000);
 MIDIManager::MIDIManager():computerKeyboardDevice(nullptr)
@@ -166,10 +174,9 @@ void MIDIManager::updateDeviceList (bool updateInput)
     StringArray deviceNames = updateInput ? MidiInput::getDevices() : MidiOutput::getDevices();
 
     StringArray sourceArray = updateInput ? inputDevices : outputDevices;
-
-    if(updateInput){
-        deviceNames.add(ComputerKeyboardMIDIDevice::deviceName);
-    }
+#if !ENGINE_HEADLESS
+    if(updateInput){deviceNames.add(ComputerKeyboardMIDIDevice::deviceName);}
+#endif
     StringArray devicesToAdd;
     StringArray devicesToRemove;
 
@@ -192,14 +199,14 @@ void MIDIManager::updateDeviceList (bool updateInput)
     {
         //    jassert(!d.contains("error"));
         listeners.call (updateInput ? &MIDIManagerListener::midiInputAdded : &MIDIManagerListener::midiOutputAdded, d);
-        NLOG ("MIDIManager", "MIDI " + String (updateInput ? "Input" : "Output") + " Added : " + d);
+        NLOG ("MIDIManager", juce::translate("MIDI 123 Added : 456").replace("123", updateInput ? "Input" : "Output").replace("456", d));
     }
 
     for (auto& d : devicesToRemove)
     {
         //    jassert(!d.contains("error"));
         listeners.call (updateInput ? &MIDIManagerListener::midiInputRemoved : &MIDIManagerListener::midiOutputRemoved, d);
-        NLOG ("MIDIManager", "MIDI " + String (updateInput ? "Input" : "Output") + " Removed : " + d);
+        NLOG ("MIDIManager",  juce::translate("MIDI 123 Removed : 456").replace("123", updateInput ? "Input" : "Output").replace("456", d));
     }
 
     if (devicesToAdd.size() > 0 || devicesToRemove.size() > 0)
@@ -266,13 +273,13 @@ MidiOutput* MIDIManager::enableOutputDevice (const String& deviceName)
 
     if (out)
     {
-        LOG ("Midi Out opened : " << out->getName());
+        LOG (juce::translate("Midi Out opened : ") << out->getName());
     }
     else
     {
         const String available ( inD.joinIntoString(", "));
 
-        LOG ("can't open MIDI out device : " << deviceName << "\navailable :" << available);
+        LOG (juce::translate("can't open MIDI out device : 123 \n available : 456").replace("123", deviceName).replace("456",available));
 
     }
 

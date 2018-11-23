@@ -29,26 +29,26 @@ class SerialController : public Controller, public JsEnvironment,
     public SerialManager::SerialManagerListener
 {
 public:
-    DECLARE_OBJ_TYPE_DEFAULTNAME (SerialController, "Serial");
+    DECLARE_OBJ_TYPE_DEFAULTNAME (SerialController, "Serial","access your serial ports");
     virtual ~SerialController();
 
     String lastOpenedPortID; //for ghosting
 
 
     EnumParameter* selectedPort;
-    BoolParameter * isConnected;
+
 //    StringParameter* selectedHardwareID;
     SerialPort* port;
-
+    EnumParameter * protocol;
 
     
-    void controllableAdded (ControllableContainer*, Controllable*) override;
-    void controllableRemoved (ControllableContainer*, Controllable*) override;
+    void childControllableAdded (ControllableContainer*, Controllable*) override;
+    void childControllableRemoved (ControllableContainer*, Controllable*) override;
     //Script
 
     BoolParameter* logIncoming;
 
-    void onContainerParameterChanged (Parameter* p) override;
+    void onContainerParameterChanged ( ParameterBase* p) override;
     void newJsFileLoaded() override;
 
 
@@ -80,7 +80,8 @@ public:
 
 private:
     void setCurrentPort (SerialPort* port);
-
+    void checkAndAddParameterIfNeeded (const StringArray& msg);
+    void applyProtocol();
 };
 
 

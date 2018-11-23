@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ class Controller;
 typedef FactoryBase<Controller> ControllerFactory;
 
 
-#define REGISTER_CONTROLLER_TYPE(T)  REGISTER_OBJ_TYPE(Controller,T);
+#define REGISTER_CONTROLLER_TYPE(T,NICENAME)  REGISTER_OBJ_TYPE(Controller,T,NICENAME);
 
 //#define REGISTER_CONTROLLER_TYPE_TEMPLATED(T,TT) REGISTER_OBJ_TYPE_TEMPLATED(NodeBase,T,TT);
 

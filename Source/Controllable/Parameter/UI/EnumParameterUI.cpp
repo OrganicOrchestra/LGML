@@ -11,13 +11,13 @@
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 *
 */
-
+#if !ENGINE_HEADLESS
 
 #include "EnumParameterUI.h"
 
+#include "../UndoableHelper.h"
 
-
-EnumParameterUI::EnumParameterUI (Parameter* parameter) :
+EnumParameterUI::EnumParameterUI ( ParameterBase* parameter) :
     ParameterUI (parameter),
     ep ((EnumParameter*)parameter),
     lastId (NoneId),
@@ -60,7 +60,7 @@ void EnumParameterUI::updateComboBox()
     if (EnumParameterModel* mod = ep->getModel())
     {
         int id = 1;
-        cb.addItem ("None", NoneId);
+        cb.addItem (juce::translate("None"), NoneId);
         NamedValueSet map = mod->getProperties();
         StringArray keys ;
         for(auto & k:map){
@@ -73,7 +73,7 @@ void EnumParameterUI::updateComboBox()
         {
             
 //            String key = kv.name.toString();
-            String displayed = key;//+" ["+kv.value.toString()+"]";
+            String displayed = juce::translate(key);//+" ["+kv.value.toString()+"]";
             cb.addItem (displayed, id);
             idKeyMap.set (id, key);
             keyIdMap.set (key, id);
@@ -89,8 +89,8 @@ void EnumParameterUI::updateComboBox()
 
     if (ep->isEditable)
     {
-        cb.addItem ("add " + ep->niceName, addElementId);
-        cb.addItem ("remove " + ep->niceName, removeElementId);
+        cb.addItem (juce::translate("add")+" " + ep->niceName, addElementId);
+        cb.addItem (juce::translate("remove")+" " + ep->niceName, removeElementId);
     }
 }
 
@@ -99,7 +99,7 @@ String EnumParameterUI::getCBSelectedKey()
     if (cb.getSelectedId() < 0)
     {
         jassertfalse;
-        return String::empty;
+        return "";
     }
 
     return idKeyMap[cb.getSelectedId()];
@@ -157,11 +157,12 @@ void EnumParameterUI::comboBoxChanged (ComboBox* c)
             {
                 jassert (ep->userCanEnterText);
                 ep->addOrSetOption (v, v, true);
-                ep->setValue (v);
+                UndoableHelpers::setValueUndoable(ep, v);
             }
             else
             {
-                ep->setValue(var::undefined());
+                UndoableHelpers::setValueUndoable(ep, var::undefined());
+
             }
         }
         else if (id == addElementId )
@@ -253,8 +254,8 @@ void EnumParameterUI::comboBoxChanged (ComboBox* c)
     }
     else
     {
-
-        ep->setValue (getCBSelectedKey());
+        UndoableHelpers::startNewTransaction(ep,true);
+        UndoableHelpers::setValueUndoable(ep,getCBSelectedKey());
     }
 };
 
@@ -278,3 +279,4 @@ void EnumParameterUI::selectString (const juce::String& s)
 }
 
 
+#endif

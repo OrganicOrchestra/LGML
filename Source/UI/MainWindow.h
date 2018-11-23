@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -19,14 +19,16 @@
 #pragma once
 #include "../JuceHeaderUI.h"
 #include "Style.h" // for USE_GL
-#include <juce_opengl/juce_opengl.h>
+
+
 #include "LGMLDragger.h"
 class LatestVersionChecker;
 
 class MainContentComponent;
 class Engine;
 
-class MainWindow    : public DocumentWindow, private Timer
+class MainWindow    : public DocumentWindow, private Timer,
+private ChangeListener // for undoactions
 {
 public:
     MainWindow (String name, Engine* e) ;
@@ -38,6 +40,7 @@ public:
 
     void timerCallback() override;
 
+    void changeListenerCallback (ChangeBroadcaster* source) override;
 
     /* Note: Be careful if you override any DocumentWindow methods - the base
      class uses a lot of them, so by overriding you might break its functionality.
@@ -47,7 +50,7 @@ public:
      */
     MainContentComponent* mainComponent;
 
-#if JUCE_OPENGL && USE_GL
+#if USE_GL
     OpenGLContext openGLContext;
 #endif
 

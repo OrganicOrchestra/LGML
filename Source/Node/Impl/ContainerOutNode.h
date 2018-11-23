@@ -24,7 +24,7 @@ class NodeContainer;
 class ContainerOutNode : public NodeBase, public AudioProcessorGraph::AudioGraphIOProcessor
 {
 public:
-    DECLARE_OBJ_TYPE (ContainerOutNode)
+    DECLARE_OBJ_TYPE (ContainerOutNode,"output of the current container")
     ~ContainerOutNode();
 
 
@@ -37,13 +37,8 @@ public:
     void processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;
 
 
-    //DATA
-    IntParameter* numInputData;
 
-    void processInputDataChanged (Data* d) override;
-
-
-    void onContainerParameterChanged (Parameter*) override;
+    void onContainerParameterChanged ( ParameterBase*) override;
 
 
 

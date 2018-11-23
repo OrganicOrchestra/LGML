@@ -17,19 +17,24 @@
 
 #include "../../Utils/FactoryBase.h"
 
-class Parameter;
-class  ParameterFactory: public FactoryBase<Parameter>
+class ParameterBase;
+class  ParameterFactory: public FactoryBase<ParameterBase>
 {
 public:
+    static void registerExtraTypes(){
+        // legacy param
+        jassert(getFactory().contains("t_NumericParameter_floatParamType"));
+        getFactory().set("t_NumericParameter_double",getFactory()["t_NumericParameter_floatParamType"]);
+    }
     //  default creation for simple types
-    static Parameter* createBaseFromVar (StringRef name, const var&);
+    static ParameterBase* createBaseFromVar (StringRef name, const var&);
 };
 
 
-#define REGISTER_PARAM_TYPE(T) REGISTER_OBJ_TYPE(Parameter,T)
+#define REGISTER_PARAM_TYPE(T) REGISTER_OBJ_TYPE(ParameterBase,T,#T)
 
 
-#define REGISTER_PARAM_TYPE_TEMPLATED(T,TT) REGISTER_OBJ_TYPE_TEMPLATED(Parameter,T,TT)
+#define REGISTER_PARAM_TYPE_TEMPLATED(T,TT,NICENAME) REGISTER_OBJ_TYPE_TEMPLATED(ParameterBase,T,TT,NICENAME)
 
 
 

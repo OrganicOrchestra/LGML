@@ -20,7 +20,7 @@
 #include "ParameterFactory.h"
 REGISTER_PARAM_TYPE (ParameterProxy)
 
-ParameterProxy::ParameterProxy (const String& niceName, const String& desc, Parameter* ref, ControllableContainer* root) :
+ParameterProxy::ParameterProxy (const String& niceName, const String& desc, ParameterBase* ref, ControllableContainer* root) :
     StringParameter (niceName, desc),
     linkedParam (ref),
     rootOfProxy (nullptr)
@@ -55,18 +55,18 @@ void ParameterProxy::setRoot (ControllableContainer* r)
     resolveAddress();
 
 }
-void ParameterProxy::tryToSetValue (const var & _value, bool silentSet, bool force )
+void ParameterProxy::tryToSetValue (const var & _value, bool silentSet, bool force, ParameterBase::Listener * notifier )
 {
 
     if (_value.isString())
     {
-        StringParameter::tryToSetValue (_value, silentSet, force);
+        StringParameter::tryToSetValue (_value, silentSet, force,notifier);
     }
     else if (linkedParam)
     {
         //WIP : polymorphic set value not supported
         jassertfalse;
-        linkedParam->tryToSetValue (_value, silentSet, force);
+        linkedParam->tryToSetValue (_value, silentSet, force,notifier);
     }
 };
 void ParameterProxy::setValueInternal (const var& _value)
@@ -96,20 +96,27 @@ void ParameterProxy::setValueInternal (const var& _value)
 }
 
 
-void ParameterProxy::parameterValueChanged (Parameter* p)
+void ParameterProxy::parameterValueChanged ( ParameterBase* p, ParameterBase::Listener * notifier)
 {
     jassert (p == linkedParam);
     proxyListeners.call (&ParameterProxyListener::linkedParamValueChanged, this);
 }
 
-Parameter* ParameterProxy::get()
+void ParameterProxy::parameterRangeChanged ( ParameterBase* p)
+{
+    jassert (p == linkedParam);
+    proxyListeners.call (&ParameterProxyListener::linkedParamRangeChanged, this);
+}
+
+
+ParameterBase* ParameterProxy::get()
 {
     return linkedParam.get();
 }
-void ParameterProxy::setParamToReferTo (Parameter* p)
+void ParameterProxy::setParamToReferTo ( ParameterBase* p)
 {
 
-    String targetAddress = p ? p->getControlAddress (getRoot()) : String::empty;
+    String targetAddress = p ? p->getControlAddress (getRoot()) : "";
 
     if ( targetAddress != stringValue())
     {
@@ -117,6 +124,7 @@ void ParameterProxy::setParamToReferTo (Parameter* p)
     }
     else
     {
+        if(linkedParam.get() && (linkedParam == p) ) return; // always pass if ref has been destroyed
         if (linkedParam != nullptr)
         {
             linkedParam->removeParameterListener (this);
@@ -156,7 +164,7 @@ bool ParameterProxy::resolveAddress()
 {
     if (stringValue().isNotEmpty())
     {
-        auto p = Parameter::fromControllable (getRoot()->getControllableForAddress (stringValue()));
+        auto p = ParameterBase::fromControllable (getRoot()->getControllableForAddress (stringValue()));
 
         setParamToReferTo (p);
     }
@@ -168,13 +176,13 @@ bool ParameterProxy::resolveAddress()
     return linkedParam != nullptr;
 }
 
-void ParameterProxy::controllableAdded (ControllableContainer*, Controllable* c)
+void ParameterProxy::childControllableAdded (ControllableContainer*, Controllable* c)
 {
     jassert (linkedParam == nullptr);
 
     if (c->getControlAddress() == stringValue())
     {
-        setParamToReferTo (Parameter::fromControllable (c));
+        setParamToReferTo ( ParameterBase::fromControllable (c));
     }
 
 }

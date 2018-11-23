@@ -12,6 +12,8 @@
 *
 */
 
+#if !ENGINE_HEADLESS
+
 #include "ConnectableNodeHeaderUI.h"
 #include "ConnectableNodeUI.h"
 
@@ -33,7 +35,7 @@ ConnectableNodeHeaderUI::ConnectableNodeHeaderUI() :
 
 
     miniModeBT.addListener (this);
-
+    setMouseCursor(MouseCursor::ParentCursor);
 
     setSize (20, 30);
 }
@@ -215,7 +217,7 @@ void ConnectableNodeHeaderUI::setMiniMode (bool value)
     }
 }
 
-void ConnectableNodeHeaderUI::nodeParameterChanged (ConnectableNode*, Parameter* p)
+void ConnectableNodeHeaderUI::nodeParameterChanged (ConnectableNode*, ParameterBase* p)
 {
     if (p == node->enabledParam)
     {
@@ -296,3 +298,8 @@ void ConnectableNodeHeaderUI::numAudioOutputChanged (ConnectableNode*, int /*new
     postCommandMessage (audioOutputChangedId);
 
 }
+
+String ConnectableNodeHeaderUI::getTooltip() {return nodeUI->getTooltip();};
+
+
+#endif

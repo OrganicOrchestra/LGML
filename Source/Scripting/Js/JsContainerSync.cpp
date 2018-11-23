@@ -91,7 +91,7 @@ bool JsContainerSync::existInContainerNamespace (const String& ns)
 // support OSC style string / arrays and lists
 var getControllableForAddress (const var::NativeFunctionArgs& a)
 {
-    ControllableContainer* callerCont = getObjectPtrFromJS<ControllableContainer> (a);
+    ControllableContainer* callerCont = JsHelpers::castPtrFromJS<ControllableContainer> (a);
 
     if (!callerCont)return var::undefined();
 
@@ -142,7 +142,7 @@ JsContainerSync::createDynamicObjectFromContainer (ControllableContainer* contai
 
     static Identifier getControllableForAddressId ("getControllableForAddress");
     myObj->setMethod (getControllableForAddressId, getControllableForAddress);
-    myObj->setProperty (jsPtrIdentifier, (int64)container);
+    JsHelpers::assignPtrToObject(container,myObj,true);
 
     for (auto& c : container->controllables)
     {
@@ -160,20 +160,20 @@ JsContainerSync::createDynamicObjectFromContainer (ControllableContainer* contai
             if (c->isIndexedContainer())
             {
 
-                if (!myObj->hasProperty (jsArrayIdentifier))
+                if (!myObj->hasProperty (JsHelpers::jsArrayIdentifier))
                 {
                     var aVar;
                     auto childObject = createDynamicObjectFromContainer (c);
                     //check names are aligned with order (first one)
                     jassert (c->getIndexedPosition() == 0);
                     aVar.append (childObject);
-                    myObj->setProperty (jsArrayIdentifier, aVar);
+                    myObj->setProperty (JsHelpers::jsArrayIdentifier, aVar);
 
                 }
                 else
                 {
                     Array<var>* arrVar;
-                    arrVar = myObj->getProperty (jsArrayIdentifier).getArray();
+                    arrVar = myObj->getProperty (JsHelpers::jsArrayIdentifier).getArray();
                     //check names are aligned with order (others)
                     jassert (c->getIndexedPosition() == arrVar->size());
                     auto childObject = createDynamicObjectFromContainer (c);

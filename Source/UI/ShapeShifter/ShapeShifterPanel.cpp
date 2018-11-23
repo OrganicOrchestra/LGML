@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "ShapeShifterPanel.h"
 #include "../Style.h"
@@ -56,13 +57,14 @@ ShapeShifterPanel::~ShapeShifterPanel()
 
     header.removeHeaderListener (this);
     listeners.call (&Listener::panelDestroyed, this);
-    masterReference.clear();
+    ShapeShifterPanel::masterReference.clear();
 }
 
 
 void ShapeShifterPanel::setCurrentContent (ShapeShifterContent* _content)
 {
     if (_content == currentContent){
+//        jassert(!_content ||  !_content->contentComponent ||  _content->contentComponent->isShowing());
         return;
     }
 
@@ -73,6 +75,7 @@ void ShapeShifterPanel::setCurrentContent (ShapeShifterContent* _content)
         if (tab != nullptr) tab->setSelected (false);
 
         removeChildComponent (currentContent->contentComponent);
+        currentContent->contentComponent->setVisible(false);
         currentContent->contentIsShown = false;
     }
 
@@ -84,7 +87,7 @@ void ShapeShifterPanel::setCurrentContent (ShapeShifterContent* _content)
         ShapeShifterPanelTab* tab = header.getTabForContent (currentContent);
 
         if (tab != nullptr) tab->setSelected (true);
-
+        currentContent->contentComponent->setVisible(true);
         addAndMakeVisible (currentContent->contentComponent);
 
         currentContent->contentIsShown = true;
@@ -98,6 +101,7 @@ void ShapeShifterPanel::setCurrentContent (const String& name)
     ShapeShifterContent* c = getContentForName (name);
 
     if (c != nullptr) setCurrentContent (c);
+    else jassertfalse;
 }
 
 void ShapeShifterPanel::setTargetMode (bool value)
@@ -110,7 +114,7 @@ void ShapeShifterPanel::setTargetMode (bool value)
 
 void ShapeShifterPanel::paint (Graphics& g)
 {
-    g.setColour (findColour (ResizableWindow::backgroundColourId).withAlpha (transparentBackground ? .3f : 1));
+    g.setColour (findColour (ResizableWindow::backgroundColourId).withAlpha (transparentBackground ? .15f : 1.f));
     g.fillRect (getLocalBounds().withTrimmedTop (headerHeight));
 }
 
@@ -124,21 +128,21 @@ void ShapeShifterPanel::paintOverChildren (Graphics& g)
     Colour nc = findColour (TextButton::buttonColourId).withAlpha (.3f);
 
     static float sideMinSize(10);
-    float zoneHeight =jmax<float> (sideMinSize, r.getHeight() * panelRelativeAttachSize);
-    float zoneWidth = jmax<float> (sideMinSize, r.getWidth() * panelRelativeAttachSize);
+    auto zoneHeight =jmax<float> (sideMinSize, r.getHeight() * panelRelativeAttachSize);
+    auto zoneWidth = jmax<float> (sideMinSize, r.getWidth() * panelRelativeAttachSize);
     static constexpr float pixGap = 10.0f;
     float scaleX = 1.0f - jmax<float>(0.f,pixGap/r.getWidth());
     float scaleY =  1.0f - jmax<float>(0.f,pixGap/r.getHeight());
     if (!isDetached())
     {
-        auto symetryTransform = AffineTransform::rotation(juce::float_Pi, (float)r.getCentreX(),(float)r.getCentreY());
+        auto symetryTransform = AffineTransform::rotation(juce::float_Pi, r.getCentreX(), r.getCentreY());
         g.setColour (candidateZone == AttachZone::TOP ? hc : nc);
         Path pt ;
         pt.addQuadrilateral(0.0f,0.0f,
                             zoneWidth, zoneHeight,
                             r.getWidth()-zoneWidth, zoneHeight,
                             r.getWidth(),0.0f);
-        pt.applyTransform(AffineTransform::scale(scaleX ,scaleY, (float)r.getCentreX(), 0.0f));
+        pt.applyTransform(AffineTransform::scale(scaleX , scaleY, r.getCentreX(), 0.0f));
         g.fillPath(pt);
 
         g.setColour (candidateZone == AttachZone::BOTTOM ? hc : nc);
@@ -162,7 +166,7 @@ void ShapeShifterPanel::paintOverChildren (Graphics& g)
     }
 
     g.setColour (candidateZone == AttachZone::CENTER ? hc : nc);
-    g.fillRect(r.reduced(zoneWidth, zoneHeight).reduced((1.0f-scaleX)*0.5*r.getWidth(), (1.0f-scaleY)*0.5*r.getHeight()));
+    g.fillRect(r.reduced(zoneWidth, zoneHeight).reduced((1.0f-scaleX)*0.5f*r.getWidth(), (1.0f-scaleY)*0.5f*r.getHeight()));
 
 
 }
@@ -181,7 +185,7 @@ void ShapeShifterPanel::resized()
 void ShapeShifterPanel::setTransparentBackground (bool value)
 {
     if (transparentBackground == value) return;
-
+    setOpaque(!value);
     transparentBackground = value;
     repaint();
 }
@@ -191,6 +195,9 @@ void ShapeShifterPanel::attachTab (ShapeShifterPanelTab* tab)
 
     if(tab && tab->content){
     Component::setName(Component::getName()+":"+tab->content->contentName);
+    }
+    else{
+        jassertfalse;
     }
     header.attachTab (tab);
 
@@ -203,6 +210,9 @@ void ShapeShifterPanel::detachTab (ShapeShifterPanelTab* tab, bool createNewPane
 {
     if(tab && tab->content){
         Component::setName(Component::getName().replaceFirstOccurrenceOf(":"+tab->content->contentName, ""));
+    }
+    else{
+        jassertfalse;
     }
     ShapeShifterContent* content = tab->content;
 
@@ -221,6 +231,10 @@ void ShapeShifterPanel::detachTab (ShapeShifterPanelTab* tab, bool createNewPane
         if (contents.size() > 0)
         {
             setCurrentContent (contents[juce::jlimit<int> (0, contents.size() - 1, contents.indexOf (content))]);
+
+            if(auto c = content->contentComponent){
+                c->setVisible(true);
+            }
         }
         else
         {
@@ -228,6 +242,8 @@ void ShapeShifterPanel::detachTab (ShapeShifterPanelTab* tab, bool createNewPane
             listeners.call (&Listener::panelEmptied, this);
         }
     }
+
+
 
 }
 
@@ -343,28 +359,27 @@ bool ShapeShifterPanel::attachPanel (ShapeShifterPanel* panel)
 }
 
 
-
-ShapeShifterPanel::AttachZone ShapeShifterPanel::checkAttachZone (ShapeShifterPanel* source)
+ShapeShifterPanel::AttachZone ShapeShifterPanel::checkAttachZone(ShapeShifterPanel *source, Point<float> relativePoint)
 {
     AttachZone z = AttachZone::NONE;
 
-    candidateTargetPoint = getLocalPoint (source, Point<float>());
+    candidateTargetPoint = getLocalPoint(source, relativePoint);
 
-    float rx = candidateTargetPoint.x / getWidth() - 0.5;
-    float ry = candidateTargetPoint.y / getHeight() - 0.5;
+    float rx = candidateTargetPoint.x / getWidth() - 0.5f;
+    float ry = candidateTargetPoint.y / getHeight() - 0.5f;
 
-    if (fabs(rx) > 0.5 || fabs(ry) > 0.5 )
+    if (fabsf(rx) > 0.5 || fabsf(ry) > 0.5 )
     {
         jassertfalse;
     }
     else
     {
-        if( (fabs(rx) < 0.5f -panelRelativeAttachSize) && (fabs(ry) < 0.5f - panelRelativeAttachSize)){
+        if( (fabsf(rx) < 0.5f -panelRelativeAttachSize) && (fabsf(ry) < 0.5f - panelRelativeAttachSize)){
             z = AttachZone::CENTER;
         }
         else{
             // project on diagonals
-            float dx =rx - ry;
+            float dx = rx - ry;
             float dy = rx + ry;
             if (dx>0){
                 if( dy>0) z = AttachZone::RIGHT;
@@ -423,8 +438,8 @@ void ShapeShifterPanel::loadLayoutInternal (var layout)
     {
         for (auto& tData : *tabData)
         {
-            String t = tData.getDynamicObject()->getProperty ("name").toString();
-            ShapeShifterContent* c = ShapeShifterFactory::createContentForName (tData.getDynamicObject()->getProperty ("name"));
+            const String t ( tData.getDynamicObject()->getProperty ("name").toString());
+            ShapeShifterContent* c = ShapeShifterFactory::createContentForName (t);
             addContent (c);
         }
     }
@@ -459,3 +474,5 @@ void ShapeShifterPanel::headerDrag()
     }
     else listeners.call (&Listener::headerDrag, this);
 }
+
+#endif

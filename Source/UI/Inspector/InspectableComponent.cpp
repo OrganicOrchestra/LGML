@@ -1,6 +1,6 @@
 /* Copyright © Organic Orchestra, 2017
  *
- * This file is part of LGML.  LGML is a software to manipulate sound in realtime
+ * This file is part of LGML.  LGML is a software to manipulate sound in real-time
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,6 +12,7 @@
  *
  */
 
+#if !ENGINE_HEADLESS
 
 #include "InspectableComponent.h"
 #include "Inspector.h"
@@ -23,6 +24,18 @@
 
 #include "../../Controllable/Parameter/UI/ParameterUIFactory.h"
 
+
+InspectableComponent::InspectableComponent (const String& _inspectableType ):
+inspectableType (_inspectableType),
+relatedParameterContainer (nullptr),
+relatedParameter(nullptr),
+recursiveInspectionLevel (0),
+canInspectChildContainersBeyondRecursion (true),
+isSelected (false),
+paintBordersWhenSelected (true),
+bringToFrontOnSelect (true){
+
+}
 InspectableComponent::InspectableComponent (ParameterContainer* _relatedContainer, const String& _inspectableType) :
 inspectableType (_inspectableType),
 relatedParameterContainer (_relatedContainer),
@@ -36,7 +49,7 @@ bringToFrontOnSelect (true)
 
 }
 
-InspectableComponent::InspectableComponent (Parameter* _relatedParameter, const String& _inspectableType) :
+InspectableComponent::InspectableComponent ( ParameterBase* _relatedParameter, const String& _inspectableType) :
 inspectableType (_inspectableType),
 relatedParameterContainer (nullptr),
 relatedParameter(_relatedParameter),
@@ -50,7 +63,7 @@ bringToFrontOnSelect (true)
 }
 InspectableComponent::~InspectableComponent()
 {
-    masterReference.clear();
+    InspectableComponent::masterReference.clear();
 
 }
 
@@ -64,6 +77,11 @@ InspectorEditor* InspectableComponent::createEditor()
     return nullptr;
 }
 
+void InspectableComponent::mouseUp (const MouseEvent&)
+{
+    selectThis();
+}
+
 void InspectableComponent::selectThis()
 {
     if (Inspector::getInstanceWithoutCreating() == nullptr)
@@ -74,7 +92,7 @@ void InspectableComponent::selectThis()
     Inspector::getInstance()->setCurrentComponent (this);
 }
 
-void InspectableComponent::setSelected (bool value)
+void InspectableComponent::setVisuallySelected (bool value)
 {
     if (value == isSelected) return;
 
@@ -84,11 +102,6 @@ void InspectableComponent::setSelected (bool value)
     if (value){
         if(bringToFrontOnSelect)
             toFront (true);
-        if(auto i = Inspector::getInstanceWithoutCreating()){
-            if(!i->getCurrentComponent()){
-                selectThis();
-            }
-        }
     }
     else{
 
@@ -97,6 +110,16 @@ void InspectableComponent::setSelected (bool value)
 
     setSelectedInternal (value);
 
+}
+
+String InspectableComponent::getTooltip() {
+    if(relatedParameterContainer){
+        return juce::translate(relatedParameterContainer->getFactoryInfo());
+    }
+    else if(relatedParameter){
+        return juce::translate(relatedParameter->getFactoryInfo());
+    }
+    return juce::translate("no info");
 }
 
 void InspectableComponent::setSelectedInternal (bool)
@@ -118,6 +141,8 @@ void InspectableComponent::paintOverChildren (juce::Graphics& g)
 ParameterContainer* InspectableComponent::getRelatedParameterContainer(){
     return relatedParameterContainer;
 }
-Parameter* InspectableComponent::getRelatedParameter(){
+ParameterBase* InspectableComponent::getRelatedParameter(){
     return relatedParameter;
 }
+
+#endif

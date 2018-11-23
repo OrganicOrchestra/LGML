@@ -22,7 +22,7 @@
 class StringParameterUI : public ParameterUI, public Label::Listener
 {
 public:
-    StringParameterUI (Parameter* p);
+    StringParameterUI ( ParameterBase* p);
     virtual ~StringParameterUI() {};
 
     Label nameLabel;

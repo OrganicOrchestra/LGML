@@ -12,13 +12,15 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "BoolToggleUI.h"
 #include "../../../UI/Style.h"
 #include "../BoolParameter.h"
+#include "../UndoableHelper.h"
 
 //==============================================================================
-BoolToggleUI::BoolToggleUI (Parameter* parameter) :
+BoolToggleUI::BoolToggleUI ( ParameterBase* parameter) :
     ParameterUI (parameter)
 {
     setSize (10, 10);
@@ -45,7 +47,7 @@ void BoolToggleUI::paint (Graphics& g)
     bool valCheck = ((BoolParameter*)parameter.get())->invertVisuals ? !parameter->boolValue() : parameter->boolValue();
     Colour c =  valCheck ? onColour  : findColour (TextButton::buttonColourId);
 
-    const int fontHeight=10;
+    const float fontHeight=10.0f;
 
     if(!parameter->isEditable){
         g.setColour(c);
@@ -79,7 +81,7 @@ void BoolToggleUI::paint (Graphics& g)
     }
     else
     {
-        g.drawText (parameter->niceName, getLocalBounds().reduced (2).toFloat(), Justification::centred);
+        g.drawText (juce::translate(parameter->niceName), getLocalBounds().reduced (2).toFloat(), Justification::centred);
     }
     }
 }
@@ -92,7 +94,8 @@ void BoolToggleUI::mouseDown (const MouseEvent& e)
 
     if (e.mods.isLeftButtonDown() && !e.mods.isAnyModifierKeyDown())
     {
-        parameter->setValue (!parameter->boolValue());
+        UndoableHelpers::setValueUndoable(parameter, !parameter->boolValue());
+        
     }
 }
 
@@ -109,3 +112,5 @@ void BoolToggleUI::valueChanged (const var& )
 {
     repaint();
 }
+
+#endif

@@ -17,12 +17,13 @@
 #define DUMMYNODE_H_INCLUDED
 
 #include "../NodeBase.h"
+#if JUCE_DEBUG
 #include "../../Controllable/Parameter/EnumParameter.h"
 
 class DummyNode : public NodeBase
 {
 public:
-    DECLARE_OBJ_TYPE (DummyNode)
+    DECLARE_OBJ_TYPE (DummyNode,"debugging node : internal  use only")
     ~DummyNode();
 
     //parameters
@@ -37,7 +38,7 @@ public:
     Trigger* testTrigger;
 
 
-    void onContainerParameterChanged (Parameter* p) override;
+    void onContainerParameterChanged ( ParameterBase* p) override;
 
     //AUDIO
 
@@ -49,11 +50,7 @@ public:
 
     void processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer&)override;
 
-    //DATA
-
-    Data* outPosData;
-    void processInputDataChanged (Data* d) override;
-
+    
 
 
 
@@ -64,5 +61,6 @@ public:
 };
 
 
+#endif // JUCE DEBGUG
 
 #endif  // DUMMYNODE_H_INCLUDED

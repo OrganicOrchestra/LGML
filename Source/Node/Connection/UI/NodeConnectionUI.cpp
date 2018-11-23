@@ -12,13 +12,14 @@
 *
 */
 
-
+#if !ENGINE_HEADLESS
 
 #include "NodeConnectionUI.h"
 #include "NodeConnectionEditor.h"
 
 //==============================================================================
 NodeConnectionUI::NodeConnectionUI (NodeConnection* connection, Connector* sourceConnector, Connector* destConnector) :
+    InspectableComponent("NodeConnectionUI"),
     candidateDropConnector (nullptr),
     connection (connection),
     sourceConnector (nullptr),
@@ -287,8 +288,8 @@ void NodeConnectionUI::mouseDown (const MouseEvent& e)
     if (e.mods.isRightButtonDown())
     {
         PopupMenu m;
-        //m.addItem(1,"Edit connections...");
-        m.addItem (2, "Delete all connections");
+        //m.addItem(1,juce::translate("Edit connections..."));
+        m.addItem (2, juce::translate("Delete all connections"));
 
         int result = m.show();
 
@@ -306,14 +307,18 @@ void NodeConnectionUI::mouseDown (const MouseEvent& e)
     }
     else
     {
-        selectThis();
+//        selectThis();
 
 
         if (isEditing() && candidateDropConnector)
         {
             auto nodeViewer = findParentComponentOfClass<NodeContainerViewer>();
-            jassert ( nodeViewer);
-            nodeViewer->finishEditingConnection();
+            if( nodeViewer) {
+                nodeViewer->finishEditingConnection();
+            }
+            else{
+                jassertfalse;
+            }
         }
         else if (!isEditing())
         {
@@ -322,12 +327,16 @@ void NodeConnectionUI::mouseDown (const MouseEvent& e)
             if (anchorSource.isVisible() || anchorDest.isVisible())
             {
                 auto nodeViewer = findParentComponentOfClass<NodeContainerViewer>();
-                jassert ( nodeViewer);
+                if ( nodeViewer) {
 
-                if (connection->connectionType == NodeConnection::ConnectionType::AUDIO)
-                {
-                    nodeViewer->createAudioConnectionFromConnector (anchorSource.isVisible() ? destConnector : sourceConnector, connection);
-                    connection->remove();
+                    if (connection->connectionType == NodeConnection::ConnectionType::AUDIO) {
+                        nodeViewer->createAudioConnectionFromConnector(
+                                anchorSource.isVisible() ? destConnector : sourceConnector, connection);
+                        connection->remove();
+                    }
+                }
+                else{
+                    jassertfalse;
                 }
             }
 
@@ -471,15 +480,6 @@ void NodeConnectionUI::handleCommandMessage (int /*commandId*/)
     repaint();
 }
 
-void NodeConnectionUI::connectionDataLinkAdded (DataProcessorGraph::Connection*)
-{
-    postCommandMessage (0);
-}
-
-void NodeConnectionUI::connectionDataLinkRemoved (DataProcessorGraph::Connection*)
-{
-    postCommandMessage (0);
-}
 
 void NodeConnectionUI::connectionAudioLinkAdded (const std::pair<int, int>&)
 {
@@ -490,3 +490,20 @@ void NodeConnectionUI::connectionAudioLinkRemoved (const std::pair<int, int>&)
 {
     postCommandMessage (0);
 }
+
+String NodeConnectionUI::getTooltip() {
+    String tt;
+    if(connection){
+        tt+=connection->getFactoryInfo()+"\n("+String(connection->model.audioConnections.size())+ " connections)\n";
+    if(sourceConnector)
+        if(auto nb = sourceConnector->getNodeBase())
+             tt+="\nin : " + String(nb->getTotalNumOutputChannels());
+    if(destConnector)
+        if(auto nb = sourceConnector->getNodeBase())
+            tt+="\nout : " + String(nb->getTotalNumOutputChannels());
+
+    }
+    return tt;
+    }
+
+#endif

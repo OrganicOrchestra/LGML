@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -21,8 +21,10 @@
 
 #define MULTITHREADED_LOADING
 
-#pragma warning (disable : 4100)
 
+#include "JuceHeaderAudio.h"
+#include <juce_audio_processors/juce_audio_processors.h>
+#include <juce_audio_utils/players/juce_AudioProcessorPlayer.h>
 #include "MIDI/MIDIManager.h"
 #include "Controller/ControllerManager.h"
 #include "Node/Manager/NodeManager.h"
@@ -35,6 +37,11 @@
 #include "Utils/CommandLineElements.hpp"
 class AudioFucker;
 
+
+
+#if ENGINE_HEADLESS
+#include "Utils/HeadlessWrappers.h"
+#endif
 
 class Engine:
     public FileBasedDocument,
@@ -53,9 +60,29 @@ public:
     void createNewGraph();
     void clear();
     void initAudio();
+    bool fadeAudioOut();
     void closeAudio();
-
-
+    ParameterBase* saveSession,*loadSession,*closeEngine;
+    class EngineStats : public ParameterContainer ,public Timer{
+    public:
+        EngineStats(Engine *);
+        void activateGlobalStats(bool);
+        float getAudioCPU() const;
+        Point2DParameter<floatParamType> * audioCpu;
+        bool isListeningGlobal;
+        typedef OwnedFeedbackListener<EngineStats> GlobalListener;
+        typedef HashMap<String, Array<int>,DefaultHashFunctions,CriticalSection> CountMapType;
+         CountMapType modCounts;
+    private:
+        void timerCallback()override;
+        Engine * engine;
+        int timerTicks;
+        ScopedPointer< GlobalListener > globalListener;
+    };
+    ScopedPointer< EngineStats> engineStats;
+    bool hasDefaultOSCControl;
+    void onContainerParameterChanged( ParameterBase*)override;
+    void onContainerTriggerTriggered(Trigger *t)override;
     void suspendAudio (bool shouldSuspend);
 
     void parseCommandline (const CommandLineElements& );
@@ -65,10 +92,12 @@ public:
 
     //  inherited from FileBasedDocument
     String getDocumentTitle()override ;
+    // do not call this, call loadFrom instead (empowers FileBasedDocument behaviour)
     Result loadDocument (const File& file)override;
     Result saveDocument (const File& file)override;
     File getLastDocumentOpened() override;
     void setLastDocumentOpened (const File& file) override;
+
     // helpers for file document
     File getCurrentProjectFolder();
     // return absolute Path if out of project directory
@@ -84,7 +113,7 @@ public:
     void loadJSONData (const var& data, ProgressTask* loadingTask);
 
     bool checkFileVersion (DynamicObject* metaData);
-    int versionStringToInt (const String& version);
+
     String getMinimumRequiredFileVersion();
 
     void  stimulateAudio (bool);
@@ -98,7 +127,7 @@ public:
         void changeListenerCallback (ChangeBroadcaster* )override;
         void saveCurrent();
         String getConfigName();
-        void load();
+
         String lastConfigName;
         void timerCallback()override;
 
@@ -179,7 +208,15 @@ public:
     void handleAsyncUpdate()override;
 
     ThreadPool threadPool;
+
     RecentlyOpenedFilesList getLastOpenedFileList();
+
+    static void setLanguage(const String & l);
+    static StringArray getAvailableLanguages();
+
+    static int versionNumber;
+    static const char* versionString;
+    static const char* projectName;
 
 };
 

@@ -35,6 +35,26 @@ public:
     File lastFile;
     File defaultFolder;
 
+    template<typename T>
+    Array<Component::SafePointer<T> >getAllSPanelsOfType(bool onlyVisible=true,ShapeShifterContainer * root=nullptr){
+        Array<Component::SafePointer<T> > res;
+        if(!root) root = &mainShifterContainer;
+        for(auto & p:root->shifters){
+            if(auto c = dynamic_cast<ShapeShifterContainer*>(p)){
+                res.addArray(getAllSPanelsOfType<T>(onlyVisible,c));
+            }
+            else if(auto pa = dynamic_cast<ShapeShifterPanel*>(p)){
+                for( auto co:pa->contents){
+                    if (!onlyVisible || co->contentIsShown)
+                        if(auto rco = dynamic_cast<T*>(co))
+                            res.add(rco);
+                }
+            }
+            
+        }
+        return res;
+    }
+
     OwnedArray<ShapeShifterPanel> openedPanels;
     OwnedArray<ShapeShifterWindow> openedWindows;
 
@@ -59,7 +79,7 @@ public:
 
     ShapeShifterContent* getContentForName (PanelName contentName);
 
-    ShapeShifterPanel* checkCandidateTargetForPanel (ShapeShifterPanel* panel);
+    ShapeShifterPanel *checkCandidateTargetForPanel(ShapeShifterPanel *panel, Point<float> relativeMousePoint);
     bool checkDropOnCandidateTarget (WeakReference<ShapeShifterPanel> panel);
 
     ShapeShifterWindow* getWindowForPanel (ShapeShifterPanel* panel);

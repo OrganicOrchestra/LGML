@@ -26,7 +26,7 @@ class GenericParameterContainerEditor;
 class CCInnerContainerUI :
     public juce::Component,
     private ControllableContainer::Listener,
-    public ButtonListener
+    public Button::Listener
 {
 public:
     class CCLinkBT : public TextButton
@@ -61,8 +61,8 @@ public:
     void clear();
     void rebuild();
 
-    void addParameterUI (Parameter* c);
-    void removeParameterUI (Parameter* c);
+    void addParameterUI ( ParameterBase* c);
+    void removeParameterUI ( ParameterBase* c);
 
     void addCCInnerUI (ParameterContainer* cc);
     void removeCCInnerUI (ParameterContainer* cc);
@@ -72,12 +72,12 @@ public:
 
     int getContentHeight() const;
 
-    NamedParameterUI* getUIForParameter (Parameter* c);
+    NamedParameterUI* getUIForParameter ( ParameterBase* c);
     CCInnerContainerUI* getInnerContainerForCC (ParameterContainer* cc);
     CCLinkBT* getCCLinkForCC (ParameterContainer* cc);
 
-    void controllableAdded (ControllableContainer*, Controllable*)override;
-    void controllableRemoved (ControllableContainer*, Controllable*)override;
+    void childControllableAdded (ControllableContainer*, Controllable*)override;
+    void childControllableRemoved (ControllableContainer*, Controllable*)override;
     void controllableContainerAdded (ControllableContainer*, ControllableContainer*)override;
     void controllableContainerRemoved (ControllableContainer*, ControllableContainer*)override;
     void childStructureChanged (ControllableContainer*, ControllableContainer*,bool isAdded)override;
@@ -86,7 +86,7 @@ public:
 };
 
 
-class GenericParameterContainerEditor : public InspectorEditor, public ButtonListener, private ControllableContainer::Listener, Timer
+class GenericParameterContainerEditor : public InspectorEditor, public Button::Listener, private ControllableContainer::Listener, Timer
 {
 public :
     GenericParameterContainerEditor (ParameterContainer* sourceComponent);

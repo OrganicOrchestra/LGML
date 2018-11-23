@@ -91,7 +91,7 @@ class NodeContainer :
 {
 public:
     NodeContainer(StringRef name,bool isRoot);
-    DECLARE_OBJ_TYPE (NodeContainer);
+    DECLARE_OBJ_TYPE (NodeContainer,"holds sub graph of audio");
     virtual ~NodeContainer();
 
     //Keep value of containerIn RMS and containerOutRMS to dispatch in one time
@@ -110,7 +110,7 @@ public:
 
     ReferenceCountedArray<NodeBase> nodes; //Not OwnedArray anymore because NodeBase is AudioProcessor, therefore owned by AudioProcessorGraph
     OwnedArray<NodeConnection> connections;
-    Array<NodeContainer*> nodeContainers; //so they are delete on "RemoveNode" (because they don't have an audio processor)
+    Array<NodeContainer*> nodeContainers; //so they are deleted on "RemoveNode" (because they don't have an audio processor)
 
 
 
@@ -136,8 +136,7 @@ public:
     // called to bypass this container
     void bypassNode (bool bypass);
 
-    ParameterProxy* addParamProxy();
-    void removeParamProxy (ParameterProxy* pp);
+
 
     //save / load
     DynamicObject* getObject() override;
@@ -149,8 +148,8 @@ public:
 
 
 
-    virtual void onContainerParameterChanged (Parameter* p) override;
-    virtual void onContainerParameterChangedAsync (Parameter* p, const var& value)override;
+    virtual void onContainerParameterChanged ( ParameterBase* p) override;
+    virtual void onContainerParameterChangedAsync ( ParameterBase* p, const var& value)override;
 
 
 
@@ -160,9 +159,6 @@ public:
     void updateAudioGraph (bool lock = true) ;
     void numChannelsChanged (bool isInput) override;
 
-    //DATA
-    bool hasDataInputs() override;
-    bool hasDataOutputs() override;
 
     void processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer& midiMessage ) override;
     void processBlockBypassed (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;
@@ -229,7 +225,7 @@ public:
             if(interval < 2000){
                 curRebuildTime-=interval;
                 if(curRebuildTime<=0){
-                    LOG("!!! internal node loading error");
+                    LOGE(juce::translate("internal node loading error"));
                     jassertfalse;
                     stopTimer();
                 }

@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -18,7 +18,10 @@
 
 #pragma once
 #include "../JuceHeaderUI.h"
+#include "FactoryBase.h"
 
+class NodeBase;
+extern UndoManager & getAppUndoManager();
 namespace FactoryUIHelpers
 {
 
@@ -79,7 +82,7 @@ const String  getFactoryTypeNameFromMenuIdx (int idx, int menuIdOffset = 1)
     }
 
     jassertfalse;
-    return String::empty;
+    return "";
 }
 
 
@@ -90,7 +93,74 @@ obj* createFromMenuIdx (int idx)
     return (obj*)FactoryBase<obj>::createFromTypeID (type);
 }
 
+template<class T>
+class UndoableCreate:public UndoableAction{
 
+    public :
+    typedef std::function<T*()> addFType;
+    typedef std::function<void(T*)> rmFType;
+    UndoableCreate(addFType _addF,rmFType _rmF):addF(_addF),rmF(_rmF){
 
+    }
+    bool perform() override{
+        obj=addF();
+        return obj.get()!=nullptr;
+    }
+
+    bool undo() override{
+        if(obj){
+            rmF(obj);
+            obj=nullptr;
+            return true;
+        }
+
+        return false;
+    }
+    addFType addF;
+    rmFType rmF;
+    WeakReference<T> obj;
+};
+
+template<class T>
+class UndoableFactoryCreate:public UndoableAction{
+    public:
+        typedef std::function<void(T*)> addFType;
+        typedef std::function<void(T*)> rmFType;
+        UndoableFactoryCreate(String _typeID,addFType _addF,rmFType _rmF):addF(_addF),rmF(_rmF),typeID(_typeID){
+            
+        };
+
+        bool perform() override{
+            obj = FactoryBase<T>::createFromTypeID(typeID);
+            if(obj){
+                addF(obj);
+                return true;
+            }
+            return false;
+        }
+
+        bool undo() override{
+            if(obj){
+                rmF(obj);
+                obj=nullptr;
+                return true;
+            }
+
+            return false;
+        }
+    String typeID;
+        addFType addF;
+        rmFType rmF;
+    WeakReference<T> obj;
 
 };
+
+
+    //e xplicit template specialization to filter out uncreatable nodes
+template<>
+PopupMenu* getFactoryTypesMenu< FactoryBase<NodeBase> > (int menuIdOffset )
+;
+
+};
+
+

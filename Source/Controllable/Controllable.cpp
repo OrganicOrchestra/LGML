@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ Controllable::Controllable ( const String& niceName, const String& description, 
 {
     setEnabled (enabled);
     setNiceName (niceName);
+    
 }
 
 
@@ -85,19 +86,14 @@ void Controllable::setParentContainer (ControllableContainer* container)
 
 void Controllable::updateControlAddress()
 {
-    this->controlAddress = getControlAddress();
+    controlAddress = getControlAddress();
     listeners.call (&Listener::controllableControlAddressChanged, this);
 }
 
 
-String Controllable::getControlAddress (ControllableContainer* relativeTo)
+String Controllable::getControlAddress (const ControllableContainer* relativeTo) const
 {
-    // we may need empty parentContainer in unit tests
-#if LGML_UNIT_TESTS
-    return (parentContainer ? parentContainer->getControlAddress (relativeTo) : "") + "/" + shortName;
-#else
-    return parentContainer->getControlAddress (relativeTo) + "/" + shortName;
-#endif
+    return (parentContainer.get()?parentContainer->getControlAddress (relativeTo):"/noParent") + "/" + shortName;
 }
 
 
@@ -105,9 +101,8 @@ String Controllable::getControlAddress (ControllableContainer* relativeTo)
 DynamicObject* Controllable::createDynamicObject()
 {
     DynamicObject* dObject = new DynamicObject();
-    dObject->setProperty (jsPtrIdentifier, (int64)this);
-    //  dObject->setProperty(jsVarObjectIdentifier, getVarObject());
-    dObject->setMethod (jsGetIdentifier, Controllable::getVarStateFromScript);
+    JsHelpers::assignPtrToObject((Controllable*)this,dObject,true);
+    dObject->setMethod (JsHelpers::jsGetIdentifier, Controllable::getVarStateFromScript);
     return dObject;
 }
 
@@ -115,12 +110,12 @@ DynamicObject* Controllable::createDynamicObject()
 
 var Controllable::getVarStateFromScript (const juce::var::NativeFunctionArgs& a)
 {
-    // TODO handle with weak references
-    Controllable* c = getObjectPtrFromJS<Controllable> (a);
+
+    Controllable* c = JsHelpers::castPtrFromJS<Controllable> (a);
 
     if (c == nullptr  ) return var();
 
-    //  WeakReference<Parameter> wc = c;
+    //  WeakReference<ParameterBase> wc = c;
     //  if(!wc.get()) return var();
     return c->getVarState();
 
@@ -131,7 +126,7 @@ var Controllable::getVarStateFromScript (const juce::var::NativeFunctionArgs& a)
 var Controllable::setControllableValueFromJS (const juce::var::NativeFunctionArgs& a)
 {
 
-    Controllable* c = getObjectPtrFromJS<Controllable> (a);
+    Controllable* c = JsHelpers::castPtrFromJS<Controllable> (a);
     //    bool success = false;
 
     if (c != nullptr)
@@ -143,7 +138,7 @@ var Controllable::setControllableValueFromJS (const juce::var::NativeFunctionArg
     }
     else
     {
-        LOG ("!!!unknown controllable set from js");
+        LOGE (juce::translate("unknown controllable set from js"));
         jassertfalse;
     }
 
@@ -161,7 +156,7 @@ bool Controllable::isMappable()
 }
 
 
-bool Controllable::isChildOf (ControllableContainer* p)
+bool Controllable::isChildOf (const ControllableContainer* p) const
 {
     auto i = parentContainer;
 

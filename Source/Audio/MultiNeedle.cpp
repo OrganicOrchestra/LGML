@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,10 @@
 
 #include "MultiNeedle.h"
 
+
 #define DEBUG_NEEDLE 0
 #if DEBUG_NEEDLE
+
     #define DBGNEEDLE(txt) DBG(txt)
 #else
     #define DBGNEEDLE(txt)
@@ -377,7 +379,7 @@ void MultiNeedle::resetAll()
     }
 }
 
-void MultiNeedle::addToBuffer ( BufferBlockList& originBufferList, AudioBuffer<float>& destBuffer, int numSamples, bool isLooping)
+bool MultiNeedle::addToBuffer ( BufferBlockList& originBufferList, AudioBuffer<float>& destBuffer,int destStartSample, int numSamples, bool isLooping)
 {
     //    jassert(destBuffer.getNumChannels()>=originBuffer.getNumChannels());
     const int minComonChannels = jmin (destBuffer.getNumChannels(), originBufferList.getAllocatedNumChannels());
@@ -471,7 +473,7 @@ void MultiNeedle::addToBuffer ( BufferBlockList& originBufferList, AudioBuffer<f
 
         for (int  i = minComonChannels - 1; i >= 0  ; i--)
         {
-            destBuffer.addFromWithRamp (i, 0, tmpContiguous.getReadPointer (i), numSamples,  fN->getFadeValueStart(), fN->getFadeValueEnd());
+            destBuffer.addFromWithRamp (i, destStartSample, tmpContiguous.getReadPointer (i), numSamples,  fN->getFadeValueStart(), fN->getFadeValueEnd());
         }
 
         //    if(fN->reverse){
@@ -523,7 +525,7 @@ void MultiNeedle::addToBuffer ( BufferBlockList& originBufferList, AudioBuffer<f
 
     }
 
-
+    return numActiveNeedle>0;
 }
 
 

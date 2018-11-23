@@ -14,11 +14,11 @@
 
 #include "ParameterFactory.h"
 
-Parameter* ParameterFactory::createBaseFromVar (StringRef n, const var& v)
+ParameterBase* ParameterFactory::createBaseFromVar (StringRef n, const var& v)
 {
     if (v.isDouble())
     {
-        return createFromTypeID (Identifier ("t_NumericParameter_double"), n);
+        return createFromTypeID (Identifier ("t_NumericParameter_floatParamType"), n);
     }
     else if (v.isInt())
     {

@@ -15,6 +15,7 @@
 
 #include "DummyNode.h"
 
+#if JUCE_DEBUG
 
 #include "../../Time/TimeManager.h"
 
@@ -31,7 +32,7 @@ DummyNode::DummyNode (StringRef name) :
 {
 
     clickFade.setFadedOut();
-    freq1Param = addNewParameter<FloatParameter> ("Freq 1", "This is a test int slider", .23f);
+    freq1Param = addNewParameter<FloatParameter> ("Freq 1", "This is a test int slider", .23f,20.f,4000.f);
     freq2Param = addNewParameter<FloatParameter> ("Freq 2", "This is a test int slider", .55f);
 
     testTrigger =  addNewParameter<Trigger> ("Test Trigger", "Youpi");
@@ -44,13 +45,6 @@ DummyNode::DummyNode (StringRef name) :
     enumParam->addOption (sineId);
 
 
-
-    //DATA
-    addInputData ("IN Number", DataType::Number);
-    addInputData ("IN Orientation", DataType::Orientation);
-
-    addOutputData ("OUT Number", DataType::Number);
-    outPosData = addOutputData ("OUT Position", DataType::Position);
 
     pxParam = addNewParameter<FloatParameter> ("PointX", "X", 0.f, 0.f, 1.f);
     pyParam = addNewParameter<FloatParameter> ("PointY", "Y", 0.f, 0.f, 1.f);
@@ -65,14 +59,14 @@ DummyNode::~DummyNode()
 {
 }
 
-void DummyNode::onContainerParameterChanged (Parameter* p)
+void DummyNode::onContainerParameterChanged ( ParameterBase* p)
 {
     NodeBase::onContainerParameterChanged (p);
 
     if (p == freq1Param)
     {
         //       ((DummyAudioProcessor*)audioProcessor)->amp = p->getNormalizedValue();
-        period1 = (int) (44100.0f / (1.0f + 440.0f * freq1Param->getNormalizedValue()));
+        period1 = (int) (44100.0f / ( freq1Param->floatValue()));
     }
     else if (p == freq2Param)
     {
@@ -82,12 +76,7 @@ void DummyNode::onContainerParameterChanged (Parameter* p)
     {
         //DBG("Enum param changed : " << enumParam->stringValue() << " / " << enumParam->getFirstSelected().toString());
     }
-    else if (p == pxParam || p == pyParam)
-    {
 
-        outPosData->update (pxParam->floatValue(), pyParam->floatValue());
-
-    }
 }
 
 
@@ -206,14 +195,5 @@ void DummyNode::processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer&)
 
 
 
-inline void DummyNode::processInputDataChanged (Data* d)
-{
-    //DBG("DummyNode :: Input data changed " << d->name);
 
-    if (d->name == "IN Number")
-    {
-        amp = d->getElement ("value")->value;
-    }
-}
-
-
+#endif // JUCE DEBGUG

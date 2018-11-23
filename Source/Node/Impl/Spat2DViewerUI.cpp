@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "Spat2DViewerUI.h"
 #include "../../UI/Style.h"
@@ -117,7 +118,7 @@ void Spat2DViewer::updateSourcePosition (int sourceIndex)
 {
     if (sourceIndex == -1 || sourceIndex >= sources.size()) return;
 
-    sources[sourceIndex]->setPosition (Point<float> (node->inputDatas[sourceIndex]->elements[0]->value, node->inputDatas[sourceIndex]->elements[1]->value));
+    sources[sourceIndex]->setPosition (node->inputsPositionsParams[sourceIndex]->getPoint());
 }
 
 void Spat2DViewer::updateTargetPosition (int targetIndex)
@@ -131,7 +132,7 @@ void Spat2DViewer::updateTargetInfluence (int targetIndex)
 {
     if (targetIndex == -1 || targetIndex >= targets.size()) return;
 
-    targets[targetIndex]->influence = node->outputDatas[targetIndex]->elements[0]->value;
+    targets[targetIndex]->influence = node->outputsIntensities[targetIndex]->floatValue();
     targets[targetIndex]->repaint();
 }
 
@@ -165,14 +166,14 @@ void Spat2DViewer::paint (Graphics& g)
     g.fillRect (getLocalBounds());
 }
 
-void Spat2DViewer::nodeParameterChanged (ConnectableNode*, Parameter* p)
+void Spat2DViewer::nodeParameterChanged (ConnectableNode*, ParameterBase* p)
 {
-    DBG ("node parameter changed " << p->niceName);
+
 
     if (p == node->numSpatInputs) updateNumSources();
     else if (p == node->numSpatOutputs) updateNumTargets();
     else if (p == node->targetRadius) updateTargetRadius();
-    else if (p->isType<Point2DParameter<float>>())
+    else if (p->isType<Point2DParameter<floatParamType>>())
     {
         if (p == node->globalTargetPosition)
         {
@@ -182,12 +183,28 @@ void Spat2DViewer::nodeParameterChanged (ConnectableNode*, Parameter* p)
                 resized();
             }
         }
+
         else
         {
-            Point2DParameter<float>* p2d = (Point2DParameter<float>*)p;
-            int index = node->targetPositions.indexOf (p2d);
-            updateTargetPosition (index);
+            Point2DParameter<floatParamType>* p2d = (Point2DParameter<floatParamType>*)p;
+            if(node->targetPositions.contains(p2d)){
+                int index = node->targetPositions.indexOf (p2d);
+                updateTargetPosition (index);
+            }
+            else if(node->inputsPositionsParams.contains(p2d)){
+                int index = node->inputsPositionsParams.indexOf (p2d);
+                updateSourcePosition(index);
+            }
+            else{
+                jassertfalse;
+            }
+
         }
+
+    }
+    else if(node->outputsIntensities.contains((FloatParameter*)p)){
+        int index = node->outputsIntensities.indexOf((FloatParameter *)p);
+        updateTargetInfluence(index);
 
     }
     else if (p == node->shapeMode)
@@ -228,40 +245,17 @@ void Spat2DViewer::nodeParameterChanged (ConnectableNode*, Parameter* p)
 }
 
 
-
-void Spat2DViewer::nodeInputDataChanged (ConnectableNode*, Data* d)
+void Spat2DViewer::childControllableAdded (ControllableContainer*, Controllable* c)
 {
-    int index = node->inputDatas.indexOf (d);
-    updateSourcePosition (index);
+    if (c->isType<Point2DParameter<floatParamType>>()) updateNumTargets();
 }
 
-void Spat2DViewer::nodeOutputDataUpdated (ConnectableNode*, Data* d)
+void Spat2DViewer::childControllableRemoved (ControllableContainer*, Controllable* c)
 {
-    int index = node->outputDatas.indexOf (d);
-    updateTargetInfluence (index);
+    if (c->isType<Point2DParameter<floatParamType>>()) updateNumTargets();
 }
 
-void Spat2DViewer::dataInputAdded (ConnectableNode*, Data*)
-{
-    updateNumSources();
-}
-
-void Spat2DViewer::dataInputRemoved (ConnectableNode*, Data*)
-{
-    updateNumSources();
-}
-
-void Spat2DViewer::controllableAdded (ControllableContainer*, Controllable* c)
-{
-    if (c->isType<Point2DParameter<float>>()) updateNumTargets();
-}
-
-void Spat2DViewer::controllableRemoved (ControllableContainer*, Controllable* c)
-{
-    if (c->isType<Point2DParameter<float>>()) updateNumTargets();
-}
-
-void Spat2DViewer::handleUserMoved (Spat2DHandle* handle, const Point<float>& newPos)
+void Spat2DViewer::handleUserMoved (Spat2DHandle* handle, const Point<floatParamType>& newPos)
 {
     if (handle->type == Spat2DHandle::HandleType::SOURCE)
     {
@@ -324,7 +318,7 @@ void Spat2DHandle::mouseDown (const MouseEvent& e)
 {
     if (e.mods.isRightButtonDown())
     {
-        handleListeners.call (&Listener::handleUserMoved, this, Point<float> (.5f, .5f));
+        handleListeners.call (&Listener::handleUserMoved, this, Point<floatParamType> (.5, .5));
     }
 
     toFront (true);
@@ -336,7 +330,7 @@ void Spat2DHandle::mouseDrag (const MouseEvent& e)
 
     if (e.mods.isLeftButtonDown())
     {
-        Point<float> newPos = Point<float> (jlimit<float> (0, 1, parent->getMouseXYRelative().x * 1. / parent->getWidth()), jlimit<float> (0, 1, parent->getMouseXYRelative().y * 1. / parent->getHeight()));
+        Point<floatParamType> newPos = Point<floatParamType> (jlimit<float> (0, 1, parent->getMouseXYRelative().x * 1. / parent->getWidth()), jlimit<float> (0, 1, parent->getMouseXYRelative().y * 1. / parent->getHeight()));
         handleListeners.call (&Listener::handleUserMoved, this, newPos);
     }
 }
@@ -346,7 +340,7 @@ void Spat2DHandle::resized()
     repaint();
 }
 
-void Spat2DHandle::setPosition (Point<float> newPosition)
+void Spat2DHandle::setPosition (Point<floatParamType> newPosition)
 {
     Component* parent = getParentComponent();
     position.setXY (newPosition.x, newPosition.y);
@@ -362,3 +356,5 @@ bool Spat2DHandle::hitTest (int x, int y)
     float dist = relPoint.getDistanceFrom (getLocalBounds().getCentre().toFloat());
     return dist < size / 2;
 }
+
+#endif

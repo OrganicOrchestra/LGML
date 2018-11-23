@@ -12,6 +12,8 @@
 *
 */
 
+#if !ENGINE_HEADLESS
+
 #include "JsEnvironmentUI.h"
 #include "../../Controllable/Parameter/UI/ParameterUIFactory.h"
 #include "../../Controllable/Parameter/UI/StringParameterUI.h"
@@ -38,6 +40,8 @@ JsEnvironmentUI::JsEnvironmentUI (JSEnvContainer* _cont) : cont (_cont)
     logEnvB = ParameterUIFactory::createDefaultUI (cont->logT);
     addAndMakeVisible (logEnvB);
 
+    createB = ParameterUIFactory::createDefaultUI (cont->createT);
+    addAndMakeVisible(createB);
 
     path = new StringParameterUI (cont->scriptPath);
     path->setNameLabelVisible (true);
@@ -65,8 +69,11 @@ void JsEnvironmentUI::resized()
 
     area.reduce (0, 2);
     validJsLed.setBounds (area.removeFromLeft (ledSize).reduced (0, (area.getHeight() - ledSize) / 2));
+
     loadFileB->setBounds (area.removeFromLeft (step).reduced (2, 0));
-    reloadB->setBounds (area.removeFromLeft (step).reduced (2, 0));
+    auto lr =area.removeFromLeft (step).reduced (2, 0);
+    createB->setBounds(lr);
+    reloadB->setBounds (lr);
     openB->setBounds (area.removeFromLeft (step).reduced (2, 0));
     watchT->setBounds (area.removeFromLeft (step).reduced (2, 0));
     logEnvB->setBounds (area.removeFromLeft (logEnvSize).reduced (2, 0));
@@ -85,4 +92,11 @@ void JsEnvironmentUI::newJsFileLoaded (bool)
     validJsLed.setFill (FillType ((env->hasValidJsFile() && env->isInSyncWithLGML()) ? Colours::green :
                                   (env->hasValidJsFile() ? Colours::orange :
                                    Colours::red)));
+    if(cont.get()){
+        bool hasScript = cont->scriptPath->stringValue()!="";
+        createB->setVisible(!hasScript);
+        reloadB->setVisible(hasScript);
+    }
 }
+
+#endif

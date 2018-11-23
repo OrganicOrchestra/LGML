@@ -24,9 +24,9 @@ class NodeBase;
 typedef  FactoryBase<NodeBase> NodeFactory;
 
 
-#define REGISTER_NODE_TYPE(T)  REGISTER_OBJ_TYPE(NodeBase,T);
+#define REGISTER_NODE_TYPE(T)  REGISTER_OBJ_TYPE(NodeBase,T,String(#T).replace("Node","",true));
 
-#define REGISTER_NODE_TYPE_TEMPLATED(T,TT) REGISTER_OBJ_TYPE_TEMPLATED(NodeBase,T,TT);
+#define REGISTER_NODE_TYPE_TEMPLATED(T,TT,NICENAME) REGISTER_OBJ_TYPE_TEMPLATED(NodeBase,T,TT,NICENAME);
 
 
 #endif  // NODEFACTORY_H_INCLUDED

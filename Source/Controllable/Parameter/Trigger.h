@@ -19,11 +19,11 @@
 #include "Parameter.h"
 #include "../../Utils/QueuedNotifier.h"
 
-class Trigger : public Parameter
+class Trigger : public ParameterBase
 {
 public:
     Trigger (const String& niceName, const String& description, bool enabled = true);
-    ~Trigger() {masterReference.clear();}
+    ~Trigger() {Trigger::masterReference.clear();}
 
 
 
@@ -35,14 +35,23 @@ public:
     DynamicObject* getObject() override;
     var getVarState() override;
 
-
+    int64 lastTime;
 
     static const var triggerVar;
     void trigger()
     {
         setValue (triggerVar);
     }
-    void tryToSetValue (const var & _value, bool silentSet, bool force) override
+
+    void triggerDebounced( const uint32_t debounceMillis)
+    {
+        auto cT = juce::Time::currentTimeMillis();
+        if(cT - lastTime > debounceMillis){
+            setValue (triggerVar);
+            lastTime = cT;
+        }
+    }
+    void tryToSetValue (const var & _value, bool silentSet, bool force,Listener * notifier=nullptr) override
     {
 
         if (!waitOrDeffer (_value, silentSet, force))
@@ -52,17 +61,17 @@ public:
                    ))
             {
 
-                isSettingValue = true;
+                _isSettingValue = true;
 
-                if (!silentSet) notifyValueChanged();
+                if (!silentSet) notifyValueChanged(false,notifier);
 
-                isSettingValue = false;
+                _isSettingValue = false;
             }
         }
 
     }
 
-    DECLARE_OBJ_TYPE (Trigger)
+    DECLARE_OBJ_TYPE (Trigger,"trigger parameter")
 
 
 

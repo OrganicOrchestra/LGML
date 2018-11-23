@@ -16,12 +16,12 @@
 #ifndef JSHELPERS_H_INCLUDED
 #define JSHELPERS_H_INCLUDED
 
-
+#include "../../JuceHeaderCore.h"
+namespace JsHelpers{
 // static identifier allowing fast instanciation of js namespace identifiers
 static const Identifier jsLocalIdentifier ("local");
 static const Identifier jsGlobalIdentifier ("lgml");
 static const Identifier jsPtrIdentifier ("_ptr");
-static const Identifier jsVarObjectIdentifier ("v");
 static const Identifier jsGetIdentifier ("get");
 static const Identifier jsTriggerIdentifier ("trigger");
 static const Identifier jsSetIdentifier ("set");
@@ -40,19 +40,150 @@ static const Array<Identifier> jsCoreClasses =
 };
 
 
-// TODO use weakReferences
-template<class T>
-inline T* getObjectPtrFromObject ( DynamicObject* d)
-{
-    if (!d)return nullptr;
 
-    return dynamic_cast<T*> ((T*) (int64)d->getProperty (jsPtrIdentifier));
+class JsObject{
+public:
+    virtual ~JsObject(){}
+    virtual bool wasObjectDeleted()=0;
+    virtual void* getVoid()=0;
+};
+
+template<class T>
+class JsObjectRef : public JsObject,public WeakReference<T>{
+public:
+    JsObjectRef(T* ptr):WeakReference<T>(ptr){}
+    bool wasObjectDeleted() override{return WeakReference<T>::wasObjectDeleted();}
+    void* getVoid() override{return WeakReference<T>::get();}
+};
+
+
+class JsPtrStore{
+public:
+    juce_DeclareSingleton(JsPtrStore, true);
+
+
+    typedef JsObject* SP;
+    typedef int64 KeyType ;
+    typedef HashMap<KeyType, SP> MapType;
+
+    template<class T>
+     KeyType create(T* o,bool allowRecreation=false){
+         jassert(o!=nullptr);
+         KeyType k = (int64)(void*)o;
+         if(map.contains(k)){
+//             handle multipe inheritance
+             if(!allowRecreation && dynamic_cast<T*>((T*)map[k]->getVoid())){
+                 return k;
+             }
+             jassert(allowRecreation );
+             deleteEntry(k,false);
+         }
+         map.set(k,new JsObjectRef<T>(o));
+        return k;
+    }
+    void deleteEntry(KeyType k,bool checkExistence = true){
+        jassert(map[k]!=nullptr);
+        if(!checkExistence || map.contains(k)){
+            SP old = map[k];
+            map.remove(k);
+            delete old;
+        }
+    }
+
+    void clear(){
+        MapType::Iterator i (map);
+        staticHeapSize = 0;
+        Array<KeyType> toRm;
+        while (i.next())
+        {
+            if(i.getValue()->wasObjectDeleted()){toRm.add(i.getKey());}
+            else{staticHeapSize++;}
+        }
+        for(auto & k:toRm){deleteEntry(k,false);}
+//        DBG("js static heap" <<staticHeapSize );
+
+    }
+
+
+    JsObject* retrieve(KeyType k){
+        jassert(map.contains(k));
+        return map.contains(k)?map[k]:nullptr;
+
+    }
+
+    static JsPtrStore * i(){return JsPtrStore::getInstance();}
+
+    int staticHeapSize = 0;
+    MapType map;
+
+};
+
+
+
+inline JsObject* getObjectPtrFromObject ( DynamicObject* d)
+{
+
+    if (!d)return nullptr;
+    int64 p = (int64)d->getProperty (jsPtrIdentifier);
+    if(p==-1)return nullptr;
+    return JsPtrStore::i()->retrieve(p);
 }
 
-template<class T>
-inline T* getObjectPtrFromJS (const var::NativeFunctionArgs& a)
+
+inline JsObject* getObjectPtrFromJS (const var::NativeFunctionArgs& a)
 {
-    return getObjectPtrFromObject<T>(a.thisObject.getDynamicObject());
+    return getObjectPtrFromObject(a.thisObject.getDynamicObject());
+}
+
+
+
+template<class T,class OriginClass=T>
+inline T* castPtrFromObject ( DynamicObject* d)
+{
+    if(JsObject* p = getObjectPtrFromObject(d)){
+        if(auto *ref  = dynamic_cast<JsObjectRef<OriginClass> * > (p)){
+            return dynamic_cast<T * >(ref->get());
+        }
+    }
+    return nullptr;
+
+}
+
+template<class T,class OriginClass=T>
+inline T* castPtrFromJS (const var::NativeFunctionArgs& a){
+    return castPtrFromObject<T,OriginClass>(a.thisObject.getDynamicObject());
+}
+
+
+template<class T >
+inline void assignPtrToObject(T * ref,DynamicObject * dob,bool allowRecreation=false){
+    dob->setProperty (jsPtrIdentifier,JsPtrStore::i()->create(ref,allowRecreation));
+}
+
+
+static inline void clearRefsFromVar(var va,bool recursive=true){
+    auto * dob = va.getDynamicObject();
+    if (dob){
+        if(auto entry = (JsPtrStore::KeyType)dob->getProperty(jsPtrIdentifier)){
+            JsPtrStore::i()->deleteEntry(entry);
+        }
+    }
+    if(recursive){
+        if(dob){
+            for(auto & v : dob->getProperties()){
+                clearRefsFromVar(v.value,true);
+            }
+        }
+
+        else if(auto* dd = va.getArray()){
+            for(auto a:*dd){
+                clearRefsFromVar(a,true);
+            }
+        }
+    }
+}
+static inline void clearRefsFromObj(DynamicObject* dob,bool recursive=true){
+    clearRefsFromVar(var(dob),recursive);
 }
 
 
@@ -263,6 +394,6 @@ inline Identifier getNumericIdentifier (int n)
 }
 
 
-
+}
 
 #endif  // JSHELPERS_H_INCLUDED

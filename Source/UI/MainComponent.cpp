@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -15,6 +15,8 @@
 
  ==============================================================================
  */
+
+#if !ENGINE_HEADLESS
 
 #include "MainComponent.h"
 #include "AppPropertiesUI.h"
@@ -30,10 +32,25 @@ MainContentComponent* createMainContentComponent (Engine* e)
     return new MainContentComponent (e);
 }
 
+// synchronizes menubar
+class UndoWatcher:public ChangeListener,Timer{
+public:
+    UndoWatcher(MainContentComponent * _mc):mc(_mc){getAppUndoManager().addChangeListener(this);};
+
+    void timerCallback() override{
+        mc->menuItemsChanged();
+        stopTimer();
+    }
+    void changeListenerCallback(ChangeBroadcaster* source) override{startTimer(300);}
+    MainContentComponent * mc;
+};
+
+
 
 MainContentComponent::MainContentComponent (Engine* e):
     engine (e),
-    tooltipWindow(nullptr,1200)
+    tooltipWindow(nullptr,1200),
+    undoWatcher(new UndoWatcher(this))
 {
     engine->addEngineListener (this);
 
@@ -151,7 +168,7 @@ void MainContentComponent::startLoadFile()
     //  if(ControllerManagerUIViewport * cui = (ControllerManagerUIViewport*)ShapeShifterManager::getInstance()->getContentForName(ControllerPanel)){
     //    cui->controllerManagerUI->clear();
     //  }
-
+    getAppUndoManager().clearUndoHistory();
     if (fileProgressWindow != nullptr)
     {
         removeChildComponent (fileProgressWindow);
@@ -201,3 +218,5 @@ void MainContentComponent::timerCallback()
 
     //repaint();
 }
+
+#endif

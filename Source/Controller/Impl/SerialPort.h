@@ -109,7 +109,7 @@ public:
     PortMode mode;
 
     void open();
-    void close();
+    void close(bool stopThread = true);
 
     bool isOpen();
 

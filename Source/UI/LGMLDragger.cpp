@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@
  ==============================================================================
  */
 
+#if !ENGINE_HEADLESS
 #include "LGMLDragger.h"
 #include "MainComponent.h"
 
@@ -32,7 +33,7 @@ juce_ImplementSingleton (LGMLDragger);
 class DraggedComponent : public juce::Component
 {
 public:
-    DraggedComponent (ParameterUI* c): originComp (c)
+    explicit DraggedComponent (ParameterUI* c): originComp (c)
     {
         Rectangle<int > bounds = c->getScreenBounds();
         bounds -= LGMLDragger::getInstance()->mainComp->getScreenBounds().getTopLeft();
@@ -50,7 +51,7 @@ public:
     }
 
 
-    ParameterUI* originComp;
+    WeakReference<ParameterUI> originComp;
     Image draggedImage;
     bool isDragging;
     void mouseDrag (const MouseEvent& e)override
@@ -72,7 +73,8 @@ public:
 
             if (!contains (e.getEventRelativeTo (this).getPosition()))
             {
-                originComp->repaint();
+                if(originComp.get())
+                    originComp->repaint();
                 LGMLDragger::getInstance()->endDraggingComponent (this, e);
             }
         }
@@ -89,7 +91,9 @@ public:
         }
 
         isDragging = false;
-        originComp->repaint();
+        if(originComp.get())
+            originComp->repaint();
+
         LGMLDragger::getInstance()->unRegisterDragCandidate (originComp);
 
     }
@@ -97,7 +101,8 @@ public:
     {
         g.drawImage ( draggedImage, getLocalBounds().toFloat());
         g.setColour (Colours::white);
-        g.drawFittedText (originComp->getName(), getLocalBounds(), Justification::centred, 2);
+        if(originComp.get())
+            g.drawFittedText (originComp->getName(), getLocalBounds(), Justification::centred, 2);
     }
     void paintOverChildren (Graphics& g) override
     {
@@ -119,7 +124,7 @@ public:
 ////////////////////
 // LGMLDragger
 ///////////////
-LGMLDragger::LGMLDragger(): isMappingActive (false), selectedSSContent (nullptr)
+LGMLDragger::LGMLDragger(): isMappingActive (false), selectedSSContent (nullptr),dragCandidate(nullptr),dropCandidate(nullptr),selected(nullptr)
 {
 
 }
@@ -135,6 +140,7 @@ void LGMLDragger::setMainComponent (Component* c)
     mainComp = c;
 
     mainComp->addMouseListener (this, true);
+
     setMappingActive (false);
 }
 
@@ -151,7 +157,7 @@ void LGMLDragger::registerDragCandidate (ParameterUI* c)
 
 }
 
-void LGMLDragger::unRegisterDragCandidate (ParameterUI* c)
+void LGMLDragger::unRegisterDragCandidate (ParameterUI* /*c*/)
 {
     dragCandidate = nullptr;
 
@@ -206,6 +212,7 @@ void LGMLDragger::mouseUp (const MouseEvent& e)
         if (i == selectedSSContent)
         {
             setSelected (nullptr);
+            break;
         }
 
         i = i->getParentComponent();
@@ -238,7 +245,7 @@ void setAllComponentMappingState (Component* c, bool b)
     {
         Component*   ch = c->getChildComponent (i);
 
-        if (ch->isVisible())
+        if (!b || ch->isVisible())
         {
             if (auto lch = dynamic_cast<ParameterUI*> (ch))
             {
@@ -266,9 +273,11 @@ void LGMLDragger::setMappingActive (bool b)
     if (!b)
     {
         unRegisterDragCandidate (nullptr);
+        mainComp->removeKeyListener(this);
     }
     else
     {
+        mainComp->addKeyListener(this);
         MouseInputSource mainMouse = Desktop::getInstance().getMainMouseSource();
 
         if (auto c = dynamic_cast<ParameterUI*> (mainMouse.getComponentUnderMouse()))
@@ -288,7 +297,14 @@ void LGMLDragger::toggleMappingMode()
 }
 
 
-
+bool LGMLDragger::keyPressed (const KeyPress& key,
+                              Component* /*originatingComponent*/){
+    if(key==KeyPress::escapeKey && isMappingActive){
+        setMappingActive(false);
+        return true;
+    }
+    return false;
+}
 
 void LGMLDragger::startDraggingComponent (Component* const componentToDrag, const MouseEvent& e)
 {
@@ -347,7 +363,7 @@ void LGMLDragger::dragComponent (Component* const componentToDrag, const MouseEv
         }
     }
 }
-void LGMLDragger::endDraggingComponent (Component*   componentToDrag, const MouseEvent& e)
+void LGMLDragger::endDraggingComponent (Component*   /*componentToDrag*/, const MouseEvent& e)
 {
     //  jassert(!target || componentToDrag==target);
     auto target_C = dynamic_cast<ParameterProxyUI*> (dropCandidate);
@@ -360,14 +376,14 @@ void LGMLDragger::endDraggingComponent (Component*   componentToDrag, const Mous
     else
     {
 
-        auto* c = dragCandidate ? dragCandidate->originComp : nullptr;
+        auto* c = (dragCandidate && e.getDistanceFromDragStart()==0)? dragCandidate->originComp.get() : nullptr;
         setSelected (c);
     }
 
     unRegisterDragCandidate (nullptr);
 }
 
-void LGMLDragger::setSelected (ParameterUI* c)
+void LGMLDragger::setSelected (ParameterUI* c,LGMLDragger::Listener * from)
 {
 
     if (c)
@@ -394,7 +410,7 @@ void LGMLDragger::setSelected (ParameterUI* c)
         if (selected.get())
         {
             selected->isSelected = false;
-            selected->repaint();
+            selected->updateOverlayEffect();
         }
 
         selected = c;
@@ -402,11 +418,12 @@ void LGMLDragger::setSelected (ParameterUI* c)
         if (selected.get())
         {
             selected->isSelected = true;
-            selected->repaint();
+            selected->updateOverlayEffect();
 
         }
 
-        listeners.call (&Listener::selectionChanged, c ? c->parameter : nullptr);
+        listeners.callExcluding(from, &Listener::selectionChanged, c ? c->parameter : nullptr);
 
     }
 }
+#endif

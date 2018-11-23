@@ -13,6 +13,7 @@
 */
 
 
+
 #include "AudioDeviceOutNode.h"
 
 
@@ -24,7 +25,8 @@ AudioDeviceManager& getAudioDeviceManager();
 
 AudioDeviceOutNode::AudioDeviceOutNode (StringRef name) :
     NodeBase (name, false),
-    AudioGraphIOProcessor (AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioOutputNode)
+    AudioGraphIOProcessor (AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioOutputNode),
+    globalFader(1000,1000,false,1)
 {
     //CanHavePresets = false;
 
@@ -42,13 +44,14 @@ AudioDeviceOutNode::AudioDeviceOutNode (StringRef name) :
 
     setPreferedNumAudioInput (desiredNumAudioOutput->intValue());
     setPreferedNumAudioOutput (0);
+    globalFader.startFadeIn();
 }
 
 void AudioDeviceOutNode::setParentNodeContainer (NodeContainer* parent)
 {
     NodeBase::setParentNodeContainer (parent);
     if(parent != NodeManager::getInstance()){
-        LOG("!!! avoid creating AudioDeviceIn/Out in container, unstable behaviour");
+        LOGE(juce::translate("avoid creating AudioDeviceIn/Out in container, unstable behaviour"));
         jassertfalse;
     }
 
@@ -67,7 +70,7 @@ void AudioDeviceOutNode::changeListenerCallback (ChangeBroadcaster*)
     updateVolMutes();
 };
 
-void AudioDeviceOutNode::onContainerParameterChanged (Parameter* p)
+void AudioDeviceOutNode::onContainerParameterChanged ( ParameterBase* p)
 {
 
     if (p == desiredNumAudioOutput)
@@ -110,40 +113,24 @@ void AudioDeviceOutNode::updateVolMutes()
 
 }
 
+void AudioDeviceOutNode::processBlockBypassed(AudioBuffer<float>& buffer, MidiBuffer& ){
+    buffer.clear();
+}
 void AudioDeviceOutNode::processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
-    if (!enabledParam->boolValue()) return;
-
-    //  JUCE do not duplicate buffers when comming from the same source
-    //  force duplication to isolate behaviour when manipulating buffer channel independently
-    //     ---In1
-    //    /
-    // Out-----In2
-    int numSample = buffer.getNumSamples();
-    int numChan = buffer.getNumChannels();
-    audioInCache.resize (numChan);
-    int idx = 0;
-
-    for (int i = 0; i < numChan ; i++)
-    {
-        for (int j = numChan - 1 ; j > i ; j--)
-        {
-            if (buffer.getReadPointer (i) == buffer.getReadPointer (j))
-            {
-                audioInCache.getReference (idx).resize (numSample);
-                buffer.getArrayOfWritePointers()[j] = &audioInCache.getReference (idx).getReference (0);
-                buffer.copyFrom (i, 0, buffer.getReadPointer (i), numSample);
-                idx++;
-            }
-        }
+    if (!enabledParam->boolValue()) {
+        buffer.clear();
+        AudioProcessorGraph::AudioGraphIOProcessor::processBlock (buffer, midiMessages);
+        return;
     }
 
     int numChannels = jmin (NodeBase::getTotalNumInputChannels(), AudioProcessorGraph::AudioGraphIOProcessor::getTotalNumInputChannels());
     int numSamples = buffer.getNumSamples();
-
+    globalFader.incrementFade(numSamples);
+    const double globalFaderValue = globalFader.getCurrentFade();
     for (int i = 0; i < numChannels; i++)
     {
-        float gain = i < outMutes.size() ? (outMutes[i]->boolValue() ? 0.f : logVolumes[i]) : 0.0f;
+        float gain = i < outMutes.size() ? (outMutes[i]->boolValue() ? 0.f : logVolumes[i]*globalFaderValue) : 0.0f;
         buffer.applyGainRamp (i, 0, numSamples, lastVolumes[i], gain);
         lastVolumes.set (i, gain);
     }
@@ -180,5 +167,7 @@ void AudioDeviceOutNode::removeVolMute()
     logVolumes.removeLast();
     lastNumberOfOutputs--;
 }
+
+
 
 

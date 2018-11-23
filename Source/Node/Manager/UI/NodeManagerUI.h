@@ -34,7 +34,8 @@ class UISync;
 class NodeManagerUI :
     public juce::Component,
     public NodeManager::NodeManagerListener,
-    public ParameterContainer
+    public ParameterContainer,
+    private DeletedAtShutdown 
 {
 public:
     juce_DeclareSingleton(NodeManagerUI, false);
@@ -86,10 +87,10 @@ public:
 class NodeManagerUIViewport :
     public ShapeShifterContentComponent,
     public NodeManagerUI::NodeManagerUIListener,
-    public ButtonListener
+    public Button::Listener
 {
 public :
-    NodeManagerUIViewport (const String& contentName, NodeManagerUI* _nmui): nmui (_nmui), ShapeShifterContentComponent (contentName)
+    NodeManagerUIViewport (const String& contentName, NodeManagerUI* _nmui): nmui (_nmui), ShapeShifterContentComponent (contentName,"Patch your Audio here")
     {
         vp.setViewedComponent (nmui, false);
         vp.setScrollBarsShown (true, true);
@@ -104,9 +105,10 @@ public :
         nmui->setWantsKeyboardFocus (true);
         addAndMakeVisible (addNodeBt);
         addNodeBt.addListener (this);
-        addNodeBt.setTooltip ("Add Node");
+        addNodeBt.setTooltip (juce::translate("Add Node"));
         //    setOpaque(true);
         vp.setScrollOnDragEnabled (false);
+        vp.addMouseListener(this,true);
 
     }
 
@@ -156,11 +158,34 @@ public :
 
         resized();
     }
+    void mouseDown(const MouseEvent & e)override{
+        if(nmui->isParentOf(e.originalComponent)) {
+            beginDragAutoRepeat(40);
+        }
+    }
+    void mouseDrag(const MouseEvent & e)override{
+        Component *c  = e.originalComponent;
+        if(nmui->currentViewer && nmui->currentViewer->isParentOf(c)){
+            auto r = vp.getLocalArea(c->getParentComponent(),c->getBoundsInParent());
+            //auto mouse = vp.getLocalPoint(e.originalComponent,e.position);
+            vp.autoScroll(r.getRight(),r.getBottom(),140,10);
+        }
+    }
+    void mouseUp(const MouseEvent & e)override{
+        if(nmui->currentViewer) {
+            auto nb = nmui->currentViewer->getNodesBoundingBox();
+            auto maxP = vp.getLocalArea(nmui->currentViewer,nb);
+            nmui->currentViewer->resizeToFitNodes(maxP.getTopLeft());
+        }
+        beginDragAutoRepeat(-1);
+
+    }
+
 
     void paint (Graphics& g) override
     {
-        g.setColour (findColour (ResizableWindow::backgroundColourId).darker (.2f));
-        g.fillRect (getLocalBounds().removeFromTop (30));
+//        g.setColour (findColour (ResizableWindow::backgroundColourId).darker (.2f));
+//        g.fillRect (getLocalBounds().removeFromTop (30));
         const int grid = 100;
         auto area = vp.getViewArea();
         g.setColour (Colours::white.withAlpha (0.03f));
@@ -181,7 +206,7 @@ public :
 
     void resized() override
     {
-
+        ShapeShifterContentComponent::resized();
         Rectangle<int> r = getLocalBounds();
 
         Rectangle<int> buttonR = r.removeFromTop (30).reduced (5);
@@ -207,41 +232,35 @@ public :
     {
         reconstructViewerPath();
         
-        
+        hideInfoLabelIfNeeded();
 
         //nmui->setBounds(getLocalBounds().withTop(30));
         resized();
 
 
     }
+    void hideInfoLabelIfNeeded(){
+        if( nmui->currentViewer){
+            NodeContainer* c = nmui->currentViewer->nodeContainer;
+            if(c){infoLabel.setVisible( c->getNumNodes()<=2);}
+            else{jassertfalse;}
+        }
+    }
 
     void buttonClicked (Button* b)override
     {
         if (b == &addNodeBt)
         {
-            static Array<String> filt  {"t_ContainerInNode", "t_ContainerOutNode"};
-            ScopedPointer<PopupMenu> menu (FactoryUIHelpers::createFactoryTypesMenuFilter<NodeFactory> (filt));
+            
+            ScopedPointer<PopupMenu> menu (FactoryUIHelpers::getFactoryTypesMenu<NodeFactory> ());
 
             int result = menu->show();
-            Point<int> mousePos = vp.getViewArea().getCentre();
+            Point<int> destPos = vp.getViewArea().getCentre();
 
             if (result > 0)
             {
-                if (auto c =  FactoryUIHelpers::createFromMenuIdx<NodeBase> (result))
-                {
-                    ConnectableNode* n = nmui->currentViewer->nodeContainer->addNode (c);
-                    jassert (n != nullptr);
-                    if(auto ui= nmui->getControllableForAddress(c->getControlAddressArray())){
-                        if(auto d = dynamic_cast<ConnectableNodeUIParams*>(ui)){
-                            d->nodePosition->setPoint (mousePos);
-                            d->nodeMinimizedPosition->setPoint (mousePos);
-                        }
-                    }
-                }
-                else
-                {
-                    jassertfalse;
-                }
+                String tid(FactoryUIHelpers::getFactoryTypeNameFromMenuIdx<NodeFactory>(result));
+                nmui->currentViewer->addNodeUndoable(tid, destPos);
             }
 
         }

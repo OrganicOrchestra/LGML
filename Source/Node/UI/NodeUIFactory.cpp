@@ -13,6 +13,7 @@
  *
  */
 
+#if !ENGINE_HEADLESS
 
 #include "NodeUIFactory.h"
 
@@ -29,7 +30,7 @@
 
 #include "../Impl/AudioMixerNodeUI.h"
 #include "../Impl/AudioMixerNode.h"
-//#include "../Impl/DataInNodeUI.h"
+
 
 #include "../Impl/JsNodeUI.h"
 #include "../Impl/JsNode.h"
@@ -37,12 +38,12 @@
 #include "../Impl/ContainerInNode.h"
 #include "../Impl/ContainerOutNode.h"
 
-#include "../../Data/DataInNode.h"
-#include "../../Data/DataInNodeUI.h"
 
 
+#if JUCE_DEBUG
 #include "../Impl/DummyNode.h"
 #include "../Impl/DummyNodeContentUI.h"
+#endif
 
 #include "../Impl/LooperNode.h"
 #include "../Impl/LooperNodeUI.h"
@@ -52,9 +53,11 @@
 #include "../Impl/Spat2DNodeUI.h"
 #include "../Impl/VSTNode.h"
 #include "../Impl/VSTNodeUI.h"
+#include "../Impl/PdNode.h"
+#include "../Impl/PdNodeUI.h"
 
 //#define CHKNRETURN_HEADER(p,A,B,C) if(p->getFactoryTypeId()==A::_factoryType){return new ConnectableNodeUI(p, B,C);}
-#define CHKNRETURN(p,A,B) if(p->getFactoryTypeId()==A::_factoryType){return new ConnectableNodeUI(p, uip,B);}
+#define CHKNRETURN(p,A,B) if((p)->getFactoryTypeId()==A::_factoryType){return new ConnectableNodeUI(p, uip,B);}
 
 ConnectableNodeUI* NodeUIFactory::createDefaultUI (ConnectableNode* t,ConnectableNodeUIParams *uip)
 {
@@ -65,14 +68,15 @@ ConnectableNodeUI* NodeUIFactory::createDefaultUI (ConnectableNode* t,Connectabl
     CHKNRETURN (t, AudioMixerNode, new AudioMixerNodeUI); //ui->recursiveInspectionLevel = 2;
     CHKNRETURN (t, JsNode, new JsNodeUI);
 
-    CHKNRETURN (t, DataInNode, new DataInNodeContentUI);
-
+#if JUCE_DEBUG
     CHKNRETURN (t, DummyNode, new DummyNodeContentUI);
+#endif
+
     CHKNRETURN (t, LooperNode, new LooperNodeContentUI); //ui->recursiveInspectionLevel = 2; ui->canInspectChildContainersBeyondRecursion = false;
     CHKNRETURN (t, NodeContainer, new NodeContainerContentUI); // recursiveInspectionLevel = 1; canInspectChildContainersBeyondRecursion = true;
     CHKNRETURN (t, Spat2DNode, new Spat2DNodeContentUI);
     CHKNRETURN (t, VSTNode,  new VSTNodeContentUI); //, new VSTNodeHeaderUI);
-
+    CHKNRETURN(t, PdNode, new PdNodeContentUI);
 
     // set default for ContainerIn/Out
     if(t->getFactoryTypeId()==ContainerInNode::_factoryType){
@@ -94,3 +98,5 @@ ConnectableNodeUI* NodeUIFactory::createDefaultUI (ConnectableNode* t,Connectabl
 
 
 }
+
+#endif

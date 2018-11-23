@@ -28,8 +28,9 @@ class ConnectableNodeHeaderUI;
 
 class ConnectableNodeUIParams: public ParameterContainer{
 public:
-    ConnectableNodeUIParams(ConnectableNodeUIParams * _origin);
-    ConnectableNodeUIParams(StringRef n);
+    explicit ConnectableNodeUIParams(ConnectableNodeUIParams * _origin);
+
+    explicit ConnectableNodeUIParams(StringRef n);
     void initFromParams();
     void notifyFromParams();
     virtual ~ConnectableNodeUIParams();
@@ -49,6 +50,7 @@ class ConnectableNodeUI :
     public InspectableComponent,
     public ConnectableNode::ConnectableNodeListener,
     public ConnectableNodeUIParams
+    
 {
 public:
     ConnectableNodeUI (ConnectableNode* cn, ConnectableNodeUIParams* params ,ConnectableNodeContentUI* contentUI = nullptr, ConnectableNodeHeaderUI* headerUI = nullptr);
@@ -71,7 +73,7 @@ public:
         ConnectorComponent::ConnectorDisplayLevel displayLevel;
         ConnectorComponent::ConnectorIOType type;
 
-        ConnectorContainer (ConnectorComponent::ConnectorIOType type);
+        explicit ConnectorContainer (ConnectorComponent::ConnectorIOType type);
 
         void setConnectorsFromNode (ConnectableNode* node);
         void addConnector (ConnectorComponent::ConnectorIOType ioType, NodeConnection::ConnectionType dataType, ConnectableNode* node);
@@ -88,7 +90,7 @@ public:
     };
 
     //ui
-    class MainComponentContainer : public juce::Component
+    class MainComponentContainer : public juce::Component,public TooltipClient
     {
     public:
 
@@ -114,6 +116,7 @@ public:
         virtual void setMiniMode (bool value);
 
         void childBoundsChanged (Component*)override;
+        String getTooltip() override;
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponentContainer)
     };
@@ -155,6 +158,7 @@ public:
     //Need to clean out and decide whether there can be more than 1 data connector / audio connector on nodes
     ConnectorComponent* getFirstConnector (NodeConnection::ConnectionType connectionType, ConnectorComponent::ConnectorIOType ioType);
 
+
 private:
 
     Point2DParameter<int>* getCurrentPositionParam();
@@ -164,12 +168,14 @@ private:
     friend class NodeContainerViewer;
 
     void childBoundsChanged (Component*)override;
-    void nodeParameterChanged (ConnectableNode*, Parameter* p) override;
-    void onContainerParameterChanged(Parameter *p) override;
+    void nodeParameterChanged (ConnectableNode*, ParameterBase* p) override;
+    void onContainerParameterChanged( ParameterBase*p) override;
 
     void mouseDown (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
     void mouseDrag (const MouseEvent& e)  override;
+    void mouseEnter (const MouseEvent& e)  override;
+    void mouseExit (const MouseEvent& e)  override;
     bool keyPressed (const KeyPress& key) override;
     void moved()override;
 
@@ -187,7 +193,7 @@ private:
 
     // avoid laggy self param updates
     bool isDraggingFromUI;
-
+private:
     WeakReference<ConnectableNodeUI>::Master masterReference;
     friend class WeakReference<ConnectableNodeUI>;
 

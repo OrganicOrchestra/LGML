@@ -11,7 +11,7 @@
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 *
 */
-
+#if !ENGINE_HEADLESS
 
 #include "AudioDeviceOutNodeUI.h"
 
@@ -149,7 +149,7 @@ void AudioDeviceOutNodeContentUI::removeLastVuMeter()
     removeChildComponent (volumes[curVuMeterNum]);
     volumes.removeLast();
 }
-void AudioDeviceOutNodeContentUI::nodeParameterChanged (ConnectableNode*, Parameter* p)
+void AudioDeviceOutNodeContentUI::nodeParameterChanged (ConnectableNode*, ParameterBase* p)
 {
 
     int index = 0;
@@ -175,3 +175,5 @@ void AudioDeviceOutNodeContentUI::numAudioInputChanged (ConnectableNode*, int)
 {
     updateVuMeters();
 }
+
+#endif

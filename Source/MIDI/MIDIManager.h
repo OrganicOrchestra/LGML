@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 #define MIDIMANAGER_H_INCLUDED
 #pragma once
 
+
 #include "../JuceHeaderAudio.h"//keep
 
 class MIDIListener;
@@ -33,7 +34,7 @@ public:
     struct DeviceUsageCount
     {
     public:
-        DeviceUsageCount (const String& name) : deviceName (name), usageCount (0) {}
+        explicit DeviceUsageCount (String name) : deviceName (std::move(name)), usageCount (0) {}
         String deviceName;
         int usageCount;
     };

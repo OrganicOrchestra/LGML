@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "ShapeShifterPanelTab.h"
 #include "../Style.h"
@@ -23,7 +24,7 @@ ShapeShifterPanelTab::ShapeShifterPanelTab (ShapeShifterContent* _content) : con
 
     panelLabel.setFont (12);
     panelLabel.setJustificationType (Justification::centred);
-    panelLabel.setText (content == nullptr ? "[No content]" : content->contentName, NotificationType::dontSendNotification);
+    panelLabel.setText (juce::translate(content == nullptr ? "[No content]" : content->contentName), NotificationType::dontSendNotification);
 
     addAndMakeVisible (&panelLabel);
 
@@ -41,6 +42,7 @@ ShapeShifterPanelTab::ShapeShifterPanelTab (ShapeShifterContent* _content) : con
 
     setSize (getLabelWidth(), 20);
     setOpaque (true);
+    setTooltip(content->info);
 
 }
 
@@ -79,3 +81,6 @@ void ShapeShifterPanelTab::buttonClicked (Button* b)
 {
     if (b == &closePanelBT) tabListeners.call (&TabListener::askForRemoveTab, this);
 }
+
+
+#endif

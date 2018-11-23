@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "Spat2DNodeUI.h"
 #include "../UI/ConnectableNodeUI.h"
@@ -127,7 +128,7 @@ void Spat2DNodeContentUI::updateShapeModeView()
     resized();
 }
 
-void Spat2DNodeContentUI::nodeParameterChanged (ConnectableNode*, Parameter* p)
+void Spat2DNodeContentUI::nodeParameterChanged (ConnectableNode*, ParameterBase* p)
 {
     if (p == spatNode->shapeMode) updateShapeModeView();
     else if (p == spatNode->useGlobalTarget)
@@ -147,3 +148,5 @@ void Spat2DNodeContentUI::nodeParameterChanged (ConnectableNode*, Parameter* p)
         resized();
     }
 }
+
+#endif

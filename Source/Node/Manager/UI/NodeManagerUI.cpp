@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "NodeManagerUI.h"
 #include "../NodeManager.h"
@@ -44,10 +45,17 @@ public:
     NodeManagerUIFactory():ParameterContainer("NodesUI"){}
 
     ParameterContainer* addContainerFromObject (const String& name, DynamicObject*   data) override{
+        ParameterContainer * res;
         if(auto c = getControllableContainerByName("NodeManagerUI")){
-            return dynamic_cast<NodeManagerUI*>(c);
+            res = dynamic_cast<NodeManagerUI*>(c);
         }
-        return new NodeManagerUI(NodeManager::getInstance());
+        else{
+            res= new NodeManagerUI(NodeManager::getInstance());
+        }
+        if(res){
+            res->configureFromObject(data);
+        }
+        return res;
     };
 };
 
@@ -58,7 +66,7 @@ NodeManagerUI::NodeManagerUI (NodeManager* _nodeManager) :
     currentViewer (nullptr),
 ParameterContainer("NodeManagerUI"),isMiniMode(false)
 {
-
+    
     
     uiSync = new UISync("UI",nodeManager,this);
     auto p =getRoot(true)->getControllableContainerByName("NodesUI");
@@ -88,6 +96,9 @@ NodeManagerUI::~NodeManagerUI()
         p->removeChildControllableContainer(this);
     }
     else jassertfalse;
+
+
+    clearSingletonInstance();
 }
 
 void NodeManagerUI::clear()
@@ -98,12 +109,14 @@ void NodeManagerUI::clear()
 void NodeManagerUI::resized()
 {
 
-    Rectangle<int> r = getLocalBounds();
+
 
     if (currentViewer != nullptr)
     {
-        currentViewer->setTopLeftPosition (0, 0);
-        currentViewer->setSize (jmax<int> (getWidth(), currentViewer->getWidth()), jmax<int> (getHeight(), currentViewer->getHeight()));
+        Rectangle<int> r = getLocalBounds();
+        currentViewer->setBounds(r);
+        //currentViewer->setTopLeftPosition (0, 0);
+        //currentViewer->setSize (jmax<int> (getWidth(), currentViewer->getWidth()), jmax<int> (getHeight(), currentViewer->getHeight()));
     }
 }
 
@@ -158,9 +171,11 @@ void NodeManagerUI::setCurrentViewedContainer (NodeContainer* c)
         }
         currentViewer = new NodeContainerViewer (c,p);
         currentViewer->minimizeAll->setValue(isMiniMode);
+        
         addAndMakeVisible (currentViewer);
+        currentViewer->setMouseCursor(MouseCursor::CrosshairCursor);
         currentViewer->setTopLeftPosition (0, 0);
-        currentViewer->setSelected (true);
+        currentViewer->selectThis();
         setSize (0, 0);
         resized();
 
@@ -194,3 +209,4 @@ bool NodeManagerUI::keyPressed (const KeyPress& key)
 }
 
 
+#endif

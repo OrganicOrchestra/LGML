@@ -12,16 +12,19 @@
  *
  */
 
+#if !ENGINE_HEADLESS
 
 #include "SliderUI.h"
 #include "../../../UI/Style.h"
 #include "../NumericParameter.h"
+#include "../UndoableHelper.h"
 
 //==============================================================================
 template<class T>
-SliderUI<T>::SliderUI (Parameter* parameter) :
+SliderUI<T>::SliderUI ( ParameterBase* parameter) :
     ParameterUI (parameter), fixedDecimals (2),
-    defaultColor (0xff99ff66)
+    defaultColor (0xff99ff66),
+    scrollWheelAllowed(true)
 {
     assignOnMousePosDirect = false;
     changeParamOnMouseUpOnly = false;
@@ -29,12 +32,23 @@ SliderUI<T>::SliderUI (Parameter* parameter) :
     setSize (100, 10);
     scaleFactor = 1;
     jassert (parameter->getAs<MinMaxParameter>() || !parameter);
+    if(parameter->isEditable){
+        valueBox = new Label();
+        valueBox->setEditable(true);
+        valueBox->addListener(this);
+        valueBox->setColour(TextEditor::backgroundColourId,Colours::black);
+        valueBox->setColour(TextEditor::highlightColourId,Colours::grey);
+        valueBox->setJustificationType(Justification::centred);
+        valueBox->addMouseListener(this, false);
+        addChildComponent(valueBox);
+    }
 
 }
 
 template<class T>
 SliderUI<T>::~SliderUI()
 {
+
 }
 
 
@@ -45,8 +59,10 @@ void SliderUI<T>::paint (Graphics& g)
     if (shouldBailOut())return;
 
     Rectangle<int> sliderBounds = getLocalBounds();
+
     const float corner = 2;
-    g.setColour (findColour (Slider::backgroundColourId));
+    auto bgColor =findColour (Slider::backgroundColourId);
+    g.setColour (bgColor);
     g.fillRoundedRectangle (sliderBounds.toFloat(), corner);
 
 //    g.setColour (findColour (Slider::backgroundColourId).withAlpha (1.f).brighter());
@@ -55,9 +71,8 @@ void SliderUI<T>::paint (Graphics& g)
     Colour c = (isMouseButtonDown() && changeParamOnMouseUpOnly) ? findColour (TextButton::buttonOnColourId) : baseColour;
 
     float normalizedValue = getParamNormalizedValue();
-
-
     g.setColour (c);
+
 
     sliderBounds.reduce (1, 1);
     float drawPos = 0;
@@ -74,7 +89,7 @@ void SliderUI<T>::paint (Graphics& g)
     }
 
 
-    if (showLabel || showValue)
+    if ((showLabel || showValue))
     {
         //Colour textColor = normalizedValue > .5f?Colours::darkgrey : Colours::grey;
 
@@ -101,7 +116,7 @@ void SliderUI<T>::paint (Graphics& g)
 
         if (showLabel)
         {
-            text += customTextDisplayed.isNotEmpty()?customTextDisplayed:parameter->niceName;
+            text += customTextDisplayed.isNotEmpty()?customTextDisplayed:parameter.get()?parameter->niceName:"No Parameter";
 
             if (showValue) text += " : ";
         }
@@ -113,6 +128,55 @@ void SliderUI<T>::paint (Graphics& g)
 }
 
 template<class T>
+void SliderUI<T>::resized() {
+
+    if(valueBox){
+        Rectangle<int> r = getLocalBounds();
+        if(orientation==VERTICAL){
+            r = r.transformedBy(AffineTransform::rotation(float_Pi/2,r.getCentreX(),r.getCentreY()));
+        }
+        valueBox->setBounds(r);
+    }
+}
+
+template<class T>
+void SliderUI<T>::mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& wheel)
+{
+    Viewport *vp =findParentComponentOfClass<Viewport>();
+    bool _scrollWheelAllowed = !vp  || !(vp->canScrollVertically() || vp->canScrollHorizontally());
+        if (_scrollWheelAllowed&&scrollWheelAllowed)
+        {
+            // sometimes duplicate wheel events seem to be sent, so since we're going to
+            // bump the value by a minimum of the interval, avoid doing this twice..
+            if (e.eventTime != lastMouseWheelTime)
+            {
+
+                lastMouseWheelTime = e.eventTime;
+
+                if (//maximum > minimum &&
+                    ! e.mods.isAnyMouseButtonDown())
+                {
+                    float interval = 0.3;
+                    if(e.mods.isShiftDown())interval/=10.0;
+                    const float value = getParamNormalizedValue();
+                    const float delta = (std::abs (wheel.deltaX) > std::abs (wheel.deltaY)
+                                   ? -wheel.deltaX : wheel.deltaY)* (wheel.isReversed ? -1.0f : 1.0f);
+
+
+                    if (delta != 0.0)
+                    {
+                        float newValue =jmin<float>(jmax<float>( value + interval*delta,0.f),1.f);
+                        setParamNormalizedValue(newValue);
+                    }
+                }
+            }
+        }
+        else{
+            Component::mouseWheelMove (e, wheel);
+        }
+    }
+    
+template<class T>
 void SliderUI<T>::mouseDown (const MouseEvent& e)
 {
     ParameterUI::mouseDown (e);
@@ -123,7 +187,7 @@ void SliderUI<T>::mouseDown (const MouseEvent& e)
     if (!e.mods.isLeftButtonDown()) return;
 
     initValue = getParamNormalizedValue();
-    setMouseCursor (MouseCursor::NoCursor);
+
 
     if (e.mods.isShiftDown())
     {
@@ -132,7 +196,7 @@ void SliderUI<T>::mouseDown (const MouseEvent& e)
 
     if (e.mods.isCommandDown())
     {
-        parameter->setValue(parameter->floatValue()>0?0:(T)parameter->lastValue);
+        UndoableHelpers::setValueUndoable(parameter, parameter->floatValue()>0?0:(T)parameter->lastValue);
     }
 
     if (assignOnMousePosDirect)
@@ -161,6 +225,7 @@ void SliderUI<T>::mouseDrag (const MouseEvent& e)
     {
         if (e.mods.isLeftButtonDown())
         {
+            setMouseCursor (MouseCursor::NoCursor);
             if (assignOnMousePosDirect)
             {
                 setParamNormalizedValue ((float)getValueFromMouse());
@@ -180,6 +245,7 @@ void SliderUI<T>::mouseDrag (const MouseEvent& e)
 template<class T>
 void SliderUI<T>::mouseUp (const MouseEvent& me)
 {
+    ParameterUI::mouseUp(me);
     if (!parameter->isEditable) return;
 
     if (!me.mods.isLeftButtonDown()) return;
@@ -187,8 +253,25 @@ void SliderUI<T>::mouseUp (const MouseEvent& me)
 
     BailOutChecker checker (this);
 
+    if(me.getDistanceFromDragStart()==0 && !me.mods.isAnyModifierKeyDown()){
+        if(valueBox && !valueBox->isVisible()){
+            valueBox->setText(String((T)parameter->value), dontSendNotification);
+            valueBox->setVisible(true);
+            if(auto p =getParentComponent())p->addAndMakeVisible(valueBox);
+            valueBox->showEditor();
+            auto vb = getBoundsInParent();
+            int w = vb.getWidth();
+            if(w<vb.getHeight()){
+                vb = vb.transformedBy(AffineTransform::rotation(float_Pi/2.0f,(float)vb.getCentreX(),(float)vb.getCentreY()));
+            }
+            vb.setHeight(jmax<int>(vb.getHeight(),valueBox->getFont().getHeight()+3));
+            valueBox->setBounds(vb);
+
+        }
+    }
     if (me.getNumberOfClicks() >= 2 )
     {
+
         AlertWindow nameWindow ("Set a value", "Set a new value for this parameter", AlertWindow::AlertIconType::NoIcon, this);
         nameWindow.addTextEditor ("newValue", parameter->stringValue());
 
@@ -215,7 +298,11 @@ void SliderUI<T>::mouseUp (const MouseEvent& me)
             }
 
             float newValue = nameWindow.getTextEditorContents ("newValue").getFloatValue();
-            parameter->setValue (newValue);
+            UndoableHelpers::setValueUndoable(parameter,newValue);
+
+            if(valueBox)valueBox->hideEditor(true);
+
+
         }
     }
 
@@ -250,7 +337,10 @@ T SliderUI<T>::getValueFromPosition (const Point<int>& pos)
 template<class T>
 void SliderUI<T>::setParamNormalizedValue (float value)
 {
-    parameter->getAs<NumericParameter<T> >()->setNormalizedValue (jmin (jmax (value, 0.0f), 1.0f));
+    auto np = parameter->getAs<NumericParameter<T> >();
+    auto nv = (T)(jmap<T> (jmin<T> (jmax<T> (value, 0.0f), 1.0f), (T)np->minimumValue, (T)np->maximumValue));
+    UndoableHelpers::setValueUndoable(parameter, nv);
+
 }
 
 template<class T>
@@ -262,8 +352,23 @@ float SliderUI<T>::getParamNormalizedValue()
 template<class T>
 void SliderUI<T>::valueChanged (const var&)
 {
+    if(valueBox)valueBox->hideEditor(true);
+    repaint();
+};
+template<class T>
+void SliderUI<T>::labelTextChanged (Label* labelThatHasChanged) {
+    UndoableHelpers::setValueUndoable(parameter,(T)labelThatHasChanged->getText().getDoubleValue());
+};
+template<class T>
+void SliderUI<T>::editorHidden (Label*, TextEditor&) {
+    if(auto p = getParentComponent()){
+        p->removeChildComponent(valueBox);
+    }
+    valueBox->setVisible(false);
     repaint();
 };
 
 template class SliderUI<int>;
-template class SliderUI<double>;
+template class SliderUI<floatParamType>;
+
+#endif

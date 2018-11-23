@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,31 +16,25 @@
  ==============================================================================
  */
 
+#if !ENGINE_HEADLESS
+#include "../Version.h" // for project Info
+
+
+
+#ifndef BUILD_VERSION_UID
+#error BUILD_VERSION_UID should be defined in Version.h
+#endif
 
 
 //// code adapted from projucer
 
 #include "AutoUpdater.h"
+#include "DebugHelpers.h"
 
-
-#include "JuceHeader.h" // for project Info
 
 extern ApplicationProperties * getAppProperties();
 
 
-static const String getAppFileName(){
-    return
-#if JUCE_MAC
-    "LGML.app";
-#elif JUCE_WINDOWS
-    "LGML.exe";
-#elif JUCE_LINUX
-    "LGML";
-#else
-#error not supported platform
-#endif
-
-}
 
 LatestVersionChecker::LGMLVersionTriple::LGMLVersionTriple()
 :  major ((ProjectInfo::versionNumber & 0xff0000) >> 16),
@@ -95,8 +89,20 @@ bool LatestVersionChecker::LGMLVersionTriple::operator> (const LatestVersionChec
     return major > b.major;
 }
 
-#if DOWNLOAD_INPLACE
 
+static const String getAppFileName(){
+    return
+#if JUCE_MAC
+    "LGML.app";
+#elif JUCE_WINDOWS
+    "LGML.exe";
+#elif JUCE_LINUX
+    "LGML";
+#else
+#error not supported platform
+#endif
+
+}
 //==============================================================================
 struct RelaunchTimer  : private Timer
 {
@@ -126,6 +132,8 @@ struct RelaunchTimer  : private Timer
 
             app.startAsProcess();
         }
+
+
 
         delete this;
     }
@@ -175,14 +183,14 @@ public:
 
         if (result.wasOk() && ! threadShouldExit())
         {
-            setStatusMessage ("Installing...");
+            setStatusMessage (juce::translate("Installing..."));
             result = owner.performUpdate (zipData, targetFolder);
         }
     }
 
     Result download (MemoryBlock& dest)
     {
-        setStatusMessage ("Downloading...");
+        setStatusMessage (juce::translate("Downloading..."));
 
         int statusCode = 302;
         const int maxRedirects = 5;
@@ -222,7 +230,7 @@ public:
 
                 total += written;
 
-                setStatusMessage (String (TRANS ("Downloading...  (123)"))
+                setStatusMessage (String (juce::translate("Downloading...  (123)"))
                                   .replace ("123", File::descriptionOfSizeInBytes (total)));
             }
 
@@ -241,7 +249,7 @@ public:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DownloadNewVersionThread)
 };
 
-#endif
+
 //==============================================================================
 class UpdateUserDialog   : public Component,
 public Button::Listener
@@ -250,44 +258,54 @@ public:
     UpdateUserDialog (const LatestVersionChecker::LGMLVersionTriple& version,
                       const String& productName,
                       const String& releaseNotes,
-                      const char* overwriteFolderPath)
-    : hasOverwriteButton (overwriteFolderPath != nullptr)
+                      const char* overwriteFolderPath, bool hasDirectDownload)
     {
-#if !DOWNLOAD_INPLACE
-        hasOverwriteButton=false;
-#endif
+
+
+        LatestVersionChecker::LGMLVersionTriple currentVersion (ProjectInfo::versionNumber);
+
         addAndMakeVisible (titleLabel = new Label ("Title Label",
-                                                   TRANS ("Download \"123\" version 456?").replace ("123", productName)
-                                                   .replace ("456", version.toString())));
+                                                   juce::translate("Download LGML version 123?").replace ("123", version.toString())));
 
         titleLabel->setFont (Font (15.00f, Font::bold));
         titleLabel->setJustificationType (Justification::centredLeft);
         titleLabel->setEditable (false, false, false);
 
         addAndMakeVisible (contentLabel = new Label ("Content Label",
-                                                     TRANS ("A new version of \"123\" is available - would you like to download it?")
-                                                     .replace ("123", productName)));
+                                                     juce::translate("A new version of LGML is available - would you like to download it?")
+                                                     ));
         contentLabel->setFont (Font (15.00f, Font::plain));
         contentLabel->setJustificationType (Justification::topLeft);
         contentLabel->setEditable (false, false, false);
 
         addAndMakeVisible (okButton = new TextButton ("OK Button"));
-        okButton->setButtonText (TRANS(hasOverwriteButton ? "Choose Another Folder..." : "OK"));
+        okButton->setButtonText (juce::translate("Download page"));
         okButton->addListener (this);
 
-        addAndMakeVisible (cancelButton = new TextButton ("Cancel Button"));
-        cancelButton->setButtonText (TRANS("Cancel"));
-        cancelButton->addListener (this);
+        if(hasDirectDownload){
+            addAndMakeVisible (dlButton = new TextButton ("DL Button"));
+            dlButton->setButtonText (juce::translate("Download now"));
+            dlButton->addListener (this);
+        }
 
         addAndMakeVisible(dontBotherMeCheck = new TextButton("StopBothering"));
-        dontBotherMeCheck->setButtonText (TRANS("Don't check"));
+        dontBotherMeCheck->setButtonText (juce::translate("Don't check"));
         dontBotherMeCheck->setClickingTogglesState(true);
         dontBotherMeCheck->addListener (this);
 
 
+        addAndMakeVisible (cancelButton = new TextButton ("Cancel Button"));
+        cancelButton->setButtonText (juce::translate("Cancel"));
+        cancelButton->addListener (this);
 
+
+
+        if(!(version>currentVersion)){
+            titleLabel->setText(String("you have the latest version : 123 re-download it?").replace("123", version.toString()), dontSendNotification);
+            contentLabel->setText("", dontSendNotification);
+        }
         addAndMakeVisible (changeLogLabel = new Label ("Change Log Label",
-                                                       TRANS("Release Notes:")));
+                                                       juce::translate("Release Notes:")));
         changeLogLabel->setFont (Font (15.00f, Font::plain));
         changeLogLabel->setJustificationType (Justification::topLeft);
         changeLogLabel->setEditable (false, false, false);
@@ -301,23 +319,6 @@ public:
         changeLog->setPopupMenuEnabled (false);
         changeLog->setText (releaseNotes);
 
-        if (hasOverwriteButton)
-        {
-            addAndMakeVisible (overwriteLabel = new Label ("Overwrite Label",
-                                                           TRANS("Updating will overwrite everything in the following folder:")));
-            overwriteLabel->setFont (Font (15.00f, Font::plain));
-            overwriteLabel->setJustificationType (Justification::topLeft);
-            overwriteLabel->setEditable (false, false, false);
-
-            addAndMakeVisible (overwritePath = new Label ("Overwrite Path", overwriteFolderPath));
-            overwritePath->setFont (Font (15.00f, Font::bold));
-            overwritePath->setJustificationType (Justification::topLeft);
-            overwritePath->setEditable (false, false, false);
-
-            addAndMakeVisible (overwriteButton = new TextButton ("Overwrite Button"));
-            overwriteButton->setButtonText (TRANS("Overwrite"));
-            overwriteButton->addListener (this);
-        }
 
         juceIcon = Drawable::createFromImageData (BinaryData::grandlouloup_png,
                                                   BinaryData::grandlouloup_pngSize);
@@ -332,13 +333,13 @@ public:
         titleLabel = nullptr;
         contentLabel = nullptr;
         okButton = nullptr;
+        dlButton = nullptr;
         cancelButton = nullptr;
         dontBotherMeCheck = nullptr;
         changeLogLabel = nullptr;
         changeLog = nullptr;
         overwriteLabel = nullptr;
         overwritePath = nullptr;
-        overwriteButton = nullptr;
         juceIcon = nullptr;
     }
 
@@ -349,7 +350,7 @@ public:
 
         if (juceIcon != nullptr)
             juceIcon->drawWithin (g, Rectangle<float> (20, 17, 64, 64),
-                                  RectanglePlacement::stretchToFit, 1.000f);
+                                  RectanglePlacement::centred, 1.000f);
     }
 
     void resized() override
@@ -359,29 +360,23 @@ public:
         changeLogLabel->setBounds (22, 92, 341, 24);
         changeLog->setBounds (24, 112, 476, 102);
 
-        if (hasOverwriteButton)
-        {
-            okButton->setBounds (getWidth() - 24 - 174, getHeight() - 37, 174, 28);
-            overwriteButton->setBounds ((getWidth() - 24 - 174) + -14 - 86, getHeight() - 37, 86, 28);
-            cancelButton->setBounds (24, getHeight() - 37, 70, 28);
+        int bW = 100;
+        Rectangle<int> darea = getBounds().removeFromBottom(28);
+        auto larea = darea.removeFromRight((dlButton?3:2)*bW);
+        cancelButton->setBounds (larea.removeFromLeft(bW).reduced(2));
+        if(dlButton)dlButton->setBounds (larea.removeFromLeft(bW).reduced(2));
+        okButton->setBounds (larea.removeFromLeft(bW).reduced(2));
 
-            overwriteLabel->setBounds (24, 238, 472, 16);
-            overwritePath->setBounds (24, 262, 472, 40);
-        }
-        else
-        {
-            okButton->setBounds (getWidth() - 24 - 47, getHeight() - 37, 47, 28);
-            cancelButton->setBounds ((getWidth() - 24 - 47) + -14 - 70, getHeight() - 37, 70, 28);
-        }
-        dontBotherMeCheck->setBounds(10,getHeight()-37,70,28) ;
+
+        dontBotherMeCheck->setBounds(darea.removeFromLeft(bW).reduced(2));
     }
 
     void buttonClicked (Button* clickedButton) override
     {
         if (DialogWindow* parentDialog = findParentComponentOfClass<DialogWindow>())
         {
-            if      (clickedButton == overwriteButton) parentDialog->exitModalState (1);
-            else if (clickedButton == okButton)        parentDialog->exitModalState (2);
+            if      (clickedButton == okButton) parentDialog->exitModalState (1);
+            else if (clickedButton == dlButton)        parentDialog->exitModalState (2);
             else if (clickedButton == cancelButton)    parentDialog->exitModalState (-1);
             else if(clickedButton==dontBotherMeCheck){
                 getAppProperties()->getUserSettings()->setValue("check for updates",!dontBotherMeCheck->getToggleState());
@@ -395,15 +390,14 @@ public:
     static DialogWindow* launch (const LatestVersionChecker::LGMLVersionTriple& version,
                                  const String& productName,
                                  const String& releaseNotes,
-                                 const char* overwritePath = nullptr)
+                                 const char* overwritePath = nullptr,bool hasDirectDownload=false)
     {
         OptionalScopedPointer<Component> userDialog (new UpdateUserDialog (version, productName,
-                                                                           releaseNotes, overwritePath), true);
+                                                                           releaseNotes, overwritePath,hasDirectDownload), true);
 
         DialogWindow::LaunchOptions lo;
-        lo.dialogTitle = TRANS ("Download \"123\" version 456?").replace ("456", version.toString())
-        .replace ("123", productName);
-//        lo.dialogBackgroundColour = userDialog->findColour (backgroundColourId);
+        lo.dialogTitle = "LGML version checker";
+        
         lo.content = userDialog;
         lo.componentToCentreAround = nullptr;
         lo.escapeKeyTriggersCloseButton = true;
@@ -417,15 +411,15 @@ public:
 private:
     bool hasOverwriteButton;
     ScopedPointer<Label> titleLabel, contentLabel, changeLogLabel, overwriteLabel, overwritePath;
-    ScopedPointer<TextButton> okButton, cancelButton, dontBotherMeCheck;
+    ScopedPointer<TextButton> okButton, cancelButton, dontBotherMeCheck,dlButton;
     ScopedPointer<TextEditor> changeLog;
     ScopedPointer<TextButton> overwriteButton;
     ScopedPointer<Drawable> juceIcon;
 
     void lookAndFeelChanged() override
     {
-//        cancelButton->setColour (TextButton::buttonColourId,
-//                                 findColour (secondaryButtonBackgroundColourId));
+        //        cancelButton->setColour (TextButton::buttonColourId,
+        //                                 findColour (secondaryButtonBackgroundColourId));
         changeLog->applyFontToAllText (changeLog->getFont());
     }
 
@@ -464,6 +458,7 @@ public:
         File folder;
         int result;
 
+
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DelayedCallback)
     };
 
@@ -482,6 +477,7 @@ public:
         // our instance is also deleted after this function is used
         // so we can't use our own instance for a timer callback
         // we must allocate a new one.
+
         new DelayedCallback (parent, download, headers, folder, returnValue);
     }
 
@@ -491,31 +487,34 @@ private:
     String headers;
     File folder;
 
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UpdaterDialogModalCallback)
 };
 
 
 
- //==============================================================================
- LatestVersionChecker::LatestVersionChecker()  : Thread ("Updater"),
- statusCode (-1),
- hasAttemptedToReadWebsite (false)
- {
- startTimer (2000);
- }
+//==============================================================================
+LatestVersionChecker::LatestVersionChecker(bool force)  : Thread ("Updater"),
+statusCode (-1),
+hasAttemptedToReadWebsite (false),
+force_show(force),
+hasEnded(false)
+{
+    startTimer (2000);
+}
 constexpr int maxTimeOut = 20000;
- LatestVersionChecker::~LatestVersionChecker()
- {
- stopThread (maxTimeOut);
- }
- 
- String LatestVersionChecker::getOSString()
- {
- SystemStats::OperatingSystemType osType = SystemStats::getOperatingSystemType();
+LatestVersionChecker::~LatestVersionChecker()
+{
+    stopThread (maxTimeOut);
+}
 
-    if      ((osType & SystemStats::MacOSX)  != 0) return "OSX";
-    else if ((osType & SystemStats::Windows) != 0) return "Windows";
-    else if ((osType & SystemStats::Linux)   != 0) return "Linux";
+String LatestVersionChecker::getOSString()
+{
+    SystemStats::OperatingSystemType osType = SystemStats::getOperatingSystemType();
+
+    if      ((osType & SystemStats::MacOSX)  != 0) return "osx";
+    else if ((osType & SystemStats::Windows) != 0) return "windows";
+    else if ((osType & SystemStats::Linux)   != 0) return "linux";
     else return SystemStats::getOperatingSystemName();
 }
 
@@ -536,7 +535,7 @@ int LatestVersionChecker::getProductVersionNumber() const   { return ProjectInfo
 const char* LatestVersionChecker::getProductName() const    { return ProjectInfo::projectName; }
 bool LatestVersionChecker::allowCustomLocation() const      { return true; }
 
-#if DOWNLOAD_INPLACE
+
 Result LatestVersionChecker::performUpdate (const MemoryBlock& data, File& targetFolder)
 {
     File unzipTarget;
@@ -566,7 +565,7 @@ Result LatestVersionChecker::performUpdate (const MemoryBlock& data, File& targe
 
     return Result::ok();
 }
-#endif
+
 
 URL LatestVersionChecker::getLatestVersionURL (String& headers, const String& path) const
 {
@@ -592,13 +591,13 @@ URL LatestVersionChecker::getLatestVersionURL (String& headers, const String& pa
 
     if (! isAbsolute)
     {
-//        headers << "X-API-Key: " << urlsAndKeys.publicAPIKey;
+        //        headers << "X-API-Key: " << urlsAndKeys.publicAPIKey;
 
         if (! isRedirect)
         {
             headers << "\nContent-Type: application/json\n"
             << "Accept: application/json;";
-//            <<" version=" << urlsAndKeys.apiVersion;
+            //            <<" version=" << urlsAndKeys.apiVersion;
         }
     }
 
@@ -640,7 +639,7 @@ void LatestVersionChecker::checkForNewVersion()
 
             jsonReply = JSON::parse (in->readEntireStreamAsString());
 
-            
+
         }
     }
 
@@ -661,13 +660,28 @@ bool LatestVersionChecker::processResult (const var& reply, const String& downlo
             if (LGMLVersionTriple::fromString (versionString, version))
             {
                 String extraHeaders;
-                String _path = downloadPath;
-                if (statusCode==200){
-                    _path = versionString <<'/'<< getOSString()<< '/'<<"LGML.zip";
+                String urlPage = reply.getProperty("download_page",
+                                                   "http://organic-orchestra.com/forum/d/6-lgml-telechargements").toString();
+                URL newVersionToDownload (urlPage);
+                bool hasDirectDownload = false;
+
+                auto zips = reply.getProperty("zip_link", var());
+                if(zips.hasProperty(BUILD_VERSION_UID)){
+                    String _path = downloadPath;
+                    if (statusCode==200){
+                        _path = versionString <<'/'<< zips.getProperty(BUILD_VERSION_UID, var()).toString();
+                    }
+                    newVersionToDownload = getLatestVersionURL (extraHeaders, _path);
+                    hasDirectDownload =true;
                 }
 
-                URL newVersionToDownload = getLatestVersionURL (extraHeaders, _path);
-                return askUserAboutNewVersion (version, releaseNotes, newVersionToDownload, extraHeaders);
+
+
+
+
+
+
+                return askUserAboutNewVersion (version, releaseNotes, newVersionToDownload, extraHeaders,hasDirectDownload );
 
             }
         }
@@ -688,7 +702,7 @@ bool LatestVersionChecker::processResult (const var& reply, const String& downlo
             if (message.isNotEmpty())
             {
                 AlertWindow::showMessageBox (AlertWindow::WarningIcon,
-                                             TRANS("JUCE Updater"),
+                                             juce::translate("LGML Updater"),
                                              message);
 
                 return false;
@@ -703,18 +717,18 @@ bool LatestVersionChecker::processResult (const var& reply, const String& downlo
 bool LatestVersionChecker::askUserAboutNewVersion (const LatestVersionChecker::LGMLVersionTriple& version,
                                                    const String& releaseNotes,
                                                    URL& newVersionToDownload,
-                                                   const String& extraHeaders)
+                                                   const String& extraHeaders,bool hasDirectDownload)
 {
     LGMLVersionTriple currentVersion (getProductVersionNumber());
 
-    if (1)//version > currentVersion)
+    if (force_show || (version > currentVersion))
     {
         File appParentFolder (File::getSpecialLocation (File::currentApplicationFile).getParentDirectory());
         DialogWindow* modalDialog = nullptr;
 
 
-            modalDialog = UpdateUserDialog::launch (version, getProductName(), releaseNotes,
-                                                    appParentFolder.getFullPathName().toRawUTF8());
+        modalDialog = UpdateUserDialog::launch (version, getProductName(), releaseNotes,
+                                                appParentFolder.getFullPathName().toRawUTF8(), hasDirectDownload);
 
 
         if (modalDialog != nullptr)
@@ -730,7 +744,7 @@ bool LatestVersionChecker::askUserAboutNewVersion (const LatestVersionChecker::L
 
         }
 
-//        return false;
+        //        return false;
     }
 
     return false;
@@ -742,58 +756,45 @@ void LatestVersionChecker::modalStateFinished (int result,
                                                File appParentFolder)
 {
 
-    if (result == 1 || result == 2)
-    {
-#if DOWNLOAD_INPLACE
-        if (result == 1 || ! allowCustomLocation())
+
+
+        if(result==1){
+            const String link(newVersionToDownload.toString(false));
+            Process::openDocument(link, "");
+        }
+        else if (result == 2){
             DownloadNewVersionThread::performDownload (*this, newVersionToDownload, extraHeaders, appParentFolder);
-        else
-            askUserForLocationToDownload (newVersionToDownload, extraHeaders);
-#else
-        const String link("http://organic-orchestra.com/forum/d/6-lgml-telechargements");
-        Process::openDocument(link, "");
-#endif
-    }
-}
-#if DOWNLOAD_INPLACE
-void LatestVersionChecker::askUserForLocationToDownload (URL& newVersionToDownload, const String& extraHeaders)
-{
-
-    File targetFolder (File::getSpecialLocation(File::SpecialLocationType::currentApplicationFile).getParentDirectory());
+        }
+        //        else
+        //            askUserForLocationToDownload (newVersionToDownload, extraHeaders);
 
 
-
-    FileChooser chooser (TRANS("Please select the location into which you'd like to install the new version"),
-                         targetFolder);
-
-    if (chooser.browseForDirectory())
-    {
-        targetFolder = chooser.getResult();
-
-        DownloadNewVersionThread::performDownload (*this, newVersionToDownload, extraHeaders, targetFolder);
-    }
 
 }
-#endif
+
+
+
 
 
 void LatestVersionChecker::timerCallback()
 {
-
-
+    
+    
     if (hasAttemptedToReadWebsite)
     {
         bool restartTimer = true;
         if (jsonReply.isObject()){
             restartTimer = processResult (jsonReply, newRelativeDownloadPath);
+            hasEnded = true;
             jassert(!restartTimer);
-            DBG("has checked for new version");
+            LOG(juce::translate("has checked for new version"));
         }
         
         hasAttemptedToReadWebsite = false;
         
         if (restartTimer){
-            DBG("can't check for new version");
+            LOGE(juce::translate("can't check for new version are you offline?"));
+            hasEnded = true;
             if(statusCode!=0)startTimer(500);
             else stopTimer();
         }
@@ -812,3 +813,4 @@ void LatestVersionChecker::run()
 {
     checkForNewVersion();
 }
+#endif // ENGINE_HEADLESS

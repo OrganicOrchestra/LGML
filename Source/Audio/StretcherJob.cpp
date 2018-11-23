@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -26,6 +26,37 @@ using namespace RubberBand;
 #include "StretcherJob.h"
 
 
+extern ThreadPool* getEngineThreadPool();
+
+//short block size to avoid stalling if pitch varies fast
+constexpr int process_blocksize = 64; //44100;//4096;
+
+int count = 0;
+StretcherJob::StretcherJob (PlayableBuffer* pb, double _ratio):
+ThreadPoolJob (String(count)),
+owner (pb),
+ratio (_ratio),
+tmpStretchBuf (1, 44100, process_blocksize)
+
+{
+
+    ThreadPool* tp = getEngineThreadPool();
+    for(int i = 0 ; i <tp->getNumJobs() ; i++){
+        if( auto j = dynamic_cast<StretcherJob*>(tp->getJob(i))){
+            jassert(j==this || j->owner!=owner);
+        }
+    }
+    count++;
+
+};
+
+StretcherJob::~StretcherJob (){
+
+    ScopedLock lk (jobLock);
+    StretcherJob::masterReference.clear();
+
+};
+
 
 void StretcherJob::initStretcher (int sampleRate, int numChannels)
 {
@@ -37,8 +68,8 @@ void StretcherJob::initStretcher (int sampleRate, int numChannels)
     stretcher = new    RubberBandStretcher (sampleRate, //size_t sampleRate,
                                             numChannels,//size_t channels,
                                             RubberBandStretcher::OptionProcessOffline
-                                            //                                       | RubberBandStretcher::OptionTransientsMixed
-                                            | RubberBandStretcher::OptionTransientsSmooth
+                                            | RubberBandStretcher::OptionTransientsCrisp
+//                                            | RubberBandStretcher::OptionTransientsMixed
                                             //| RubberBandStretcher::OptionPhaseAdaptive
                                             | RubberBandStretcher::OptionThreadingNever
                                             | RubberBandStretcher::OptionWindowStandard
@@ -64,6 +95,8 @@ void StretcherJob::initStretcher (int sampleRate, int numChannels)
 
 ThreadPoolJob::JobStatus StretcherJob::runJob()
 {
+    if(shouldExit())
+        return jobHasFinished;
     owner->isStretchReady = false;
     int processed = 0;
     int block = tmpStretchBuf.bufferBlockSize;
@@ -93,52 +126,41 @@ ThreadPoolJob::JobStatus StretcherJob::runJob()
 
     }
 
+    if(shouldExit()) return jobHasFinished;
+
+    ScopedLock lk (jobLock);
     if (!shouldExit() )
     {
-        ScopedTryLock lk (jobLock);
 
-        if (lk.isLocked())
+        int targetNumSamples = originNumSamples * ratio;
+        jassert (targetNumSamples != 0);
+
+        int diffSample = abs (produced - targetNumSamples);
+
+        if (diffSample > 128)   {   jassertfalse;   }
+
+
+        double actualRatio = produced * 1.0 / originNumSamples;
+        jassert (fabs (ratio - actualRatio) < 0.01 );
+        tmpStretchBuf.setNumSample (targetNumSamples);
+        jassert (owner->isStretchReady == false);
+        std::vector<int> tp = stretcher->getExactTimePoints();
+        owner->onsetSamples.clear() ;
+        int inc = stretcher->getInputIncrement();
+
+        for (size_t i = 0 ; i < tp.size(); i++)
         {
-
-            int targetNumSamples = originNumSamples * ratio;
-            jassert (targetNumSamples != 0);
-
-            int diffSample = abs (produced - targetNumSamples);
-
-            if (diffSample > 128)
-            {
-                jassertfalse;
-            }
-
-
-            double actualRatio = produced * 1.0 / originNumSamples;
-            jassert (fabs (ratio - actualRatio) < 0.01 );
-            tmpStretchBuf.setNumSample (targetNumSamples);
-            jassert (owner->isStretchReady == false);
-            std::vector<int> tp = stretcher->getExactTimePoints();
-            owner->onsetSamples.clear() ;
-            int inc = stretcher->getInputIncrement();
-
-            for (size_t i = 0 ; i < tp.size(); i++)
-            {
-                owner->onsetSamples.add (tp[i]*inc);
-            }
-            owner->onsetSamples.sort();
-
-            //      std::swap(owner->tmpBufferBlockList, tmpStretchBuf);
-            owner->tmpBufferStretch.setSize (tmpStretchBuf.getAllocatedNumChannels(), tmpStretchBuf.getNumSamples());
-            tmpStretchBuf.copyTo (owner->tmpBufferStretch, 0);
-            owner->isStretchReady = true;
-
-
-            //    int dbg =stretcher->getSamplesRequired();
-            //    jassert(dbg<=0);
-
-            //    owner->fadeInOut(owner->fadeSamples, 0);
-
-            int dbg = stretcher->available();
-            jassert (dbg <= 0);
+            owner->onsetSamples.add (tp[i]*inc);
         }
+        owner->onsetSamples.sort();
+
+        //      std::swap(owner->tmpBufferBlockList, tmpStretchBuf);
+        owner->tmpBufferStretch.setSize (tmpStretchBuf.getAllocatedNumChannels(), tmpStretchBuf.getNumSamples());
+        tmpStretchBuf.copyTo (owner->tmpBufferStretch, 0);
+        owner->isStretchReady = true;
+        owner->appliedRatio = ratio;
+
+
     }
 
     return jobHasFinished;

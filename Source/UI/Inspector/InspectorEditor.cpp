@@ -12,6 +12,8 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "InspectorEditor.h"
 
+#endif

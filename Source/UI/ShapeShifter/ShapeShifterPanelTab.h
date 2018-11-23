@@ -19,10 +19,11 @@
 #include "ShapeShifterContent.h"//keep
 class ShapeShifterPanelTab :
     public juce::Component,
-    public ButtonListener
+    public Button::Listener,
+    public SettableTooltipClient
 {
 public:
-    ShapeShifterPanelTab (ShapeShifterContent* _content);
+    explicit ShapeShifterPanelTab (ShapeShifterContent* _content);
     ~ShapeShifterPanelTab();
 
     ShapeShifterContent* content;
@@ -51,7 +52,7 @@ public:
     void addShapeShifterTabListener (TabListener* newListener) { tabListeners.add (newListener); }
     void removeShapeShifterTabListener (TabListener* listener) { tabListeners.remove (listener); }
 
-
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ShapeShifterPanelTab)
 };
 

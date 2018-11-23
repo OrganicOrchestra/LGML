@@ -12,6 +12,8 @@
 *
 */
 
+#if !ENGINE_HEADLESS
+
 #include "ConnectorComponent.h"
 #include "../NodeContainer/UI/NodeContainerViewer.h"
 #include "../Manager/NodeFactory.h"
@@ -31,7 +33,7 @@ ConnectorComponent::ConnectorComponent (ConnectorIOType _ioType, NodeConnection:
     boxColor =  findColour ((dataType == NodeConnection::ConnectionType::AUDIO) ? LGMLColors::audioColor : LGMLColors::dataColor);
     setSize (10, 10);
 
-
+    generateToolTip();
     postCommandMessage (0);
 }
 
@@ -52,8 +54,9 @@ NodeBase* ConnectorComponent::getNodeBase()
 
 void ConnectorComponent::generateToolTip()
 {
-    String tooltip;
-    tooltip += dataType == NodeConnection::ConnectionType::AUDIO ? "Audio\n" : "Data\n";
+    String tooltip("Connector : \n");
+    tooltip += dataType == NodeConnection::ConnectionType::AUDIO ? juce::translate("Audio"):juce::translate("Data");
+    tooltip+="\n";
 
     if (dataType == NodeConnection::ConnectionType::AUDIO)
     {
@@ -63,20 +66,15 @@ void ConnectorComponent::generateToolTip()
         if (tAudioNode != nullptr)
         {
             tooltip += isInput ? tAudioNode->getTotalNumInputChannels() : tAudioNode->getTotalNumOutputChannels();
-            tooltip += " channels";
+            tooltip += " ";
+            tooltip += juce::translate("channels");
         }
         else
         {
-            tooltip = "[Error accessing audio processor]";
+            tooltip = juce::translate("[Error accessing audio processor]");
         }
     }
-    else
-    {
 
-        StringArray dataInfos = ioType == ConnectorIOType::INPUT ? node->getInputDataInfos() : node->getOutputDataInfos();
-        tooltip += dataInfos.joinIntoString ("\n");
-
-    }
 
     setTooltip (tooltip);
 }
@@ -90,15 +88,12 @@ void ConnectorComponent::mouseDown (const MouseEvent&)
 {
     NodeContainerViewer* containerViewer = getNodeContainerViewer();
 
-    if (dataType == NodeConnection::ConnectionType::DATA)
-    {
-
-        containerViewer->createDataConnectionFromConnector (this);
-    }
-    else
+    if (dataType == NodeConnection::ConnectionType::AUDIO)
     {
         containerViewer->createAudioConnectionFromConnector (this);
+
     }
+
 }
 
 void ConnectorComponent::mouseEnter (const MouseEvent&)
@@ -119,7 +114,7 @@ void ConnectorComponent::updateVisibility()
     bool isInput = ioType == ConnectorIOType::INPUT;
 
     if (isAudio) setVisible (isInput ? node->hasAudioInputs() : node->hasAudioOutputs());
-    else setVisible (isInput ? node->hasDataInputs() : node->hasDataOutputs());
+
 
     connectorListeners.call (&ConnectorListener::connectorVisibilityChanged, this);
 }
@@ -143,21 +138,6 @@ void ConnectorComponent::handleCommandMessage (int /*id*/)
 
 }
 
-//DATA
-void ConnectorComponent::numDataInputChanged (ConnectableNode*, int)
-{
-    if (dataType != NodeConnection::ConnectionType::DATA || ioType != ConnectorIOType::INPUT) return;
-
-    postCommandMessage (0);
-}
-
-void ConnectorComponent::numDataOutputChanged (ConnectableNode*, int)
-{
-    if (dataType != NodeConnection::ConnectionType::DATA || ioType != ConnectorIOType::OUTPUT) return;
-
-    postCommandMessage (0);
-}
-
 
 NodeContainerViewer* ConnectorComponent::getNodeContainerViewer() const noexcept
 {
@@ -168,3 +148,5 @@ ConnectableNodeUI* ConnectorComponent::getNodeUI() const noexcept
 {
     return findParentComponentOfClass<ConnectableNodeUI>();
 }
+
+#endif

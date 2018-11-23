@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "ControllerEditor.h"
 
@@ -65,3 +66,4 @@ void ControllerEditor::buttonClicked (Button* b)
 
     }
 }
+#endif

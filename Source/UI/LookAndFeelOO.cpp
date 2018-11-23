@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@
  ==============================================================================
  */
 
+#if !ENGINE_HEADLESS
 #include "LookAndFeelOO.h"
 #include "Style.h"
 
@@ -60,7 +61,9 @@ LookAndFeelOO::LookAndFeelOO()
     setColour (TextEditor::ColourIds::highlightedTextColourId, Colours::white);
     setColour (TextEditor::ColourIds::highlightColourId, Colours::black);
     setColour(CaretComponent::caretColourId, Colours::white);
-    setColour (TreeView::backgroundColourId,scheme.getUIColour (ColourScheme::UIColour::windowBackground));
+    setColour (TreeView::backgroundColourId,Colours::white.withAlpha(0.f)
+               //scheme.getUIColour (ColourScheme::UIColour::windowBackground)
+               );
     setColour(DrawableButton::backgroundOnColourId, Colours::transparentWhite);
     setColour(DrawableButton::backgroundColourId, Colours::transparentWhite);
     setColour (LGMLColors::audioColor, Colours::cadetblue);
@@ -82,7 +85,7 @@ LookAndFeelOO::~LookAndFeelOO()  {}
 
 //==============================================================================
 
-static void drawButtonShape (Graphics& g, const Path& outline, Colour baseColour, float height, bool isToggle)
+static void drawButtonShape (Graphics& g, const Path& outline, const Colour &baseColour, float height, bool isToggle)
 {
     const float mainBrightness = baseColour.getBrightness();
     const float mainAlpha = baseColour.getFloatAlpha();
@@ -91,7 +94,7 @@ static void drawButtonShape (Graphics& g, const Path& outline, Colour baseColour
 
     if (isToggle)
     {
-        g.setGradientFill (ColourGradient (baseColour.brighter(), (float)bounds.getCentreX(), (float)bounds.getCentreY(), baseColour.darker(), 2.f, 2.f, true));
+        g.setGradientFill (ColourGradient (baseColour.brighter(), bounds.getCentreX(), bounds.getCentreY(), baseColour.darker(), 2.f, 2.f, true));
     }
     else
     {
@@ -216,7 +219,7 @@ void LookAndFeelOO::positionComboBoxText (ComboBox& box, Label& label)
 class LookAndFeelOO::SliderLabelComp  : public Label
 {
 public:
-    SliderLabelComp() : Label (String::empty, String::empty) {}
+    SliderLabelComp() : Label ("", "") {}
 
     void mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& d)
     {
@@ -243,7 +246,7 @@ Label* LookAndFeelOO::createSliderTextBox (Slider& slider)
 }
 
 
-void LookAndFeelOO::drawTextEditorOutline (Graphics& g, int width, int height, TextEditor& textEditor){
+void LookAndFeelOO::drawTextEditorOutline (Graphics& /*g*/, int /*width*/, int /*height*/, TextEditor& /*textEditor*/){
 //    if (dynamic_cast<AlertWindow*> (textEditor.getParentComponent()) == nullptr)
 //    {
 //        if (textEditor.isEnabled())
@@ -261,3 +264,4 @@ void LookAndFeelOO::drawTextEditorOutline (Graphics& g, int width, int height, T
 //    }
 }
 
+#endif

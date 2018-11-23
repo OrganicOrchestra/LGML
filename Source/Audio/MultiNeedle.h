@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -89,7 +89,7 @@ public:
     FadeNeedle*   consumeNextNeedle (int numSamples);
     void fadeAllOut();
     void resetAll();
-    void addToBuffer ( BufferBlockList& originBuffer, AudioBuffer<float>& destBuffer, int numSamples, bool isLooping);
+    bool addToBuffer ( BufferBlockList& originBuffer, AudioBuffer<float>& destBuffer,int destStartSample, int numSamples, bool isLooping);
 
 
 

@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "ShapeShifterPanelHeader.h"
 #include "../Style.h"
@@ -24,7 +25,7 @@ ShapeShifterPanelHeader::ShapeShifterPanelHeader()
     //  addPannelMenu.setButtonText("+");
     addAndMakeVisible (addPannelMenu);
     //  addPannelMenu.setConnectedEdges(0);
-    addPannelMenu.setTooltip ("add tab to this panel");
+    addPannelMenu.setTooltip(juce::translate("add tab to this panel"));
     addPannelMenu.addListener (this);
     setOpaque (true);
 }
@@ -52,6 +53,7 @@ void ShapeShifterPanelHeader::attachTab (ShapeShifterPanelTab* tab)
 {
     tab->addShapeShifterTabListener (this);
     addAndMakeVisible (tab);
+    tab->setMouseCursor(MouseCursor::UpDownLeftRightResizeCursor);
     tabs.add (tab);
     resized();
 }
@@ -137,7 +139,7 @@ void ShapeShifterPanelHeader::buttonClicked (Button* b)
 
         for (auto& n : globalPanelNames)
         {
-            menu.addItem (currentID, n, true);
+            menu.addItem (currentID,juce::translate(n), true);
             currentID++;
         }
 
@@ -155,3 +157,5 @@ void ShapeShifterPanelHeader::buttonClicked (Button* b)
         }
     }
 }
+
+#endif

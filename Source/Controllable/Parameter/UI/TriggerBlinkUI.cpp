@@ -12,20 +12,21 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 
 #include "TriggerBlinkUI.h"
 #include "../../../UI/Style.h"
 #include "../Trigger.h"
 //==============================================================================
+
+static int blinkTime (200);
+static int refreshPeriod (40);
+
 TriggerBlinkUI::TriggerBlinkUI (Trigger* t) :
     ParameterUI (t),
-    blinkTime (200),
-    refreshPeriod (40),
     intensity (0),
-    animateIntensity (true),
-    offColor (findColour (TextButton::buttonColourId)),
-    onColor (findColour (TextButton::buttonOnColourId))
+    animateIntensity (true)
 {
     setSize (30, 20);
 
@@ -43,10 +44,13 @@ void TriggerBlinkUI::valueChanged (const var& )
 
 }
 
+
 void TriggerBlinkUI::paint (Graphics& g)
 {
     if (parameter.get())
     {
+        auto    offColor =findColour (TextButton::buttonColourId);
+        auto onColor  =findColour (TextButton::buttonOnColourId);
         g.setColour (offColor.interpolatedWith (onColor, intensity));
         g.fillRoundedRectangle (getLocalBounds().toFloat(), 2);
         g.setFont (10);
@@ -55,7 +59,7 @@ void TriggerBlinkUI::paint (Graphics& g)
         if (showLabel)
         {
 
-            g.drawFittedText (customTextDisplayed.isNotEmpty() ? customTextDisplayed : parameter->niceName, getLocalBounds().reduced (2), Justification::centred, 1);
+            g.drawFittedText (customTextDisplayed.isNotEmpty() ? customTextDisplayed : parameter.get()?parameter->niceName:"No Parameter", getLocalBounds().reduced (2), Justification::centred, 1);
         }
     }
 }
@@ -111,3 +115,4 @@ void TriggerBlinkUI::mouseDown (const MouseEvent& e)
     }
 
 }
+#endif

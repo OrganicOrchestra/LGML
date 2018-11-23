@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
 
 
 class ControllableContainer;
-class Parameter;
+class ParameterBase;
 
 
 class Controllable : public FactoryObject
@@ -42,7 +42,7 @@ public:
     String description;
 
 
-    forcedinline static String toShortName (const String& s)
+    static String toShortName (const String& s)
     {
         if (s.isEmpty()) return "";
         
@@ -61,7 +61,7 @@ public:
     String controlAddress;
 
 
-    ControllableContainer* parentContainer;
+    WeakReference<ControllableContainer> parentContainer;
 
     void setNiceName (const String& _niceName);
     
@@ -70,10 +70,10 @@ public:
     void setEnabled (bool value, bool silentSet = false, bool force = false);
 
     void setParentContainer (ControllableContainer* container);
-    bool isChildOf (ControllableContainer* p);
+    bool isChildOf (const ControllableContainer* p) const;
     void updateControlAddress();
 
-    String getControlAddress (ControllableContainer* relativeTo = nullptr);
+    String getControlAddress (const ControllableContainer* relativeTo = nullptr) const;
 
 
     virtual bool isMappable();
@@ -117,8 +117,9 @@ public:
 
 private:
 
-    typename WeakReference<Controllable >::Master masterReference;
+    WeakReference<Controllable >::Master masterReference;
     friend class WeakReference<Controllable >;
+    
 
 
 

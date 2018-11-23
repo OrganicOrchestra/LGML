@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -160,18 +160,20 @@ public:
             expect (magnitude == 0, "still monitoring : " + String (magnitude));
         }
 
-        expect (track1->playableBuffer.recordNeedle == recordSizeInBlock * blockSize, "jumped a block while recording : " + String (track1->playableBuffer.recordNeedle) + " : " + String (recordSizeInBlock * blockSize));
+        expect (track1->playableBuffer.recordNeedle == recordSizeInBlock * blockSize,
+                "jumped a block while recording : " + String (track1->playableBuffer.recordNeedle) + " : " + String (recordSizeInBlock * blockSize));
         track1->recPlayTrig->trigger();
 
 
         for (int i = 0 ; i < 2.3 * recordSizeInBlock ; i++)
         {
+
             processBlock();
+            int curWallTime = tm->getTimeInSample() % (recordSizeInBlock * blockSize);
+            int nextWallTime = (tm->getNextTimeInSample()) % (recordSizeInBlock * blockSize);
 
 
-            int startWallTime = tm->getTimeInSample() % (recordSizeInBlock * blockSize);
-            int endWallTime = (tm->getNextTimeInSample()) % (recordSizeInBlock * blockSize);
-            expect (endWallTime != startWallTime, "block unused");
+            expect (nextWallTime != curWallTime, "block unused");
             int offset = 0;
 
             // need to be first playedSample
@@ -179,21 +181,23 @@ public:
             {
                 expect (track1->playableBuffer.isPlaying(), "not Playing");
                 offset = (recordSizeInBlock * blockSize) - tm->getTimeInSample();
-                startWallTime = (startWallTime + offset) % (recordSizeInBlock * blockSize);
+                //curWallTime = (curWallTime + offset) % (recordSizeInBlock * blockSize);
                 int recLen = track1->playableBuffer.getRecordedLength() ;
                  offset = recLen % (tm->beatTimeInSample);
-                expect (recLen == getRecordedLength(), "wrong recorded Length found : " + String (recLen) + " for " + String ( getRecordedLength()));
-                expect (offset == 0, "wrong quantization");
+                expect (recLen == getRecordedLength(),
+                        "wrong recorded Length found : " + String (recLen) + " for " + String ( getRecordedLength()));
+                expect (offset == 0,
+                        "wrong quantization");
             }
 
-            expect (track1->playableBuffer.playNeedle == (endWallTime % track1->playableBuffer.recordNeedle), "unaligned PlayNeedle : " + String (track1->playableBuffer.playNeedle) + " , " + String (endWallTime % track1->playableBuffer.recordNeedle) );
+            expect (track1->playableBuffer.playNeedle == (nextWallTime % track1->playableBuffer.recordNeedle), "unaligned PlayNeedle : " + String (track1->playableBuffer.playNeedle) + " , " + String (nextWallTime % track1->playableBuffer.recordNeedle) );
 
             float magnitude = testBuffer.getMagnitude (0, testBuffer.getNumSamples());
             expect (magnitude > 0, "not Playing");
-            int localTime = (i * blockSize) % (recordSizeInBlock * blockSize);
+            int localTime = ((i+1) * blockSize) % (recordSizeInBlock * blockSize);
 
-            expect (localTime == startWallTime, "localTime not aligned : " + String (localTime) + "," + String (startWallTime));
-            expect (checkBufferAlignedForTime (testBuffer, startWallTime), "buffer not aligned with time : " + String (startWallTime));
+            expect (localTime == nextWallTime, "localTime not aligned : " + String (localTime) + "," + String (nextWallTime));
+            expect (checkBufferAlignedForTime (testBuffer, nextWallTime), "buffer not aligned with time : " + String (nextWallTime));
 
         }
 

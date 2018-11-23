@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
 class ControllerUI;
 class ControllerEditor;
 
-
+constexpr int activityTriggerDebounceTime =50;
 class Controller :
     public ParameterContainer
 {
@@ -46,9 +46,9 @@ public:
 
 
 
-    virtual void internalVariableAdded (Parameter* ) {};
-    virtual void internalVariableRemoved (Parameter* ) {};
-    virtual void onContainerParameterChanged (Parameter* p) override;
+    virtual void internalVariableAdded ( ParameterBase* ) {};
+    virtual void internalVariableRemoved ( ParameterBase* ) {};
+    virtual void onContainerParameterChanged ( ParameterBase* p) override;
     virtual void onContainerTriggerTriggered (Trigger* ) override;
 
 
@@ -60,8 +60,9 @@ public:
     void setMappingMode(bool state) ;
     bool autoAddParams;
 
-
-
+private:
+    WeakReference<Controller>::Master masterReference;
+    friend class WeakReference<Controller>;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Controller)
 };

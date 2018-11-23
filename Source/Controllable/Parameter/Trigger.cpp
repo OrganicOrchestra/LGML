@@ -26,10 +26,11 @@ const var Trigger::triggerVar = var::undefined();
 REGISTER_PARAM_TYPE (Trigger);
 
 Trigger::Trigger (const String& niceName, const String& description = "", bool enabled) :
-    Parameter ( niceName, description, triggerVar, enabled)
+   ParameterBase ( niceName, description, triggerVar, enabled)
 {
     isPresettable = false;
     Controllable::isSavable = false;
+    lastTime = 0;
 }
 
 
@@ -40,8 +41,7 @@ Trigger::Trigger (const String& niceName, const String& description = "", bool e
 DynamicObject* Trigger::createDynamicObject()
 {
     auto dObject = Controllable::createDynamicObject();
-    dObject->setMethod (jsTriggerIdentifier, setControllableValueFromJS);
-    dObject->setProperty (jsPtrIdentifier, (int64)this);
+    dObject->setMethod (JsHelpers::jsTriggerIdentifier, setControllableValueFromJS);
 
     return dObject;
 }

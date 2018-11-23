@@ -20,6 +20,7 @@
 #include "../../MIDI/MIDIListener.h"
 #include "../../Scripting/Js/JsEnvironment.h"
 #include "../../MIDI/MIDIHelpers.h"
+#include "../../MIDI/MIDIClock.h"
 
 
 class JsMIDIMessageListener;
@@ -32,7 +33,7 @@ public EnumParameter::EnumListener,
 public JsEnvironment
 {
 public :
-    DECLARE_OBJ_TYPE_DEFAULTNAME (MIDIController, "MIDI");
+    DECLARE_OBJ_TYPE_DEFAULTNAME (MIDIController, "MIDI","use your MIDI device to control LGML");
     virtual ~MIDIController();
 
     
@@ -48,13 +49,16 @@ public :
 
     BoolParameter* logIncoming;
     IntParameter* channelFilter;
+    BoolParameter *sendMIDIClock;
+    BoolParameter *sendMIDIPosition;
+    IntParameter * midiClockOffset;
 
 
 
 //    void enumOptionSelectionChanged(EnumParameter * ep, bool isSelected, bool isValid, const juce::Identifier & key)override;
     void midiMessageSent()override;
 
-    void    onContainerParameterChanged (Parameter* )override;
+    void    onContainerParameterChanged ( ParameterBase* )override;
 
     static var sendCCFromJS (const var::NativeFunctionArgs& v);
     static var sendNoteOnFromJS (const var::NativeFunctionArgs& v);
@@ -64,16 +68,16 @@ public :
     void callJs (const MidiMessage& message);
     void newJsFileLoaded()override;
 
-    class MIDIControllerListener
-    {
-    public:
-        virtual ~MIDIControllerListener() {}
-        virtual void midiMessageReceived (const MidiMessage&) {}
-    };
-
-    ListenerList<MIDIControllerListener> midiControllerListeners;
-    void addMIDIControllerListener (MIDIControllerListener* newListener) { midiControllerListeners.add (newListener); }
-    void removeMIDIControllerListener (MIDIControllerListener* listener) { midiControllerListeners.remove (listener); }
+//    class MIDIControllerListener
+//    {
+//    public:
+//        virtual ~MIDIControllerListener() {}
+//        virtual void midiMessageReceived (const MidiMessage&) {}
+//    };
+//
+//    ListenerList<MIDIControllerListener> midiControllerListeners;
+//    void addMIDIControllerListener (MIDIControllerListener* newListener) { midiControllerListeners.add (newListener); }
+//    void removeMIDIControllerListener (MIDIControllerListener* listener) { midiControllerListeners.remove (listener); }
 
 
     static var createJsNoteListener (const var::NativeFunctionArgs&);
@@ -89,8 +93,8 @@ public :
     MIDIHelpers::MIDIIOChooser midiChooser;
 private:
 
-
-
+    void startMidiClockIfNeeded();
+    MIDIClock midiClock;
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MIDIController)

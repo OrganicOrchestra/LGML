@@ -26,7 +26,7 @@ class ContainerInNode :
     virtual public AudioProcessorGraph::AudioGraphIOProcessor
 {
 public:
-    DECLARE_OBJ_TYPE (ContainerInNode)
+    DECLARE_OBJ_TYPE (ContainerInNode,"input of the current container")
     ~ContainerInNode();
 
 
@@ -39,13 +39,11 @@ public:
     void processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer& midiMessages) override;
 
 
-    //DATA
-    IntParameter* numInputData;
-    void processInputDataChanged (Data* d) override;
 
 
 
-    void onContainerParameterChanged (Parameter*) override;
+
+    void onContainerParameterChanged ( ParameterBase*) override;
 
 
 

@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -19,11 +19,21 @@
 #ifndef STYLE_H_INCLUDED
 #define STYLE_H_INCLUDED
 #pragma once
+#if !ENGINE_HEADLESS
 
 #include "../JuceHeaderUI.h"
 
+#ifndef USE_GL
+//    #if JUCE_ARM // remove GL for arm, seems to changes ui perfs
+        #define USE_GL 0
+//    #else
+//        #define USE_GL 1
+//    #endif
+#endif
 
-#define USE_GL 1
+#if USE_GL
+#include <juce_opengl/juce_opengl.h>
+#endif
 
 
 // debug util
@@ -78,28 +88,42 @@ public:
     
 };
 
-#define USE_CACHED_GLYPH 0
-#if USE_CACHED_GLYPH
-class CachedGlyph : public Component {
+
+
+
+
+class CachedGlyph {
 public:
 
-    CachedGlyph(const String &t);
-    void setGlyphBounds(const Rectangle<int>& b);
+    explicit CachedGlyph(const String &t="",const Font & f = Font());
+    void setSize(int w, int h);
+    void setFont(const Font & );
     void setText(const String & t);
-    void paint( Graphics & g) override;
+    void paint( Graphics & g) ;
 
-class ReferenceCountedObject
+    class CachedFont : public ReferenceCountedObject{
+    public:
+        explicit CachedFont(const Font &f);
+        ~CachedFont();
+        typedef ReferenceCountedObjectPtr<CachedFont> Ptr ;
+        Font font;
+    };
 private:
     bool isReady();
     void updateGlyph();
-    Identifier curFontName;
     Font * getCurFont();
-    
+    Rectangle<int>& getLocalBounds();
+    Rectangle<int> bounds;
+    String text;
     bool useEllipsesIfTooBig;
     Justification justificationType;
     GlyphArrangement glyphArr;
+    CachedFont::Ptr  _font;
 
-    static NamedValueSet usedFonts;
 };
-#endif
+
+
+
+#endif // WITHUI
+
 #endif  // STYLE_H_INCLUDED

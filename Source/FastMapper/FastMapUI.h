@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 class FastMapUI :
     public InspectableComponent,
     private  ControllableReferenceUI::Listener,
-    private ButtonListener,
+    private Button::Listener,
     private ParameterProxy::ParameterProxyListener
 
 {
@@ -62,7 +62,7 @@ public:
     //  virtual void fastMapTargetChanged(FastMap *) override;
 
 
-    void mouseDown (const MouseEvent& e) override;
+    
     void buttonClicked (Button* b) override;
 
     void linkedParamChanged (ParameterProxy*) override;

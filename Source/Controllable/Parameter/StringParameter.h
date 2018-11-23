@@ -20,7 +20,7 @@
 #include "Parameter.h"
 
 
-class StringParameter : public Parameter
+class StringParameter : public ParameterBase
 {
 public:
     StringParameter (const String& niceName, const String& description = "", const String& initialValue = "", bool enabled = true);
@@ -32,7 +32,7 @@ public:
     void setValueInternal (const var&)override;
 
     bool isMappable() override;
-    DECLARE_OBJ_TYPE (StringParameter)
+    DECLARE_OBJ_TYPE (StringParameter,"String parameter")
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (StringParameter)
 };
 

@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -21,7 +21,6 @@
 #pragma once
 
 #include "../Node/NodeBase.h"
-#include "Style.h"//keep
 #include "../Audio/AudioHelpers.h"
 
 //TODO, move to more common place for use in other components
@@ -41,7 +40,7 @@ public:
     Colour colorHigh;
     Colour colorLow;
 
-    VuMeter (Type _type) : type (_type)
+    explicit VuMeter (Type _type) : type (_type)
     {
         targetChannel = -1;
         setSize (8, 20);
@@ -52,6 +51,7 @@ public:
         colorLow = Colours::lightgreen;
         isActive = true;
         setOpaque (true);
+        setInterceptsMouseClicks(false, false);
     }
 
 

@@ -94,7 +94,7 @@ void AudioDeviceInNode::setParentNodeContainer (NodeContainer* parent)
 {
     NodeBase::setParentNodeContainer (parent);
     if(parent != NodeManager::getInstance()){
-        LOG("!!! avoid creating AudioDeviceIn/Out in container, unstable behaviour");
+        LOGE(juce::translate("avoid creating AudioDeviceIn/Out in container, unstable behaviour"));
         jassertfalse;
     }
     AudioGraphIOProcessor::setRateAndBufferSizeDetails (NodeBase::getSampleRate(), NodeBase::getBlockSize());
@@ -107,7 +107,7 @@ void AudioDeviceInNode::changeListenerCallback (ChangeBroadcaster*)
     NodeBase::setRateAndBufferSizeDetails (AudioGraphIOProcessor::getSampleRate(), AudioGraphIOProcessor::getBlockSize());
     updateVolMutes();
 }
-void AudioDeviceInNode::onContainerParameterChanged (Parameter* p)
+void AudioDeviceInNode::onContainerParameterChanged ( ParameterBase* p)
 {
 
     if (p == desiredNumAudioInput)
@@ -154,12 +154,12 @@ void AudioDeviceInNode::numChannelsChanged (bool isInput)
 void AudioDeviceInNode::addVolMute()
 {
     //  const ScopedLock lk (NodeBase::getCallbackLock());
-    BoolParameter* p = addNewParameter<BoolParameter> (String ("mute") + String (inMutes.size() + 1), "Mute if disabled", false);
+    auto* p = addNewParameter<BoolParameter> (String ("mute") + String (inMutes.size() + 1), "Mute if disabled", false);
 
     p->invertVisuals = true;
     inMutes.add (p);
 
-    FloatParameter* v = addNewParameter<FloatParameter> ("volume" + String (volumes.size()+1), "volume", DB0_FOR_01);
+    auto* v = addNewParameter<FloatParameter> ("volume" + String (volumes.size()+1), "volume", DB0_FOR_01);
     volumes.add (v);
     lastVolumes.add (0);
     logVolumes.add (float01ToGain (DB0_FOR_01));

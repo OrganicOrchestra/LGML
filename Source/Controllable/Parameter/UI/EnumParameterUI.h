@@ -23,7 +23,7 @@
 class EnumParameterUI : public ParameterUI, public EnumParameter::EnumListener, public ComboBox::Listener
 {
 public:
-    EnumParameterUI (Parameter* parameter = nullptr);
+    EnumParameterUI ( ParameterBase* parameter = nullptr);
     virtual ~EnumParameterUI();
 
     EnumParameter* ep;

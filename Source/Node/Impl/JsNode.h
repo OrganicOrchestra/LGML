@@ -17,15 +17,15 @@
 #define JSNODE_H_INCLUDED
 #include "../../Scripting/Js/JsEnvironment.h"
 #include "../NodeBase.h"
-#include "../../Scripting/Js/JsHelpers.h"
+
 
 
 
 class JsNode : public NodeBase, public JsEnvironment
 {
 public :
-    DECLARE_OBJ_TYPE (JsNode);
-    JsNode();
+    DECLARE_OBJ_TYPE (JsNode,"let's you write some script in lgml");
+
     
 
     void clearNamespace() override;
@@ -33,7 +33,7 @@ public :
     void buildLocalEnv() override;
 
 
-    void onContainerParameterChanged (Parameter* p) override;
+    void onContainerParameterChanged ( ParameterBase* p) override;
 
 
     static var addIntParameter (const var::NativeFunctionArgs& a);

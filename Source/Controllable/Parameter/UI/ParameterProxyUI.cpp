@@ -11,7 +11,7 @@
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 *
 */
-
+#if !ENGINE_HEADLESS
 
 #include "ParameterProxyUI.h"
 #include "StringParameterUI.h"
@@ -28,9 +28,15 @@ ParameterProxyUI::ParameterProxyUI (ParameterProxy* proxy) :
     setMappingDest (true);
     chooser.addControllableReferenceUIListener (this);
     addAndMakeVisible (&chooser);
-    paramProxy->addParameterProxyListener (this);
-    if(paramProxy)chooser.setTooltip(paramProxy->description);
-    setLinkedParamUI (paramProxy->linkedParam);
+
+    if(paramProxy){
+        paramProxy->addParameterProxyListener (this);
+        chooser.setTooltip(juce::translate(paramProxy->description));
+        setLinkedParamUI (paramProxy->linkedParam);
+    }
+    else{
+        jassertfalse;
+    }
 }
 
 ParameterProxyUI::~ParameterProxyUI()
@@ -61,7 +67,7 @@ void ParameterProxyUI::resized()
 
 }
 
-void ParameterProxyUI::setLinkedParamUI (Parameter* p)
+void ParameterProxyUI::setLinkedParamUI ( ParameterBase* p)
 {
 
 
@@ -95,15 +101,10 @@ void ParameterProxyUI::setLinkedParamUI (Parameter* p)
     if (linkedParamUI != nullptr)
     {
         addAndMakeVisible (linkedParamUI);
-        updateTooltip();
-        auto* cUI = dynamic_cast<ParameterUI*> (linkedParamUI.get());
-
-        if (cUI)
-            cUI->setTooltip (getTooltip());
     }
 
 //    chooser.setVisible (linkedParamUI == nullptr);
-    chooser.setCurrentControllale(p);
+    chooser.setCurrentControllable(p);
     chooser.filterOutControllable = {paramProxy};
     resized();
 }
@@ -126,7 +127,7 @@ void ParameterProxyUI::linkedParamChanged (ParameterProxy* p)
 
 void ParameterProxyUI::choosedControllableChanged (ControllableReferenceUI*, Controllable* c)
 {
-    auto t = Parameter::fromControllable (c);
+    auto t = ParameterBase::fromControllable (c);
     paramProxy->setParamToReferTo (t);
 
 
@@ -135,9 +136,8 @@ void ParameterProxyUI::choosedControllableChanged (ControllableReferenceUI*, Con
 void ParameterProxyUI::controllableNameChanged (Controllable* c)
 {
     ParameterUI::controllableNameChanged (c);
-    updateTooltip();
 
-    if (auto* cUI = dynamic_cast<ParameterUI*> (linkedParamUI.get()))
-        cUI->setTooltip (getTooltip());
 
 }
+
+#endif

@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -15,6 +15,8 @@
 
  ==============================================================================
  */
+
+#if !ENGINE_HEADLESS
 
 #include "PresetChooserUI.h"
 #include "../Utils/DebugHelpers.h"
@@ -38,7 +40,7 @@ PresetChooserUI::PresetChooserUI (ParameterContainer* _container) :
     ComboBox::addListener (this);
     container->addControllableContainerListener (this);
     setTextWhenNothingSelected ("Preset");
-    setTooltip ("Set the current preset at :\n" + container->currentPresetName->getControlAddress() + " <presetName>");
+    setTooltip (juce::translate("Set the current preset at")+" :\n" + container->currentPresetName->getControlAddress() + " <presetName>");
 }
 
 PresetChooserUI::~PresetChooserUI()
@@ -52,10 +54,10 @@ void PresetChooserUI::fillWithPresets (ComboBox* cb, const  String& filter, bool
 {
     cb->clear();
 
-    if (_showSaveCurrent) cb->addItem ("Save current preset", SaveCurrent);
+    if (_showSaveCurrent) cb->addItem (juce::translate("Save current preset"), SaveCurrent);
 
-    cb->addItem ("Save to new preset", SaveToNew);
-    cb->addItem ("Reset to default", ResetToDefault);
+    cb->addItem (juce::translate("Save to new preset"), SaveToNew);
+    cb->addItem (juce::translate("Reset to default"), ResetToDefault);
 
     int pIndex = 1;
     PresetManager* pm = PresetManager::getInstance();
@@ -76,7 +78,7 @@ void PresetChooserUI::fillWithPresets (ComboBox* cb, const  String& filter, bool
 
         if (pre->filter == filter)
         {
-            cb->addItem ("delete " + pre->name, PresetChoice::deleteStartId + pre->presetId);
+            cb->addItem (juce::translate("delete")+" " + pre->name, PresetChoice::deleteStartId + pre->presetId);
         }
     }
 
@@ -150,7 +152,7 @@ void PresetChooserUI::comboBoxChanged (ComboBox* cb)
     }
     else if (presetID >= PresetChoice::deleteStartId)
     {
-        bool ok = AlertWindow::showOkCancelBox (AlertWindow::AlertIconType::QuestionIcon, "Oh man, d'ya know watcha doin' ?", "Do you REALLY want to delete this preset ?\nLike, really really ?\nJust think about it man.", "Oh yeah", "F* No");
+        bool ok = AlertWindow::showOkCancelBox (AlertWindow::AlertIconType::QuestionIcon, juce::translate("Oh man, d'ya know watcha doin' ?"), juce::translate("Do you REALLY want to delete this preset ?\nLike, really really ?\nJust think about it man."), juce::translate("Oh yeah"), juce::translate("F* No"));
 
         if (ok)
         {
@@ -189,3 +191,5 @@ void PresetChooserUI::controllableContainerPresetLoaded (ControllableContainer*)
 {
     updatePresetComboBox (false);
 }
+
+#endif

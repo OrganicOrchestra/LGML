@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "LooperNodeUI.h"
 #include "../../Controllable/Parameter/UI/ParameterUIFactory.h"
@@ -170,7 +171,7 @@ void LooperNodeContentUI::trackNumChanged (int num)
 ////////////////
 
 
-LooperNodeContentUI::TrackUI::TrackUI (LooperTrack* track) : track (track),
+LooperNodeContentUI::TrackUI::TrackUI (LooperTrack* track) :InspectableComponent(track), track (track),
     isSelected (false), timeStateUI (track)
 {
     recPlayButton = ParameterUIFactory::createDefaultUI (track->recPlayTrig);
@@ -182,6 +183,9 @@ LooperNodeContentUI::TrackUI::TrackUI (LooperTrack* track) : track (track),
     muteButton = ParameterUIFactory::createDefaultUI (track->mute);
     soloButton = ParameterUIFactory::createDefaultUI (track->solo);
     sampleChoiceDDL = (EnumParameterUI*)ParameterUIFactory::createDefaultUI (track->sampleChoice);
+    selectMeButton = ParameterUIFactory::createDefaultUI(track->selectTrig);
+    selectMeButton->setCustomText("_");
+    selectMeButton->setColour(TextButton::buttonColourId, Colours::white.withAlpha (0.f));
 
 
     track->addTrackListener (this);
@@ -196,6 +200,8 @@ LooperNodeContentUI::TrackUI::TrackUI (LooperTrack* track) : track (track),
     addAndMakeVisible (soloButton);
     addAndMakeVisible (timeStateUI);
     addAndMakeVisible (sampleChoiceDDL);
+    addAndMakeVisible(selectMeButton);
+    selectMeButton->toBack();
 }
 
 LooperNodeContentUI::TrackUI::~TrackUI()
@@ -207,6 +213,7 @@ void LooperNodeContentUI::TrackUI::paint (Graphics& g)
 {
     g.setColour (findColour (ResizableWindow::backgroundColourId).brighter().withAlpha (0.5f));
     g.fillRoundedRectangle (getLocalBounds().toFloat(), 2.f);
+
 }
 
 void LooperNodeContentUI::TrackUI::paintOverChildren (Graphics& g)
@@ -227,12 +234,13 @@ void LooperNodeContentUI::TrackUI::resized()
 {
     Rectangle<int> r = getLocalBounds().reduced (2);
 
+
     const int timeUISize = 16;
     //  Rectangle<int>  hr = r.removeFromTop(timeUISize+gap);
 
-
+    selectMeButton->setBounds(r.withBottom(timeUISize));
     timeStateUI.setBounds (r.removeFromTop (timeUISize).withSize (timeUISize, timeUISize).reduced (2)); //header
-    sampleChoiceDDL->setBounds (r.removeFromTop (15).reduced (1));
+    sampleChoiceDDL->setBounds (r.removeFromTop (20).reduced (1));
 
     volumeSlider->setBounds (r.removeFromRight (r.getWidth() / 3).reduced (1));
     r.reduce (4, 0);
@@ -265,6 +273,7 @@ LooperNodeContentUI::TrackUI::TimeStateUI::TimeStateUI (LooperTrack* _track): tr
     track->addTrackListener (this);
     setTrackTimeUpdateRateHz (10);
     trackStateChangedAsync (_track->trackState);
+    
 }
 LooperNodeContentUI::TrackUI::TimeStateUI::~TimeStateUI()
 {
@@ -300,7 +309,9 @@ void LooperNodeContentUI::TrackUI::TimeStateUI::paint (Graphics& g)
     g.setColour(Colours::white.withAlpha(0.5f));
     for(auto  o:track->getNormalizedOnsets()){
         float oAngle = o*2*float_Pi - float_Pi/2;
-        g.drawLine (r.getCentreX(), r.getCentreY(), r.getCentreX() + cosf (oAngle)*r.getWidth() / 2, r.getCentreX() + sinf (oAngle)*r.getHeight() / 2, 2);
+        g.drawLine (r.getCentreX(), r.getCentreY(),
+                    r.getCentreX() + cosf (oAngle)*r.getWidth() / 2, r.getCentreX() + sinf (oAngle)*r.getHeight() / 2,
+                    .5);
     }
 
 
@@ -347,3 +358,5 @@ void LooperNodeContentUI::TrackUI::TimeStateUI::trackTimeChangedAsync (double /*
 {
     repaint();
 }
+
+#endif

@@ -19,6 +19,7 @@
 #include "../NodeContainer.h"
 #include "../../UI/ConnectableNodeUI.h"
 
+class DragResizer;
 typedef WeakReference<ConnectableNodeUI> SelectedUIType;
 
 class NodeConnectionUI;
@@ -46,7 +47,7 @@ public :
     void clear();
 
     void resized() override;
-    void onContainerParameterChanged(Parameter * p) override;
+    void onContainerParameterChanged( ParameterBase* p) override;
 
 
     // Inherited via NodeContainerListener
@@ -65,7 +66,7 @@ public :
 
     //connection creation / editing
     typedef ConnectorComponent Connector;
-    void createDataConnectionFromConnector (Connector* baseConnector);
+
     void createAudioConnectionFromConnector (Connector* baseConnector, NodeConnection* root = nullptr);
 
     void updateEditingConnection();
@@ -87,26 +88,27 @@ public :
     // key events
     bool keyPressed (const KeyPress& key)override;
 
-    void resizeToFitNodes();
-
+    void resizeToFitNodes(Point<int> maxStartP=Point<int>(0,0));
+    Rectangle<int> getNodesBoundingBox();
     ParameterContainer * uiParams;
 
 
     SelectedItemSet<SelectedUIType> selectedItems;
 
+    void addNodeUndoable(const String & type,const Point<int> & mousePos);
+    String getTooltip() override{return "";}
 private:
 
     void changeListenerCallback (ChangeBroadcaster* source) override;
     LassoComponent<SelectedUIType> lassoSelectionComponent;
-    Component nodesLayer;
+    ScopedPointer<Component> nodesLayer;
     bool resultOfMouseDownSelectMethod,hasDraggedDuringClick;
     void findLassoItemsInArea (Array<SelectedUIType>& itemsFound,
                                const Rectangle<int>& area) override;
 
     SelectedItemSet<SelectedUIType>& getLassoSelection() override;
     HashMap<SelectedUIType, Rectangle<int>> selectedInitBounds;
-    
-    
+
 
 
     

@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -36,7 +36,11 @@ void BufferBlockList::allocateSamples (int numChannels, int numSamples)
     {
         for (int i = 0 ; i < size() ; i++)
         {
-            OwnedArray::getUnchecked (i)->setSize (numChannels, bufferBlockSize);
+            OwnedArray::getUnchecked (i)->setSize (numChannels, bufferBlockSize,
+                                                   true // keep existing content
+                                                   ,true // zero extra space
+                                                   ,true // avoid reallocating);
+                                                   );
         }
     }
 
@@ -63,7 +67,11 @@ void BufferBlockList::setNumChannels (int numChannels)
 {
     for (auto c : *this)
     {
-        c->setSize (numChannels, bufferBlockSize);
+        c->setSize (numChannels, bufferBlockSize,
+                    true // keep existing content
+                    ,true // zero extra space
+                    ,true // avoid reallocating
+                    );
     }
 }
 void BufferBlockList::setNumSample (int numSamples)
@@ -175,7 +183,7 @@ void BufferBlockList::copyFrom (const AudioSampleBuffer& inBuf, int listStartSam
 float BufferBlockList::getSample (int c, int n)
 {
     int readI = n % bufferBlockSize ;
-    int readBI = (int)floor (n * 1.0 / bufferBlockSize);
+    auto readBI = (int)floor (n * 1.0 / bufferBlockSize);
     jassert (readBI < size());
     return  OwnedArray::getUnchecked (readBI)->getSample (c, readI);
 }

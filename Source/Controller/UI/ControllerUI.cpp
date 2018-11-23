@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "ControllerUI.h"
 #include "ControllerEditor.h"
@@ -37,7 +38,7 @@ static DrawableButton* getArrowButton(const String& name){
         downArrow.setPath(dp);
         hoverArrow.setPath(p);
         hoverDownArrow .setPath(dp);
-        Colour hoverColour = arrow.getFill().fill.colour.contrasting(.8f);
+        Colour hoverColour = arrow.getFill().colour.contrasting(.8f);
         hoverArrow.setFill(hoverColour);
         hoverDownArrow.setFill(hoverColour);
         inited = true;
@@ -84,7 +85,7 @@ ControllerUI::ControllerUI (Controller* controller) :
     addAndMakeVisible (removeBT);
 
     if(auto *c = controller->isConnected){
-        isConnectedUI = ParameterUIFactory::createDefaultUI((Parameter*)c);
+        isConnectedUI = ParameterUIFactory::createDefaultUI(( ParameterBase*)c);
         isConnectedUI->showLabel = false;
         addAndMakeVisible(isConnectedUI);
     }
@@ -99,10 +100,11 @@ ControllerUI::ControllerUI (Controller* controller) :
     userParamsUI = new Outliner("usr_"+controller->shortName,&controller->userContainer,false);
     userParamsUI->showUserContainer = true;
     addAndMakeVisible(userParamsUI);
-
+    userParamsUI->treeView.getViewport()->getViewedComponent()->addComponentListener(this);
+    userParamsUI->treeView.setOpenCloseButtonsVisible(false);
     showUserParams = getArrowButton("showParams");
     addAndMakeVisible(showUserParams);
-    showUserParams->setTooltip("show this controller registered parameters");
+    showUserParams->setTooltip(juce::translate("show this controller registered parameters"));
     showUserParams->setToggleState(false, dontSendNotification);
     showUserParams->addListener(this);
     showUserParams->setClickingTogglesState(true);
@@ -111,7 +113,7 @@ ControllerUI::ControllerUI (Controller* controller) :
 
 ControllerUI::~ControllerUI()
 {
-
+    userParamsUI->treeView.getViewport()->getViewedComponent()->removeComponentListener(this);
 }
 
 void ControllerUI::paint (Graphics& g)
@@ -122,8 +124,15 @@ void ControllerUI::paint (Graphics& g)
 }
 
 const int headerHeight = 20;
-const int usrParamHeight = 200;
+const int maxUsrParamHeight = 200;
 
+void ControllerUI::componentMovedOrResized (Component& component,
+                              bool wasMoved,
+                              bool wasResized) {
+    if(&component==userParamsUI->treeView.getViewport()->getViewedComponent()){
+        setSize(getWidth(),getTargetHeight());
+    }
+}
 void ControllerUI::resized()
 {
     Rectangle<int> area = getLocalBounds();
@@ -147,26 +156,13 @@ void ControllerUI::resized()
 
 }
 
-int ControllerUI::getHeight(){
-    return   headerHeight + (showUserParams->getToggleState()?jmax(usrParamHeight,userParamsUI->treeView.getViewport()->getViewArea().getHeight()):0);
+int ControllerUI::getTargetHeight(){
+    return   headerHeight + (showUserParams->getToggleState()?jmin(maxUsrParamHeight,userParamsUI->getTargetHeight()):0);
 }
 
-void ControllerUI::mouseDown (const MouseEvent&)
-{
-    selectThis();
-}
 
-Component * getViewportOrParent( Component * c){
-    Component * ic = c;
-    while(ic){
-        if(auto v = dynamic_cast<Viewport*>(ic)){
-            return v->getParentComponent();
-        }
-        ic = ic->getParentComponent();
-    }
-    return c->getParentComponent();
 
-}
+
 
 void ControllerUI::buttonClicked (Button* b)
 {
@@ -175,8 +171,7 @@ void ControllerUI::buttonClicked (Button* b)
         controller->remove();
     }
     else if(b==showUserParams){
-        if(auto p = getViewportOrParent(this))
-            p->resized();
+        setSize(getWidth(),getTargetHeight());
         
     }
 }
@@ -187,7 +182,7 @@ bool ControllerUI::keyPressed (const KeyPress& key)
 
     if (key.getKeyCode() == KeyPress::deleteKey || key.getKeyCode() == KeyPress::backspaceKey)
     {
-        controller->parentContainer->removeChildControllableContainer (controller);
+        controller->remove();
         return true;
     }
 
@@ -200,3 +195,5 @@ InspectorEditor* ControllerUI::createEditor()
 {
     return new GenericParameterContainerEditor(controller);
 }
+
+#endif

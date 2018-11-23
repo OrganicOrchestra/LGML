@@ -1,16 +1,16 @@
 /* Copyright © Organic Orchestra, 2017
-*
-* This file is part of LGML.  LGML is a software to manipulate sound in realtime
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation (version 3 of the License).
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*/
+ *
+ * This file is part of LGML.  LGML is a software to manipulate sound in realtime
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation (version 3 of the License).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
 
 
 #ifndef PARAMETER_H_INCLUDED
@@ -19,13 +19,19 @@
 #include "../Controllable.h"
 #include "../../Utils/QueuedNotifier.h"
 
+#if USE_FLOAT_FOR_PARAMS
+typedef float floatParamType;
+#else
+typedef double floatParamType;
+#endif
 
-class Parameter : public Controllable, private AsyncUpdater
+class ParameterBase : public Controllable, private AsyncUpdater
 {
 public:
-    Parameter ( const String& niceName, const String& description, var initialValue, bool enabled = true);
+    class Listener;
+    ParameterBase ( const String& niceName, const String& description, var initialValue, bool enabled = true);
 
-    virtual ~Parameter() {Parameter::masterReference.clear(); cancelPendingUpdate();}
+    virtual ~ParameterBase() {ParameterBase::masterReference.clear(); cancelPendingUpdate();}
 
 
 
@@ -37,6 +43,7 @@ public:
     virtual bool isMappable() override;
 
     bool isEditable;
+    bool alwaysNotify; // force notifying even if not changed
 
     bool isPresettable;
     bool isOverriden;
@@ -45,13 +52,15 @@ public:
     // useful for thread syncronization
     bool isCommitableParameter;
 
-    // when race condition are met, do we lock?
+    // when race conditions are met, do we lock?
     bool isLocking;
-    volatile bool isSettingValue;
+    bool isSettingValue();
+
 
     void setNewDefault(const var & value,bool notify);
     void resetValue (bool silentSet = false,bool force = false);
     void setValue (const var & _value, bool silentSet = false, bool force = false);
+    void setValueFrom(Listener * notifier,const var & _value, bool silentSet = false, bool force = false);
     void configureFromObject (DynamicObject*) override;
     void setStateFromVar (const var&) override;
 
@@ -75,7 +84,7 @@ public:
     bool boolValue() const { return (bool)value; }
     virtual String stringValue() const { return value.toString(); }
 
-    void notifyValueChanged (bool defferIt = false);
+    void notifyValueChanged (bool defferIt = false,Listener * notifier=nullptr);
 
     virtual DynamicObject* createDynamicObject() override;
 
@@ -89,12 +98,13 @@ public:
             while(linkedP.size()){
                 if(auto p = linkedP.getLast().get())
                     p->removeParameterListener(this);
-                linkedP.removeLast();
+                else
+                    linkedP.removeLast();
             }
         }
-        virtual void parameterValueChanged (Parameter* p) = 0;
-        virtual void parameterRangeChanged (Parameter* ) {};
-        Array<WeakReference<Parameter> > linkedP;
+        virtual void parameterValueChanged ( ParameterBase* p,ParameterBase::Listener * notifier=nullptr) = 0;
+        virtual void parameterRangeChanged ( ParameterBase* ) {};
+        Array<WeakReference<ParameterBase> > linkedP;
     };
 
 
@@ -115,10 +125,11 @@ public:
     class  ParamWithValue
     {
     public:
-        ParamWithValue (Parameter* p, const var & v, bool _isRange): parameter (p), value (v), m_isRange (_isRange) {}
-        Parameter* parameter;
+        ParamWithValue ( ParameterBase* p, const var & v, bool _isRange,Listener* _notifier=nullptr): parameter (p), value (v), m_isRange (_isRange),notifier(_notifier) {}
+         ParameterBase* parameter;
         var value;
         bool m_isRange;
+        Listener* notifier;
         bool isRange() const {return m_isRange;}
 
     };
@@ -138,19 +149,23 @@ public:
     virtual var getVarState() override;
 
 
-    virtual void tryToSetValue (const var & _value, bool silentSet, bool force );
+    virtual void tryToSetValue (const var & _value, bool silentSet, bool force, Listener * notifier=nullptr);
 
     static const Identifier valueIdentifier;
 
 
-    static Parameter* fromControllable (Controllable* c) {return static_cast<Parameter*> (c);}
+    static const ParameterBase* fromControllable (const Controllable* c) {return static_cast<const  ParameterBase*> (c);}
 
+    static ParameterBase* fromControllable (Controllable* c) {return static_cast<ParameterBase*> (c);}
     template<typename T> T* getAs() {return dynamic_cast<T*> (this);}
 
 
+    WeakReference<ParameterBase >::SharedPointer* getMasterRefPtr(){return ParameterBase::masterReference.getSharedPointer (this);}
 protected:
     bool waitOrDeffer (const var& _value, bool silentSet, bool force);
-
+    Atomic<bool> _isSettingValue;
+    Atomic<ParameterBase::Listener * > _valueSetter;
+    
 private:
 
 
@@ -158,12 +173,12 @@ private:
 
     void checkVarIsConsistentWithType();
 
-    WeakReference<Parameter>::Master masterReference;
-    friend class WeakReference<Parameter>;
-
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Parameter)
-
+    WeakReference<ParameterBase>::Master masterReference;
+    friend class WeakReference<ParameterBase>;
+    
+    
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ParameterBase)
+    
 };
 
 

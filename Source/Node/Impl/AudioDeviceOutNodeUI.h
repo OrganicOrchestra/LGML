@@ -36,7 +36,7 @@ public:
     virtual ~AudioDeviceOutNodeContentUI();
 
     OwnedArray<ParameterUI> muteToggles;
-    OwnedArray<SliderUI<double> >  volumes;
+    OwnedArray<SliderUI<floatParamType> >  volumes;
     OwnedArray<VuMeter> vuMeters;
 
     AudioDeviceOutNode* audioOutNode;
@@ -50,7 +50,7 @@ public:
     void addVuMeter();
     void removeLastVuMeter();
 
-    virtual void nodeParameterChanged (ConnectableNode*, Parameter*) override;
+    virtual void nodeParameterChanged (ConnectableNode*, ParameterBase*) override;
 
     virtual void numAudioOutputChanged (ConnectableNode*, int newNum) override;
     virtual void numAudioInputChanged (ConnectableNode*, int newNum) override;

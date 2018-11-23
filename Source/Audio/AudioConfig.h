@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -22,15 +22,20 @@
 
 #include "../JuceHeaderCore.h"
 
-// TODO change when windows / linux support
-#if (defined JUCE_MAC || defined JUCE_LINUX || defined JUCE_WINDOWS)
+
+#if (defined JUCE_MAC || defined JUCE_LINUX || defined JUCE_WINDOWS || defined JUCE_IOS)
     #define BUFFER_CAN_STRETCH 1
 #else
     #define BUFFER_CAN_STRETCH 0
 #endif
 
-
-
+#define DODBGAUDIO 0
+#if DODBGAUDIO
+#warning
+#define DBGRT(x)  DBG(x)
+#else
+#define DBGRT(x)
+#endif
 
 
 

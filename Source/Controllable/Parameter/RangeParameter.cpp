@@ -43,7 +43,7 @@ void RangeParameter::setValue (double _x, double _y)
     var d;
     d.append (_x);
     d.append (_y);
-    Parameter::setValue (d);
+    ParameterBase::setValue (d);
 }
 
 void RangeParameter::setValueInternal (const var& _value)
@@ -74,6 +74,38 @@ float RangeParameter::getRangeMax()
 bool RangeParameter::checkValueIsTheSame (const var& v1, const var& v2)
 {
     if (! (v1.isArray() && v2.isArray())) return false;
-
-    return v1[0] == v2[0] && v1[1] == v2[1];
+    if (v1.getArray()==v2.getArray())
+        return true;
+    return (v1[0] == v2[0]) && (v1[1] == v2[1]);
 }
+bool RangeParameter::hasFiniteRange(){
+    return ! (minimumValue.isUndefined() || maximumValue.isUndefined());
+}
+
+float RangeParameter::getNormalizedValue(float v){
+    if(!hasFiniteRange() ){
+        jassertfalse;
+        return v;
+    }
+    else{
+        return jmap<float>(v,(float)minimumValue,(float)maximumValue,0,1);
+    }
+
+}
+
+float RangeParameter::getNormalizedRangeMin(){
+    return getNormalizedValue(getRangeMin());
+}
+float RangeParameter::getNormalizedRangeMax(){
+    return getNormalizedValue(getRangeMax());
+
+}
+
+void RangeParameter::setNormalizedRangeMinMax(float f,float fm){
+    if(hasFiniteRange())
+        setValue( jmap<float>(f,0.f,1.f,(float)minimumValue,(float)maximumValue),
+                  jmap<float>(fm,0.f,1.f,(float)minimumValue,(float)maximumValue));
+    else
+        jassertfalse;
+}
+

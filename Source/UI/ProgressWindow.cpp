@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@
  ==============================================================================
  */
 
+#if !ENGINE_HEADLESS
 #include "ProgressWindow.h"
 #include "Style.h"
 
@@ -58,12 +59,12 @@ void ProgressWindow::startedProgress (ProgressTask* task)
 {
     titleLabel.setText (task->getAddress().joinIntoString (" / "), NotificationType::dontSendNotification);
 }
-void ProgressWindow::endedProgress (ProgressTask* task)
+void ProgressWindow::endedProgress (ProgressTask* /*task*/)
 {
 
 }
 
-void ProgressWindow::newProgress (ProgressTask* task, float advance)
+void ProgressWindow::newProgress (ProgressTask* task, float /*advance*/)
 {
     setProgress (task->getNormalizedProgress());
 };
@@ -71,3 +72,4 @@ void ProgressWindow::setProgress (float progress)
 {
     progressParam.setValue (progress);
 }
+#endif

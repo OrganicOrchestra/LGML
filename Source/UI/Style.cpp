@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -15,6 +15,8 @@
 
  ==============================================================================
  */
+
+#if !ENGINE_HEADLESS
 
 #include "Style.h"
 
@@ -67,15 +69,13 @@ static void _drawBounds(Component* c ,int idx,Graphics & g,Component * relativeT
             p = p->getParentComponent();
         }
         static float strk = 0.5f;
-        g.drawRect(r.toFloat().reduced(idx*strk),strk*0.5);
+        g.drawRect(r.toFloat().reduced(idx*strk),strk*0.5f);
     }
 
 }
 
-static void _repaint(Component* c ,int idx){
+static void _repaint(Component* c ,int /*idx*/){
     c->repaint();
-
-
 }
 
 
@@ -123,7 +123,7 @@ void AddElementButton::paintButton (Graphics& g,
     g.drawEllipse (area.toFloat().reduced (stroke / 2), stroke);
     g.setColour (findColour (TextButton::textColourOffId));
     const float hw = stroke;//area.getHeight()/18.0;
-    const float offset = area.getWidth() / 4 ;
+    const float offset = area.getWidth() / 4.0f ;
 
     const float corner = hw;
 
@@ -156,7 +156,7 @@ void RemoveElementButton::paintButton (Graphics& g,
                                        bool isMouseOverButton,
                                        bool isButtonDown)
 {
-    g.addTransform(AffineTransform::rotation(float_Pi/4,getWidth()/2,getHeight()/2));
+    g.addTransform(AffineTransform::rotation(float_Pi/4.0f,getWidth()/2.0f,getHeight()/2.0f));
 
     auto area = getLocalBounds();
     auto bgColor = findColour (TextButton::buttonColourId);
@@ -169,7 +169,7 @@ void RemoveElementButton::paintButton (Graphics& g,
     g.drawEllipse (area.toFloat().reduced (stroke / 2), stroke);
     g.setColour (Colours::red);
     const float hw = stroke;//area.getHeight()/18.0;
-    const float offset = area.getWidth() / 4 ;
+    const float offset = area.getWidth() / 4.0f ;
 
     const float corner = hw;
 
@@ -182,35 +182,58 @@ void RemoveElementButton::paintButton (Graphics& g,
 /////////////////////
 // CachedGlyph
 ///////////////
-#if USE_CACHED_GLYPH
-NamedValueSet CachedGlyph::usedFonts;
-Identifier noFont("noFont");
 
-CachedGlyph::CachedGlyph(const String &t):
-Component(t),
+
+class GlobalFonts: private DeletedAtShutdown{
+public:
+    ReferenceCountedArray<CachedGlyph::CachedFont> list;
+};
+
+auto usedFonts = new GlobalFonts();
+
+
+CachedGlyph::CachedGlyph(const String &t,const Font & font)://,const String & fontName):
+text(t),
 useEllipsesIfTooBig(false),
-justificationType(Justification::centred),
-curFontName(noFont)
+justificationType(Justification::left)
 {
-
+    setFont(font);
 }
 
-void CachedGlyph::setGlyphBounds(const Rectangle<int>& b){
+void CachedGlyph::setSize(int w, int h){
+    bounds.setSize(w, h);
     updateGlyph();
 }
 
 void CachedGlyph::setText(const String & t){
-    setName(t);
+    text = t;
+    updateGlyph();
+
+}
+
+void CachedGlyph::setFont(const Font &f){
+
+    for(auto a : usedFonts->list){
+        if(a->font==f){
+            _font = a;
+            return;
+        }
+    }
+    CachedGlyph::CachedFont::Ptr nf ( new CachedGlyph::CachedFont(f));
+    usedFonts->list.add(nf);
+    _font = nf;
+    
+
 
 }
 
 void CachedGlyph::updateGlyph(){
     if(isReady()){
         auto area = getLocalBounds();
-        auto text = getName();
+        
         glyphArr.clear();
         glyphArr.addCurtailedLineOfText (*getCurFont(), text, 0.0f, 0.0f,
-                                         area.getWidth(), useEllipsesIfTooBig);
+                                         (float)area.getWidth(), useEllipsesIfTooBig);
 
         glyphArr.justifyGlyphs (0, glyphArr.getNumGlyphs(),
                                 area.getX(), area.getY(), area.getWidth(), area.getHeight(),
@@ -218,27 +241,32 @@ void CachedGlyph::updateGlyph(){
     }
 }
 bool CachedGlyph::isReady(){
-    return curFontName!=noFont && getCurFont() && curFontName == getCurFont()->toString();
+    return  _font!=nullptr ;
 }
+Rectangle<int> & CachedGlyph::getLocalBounds(){
+    return bounds;
 
+}
 Font * CachedGlyph::getCurFont(){
-    var *v=usedFonts.getVarPointer(curFontName);
-    if(v){
-        v->getObject();
-    }
+    return &_font->font;
 }
 void CachedGlyph::paint(Graphics & g){
     if(!isReady()){
-        curFont = g.getCurrentFont();
-        curFontName = curFont.toString();
         updateGlyph();
-
     }
     auto area = getLocalBounds();
-    auto text = getName();
+    
     if (text.isNotEmpty())// && g.context.clipRegionIntersects (area.getSmallestIntegerContainer()))
     {
         glyphArr.draw (g);
     }
 }
+
+CachedGlyph::CachedFont::CachedFont(const Font &f):font(f){
+
+}
+CachedGlyph::CachedFont::~CachedFont(){
+
+}
+
 #endif

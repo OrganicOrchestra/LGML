@@ -27,7 +27,7 @@ class JsOSCListener;
 class OSCJsController : public OSCDirectController, public JsEnvironment
 {
 public:
-    DECLARE_OBJ_TYPE_DEFAULTNAME (OSCJsController, "OSCJS");
+    DECLARE_OBJ_TYPE_DEFAULTNAME (OSCJsController, "OSCJS","use any OSC App to control LGML");
 
     ~OSCJsController();
     Result processMessageInternal (const OSCMessage& m) override;
@@ -35,7 +35,7 @@ public:
     void callonAnyMsg (const OSCMessage& msg);
 
     static var sendOSCFromJS (const juce::var::NativeFunctionArgs& a);
-    void onContainerParameterChanged (Parameter* p) override;
+    void onContainerParameterChanged ( ParameterBase* p) override;
     void onContainerTriggerTriggered (Trigger* t ) override;
 
 
@@ -47,7 +47,7 @@ public:
     static var createJsOSCListener (const var::NativeFunctionArgs& a);
     OwnedArray<JsOSCListener, CriticalSection> jsOSCListeners;
 
-    static var OSCArgumentToVar (OSCArgument& a);
+    static var OSCArgumentToVar (const OSCArgument& a);
 
 
 private:

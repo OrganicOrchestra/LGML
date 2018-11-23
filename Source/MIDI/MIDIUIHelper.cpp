@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@
  ==============================================================================
  */
 
+#if !ENGINE_HEADLESS
 #include "MIDIUIHelper.h"
 
 MIDIDeviceChooser::MIDIDeviceChooser (bool _isInputChooser) :
@@ -32,11 +33,10 @@ MIDIDeviceChooser::~MIDIDeviceChooser()
 
 void MIDIDeviceChooser::fillDeviceList()
 {
-    String currentSelected = currentDeviceName;// getSelectedId() > 1 ? getItemText(getSelectedItemIndex()) : String::empty;
-
+    String currentSelected = currentDeviceName;
 
     clear();
-    addItem ("Choose a MIDI Device", 1);
+    addItem (juce::translate("Choose a MIDI Device"), 1);
     StringArray deviceList = isInputChooser ? MIDIManager::getInstance()->inputDevices : MIDIManager::getInstance()->outputDevices;
     addItemList (deviceList, 2);
 
@@ -83,3 +83,4 @@ void MIDIDeviceChooser::midiOutputsChanged()
 
     fillDeviceList();
 }
+#endif

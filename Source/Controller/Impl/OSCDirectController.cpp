@@ -1,16 +1,16 @@
 /* Copyright © Organic Orchestra, 2017
-*
-* This file is part of LGML.  LGML is a software to manipulate sound in realtime
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation (version 3 of the License).
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*/
+ *
+ * This file is part of LGML.  LGML is a software to manipulate sound in realtime
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation (version 3 of the License).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
 
 
 #include "OSCDirectController.h"
@@ -20,29 +20,63 @@
 #include "../../Controllable/Parameter/ParameterProxy.h"
 #include "../ControllerManager.h"
 
+#define NON_BLOCKING 0
+template<>
+void ControllableContainer::OwnedFeedbackListener<OSCDirectController>::controllableFeedbackUpdate (ControllableContainer* originContainer, Controllable* c){
 
 
-//REGISTER_OBJ_TYPE_NAMED (Controller, OSCDirectController, "t_OSC");
+    if (owner->enabledParam->boolValue())
+    {
+#if NON_BLOCKING
+        auto f = [this,c](){
+#endif
+            owner->sendOSCFromParam(c);
+#if NON_BLOCKING
+        };
+        // avoid locking other threads
+        if(MessageManager::getInstance()->isThisTheMessageThread()){
+            f();
+        }
+        else{
+            MessageManager::callAsync(f);
+        }
+#endif
+    }
+
+
+
+}
+
 
 OSCDirectController::OSCDirectController (StringRef name):
-    OSCController (name)
+OSCController (name),
+pSync(this)
 {
-    NodeManager::getInstance()->addControllableContainerListener (this);
-    
-    sendTimeInfo = addNewParameter<BoolParameter> ("sendTimeInfo", "send time information", false);
 
-    if (sendTimeInfo->boolValue())
-    {
-        TimeManager::getInstance()->addControllableContainerListener (this);
+
+    sendTimeInfo = addNewParameter<BoolParameter> ("sendTimeInfo", "send time information", false);
+    fullSync = addNewParameter<BoolParameter> ("syncAllParameters", "sync every parameter like stats/NodesUI/FastMap...(useful for test and hacking things around)", false);
+
+    if(fullSync->boolValue()){
+        ParameterContainer::getRoot(true)->addControllableContainerListener(&pSync);
+    }
+    else{
+        NodeManager::getInstance()->addControllableContainerListener (&pSync);
+        if (sendTimeInfo->boolValue())
+        {
+        TimeManager::getInstance()->addControllableContainerListener (&pSync);
+        }
     }
 
 }
 
 OSCDirectController::~OSCDirectController()
 {
-    if (NodeManager* nm = NodeManager::getInstanceWithoutCreating())nm->removeControllableContainerListener (this);
+    if (NodeManager* nm = NodeManager::getInstanceWithoutCreating())
+        nm->removeControllableContainerListener (&pSync);
 
-    if (TimeManager* tm = TimeManager::getInstanceWithoutCreating()) {tm->removeControllableContainerListener (this);}
+    if (TimeManager* tm = TimeManager::getInstanceWithoutCreating())
+        tm->removeControllableContainerListener (&pSync);
 
 }
 
@@ -54,14 +88,14 @@ Result OSCDirectController::processMessageInternal (const OSCMessage& msg)
 
 
 
-    if (auto* up = (Parameter*)userContainer.getControllableForAddress (addrArray))
+    if (auto* up = ( ParameterBase*)userContainer.getControllableForAddress (addrArray))
     {
         if (!setParameterFromMessage (up, msg))
         {
             result =  Result::fail ("Controllable type not handled in user Parameter");
         }
     }
-    auto root = NodeManager::getInstance()->parentContainer;
+    auto root = ParameterContainer::getRoot(true);
 
     if(msg.getAddressPattern().containsWildcards()){
 
@@ -69,7 +103,7 @@ Result OSCDirectController::processMessageInternal (const OSCMessage& msg)
 
         auto params = root->getControllablesForExtendedAddress(addrArray);
         for(auto cont:params){
-            if (auto c = Parameter::fromControllable (cont))
+            if (auto c = ParameterBase::fromControllable (cont))
             {
                 if (c->isControllableExposed && c->isEditable)
                 {
@@ -83,14 +117,14 @@ Result OSCDirectController::processMessageInternal (const OSCMessage& msg)
     }
     else{
 
-    String controller = addrArray[0];
+        
 
 
-    Controllable* cont = root->getControllableForAddress(addrArray);
+        Controllable* cont = root->getControllableForAddress(addrArray);
 
 
 
-        if (auto c = Parameter::fromControllable (cont))
+        if (auto c = ParameterBase::fromControllable (cont))
         {
             if (c->isControllableExposed && c->isEditable)
             {
@@ -129,12 +163,8 @@ String getValidOSCAddress (const String& s)
     return targetName;
 }
 
-void OSCDirectController::controllableAdded (ControllableContainer*, Controllable* ) {}
-void OSCDirectController::controllableRemoved (ControllableContainer*, Controllable*)
-{
 
-}
-void OSCDirectController::onContainerParameterChanged (Parameter* p)
+void OSCDirectController::onContainerParameterChanged ( ParameterBase* p)
 {
     OSCController::onContainerParameterChanged (p);
 
@@ -142,69 +172,35 @@ void OSCDirectController::onContainerParameterChanged (Parameter* p)
     {
         if (sendTimeInfo->boolValue())
         {
-            TimeManager::getInstance()->addControllableContainerListener (this);
+            TimeManager::getInstance()->addControllableContainerListener (&pSync);
         }
         else
         {
-            TimeManager::getInstance()->removeControllableContainerListener (this);
+            TimeManager::getInstance()->removeControllableContainerListener (&pSync);
         }
 
+    }
+    if(p==fullSync){
+        if(fullSync->boolValue()){
+            if(sendTimeInfo->boolValue())
+                TimeManager::getInstance()->removeControllableContainerListener(&pSync);
+            NodeManager::getInstance()->removeControllableContainerListener(&pSync);
+            ParameterContainer::getRoot(true)->addControllableContainerListener(&pSync);
+        }
+        else{
+            ParameterContainer::getRoot(true)->removeControllableContainerListener(&pSync);
+            if(sendTimeInfo->boolValue())
+                TimeManager::getInstance()->addControllableContainerListener(&pSync);
+            NodeManager::getInstance()->addControllableContainerListener(&pSync);
+
+
+        }
     }
 
 
 
 };
 
-void OSCDirectController::sendOSCForAddress (Controllable* c, const String& cAddress)
-{
 
 
-    if (Parameter* p = Parameter::fromControllable (c))
-    {
-        auto  targetType = p->getFactoryTypeId();
 
-        if (targetType == ParameterProxy::_factoryType) targetType = ((ParameterProxy*)c)->linkedParam->getFactoryTypeId();
-
-        if (targetType == Trigger::_factoryType) {sendOSC (cAddress);}
-        else if (targetType == BoolParameter::_factoryType) {sendOSC (cAddress, p->intValue());}
-        else if (targetType == FloatParameter::_factoryType) {sendOSC (cAddress, p->floatValue());}
-        else if (targetType == IntParameter::_factoryType) {sendOSC (cAddress, p->intValue());}
-        else if (targetType == StringParameter::_factoryType) {sendOSC (cAddress, p->stringValue());}
-        else if (targetType == EnumParameter::_factoryType) {sendOSC (cAddress, p->stringValue());}
-        else
-        {
-            DBG ("Type not supported " << targetType.toString());
-            jassertfalse;
-        }
-
-    }
-    else
-    {
-        jassertfalse;
-    }
-}
-void OSCDirectController::controllableFeedbackUpdate (ControllableContainer* /*originContainer*/, Controllable* c)
-{
-
-    if (enabledParam->boolValue())
-    {
-        if (c->isChildOf (&userContainer))
-        {
-            sendOSCForAddress (c, c->getControlAddress (&userContainer));
-        }
-        else
-        {
-            sendOSCForAddress (c, c->controlAddress);
-        }
-    }
-
-
-}
-
-void OSCDirectController::controllableContainerAdded (ControllableContainer*, ControllableContainer*)
-{
-}
-
-void OSCDirectController::controllableContainerRemoved (ControllableContainer*, ControllableContainer*)
-{
-}

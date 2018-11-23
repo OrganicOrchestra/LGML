@@ -43,8 +43,8 @@ public:
     void init() override;
 
     class TrackUI :
-        public juce::Component,
-        public LooperTrack::Listener
+        public LooperTrack::Listener,
+        public InspectableComponent
     {
     public:
 
@@ -69,6 +69,7 @@ public:
 
         ScopedPointer<ParameterUI> muteButton;
         ScopedPointer<ParameterUI> soloButton;
+        ScopedPointer<ParameterUI> selectMeButton;
         ScopedPointer<EnumParameterUI> sampleChoiceDDL;
 
 

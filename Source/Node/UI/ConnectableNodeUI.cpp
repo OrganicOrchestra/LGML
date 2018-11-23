@@ -13,6 +13,8 @@
  */
 
 
+#if !ENGINE_HEADLESS
+
 #include "ConnectableNodeUI.h"
 #include "ConnectableNodeHeaderUI.h"
 #include "../NodeContainer/NodeContainer.h"
@@ -25,6 +27,7 @@
 
 
 #include "../Manager/UI/NodeManagerUI.h"
+#include "../../Controllable/Parameter/UndoableHelper.h"
 
 
 ConnectableNodeUIParams::ConnectableNodeUIParams(ConnectableNodeUIParams * _origin):origin(_origin){
@@ -67,6 +70,7 @@ ConnectableNodeUIParams::ConnectableNodeUIParams(StringRef n): ParameterContaine
     nodeSize=addNewParameter<Point2DParameter<int>> ("nodeSize", "Node Size", 180, 100, Array<var> {30, 30});
     miniModeParam=addNewParameter<BoolParameter> ("miniMode", "Mini Mode", false);
     nodePosition->isControllableExposed = false;
+    nodeMinimizedPosition->isControllableExposed = false;
     nodeSize->isControllableExposed = false;
 
 
@@ -95,12 +99,13 @@ mainComponentContainer (this, contentUI, headerUI),
 resizer (this, &constrainer),
 isDraggingFromUI (false)
 {
-
+    
 
     constrainer.setMinimumWidth (50);
     constrainer.setMinimumHeight (50);
 
     addAndMakeVisible (mainComponentContainer);
+    mainComponentContainer.setMouseCursor(MouseCursor::UpDownLeftRightResizeCursor);
 
     if (connectableNode->userCanAccessInputs)
     {
@@ -122,7 +127,7 @@ isDraggingFromUI (false)
     notifyFromParams();
 
     connectableNode->addConnectableNodeListener (this);
-
+    
 
 
 
@@ -140,8 +145,9 @@ ConnectableNodeUI::~ConnectableNodeUI()
 {
 
     connectableNode->removeConnectableNodeListener (this);
-    masterReference.clear();
+    ConnectableNodeUI::masterReference.clear();
 }
+
 
 Point2DParameter<int>* ConnectableNodeUI::getCurrentPositionParam(){
     auto ncv = findParentComponentOfClass<NodeContainerViewer>();
@@ -150,9 +156,19 @@ Point2DParameter<int>* ConnectableNodeUI::getCurrentPositionParam(){
 
 void ConnectableNodeUI::moved()
 {
+    bool wasDraggingFromUI = isDraggingFromUI;
     isDraggingFromUI = true;
-    getCurrentPositionParam()->setPoint (getPosition());
-    isDraggingFromUI = false;
+    auto p = getPosition();
+    auto pp = getCurrentPositionParam();
+    if(pp){
+        auto stp=pp->getPoint();
+        if(stp!=p){
+            Array<var> v  ({p.x,p.y});
+            UndoableHelpers::setValueUndoable(pp,v);
+            //else{pp->setValue(v);}
+        }
+    }
+    isDraggingFromUI = wasDraggingFromUI;
 }
 
 
@@ -177,7 +193,8 @@ int ConnectableNodeUI::getMiniModeWidth (bool forMiniMode)
     return forMiniMode ? 130 : (getContentContainer()->getWidth() +
                                 inputContainer.isVisible()*inputContainer.getWidth() +
                                 outputContainer.isVisible()*outputContainer.getWidth() +
-                                (mainComponentContainer.audioCtlUIContainer ? mainComponentContainer.audioCtlUIContainer->getWidth() + mainComponentContainer.audioCtlContainerPadRight : 0));
+                                (mainComponentContainer.audioCtlUIContainer ? mainComponentContainer.audioCtlUIContainer->getWidth() +
+                                        ConnectableNodeUI::MainComponentContainer::audioCtlContainerPadRight : 0));
 }
 
 int ConnectableNodeUI::getMiniModeHeight (bool forMiniMode)
@@ -220,7 +237,7 @@ void ConnectableNodeUI::resized()
     isDraggingFromUI = false;
 }
 
-void ConnectableNodeUI::onContainerParameterChanged(Parameter *p){
+void ConnectableNodeUI::onContainerParameterChanged( ParameterBase*p){
 
         if (p == nodePosition )
         {
@@ -245,7 +262,7 @@ void ConnectableNodeUI::onContainerParameterChanged(Parameter *p){
 
 }
 
-void ConnectableNodeUI::nodeParameterChanged (ConnectableNode*, Parameter* p)
+void ConnectableNodeUI::nodeParameterChanged (ConnectableNode*, ParameterBase* p)
 {
 
     if (p == connectableNode->enabledParam)
@@ -314,12 +331,15 @@ void ConnectableNodeUI::childBoundsChanged (Component* c)
 
 void ConnectableNodeUI::mouseDown (const juce::MouseEvent& /*e*/)
 {
+UndoableHelpers::startNewTransaction(getCurrentPositionParam(),true);
+    UndoableHelpers::setParameterCoalesced(true);
 
 }
 
 void ConnectableNodeUI::mouseUp (const juce::MouseEvent&)
 {
     isDraggingFromUI = false;
+    UndoableHelpers::setParameterCoalesced(false);
 }
 
 void ConnectableNodeUI::mouseDrag (const MouseEvent& e)
@@ -328,6 +348,12 @@ void ConnectableNodeUI::mouseDrag (const MouseEvent& e)
     isDraggingFromUI = true;
 
 }
+void ConnectableNodeUI::mouseEnter (const MouseEvent& e)  {
+
+};
+void ConnectableNodeUI::mouseExit (const MouseEvent& e)  {
+    
+};
 
 bool ConnectableNodeUI::keyPressed (const KeyPress& key)
 {
@@ -470,6 +496,13 @@ void ConnectableNodeUI::MainComponentContainer::childBoundsChanged (Component* c
     }
 }
 
+String ConnectableNodeUI::MainComponentContainer::getTooltip() {
+    if(auto cn = connectableNodeUI){
+        return cn->getTooltip();
+    }
+    return "";
+}
+
 
 
 
@@ -497,7 +530,7 @@ void ConnectableNodeUI::ConnectorContainer::setConnectorsFromNode (ConnectableNo
 
 
     addConnector (type, NodeConnection::ConnectionType::AUDIO, targetNode);
-    addConnector (type, NodeConnection::ConnectionType::DATA, targetNode);
+    
 
     resized();
 
@@ -607,3 +640,5 @@ bool ConnectableNodeUI::hitTest(int x, int y){
     }
     return false;
 }
+
+#endif

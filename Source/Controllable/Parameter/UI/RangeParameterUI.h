@@ -18,7 +18,7 @@
 #include "ParameterUI.h"
 
 #include "../RangeParameter.h"
-
+#include "../UndoableHelper.h"
 
 
 class RangeParameterUI : public ParameterUI, private Slider::Listener
@@ -26,12 +26,14 @@ class RangeParameterUI : public ParameterUI, private Slider::Listener
 public:
     RangeParameterUI (RangeParameter* p): ParameterUI (p), slider (Slider::SliderStyle::TwoValueHorizontal, Slider::NoTextBox)
     {
+
         slider.addListener (this);
         addAndMakeVisible (slider);
         slider.setRange (p->minimumValue, p->maximumValue);
-        slider.setMinAndMaxValues (p->getRangeMin(), p->getRangeMax());
+        slider.setMinAndMaxValues (p->getRangeMin(), p->getRangeMax(),dontSendNotification);
+
     }
-    Slider slider;
+
     void valueChanged (const var& v) override
     {
         if (v.isArray() && v.size() > 1)
@@ -41,24 +43,30 @@ public:
 
     };
 
-    void rangeChanged (Parameter* p)override
+    void rangeChanged ( ParameterBase* p)override
     {
         auto rangeP = (RangeParameter*)p;
         slider.setRange (rangeP->minimumValue, rangeP->maximumValue);
+        slider.repaint();
     }
     void resized()override
     {
         slider.setBounds (getLocalBounds());
     }
 
-    void sliderValueChanged (Slider* ) override
+    void sliderValueChanged (Slider* s) override
     {
-        if(auto rangeP = ((RangeParameter*)parameter.get()) )
-            rangeP->setValue (slider.getMinValue(), slider.getMaxValue());
+        jassert(s==&slider);
+        if(auto rangeP = ((RangeParameter*)parameter.get()) ){
+            Array<var> av={slider.getMinValue(), slider.getMaxValue()};
+
+            UndoableHelpers::setValueUndoable(rangeP,av);
+        }
         else
             jassertfalse;
     }
 
-
+private:
+    Slider slider;
 
 };

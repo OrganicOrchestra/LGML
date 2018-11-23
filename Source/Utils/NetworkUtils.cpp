@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -100,7 +100,7 @@ public:
         // scan all interfaces not starting with lo
         struct ifaddrs* ifap = NULL;
 
-        if (getifaddrs (&ifap) < 0) {LOG ("!!! Cannot not get a list of interfaces\n"); return;}
+        if (getifaddrs (&ifap) < 0) {LOGE(juce::translate("Cannot not get a list of interfaces\n")); return;}
 
         for (struct ifaddrs* p = ifap; p != NULL; p = p->ifa_next)
         {
@@ -246,13 +246,14 @@ public:
 
                         if (FD_ISSET (jj->second, &readfds) )
                         {
-
-                            if ((DNSServiceProcessResult (jj->first) != 0))
+                            auto res=DNSServiceProcessResult (jj->first) ;
+                            if (res!= 0)
                             {
                                 // should happen only at the deletion of Pimpl
                                 if (threadShouldExit())return;
+                                
+                                LOGE(juce::translate("DNS service failed with error : ")<<res);
 
-                                jassertfalse;
                             }
 
                             if ( ++count > 10 )
@@ -349,7 +350,7 @@ public:
         else
         {
             jassertfalse;
-            LOG ("!!! DNS : can't resolve ip :" << hostIP << " (" << String (hosttarget) << ")" );
+            LOGE(juce::translate("DNS : can't resolve ip :") << hostIP << " (" << String (hosttarget) << ")" );
         }
 
     }
@@ -454,7 +455,7 @@ public:
 OSCClientRecord NetworkUtils::hostnameToOSCRecord (const String& )
 //int hostname_to_ip(char * hostname , char* ip)
 {
-    LOG ("!!! ip hostname discovery not supported on windows/Unix");
+    LOGE(juce::translate("ip hostname discovery not supported on windows/Unix"));
     return OSCClientRecord();
 }
 

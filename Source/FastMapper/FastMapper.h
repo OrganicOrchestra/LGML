@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -22,21 +22,25 @@
 #include "../Controllable/Parameter/ParameterContainer.h"
 #include "FastMap.h"
 
+#if !ENGINE_HEADLESS
 #include "../UI/LGMLDragger.h"
 #include "../UI/Inspector/Inspector.h"
-
+#endif
 
 class FastMapper;
 
 
 class FastMapper :
     public ParameterContainer,
-    private LGMLDragger::Listener
+#if !ENGINE_HEADLESS
+    private LGMLDragger::Listener,
+#endif
+    private ParameterProxy::ParameterProxyListener
 
 {
 public:
     juce_DeclareSingleton (FastMapper, true)
-    DECLARE_OBJ_TYPE (FastMapper)
+    DECLARE_OBJ_TYPE (FastMapper,"map all parameters together in LGML")
 
 
     virtual ~FastMapper();
@@ -48,8 +52,8 @@ public:
 
     void clear();
 
-    void setPotentialInput (Parameter*);
-    void setPotentialOutput (Parameter*);
+    void setPotentialInput ( ParameterBase*);
+    void setPotentialOutput ( ParameterBase*);
 
     FastMap* addFastMap();
     void removeFastmap (FastMap* f);
@@ -62,15 +66,21 @@ public:
 
 private:
 
+#if !ENGINE_HEADLESS
     // LGMLDragger Listener
-    void selectionChanged (Parameter*) override;
+    void selectionChanged ( ParameterBase*) override;
     void mappingModeChanged(bool) override;
-
+#endif
     uint32 lastFMAddedTime;
 
+    // proxy listener
+    void linkedParamChanged (ParameterProxy*) override;
 
     // ControllableContainer::Listener
-    void controllableFeedbackUpdate (ControllableContainer*, Controllable*) override;
+    typedef  ControllableContainer::OwnedFeedbackListener<FastMapper> PSync;
+    PSync pSync;
+    friend class ControllableContainer::OwnedFeedbackListener<FastMapper>;
+
     void createNewFromPotentials();
     bool checkDuplicates (FastMap* f);
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FastMapper)

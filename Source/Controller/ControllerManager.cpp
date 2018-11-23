@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -17,8 +17,9 @@
  */
 
 #include "ControllerManager.h"
+#if !ENGINE_HEADLESS
 #include "../UI/LGMLDragger.h" // to enable default mapping mode on creation  
-
+#endif
 juce_ImplementSingleton (ControllerManager);
 
 
@@ -44,7 +45,9 @@ Controller* ControllerManager::addController (Controller* c)
 
     addChildControllableContainer (c);
     listeners.call (&ControllerManager::Listener::controllerAdded, c);
+#if !ENGINE_HEADLESS
     c->setMappingMode(LGMLDragger::getInstance()->isMappingActive);
+#endif
     return c;
 }
 
@@ -69,7 +72,7 @@ void ControllerManager::clear()
 
 ParameterContainer*   ControllerManager::addContainerFromObject (const String& /*name*/, DynamicObject*   ob)
 {
-    return addController (ControllerFactory::createBaseFromObject (String::empty, ob));
+    return addController (ControllerFactory::createBaseFromObject ("", ob));
 
 }
 

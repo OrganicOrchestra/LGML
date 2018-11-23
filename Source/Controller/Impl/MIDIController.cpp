@@ -22,25 +22,32 @@
 extern AudioDeviceManager&   getAudioDeviceManager();
 
 #include "../ControllerFactory.h"
-REGISTER_CONTROLLER_TYPE (MIDIController);
+REGISTER_CONTROLLER_TYPE (MIDIController,"MIDI");
+
 
 MIDIController::MIDIController (StringRef name) :
     Controller (name), JsEnvironment ("controllers.MIDI", this),
-midiChooser(this,true,false)
+midiChooser(this,true,false),
+midiClock(false)
 {
+
     setNamespaceName ("controllers." + shortName);
 
     logIncoming = addNewParameter<BoolParameter> ("logIncoming", "log Incoming midi message", false);
     logIncoming->isSavable = false;
     logIncoming->isPresettable =false;
 
+    sendMIDIClock = addNewParameter<BoolParameter> ("send MIDI Clock", "send MIDI Clock",false);
+    sendMIDIPosition = addNewParameter<BoolParameter> ("send MIDI Position", "send MIDI Position information",false);
+    sendMIDIPosition->setEnabled(sendMIDIClock->boolValue());
+    midiClockOffset = addNewParameter<IntParameter>("MIDI clock offset", "offset to apply to midiclock",0, -300,300);
     channelFilter = addNewParameter<IntParameter> ("Channel", "Channel to filter message (0 = accept all channels)", 0, 0, 16);
-
+    midiClock.setOutput(this);
 }
 
 MIDIController::~MIDIController()
 {
-    setCurrentDevice (String::empty);
+    setCurrentDevice ("");
 
 }
 
@@ -60,14 +67,17 @@ void MIDIController::handleIncomingMidiMessage (MidiInput*,
     {
         if (logIncoming->boolValue())
         {
-            NLOG ("MIDI", "CC " + String (message.getControllerNumber()) + " > " + String (message.getControllerValue()) + " (Channel " + String (message.getChannel()) + ")");
+            NLOG ("MIDI", String("CC 123 > 456 (Channel 789)")
+                  .replace("123", String (message.getControllerNumber()))
+                  .replace("456", String (message.getControllerValue()))
+                  .replace("789",String (message.getChannel())));
         }
 
 
         const String paramName( "CC "+String(message.getControllerNumber()));
         if (Controllable* c = userContainer.getControllableByName(paramName))
         {
-                ((Parameter*)c)->setValue(message.getControllerValue()*1.0/127);
+                (( ParameterBase*)c)->setValue(message.getControllerValue()*1.0/127);
         }
         else if(autoAddParams){
             MessageManager::callAsync([this,message,paramName](){
@@ -87,13 +97,19 @@ void MIDIController::handleIncomingMidiMessage (MidiInput*,
         bool isNoteOn = message.isNoteOn();
         if (logIncoming->boolValue())
         {
-            NLOG ("MIDI", "Note " + String (isNoteOn ? "on" : "off") + " : " + MidiMessage::getMidiNoteName (message.getNoteNumber(), true, true, 0) + " > " + String (message.getVelocity()) + " (Channel " + String (message.getChannel()) + ")");
+            NLOG ("MIDI", String("123 : 456 (Channel 1011)")
+                  .replace("123", String (isNoteOn ? "NoteOn" : "NoteOff"))
+                  .replace("456", MidiMessage::getMidiNoteName (message.getNoteNumber(), true, true, 0))
+                  .replace("789",String (message.getVelocity()))
+                  .replace("1011",String (message.getChannel()))
+                  );
+                  
         }
 
-        const String paramName (MidiMessage::getMidiNoteName (message.getNoteNumber(), true, true, 0));//+"_"+String(message.getChannel()));
+        const String paramName (MidiMessage::getMidiNoteName (message.getNoteNumber(), false, true, 0));//+"_"+String(message.getChannel()));
         if (Controllable* c = userContainer.getControllableByName(paramName))
         {
-            ((Parameter*)c)->setValue(isNoteOn?message.getFloatVelocity():0);
+            (( ParameterBase*)c)->setValue(isNoteOn?message.getFloatVelocity():0);
         }
         else if(autoAddParams && isNoteOn ){
             MessageManager::callAsync([this,message,paramName](){
@@ -133,7 +149,7 @@ void MIDIController::handleIncomingMidiMessage (MidiInput*,
         callJs (message);
     }
 
-    if(!message.isNoteOff())inActivityTrigger->trigger();
+    if(!message.isNoteOff())inActivityTrigger->triggerDebounced(activityTriggerDebounceTime);
 }
 
 
@@ -176,7 +192,7 @@ void MIDIController::callJs (const MidiMessage& message)
     }
 }
 
-void MIDIController::onContainerParameterChanged (Parameter* p)
+void MIDIController::onContainerParameterChanged ( ParameterBase* p)
 {
     Controller::onContainerParameterChanged (p);
 
@@ -184,16 +200,48 @@ void MIDIController::onContainerParameterChanged (Parameter* p)
     {
         setNamespaceName ("controllers." + shortName);
     }
-    if(p==midiChooser.getDeviceInEnumParameter()){
+    else if(p==midiChooser.getDeviceInEnumParameter()){
         auto ep = midiChooser.getDeviceInEnumParameter();
         auto selId = ep->getFirstSelectedId();
         bool connected = ep->getModel()->isValidId(selId);
         isConnected->setValue(connected);
+        startMidiClockIfNeeded();
+
+    }
+    else if(p==isConnected){
+        startMidiClockIfNeeded();
+    }
+    else if(p==sendMIDIClock){
+        sendMIDIPosition->setEnabled(sendMIDIClock->boolValue());
+        startMidiClockIfNeeded();
+    }
+    else if(p==sendMIDIPosition){
+        midiClock.sendSPP = sendMIDIPosition->boolValue();
+    }
+    else if(p==midiClockOffset){
+        midiClock.delta = midiClockOffset->intValue();
+        midiClock.reset();
     }
 }
-
+void MIDIController::startMidiClockIfNeeded(){
+    if(isConnected->boolValue()){
+        if(sendMIDIClock->boolValue()){
+            if(!midiClock.isThreadRunning())
+                midiClock.start();
+            else{
+                midiClock.reset();
+            }
+        }
+        else{
+            midiClock.stop();
+        }
+    }
+    else{
+        midiClock.stop();
+    }
+}
 void MIDIController::midiMessageSent(){
-    outActivityTrigger->trigger();
+    outActivityTrigger->triggerDebounced(activityTriggerDebounceTime);
 
 };
 
@@ -219,7 +267,7 @@ void MIDIController::buildLocalEnv()
     static const Identifier jsGetNoteListenerObject ("createNoteListener");
     obj.setMethod (jsGetNoteListenerObject, &MIDIController::createJsNoteListener);
 
-    obj.setProperty (jsPtrIdentifier, (int64)this);
+    
     setLocalNamespace (obj);
 
 
@@ -238,11 +286,11 @@ void MIDIController::newJsFileLoaded()
 var MIDIController::sendNoteOnFromJS (const var::NativeFunctionArgs& a )
 {
 
-    MIDIController* c = getObjectPtrFromJS<MIDIController> (a);
+    MIDIController* c = castPtrFromJSEnv<MIDIController> (a);
 
     if (a.numArguments < 3)
     {
-        NLOG ("MidiController", "!!! Incorrect number of arguments for sendNoteOn");
+        NLOGE("MidiController", juce::translate("Incorrect number of arguments for sendNoteOn"));
         return var (false);
     }
 
@@ -254,11 +302,11 @@ var MIDIController::sendNoteOnFromJS (const var::NativeFunctionArgs& a )
 var MIDIController::sendNoteOffFromJS (const var::NativeFunctionArgs& a)
 {
 
-    MIDIController* c = getObjectPtrFromJS<MIDIController> (a);
+    MIDIController* c = castPtrFromJSEnv<MIDIController> (a);
 
     if (a.numArguments < 3)
     {
-        NLOG ("MidiController", "!!! Incorrect number of arguments for sendNoteOff");
+        NLOGE("MidiController", juce::translate("Incorrect number of arguments for sendNoteOff"));
         return var (false);
     }
 
@@ -268,11 +316,11 @@ var MIDIController::sendNoteOffFromJS (const var::NativeFunctionArgs& a)
 
 var MIDIController::sendCCFromJS (const var::NativeFunctionArgs& a)
 {
-    MIDIController* c = getObjectPtrFromJS<MIDIController> (a);
+    MIDIController* c = castPtrFromJSEnv<MIDIController> (a);
 
     if (a.numArguments < 3)
     {
-        NLOG ("MidiController", "!!! Incorrect number of arguments for sendCC");
+        NLOGE("MidiController", juce::translate("Incorrect number of arguments for sendCC"));
         return var (false);
     }
     int targetChannel = (int) (a.arguments[0]);
@@ -286,11 +334,11 @@ var MIDIController::sendCCFromJS (const var::NativeFunctionArgs& a)
 
 var MIDIController::sendSysExFromJS (const var::NativeFunctionArgs& a)
 {
-    MIDIController* c = getObjectPtrFromJS<MIDIController> (a);
+    MIDIController* c = castPtrFromJSEnv<MIDIController> (a);
 
     if (a.numArguments > 8)
     {
-        NLOG ("MidiController", "!!! Incorrect number of arguments for sendSysEx");
+        NLOGE("MidiController", juce::translate("Incorrect number of arguments for sendSysEx"));
         return var (false);
     }
 

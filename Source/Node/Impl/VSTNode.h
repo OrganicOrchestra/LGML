@@ -31,7 +31,7 @@ class VSTNode :
 {
 
 public:
-    DECLARE_OBJ_TYPE (VSTNode)
+    DECLARE_OBJ_TYPE (VSTNode,"plug any plugin in!")
     ~VSTNode();
 
     StringParameter*   identifierString;
@@ -65,7 +65,7 @@ public:
 
 
 
-    void onContainerParameterChanged (Parameter* p) override;
+    void onContainerParameterChanged ( ParameterBase* p) override;
 
     void audioProcessorParameterChanged (AudioProcessor* processor,
                                          int parameterIndex,
@@ -75,7 +75,7 @@ public:
     void loadPresetInternal (PresetManager::Preset* preset)override;
     void savePresetInternal (PresetManager::Preset* preset)override;
 
-    void initParametersFromProcessor (AudioProcessor* p);
+    void initParametersFromProcessor (AudioPluginInstance* p);
 
 
     // load state on message thread (some plugin crash if not)

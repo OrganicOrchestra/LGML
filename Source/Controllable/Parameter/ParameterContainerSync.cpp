@@ -155,9 +155,7 @@ void ParameterContainerSync::controllableContainerRemoved (ControllableContainer
 
 };
 
-void ParameterContainerSync::controllableFeedbackUpdate (ControllableContainer*, Controllable*) {
 
-};
 
 void ParameterContainerSync::childStructureChanged (ControllableContainer* notifier, ControllableContainer* origin,bool /*isAdded*/) {
 

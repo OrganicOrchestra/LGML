@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -22,9 +22,9 @@
 class CommandLineElement
 {
 public:
-    CommandLineElement (const String& name = ""): command (name) {}
-    String command;
-    StringArray args;
+    explicit CommandLineElement (const String& name = ""): command (name) {}
+    String command{};
+    StringArray args{};
 
     bool isEmpty() {return (command == "") && (args.size() == 0);}
     CommandLineElement& operator= (const CommandLineElement& rhs)
@@ -36,7 +36,7 @@ public:
         args = rhs.args;
         return *this;
     }
-    operator bool()
+    explicit operator bool()
     {
         return !isEmpty();
     }
@@ -100,13 +100,15 @@ public:
 
             if (isParameter)
             {
-                command = args[parsingIdx].substring (1, args[parsingIdx].length());
-                parsingIdx++;
+                bool isLongParameter = args[parsingIdx].startsWith ("--");
+                command = args[parsingIdx].substring (isLongParameter?2:1, args[parsingIdx].length());
+                parsingIdx+=1;
                 res.add (CommandLineElement (command));
 
                 // handles command only args
                 if (parsingIdx >= args.size()) {break;}
             }
+            else{
 
             String argument = args[parsingIdx].removeCharacters (juce::StringRef ("\""));
 
@@ -117,6 +119,7 @@ public:
             //DBG("parsing commandline, command : " << command << ", argument :" << argument << " / parsingIdx : " << parsingIdx);
 
             parsingIdx++;
+            }
         }
 
         return res;

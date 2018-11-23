@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "ConnectableNodeContentUI.h"
 #include "ConnectableNodeUI.h"
@@ -20,7 +21,7 @@ ConnectableNodeContentUI::ConnectableNodeContentUI()
 {
     node = nullptr;
     nodeUI = nullptr;
-
+    setMouseCursor(MouseCursor::ParentCursor);
 }
 
 ConnectableNodeContentUI::~ConnectableNodeContentUI()
@@ -61,3 +62,9 @@ void ConnectableNodeContentUI::setDefaultPosition (int x, int y)
     
 }
 
+String ConnectableNodeContentUI::getTooltip(){
+    return nodeUI->getTooltip();
+};
+
+
+#endif

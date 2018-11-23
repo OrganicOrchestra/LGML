@@ -59,11 +59,11 @@ private:
     void createPluginWindow();
     void closePluginWindow();
 
-    void controllableAdded (ControllableContainer*, Controllable* c)override;
-    void controllableRemoved (ControllableContainer*, Controllable* c)override;
+    void childControllableAdded (ControllableContainer*, Controllable* c)override;
+    void childControllableRemoved (ControllableContainer*, Controllable* c)override;
     void controllableContainerAdded (ControllableContainer*, ControllableContainer* cc)override;
     void controllableContainerRemoved (ControllableContainer*, ControllableContainer* cc) override;
-    void controllableFeedbackUpdate (ControllableContainer* originContainer, Controllable* c) override;
+    
 
 
     static void vstSelected (int modalResult, Component*   originComp);

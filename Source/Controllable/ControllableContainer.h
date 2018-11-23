@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ public:
     ControllableContainer (StringRef niceName);
     virtual ~ControllableContainer();
 
-    void setUserDefined (bool);
+    virtual void setUserDefined (bool);
     
     void setAutoShortName();
 
@@ -156,9 +156,9 @@ public:
      Controllable* getControllableForAddress (StringArray addressSplit, bool recursive = true, bool getNotExposed = false);
     Array<Controllable*> getControllablesForExtendedAddress (StringArray addressSplit, bool recursive=true, bool getNotExposed=false);
     ControllableContainer * getMirroredContainer(ControllableContainer * other,ControllableContainer * root = nullptr);
-    bool containsControllable (Controllable* c, int maxSearchLevels = -1);
-    String getControlAddress (ControllableContainer* relativeTo = nullptr);
-    StringArray getControlAddressArray (ControllableContainer* relativeTo = nullptr);
+    bool containsControllable (const Controllable* c, int maxSearchLevels = -1);
+    String getControlAddress (const ControllableContainer* relativeTo = nullptr) const;
+    StringArray getControlAddressArray (const ControllableContainer* relativeTo = nullptr) const;
 
 
     String getUniqueNameInContainer (const String& sourceName, int suffix = 0, void* me = nullptr);
@@ -171,27 +171,81 @@ public:
     {
     public:
         /** Destructor. */
-        virtual ~Listener() {}
-        virtual void controllableAdded (ControllableContainer*, Controllable*) {}
-        virtual void controllableRemoved (ControllableContainer*, Controllable*) {}
+        virtual ~Listener() {
+
+            while(listenedContainers.size()>0){
+                if(auto cc = listenedContainers.getLast().get())
+                    cc->removeControllableContainerListener(this);
+                else
+                    listenedContainers.removeLast();
+            }
+        }
+        virtual void childControllableAdded (ControllableContainer*, Controllable*) {}
+        virtual void childControllableRemoved (ControllableContainer*, Controllable*) {}
         virtual void controllableContainerAdded (ControllableContainer*, ControllableContainer*) {}
         virtual void controllableContainerRemoved (ControllableContainer*, ControllableContainer*) {}
-        virtual void controllableFeedbackUpdate (ControllableContainer*, Controllable*) {}
         virtual void childStructureChanged (ControllableContainer* /*notifier*/, ControllableContainer* /*origin*/,bool /*isAdded*/) {}
         virtual void childAddressChanged (ControllableContainer* /*notifier*/,ControllableContainer* ) {};
         virtual void controllableContainerPresetLoaded (ControllableContainer*) {}
         virtual void containerWillClear (ControllableContainer* /*origin*/) {}
+    private:
+        friend class ControllableContainer;
+        Array<WeakReference<ControllableContainer>> listenedContainers;
     };
 
+
+    class FeedbackListener : public Listener{
+    public:
+        virtual ~FeedbackListener(){
+            while(listenedFBContainers.size()>0){
+                if(auto cc = listenedFBContainers.getLast().get())
+                    cc->removeControllableContainerListener(this);
+                else
+                    listenedFBContainers.removeLast();
+            }
+        }
+        virtual void controllableFeedbackUpdate (ControllableContainer*, Controllable*) =0;
+        Array<WeakReference<ControllableContainer>> listenedFBContainers;
+    };
+
+    // helper class to inject members
+    template<class OwnerClass>
+    class OwnedFeedbackListener : public FeedbackListener{
+        public:
+        OwnedFeedbackListener(OwnerClass * o):owner(o){};
+        virtual ~OwnedFeedbackListener(){}
+        void controllableFeedbackUpdate (ControllableContainer*, Controllable*) ;
+        OwnerClass * owner;
+
+    };
     //  typedef ControllableContainerListener Listener ;
     ListenerList<Listener> controllableContainerListeners;
-    void addControllableContainerListener (Listener* newListener) { controllableContainerListeners.add (newListener);}
-    void removeControllableContainerListener (Listener* listener) { controllableContainerListeners.remove (listener);}
+    ListenerList<FeedbackListener> controllableContainerFBListeners;
+    void addControllableContainerListener (Listener* newListener) {
+        controllableContainerListeners.add (newListener);
+        newListener->listenedContainers.addIfNotAlreadyThere(this);
+    }
+    void removeControllableContainerListener (Listener* listener) {
+        controllableContainerListeners.remove (listener);
+        listener->listenedContainers.removeAllInstancesOf(this);
+    }
+    void addControllableContainerListener (FeedbackListener* newListener) {
+        addControllableContainerListener ((Listener*)newListener);
+        controllableContainerFBListeners.add (newListener);
+        newListener->listenedFBContainers.addIfNotAlreadyThere(this);
+    }
+    void removeControllableContainerListener (FeedbackListener* listener) {
+        removeControllableContainerListener((Listener*)listener);
+        controllableContainerFBListeners.remove (listener);
+        listener->listenedFBContainers.removeAllInstancesOf(this);
+    }
 
 
     virtual DynamicObject* getObject() = 0;
 
     static ControllableContainer * globalRoot;
+
+    WeakReference<ControllableContainer >::SharedPointer* getMasterRefPtr(){return ControllableContainer::masterReference.getSharedPointer (this);}
 
 
 protected :
@@ -210,11 +264,15 @@ protected :
     void notifyStructureChanged (ControllableContainer* origin,bool isAdded);
     void notifyChildAddressChanged (ControllableContainer* origin);
 
-    typename  WeakReference< ControllableContainer >::Master masterReference;
+
+
+
+private:
+    WeakReference< ControllableContainer >::Master masterReference;
     friend class WeakReference<ControllableContainer>;
 
-
-
+    
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ControllableContainer)
 
 

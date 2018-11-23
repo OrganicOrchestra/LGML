@@ -23,6 +23,7 @@
 juce_ImplementSingleton (JsGlobalEnvironment);
 
 
+
 JsGlobalEnvironment::JsGlobalEnvironment()
 {
     env = new DynamicObject();
@@ -34,13 +35,22 @@ JsGlobalEnvironment::JsGlobalEnvironment()
     linkToControllableContainer ("time", TimeManager::getInstance());
     linkToControllableContainer ("node", NodeManager::getInstance());
     linkToControllableContainer ("controllers", ControllerManager::getInstance());
-
+    
 
 }
 
-void JsGlobalEnvironment::removeNamespace (const String& ns) {removeNamespaceFromObject (ns, getEnv());}
+JsGlobalEnvironment::~JsGlobalEnvironment(){
+    clear();
+    JsHelpers::JsPtrStore::deleteInstance();
+}
 
-DynamicObject::Ptr JsGlobalEnvironment::getNamespaceObject (const String& ns) {return getNamespaceFromObject (ns, getEnv());}
+void JsGlobalEnvironment::removeNamespace (const String& ns) {JsHelpers::removeNamespaceFromObject (ns, getEnv());}
+
+void JsGlobalEnvironment::clear(){
+    if(JsHelpers::JsPtrStore::i())
+        JsHelpers::JsPtrStore::i()->clear();
+}
+DynamicObject::Ptr JsGlobalEnvironment::getNamespaceObject (const String& ns) {return JsHelpers::getNamespaceFromObject (ns, getEnv());}
 
 DynamicObject::Ptr JsGlobalEnvironment::getEnv() {return env.getDynamicObject();}
 

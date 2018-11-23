@@ -103,6 +103,7 @@ onPitchWheel = function(value){
 /// more on scripting : using eval to script the script !!
 // one can even generate code when lot of copy/pasting is involved or obvious and repetitive function names
 // the latter will create 2 function on_node_looper1_masterVolume /  on_node_looper2_masterVolume  with 
+// /!\ atm, eval seems to only be effective if run outside of callbacks (i.e only when the script loads)
 
 for(var i = 1; i < 3 ; i++){
 eval("on_node_looper"+i+"_masterVolume = function(v){ \

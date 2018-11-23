@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "ConnectableNodeAudioCtlUI.h"
 
@@ -54,3 +55,5 @@ void ConnectableNodeAudioCtlUI::init()
 {
     //to be override by child classes
 }
+
+#endif

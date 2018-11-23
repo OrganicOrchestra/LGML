@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ public:
 };
 
 
-class ControllableReferenceUI : public TextButton, public ButtonListener
+class ControllableReferenceUI : public TextButton, public Button::Listener
 {
 public :
     ControllableReferenceUI (ControllableContainer* rootContainer = nullptr, Array<Controllable*> filterOut = {});
@@ -54,7 +54,7 @@ public :
     WeakReference<ControllableContainer> rootContainer;
 
     WeakReference<Controllable> currentControllable;
-    void setCurrentControllale (Controllable* c);
+    void setCurrentControllable (Controllable* c);
 
     Array<Controllable*> filterOutControllable;
 

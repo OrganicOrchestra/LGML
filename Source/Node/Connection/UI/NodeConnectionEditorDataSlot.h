@@ -20,7 +20,7 @@
 
 //#include "NodeBase.h"
 #include "../NodeConnection.h"
-class Data;
+
 
 //==============================================================================
 /*
@@ -32,12 +32,11 @@ public:
     enum IOType { INPUT, OUTPUT };
 
 
-    NodeConnectionEditorDataSlot (String label,  Data* data, NodeConnection::ConnectionType connectionType, IOType ioType); //for data
     NodeConnectionEditorDataSlot (String label, int channel, NodeConnection::ConnectionType connectionType, IOType ioType); //for audio
     ~NodeConnectionEditorDataSlot();
 
     String label;
-    Data* data;
+    
     int channel;
 
     Array<NodeConnectionEditorDataSlot*> connectedSlots;
@@ -74,14 +73,7 @@ public:
     IOType ioType;
 
     bool isAudio() { return connectionType == NodeConnection::ConnectionType::AUDIO; }
-    bool isData() { return connectionType == NodeConnection::ConnectionType::DATA; }
 
-    Data* currentEditingData;
-    void setCurrentEditingData (Data* editingData)
-    {
-        currentEditingData = editingData;
-        repaint();
-    }
 
     void paint (Graphics&)override ;
     void resized()override;

@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,20 +16,17 @@
  ==============================================================================
  */
 
-#include "Engine.h"
-
+#if !ENGINE_HEADLESS
 #include "UI/Inspector/Inspector.h"
-
+#endif
 #include "Node/Impl/AudioDeviceInNode.h"
 #include "Node/Impl/AudioDeviceOutNode.h"
+#include "Controller/Impl/OSCJsController.h"
 
-#include "JuceHeader.h" // for project info
 
-#ifndef ENGINE_WITH_UI
-#error should be defined here
-#endif
+#include "Engine.h"
 
-#if ENGINE_WITH_UI
+#if !ENGINE_HEADLESS
 #include "Node/Manager/UI/NodeManagerUI.h"
 #endif
 
@@ -40,7 +37,7 @@
 ApplicationProperties* getAppProperties();
 
 AudioDeviceManager& getAudioDeviceManager();
- String lastFileListKey ("lastFileList");
+String lastFileListKey ("lastFileList");
 
 String Engine::getDocumentTitle()
 {
@@ -70,9 +67,10 @@ void Engine::createNewGraph()
 
 
     node = NodeManager::getInstance()->addNode (NodeFactory::createFromTypeID ( AudioDeviceOutNode::typeId()));
+
     setFile (File());
     isLoadingFile = false;
-    
+
     handleAsyncUpdate();
 
 }
@@ -81,14 +79,15 @@ Result Engine::loadDocument (const File& file)
 {
     if (isLoadingFile)
     {
-//        TODO handle quick reloading of file
+        //        TODO handle quick reloading of file
         return Result::fail ("engine already loading");
     }
 
     isLoadingFile = true;
     engineListeners.call (&EngineListener::startLoadFile);
-
-    if (Inspector::getInstanceWithoutCreating() != nullptr) Inspector::getInstance()->setEnabled (false); //avoid creation of inspector editor while recreating all nodes, controllers, rules,etc. from file
+#if !ENGINE_HEADLESS
+    if (Inspector::getInstanceWithoutCreating() != nullptr) Inspector::getInstance()->shouldListen (false); //avoid creation of inspector editor while recreating all nodes, controllers, rules,etc. from file
+#endif
 
 #ifdef MULTITHREADED_LOADING
     // force clear on main thread, safer for ui related stuffs
@@ -114,10 +113,10 @@ void Engine::loadDocumentAsync (const File& file)
 
     suspendAudio (true);
     clearTasks();
-    taskName = "Loading File";
-    ProgressTask* clearTask = addTask ("clearing");
-    ProgressTask* parseTask = addTask ("parsing");
-    ProgressTask* loadTask = addTask ("loading");
+    taskName = juce::translate("Loading File");
+    ProgressTask* clearTask = addTask (juce::translate("clearing"));
+    ProgressTask* parseTask = addTask (juce::translate("parsing"));
+    ProgressTask* loadTask = addTask (juce::translate("loading"));
     clearTask->start();
     clear();
     clearTask->end();
@@ -137,17 +136,16 @@ void Engine::loadDocumentAsync (const File& file)
 
     file.getParentDirectory().setAsCurrentWorkingDirectory();
 
-    {
-        parseTask->start();
-        jsonData = JSON::parse (*is);
-        parseTask->end();
-        loadTask->start();
-        loadJSONData (jsonData, loadTask);
-        loadTask->end();
+
+    parseTask->start();
+    jsonData = JSON::parse (*is);
+    parseTask->end();
+    loadTask->start();
+    loadJSONData (jsonData, loadTask);
+    loadTask->end();
 
 
-    }// deletes data before launching audio, (data not needed after loaded)
-
+    // deletes data before launching audio, (data not needed after loaded)
     jsonData = var();
 }
 
@@ -182,18 +180,28 @@ void Engine::handleAsyncUpdate()
 
     isLoadingFile = false;
 
-    if (getFile().exists())
-    {
-        setLastDocumentOpened (getFile());
-    }
 
     //  graphPlayer.setProcessor(NodeManager::getInstance()->getAudioGraph());
     //  suspendAudio(false);
     auto timeForLoading  =  getElapsedMillis() - loadingStartTime;
     suspendAudio (false);
-    
+    if(hasDefaultOSCControl){
+        auto controllers = ControllerManager::getInstance()->getContainersOfType<OSCJsController>(false);
+        OSCJsController *mainC(nullptr);
+        for(auto & c:controllers){
+            if(c->fullSync->boolValue()){
+                mainC = c;
+                break;
+            }
+        }
+        if(!mainC){
+            mainC = (OSCJsController*)ControllerFactory::createFromTypeID(OSCJsController::typeId());
+            mainC->fullSync->setValue(true);
+            ControllerManager::getInstance()->addController(mainC);
+        }
+    }
     engineListeners.call (&EngineListener::endLoadFile);
-    NLOG ("Engine", "Session loaded in " << timeForLoading / 1000.0 << "s");
+    NLOG ("Engine", juce::translate("Session loaded in 123s").replace("123", String(timeForLoading / 1000.0)));
 }
 
 Result Engine::saveDocument (const File& file)
@@ -202,12 +210,14 @@ Result Engine::saveDocument (const File& file)
     var data = getObject();
 
     if (file.exists()) file.deleteFile();
-
-    ScopedPointer<OutputStream> os ( file.createOutputStream());
-    JSON::writeToStream (*os, data);
-    os->flush();
+    {
+        ScopedPointer<OutputStream> os ( file.createOutputStream());
+        JSON::writeToStream (*os, data);
+        os->flush();
+    }
 
     setLastDocumentOpened (file);
+    saveSession->setValueFrom(this, getFile().getFullPathName());
     return Result::ok();
 }
 
@@ -245,8 +255,10 @@ DynamicObject* Engine::getObject()
     auto data = new DynamicObject();
     var metaData (new DynamicObject());
 
-    metaData.getDynamicObject()->setProperty ("version", ProjectInfo::versionString);
-    metaData.getDynamicObject()->setProperty ("versionNumber", ProjectInfo::versionNumber);
+    metaData.getDynamicObject()->setProperty ("version",
+                                              Engine::versionString
+                                              );
+    metaData.getDynamicObject()->setProperty ("versionNumber", Engine::versionNumber);
 
     data->setProperty ("metaData", metaData);
 
@@ -259,7 +271,7 @@ DynamicObject* Engine::getObject()
 
     data->setProperty ("nodeManager", NodeManager::getInstance()->getObject());
     data->setProperty ("controllerManager", ControllerManager::getInstance()->getObject());
-
+    data->setProperty("timeManager" , TimeManager::getInstance()->getObject());
     data->setProperty ("fastMapper", FastMapper::getInstance()->getObject());
 
     return data;
@@ -277,8 +289,8 @@ void Engine::loadJSONData (const var& data, ProgressTask* loadingTask)
 
     if (!versionChecked)
     {
-        String versionString = md->hasProperty ("version") ? md->getProperty ("version").toString() : "?";
-        AlertWindow::showMessageBox (AlertWindow::AlertIconType::WarningIcon, "You're old, bitch !", "File version (" + versionString + ") is not supported anymore.\n(Minimum supported version : " + getMinimumRequiredFileVersion() + ")");
+        String _versionString = md->hasProperty ("version") ? md->getProperty ("version").toString() : "?";
+        AlertWindow::showMessageBox (AlertWindow::AlertIconType::WarningIcon, juce::translate("You're old, bitch !"), juce::translate("File version (123) is not supported anymore.\n(Minimum supported version : 456)").replace("123", _versionString).replace("456", getMinimumRequiredFileVersion()));
         return;
     }
 
@@ -287,21 +299,27 @@ void Engine::loadJSONData (const var& data, ProgressTask* loadingTask)
 
 
     DynamicObject* d = data.getDynamicObject();
-    ProgressTask* presetTask = loadingTask->addTask ("presetManager");
-    ProgressTask* nodeManagerTask = loadingTask->addTask ("nodeManager");
-    ProgressTask* controllerManagerTask = loadingTask->addTask ("controllerManager");
-    ProgressTask* fastMapperTask = loadingTask->addTask ("fastMapper");
+    ProgressTask* presetTask = loadingTask->addTask (juce::translate("presetManager"));
+    ProgressTask* timeManagerTask = loadingTask->addTask(juce::translate("timeManager"));
+    ProgressTask* nodeManagerTask = loadingTask->addTask (juce::translate("nodeManager"));
+    ProgressTask* controllerManagerTask = loadingTask->addTask (juce::translate("controllerManager"));
+    ProgressTask* fastMapperTask = loadingTask->addTask (juce::translate("fastMapper"));
 
     presetTask->start();
 
     if (d->hasProperty ("presetManager")) PresetManager::getInstance()->configureFromObject (d->getProperty ("presetManager").getDynamicObject());
 
     presetTask->end();
+
+    timeManagerTask->start();
+    if (d->hasProperty ("timeManager")) TimeManager::getInstance()->configureFromObject(d->getProperty("timeManager").getDynamicObject());
+    timeManagerTask->end();
+
     nodeManagerTask->start();
-    
+
     if (d->hasProperty ("nodeManager")) NodeManager::getInstance()->configureFromObject (d->getProperty ("nodeManager").getDynamicObject());
 
-#if ENGINE_WITH_UI
+#if !ENGINE_HEADLESS
     if(d->hasProperty("NodesUI")) {
         auto p = dynamic_cast<ParameterContainer*>(getControllableContainerByName("NodesUI"));
 
@@ -310,8 +328,8 @@ void Engine::loadJSONData (const var& data, ProgressTask* loadingTask)
             p = new ParameterContainer("NodesUI");
             addChildControllableContainer(p);
         }
-            p->configureFromObject(d->getProperty("NodesUI").getDynamicObject());
-    
+        p->configureFromObject(d->getProperty("NodesUI").getDynamicObject());
+
     }
 #endif
 
@@ -331,8 +349,9 @@ void Engine::loadJSONData (const var& data, ProgressTask* loadingTask)
 
     //Clean unused presets
     PresetManager::getInstance()->deleteAllUnusedPresets (this);
-
-    if (auto inspector = Inspector::getInstanceWithoutCreating() ) inspector->setEnabled (true); //Re enable editor
+#if !ENGINE_HEADLESS
+    if (auto inspector = Inspector::getInstanceWithoutCreating() ) inspector->shouldListen (true); //Re enable editor
+#endif
 
 }
 
@@ -376,7 +395,7 @@ File Engine::getCurrentProjectFolder()
     if (!getFile().exists())
     {
 #if !LGML_UNIT_TESTS
-        LOG ("!! current session not saved, script will have an absolute path");
+        LOGW(juce::translate("current session not saved, related files will have an absolute path"));
         //    jassertfalse;
 #endif
         return File();
@@ -402,7 +421,7 @@ String Engine::getNormalizedFilePath (const File& f)
 File Engine::getFileAtNormalizedPath (const String& path)
 {
     bool isRelative = path.length() > 0 && (path[0] != File::getSeparatorChar() || path[0] == '.');
-
+    
     if (isRelative)
     {
         return getCurrentProjectFolder().getChildFile (path);

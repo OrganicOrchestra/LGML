@@ -14,6 +14,7 @@
 
 
 #include "SerialManager.h"
+#include "../../Utils/DebugHelpers.h"
 
 juce_ImplementSingleton (SerialManager)
 
@@ -132,10 +133,31 @@ SerialPort* SerialManager::getPort (SerialPortInfo* portInfo, bool createIfNotTh
 
     if (createIfNotThere)
     {
-        Serial* newSerial = new Serial (portInfo->port.toStdString(), openBaudRate, serial::Timeout::simpleTimeout (1000));
-        SerialPort* p = new SerialPort (newSerial, portInfo);
-        openedPorts.add (p);
-        return p;
+        ScopedPointer<Serial> newSerial = new Serial ("", openBaudRate, serial::Timeout::simpleTimeout (1000));
+        try {
+            newSerial->setPort(portInfo->port.toStdString());
+            newSerial->open();
+
+        }
+        catch (const std::exception & e) {
+            newSerial = nullptr;
+            String error(e.what());
+            if(auto* ee = dynamic_cast<const serial::IOException*>(&e)){
+                error = ee->what();
+            }
+            else if(auto* ee = dynamic_cast<const serial::PortNotOpenedException*>(&e)){
+                error = ee->what();
+            }
+            else if(auto* ee = dynamic_cast<const serial::SerialException*>(&e)){
+                error = ee->what();
+            }
+            LOGE(juce::translate("cannot open serial port ")
+                <<portInfo->port.toStdString()
+                <<" :\n"+String(e.what()));
+            return nullptr;
+        }
+
+        return openedPorts.add (new SerialPort (newSerial.release(), portInfo));
     }
 
 #endif

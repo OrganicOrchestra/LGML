@@ -12,6 +12,8 @@
 *
 */
 
+#if !ENGINE_HEADLESS
+
 
 #include "GenericParameterContainerEditor.h"
 #include "../../../UI/Inspector/InspectableComponent.h"
@@ -212,7 +214,7 @@ void CCInnerContainerUI::rebuild()
         addAndMakeVisible (presetChooser);
     }
 
-    for (auto& c : container->getControllablesOfType<Parameter> (false))
+    for (auto& c : container->getControllablesOfType<ParameterBase> (false))
     {
         if (!c->isHidenInEditor) addParameterUI (c);
     }
@@ -293,7 +295,7 @@ void CCInnerContainerUI::removeCCLink (ParameterContainer* cc)
     lowerContainerLinks.removeObject (bt);
 }
 
-void CCInnerContainerUI::addParameterUI (Parameter* c)
+void CCInnerContainerUI::addParameterUI ( ParameterBase* c)
 {
     if ( !c->isControllableExposed) return;
 
@@ -303,7 +305,7 @@ void CCInnerContainerUI::addParameterUI (Parameter* c)
     addAndMakeVisible (cui);
 }
 
-void CCInnerContainerUI::removeParameterUI (Parameter* c)
+void CCInnerContainerUI::removeParameterUI ( ParameterBase* c)
 {
     NamedParameterUI*   cui = getUIForParameter (c);
 
@@ -314,7 +316,7 @@ void CCInnerContainerUI::removeParameterUI (Parameter* c)
 
 }
 
-NamedParameterUI*   CCInnerContainerUI::getUIForParameter (Parameter* c)
+NamedParameterUI*   CCInnerContainerUI::getUIForParameter ( ParameterBase* c)
 {
     for (auto& cui : parametersUI)
     {
@@ -490,19 +492,19 @@ void CCInnerContainerUI::clear()
     lowerContainerLinks.clear();
 }
 
-void CCInnerContainerUI::controllableAdded (ControllableContainer*, Controllable* c)
+void CCInnerContainerUI::childControllableAdded (ControllableContainer*, Controllable* c)
 {
     if (c->parentContainer != container) return;
 
     if (c->isHidenInEditor) return;
 
-    auto pc = static_cast<Parameter*> (c);
+    auto pc = static_cast <ParameterBase*> (c);
     addParameterUI (pc);
 }
 
-void CCInnerContainerUI::controllableRemoved (ControllableContainer*, Controllable* c)
+void CCInnerContainerUI::childControllableRemoved (ControllableContainer*, Controllable* c)
 {
-    auto pc = static_cast<Parameter*> (c);
+    auto pc = static_cast <ParameterBase*> (c);
     removeParameterUI (pc);
 }
 
@@ -544,6 +546,8 @@ void CCInnerContainerUI::buttonClicked (Button* b)
 
 CCInnerContainerUI::CCLinkBT::CCLinkBT (ParameterContainer* _targetContainer) :
     targetContainer (_targetContainer),
-    TextButton ("[ Inspect " + _targetContainer->getNiceName() + " >> ]")
+    TextButton ("[ "+juce::translate("Inspect")+" " + _targetContainer->getNiceName() + " >> ]")
 {
 }
+
+#endif

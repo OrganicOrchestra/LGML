@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -67,7 +67,7 @@ ConnectableNode::~ConnectableNode()
 {
     if (parentNodeContainer)
         remove();
-    masterReference.clear();
+    ConnectableNode::masterReference.clear();
     parentNodeContainer = nullptr;
 }
 
@@ -101,22 +101,11 @@ bool ConnectableNode::hasAudioOutputs()
 
 }
 
-bool ConnectableNode::hasDataInputs()
-{
-    //to override
-    return false;
-}
-
-bool ConnectableNode::hasDataOutputs()
-{
-    //to override
-    return false;
-}
 
 
 
 
-void ConnectableNode::onContainerParameterChanged (Parameter* p)
+void ConnectableNode::onContainerParameterChanged ( ParameterBase* p)
 {
     nodeListeners.call (&ConnectableNodeListener::nodeParameterChanged, this, p);
 }
@@ -137,7 +126,7 @@ void ConnectableNode::remove()
 
 void ConnectableNode::clear()
 {
-    //  ControllableContainer::clear();
+//      ControllableContainer::clearContainer();
     //to override
 }
 
@@ -172,7 +161,7 @@ void ConnectableNode::setInputChannelName (int channelIndex, const String& name)
 {
     while (inputChannelNames.size() < (channelIndex + 1))
     {
-        inputChannelNames.add (String::empty);
+        inputChannelNames.add ("");
     }
 
     inputChannelNames.set (channelIndex, name);
@@ -182,7 +171,7 @@ void ConnectableNode::setOutputChannelName (int channelIndex, const String& name
 {
     while (outputChannelNames.size() < (channelIndex + 1))
     {
-        outputChannelNames.add (String::empty);
+        outputChannelNames.add ("");
     }
 
     outputChannelNames.set (channelIndex, name);
@@ -214,64 +203,3 @@ String ConnectableNode::getOutputChannelName (int channelIndex)
     return defaultName;
 }
 
-
-
-/////////////////////////////  DATA
-
-Data* ConnectableNode::getInputData (int)
-{
-    //to override
-    return nullptr;
-}
-
-Data* ConnectableNode::getOutputData (int)
-{
-    //to override
-    return nullptr;
-}
-
-int ConnectableNode::getTotalNumInputData()
-{
-    //to override
-    return 0;
-}
-
-int ConnectableNode::getTotalNumOutputData()
-{
-    //to override
-    return 0;
-}
-
-StringArray ConnectableNode::getInputDataInfos()
-{
-    return StringArray();
-}
-
-StringArray ConnectableNode::getOutputDataInfos()
-{
-    return StringArray();
-}
-
-Data::DataType ConnectableNode::getInputDataType (const String&, const String& )
-{
-    //to override
-    return Data::DataType::Unknown;
-}
-
-Data::DataType ConnectableNode::getOutputDataType (const String&, const String& )
-{
-    //to override
-    return Data::DataType::Unknown;
-}
-
-Data* ConnectableNode::getOutputDataByName (const String& )
-{
-    //to override
-    return nullptr;
-}
-
-Data* ConnectableNode::getInputDataByName (const String& )
-{
-    //to override
-    return nullptr;
-}

@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -20,11 +20,11 @@
 #define CONNECTABLENODE_H_INCLUDED
 #pragma once
 #include "../JuceHeaderAudio.h"
-
+#include <juce_audio_processors/juce_audio_processors.h>
 #include "../Controllable/Parameter/ParameterContainer.h"
 #include "Manager/NodeFactory.h"
 
-#include "../Data/Data.h"
+
 
 class NodeContainer;
 class ConnectableNodeUI;
@@ -33,7 +33,7 @@ class ConnectableNode :
     public ParameterContainer
 {
 public:
-    ConnectableNode (const String& name, bool _hasMainAudioControl = true);
+    explicit ConnectableNode (const String& name, bool _hasMainAudioControl = true);
     virtual ~ConnectableNode();
 
 
@@ -49,8 +49,7 @@ public:
     virtual bool hasAudioInputs();
     virtual bool hasAudioOutputs();
 
-    virtual bool hasDataInputs();
-    virtual bool hasDataOutputs();
+
 
     //Controllables (from ControllableContainer)
 
@@ -63,7 +62,7 @@ public:
     virtual void clear();
 
 
-    void onContainerParameterChanged (Parameter* p) override;
+    void onContainerParameterChanged ( ParameterBase* p) override;
 
 
 
@@ -72,7 +71,7 @@ public:
     {
     public:
         virtual ~ConnectableNodeListener() {}
-        virtual void nodeParameterChanged (ConnectableNode*, Parameter*) {}
+        virtual void nodeParameterChanged (ConnectableNode*, ParameterBase*) {}
 
         virtual void numAudioInputChanged (ConnectableNode*, int /*newNumInput*/) {};
         virtual void numAudioOutputChanged (ConnectableNode*, int /*newNumOutput*/) {};
@@ -82,16 +81,6 @@ public:
         virtual void audioOutputAdded (ConnectableNode*, int /*channel*/) {}
         virtual void audioOutputRemoved (ConnectableNode*, int /*channel*/) {}
 
-        // DATA
-        virtual void numDataInputChanged (ConnectableNode*, int /*newNumInput*/) {};
-        virtual void numDataOutputChanged (ConnectableNode*, int /*newNumOutput*/) {};
-
-        virtual void dataInputAdded (ConnectableNode*, Data*) {}
-        virtual void dataInputRemoved (ConnectableNode*, Data*) {}
-        virtual void dataOutputAdded (ConnectableNode*, Data*) {}
-        virtual void dataOutputRemoved (ConnectableNode*, Data*) {}
-        virtual void nodeInputDataChanged (ConnectableNode*, Data*) {}
-        virtual void nodeOutputDataUpdated (ConnectableNode*, Data*) {}
 
 
     };
@@ -149,21 +138,6 @@ public:
 
 
 
-    //DATA
-    virtual Data* getInputData (int dataIndex);
-    virtual Data* getOutputData (int dataIndex);
-
-    virtual int getTotalNumInputData();
-    virtual int getTotalNumOutputData();
-
-    virtual StringArray getInputDataInfos();
-    virtual StringArray getOutputDataInfos();
-
-    virtual Data::DataType getInputDataType (const String& dataName, const String& elementName);
-    virtual Data::DataType getOutputDataType (const String& dataName, const String& elementName);
-
-    virtual Data* getOutputDataByName (const String& dataName);
-    virtual Data* getInputDataByName (const String& dataName);
 
 
 protected:

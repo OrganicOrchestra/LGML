@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "ShapeShifter.h"
 #include "ShapeShifterContainer.h"
@@ -90,3 +91,5 @@ void ShapeShifter::loadLayout (var layout)
     
     loadLayoutInternal (layout);
 }
+
+#endif

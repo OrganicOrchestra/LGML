@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 
 
 ProgressTask::ProgressTask (String _taskName, ProgressTask* _parentTask ): parentTask (_parentTask), taskName (_taskName), progress (0) {}
-ProgressTask::~ProgressTask() {masterReference.clear();}
+ProgressTask::~ProgressTask() {ProgressTask::masterReference.clear();}
 
 int ProgressTask::getTaskPositionInParent()
 {

@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ public:
     virtual const String& getFactoryTypeName() const = 0;
     virtual void configureFromObject (DynamicObject*) = 0;
     virtual DynamicObject* getObject() = 0;
+    virtual const String & getFactoryInfo() const = 0;
 
 
     template<class OtherType>
@@ -48,14 +49,15 @@ public:
 
 
 
-#define DECLARE_OBJ_TYPE_DEFAULTNAME(T,DEFAULTNAME) static const Identifier _factoryType; \
+#define DECLARE_OBJ_TYPE_DEFAULTNAME(T,DEFAULTNAME,INFO) static const Identifier _factoryType; \
 static const Identifier & typeId() {return _factoryType;}\
 const Identifier & getFactoryTypeId() const override{return typeId();}\
 const String & getFactoryTypeName() const override {return _factoryType.toString();}\
-T(StringRef name=DEFAULTNAME); \
+const String & getFactoryInfo() const override{static String i(INFO);return i;}\
+explicit T(StringRef name=DEFAULTNAME); \
 
 
-#define DECLARE_OBJ_TYPE(T) DECLARE_OBJ_TYPE_DEFAULTNAME(T,#T)
+#define DECLARE_OBJ_TYPE(T,INFO) DECLARE_OBJ_TYPE_DEFAULTNAME(T,#T,INFO)
 // use that for static objects that dont need factories
 #define IMPL_OBJ_TYPE(T)  const Identifier T::_factoryType = Identifier( "t_" #T);
 

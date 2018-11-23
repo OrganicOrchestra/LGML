@@ -1,16 +1,16 @@
 /* Copyright © Organic Orchestra, 2017
-*
-* This file is part of LGML.  LGML is a software to manipulate sound in realtime
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation (version 3 of the License).
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*/
+ *
+ * This file is part of LGML.  LGML is a software to manipulate sound in realtime
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation (version 3 of the License).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
 
 
 #include "JsEnvironment.h"
@@ -18,10 +18,11 @@
 #include "../../Node/Manager/NodeManager.h"
 #include "../../Controller/ControllerManager.h"
 #include "../../Utils/DebugHelpers.h"
-#include "JsHelpers.h"
+
 
 #include "../../Engine.h"
 #include "JsGlobalEnvironment.h"
+
 
 
 
@@ -32,17 +33,16 @@ const JsEnvironment::JsTimerType JsEnvironment::autoWatchTimer (0, 500);
 const JsEnvironment::JsTimerType JsEnvironment::onUpdateTimer (1, 20);
 
 
-
 DynamicObject::Ptr JsEnvironment::getGlobalEnv() {return JsGlobalEnvironment::getInstance()->getEnv();}
 
 JsEnvironment::JsEnvironment (const String& ns, ParameterContainer* _linkedContainer) :
-    linkedContainer (_linkedContainer),
-    localNamespace (ns),
-    _hasValidJsFile (false),
-    autoWatch (false),
-    _isInSyncWithLGML (false),
-    isLoadingFile (false),
-    isEnabled (true)
+linkedContainer (_linkedContainer),
+localNamespace (ns),
+_hasValidJsFile (false),
+autoWatch (false),
+_isInSyncWithLGML (false),
+isLoadingFile (false),
+isEnabled (true)
 
 {
     jsParameters = new JSEnvContainer (this);
@@ -75,12 +75,13 @@ JsEnvironment::~JsEnvironment()
 
     if (localEnv)
     {localEnv->clear();}
+    JsEnvironment::masterReference.clear();
 
-    
+
 
 }
 
-void JsEnvironment::setEnabled (bool t)
+void JsEnvironment::setScriptEnabled (bool t)
 {
     if (t == isEnabled) {return;}
 
@@ -107,19 +108,20 @@ void JsEnvironment::setEnabled (bool t)
 DynamicObject* JsEnvironment::getGlobalObject(){
     String ns = localNamespace;
     if(ns.length())
-        return JsGlobalEnvironment::getInstance()->getNamespaceObject(ns).getObject();
+        return JsGlobalEnvironment::getInstance()->getNamespaceObject(ns).get();
     else
         return nullptr;
 }
+
 var getLocal(const juce::var::NativeFunctionArgs &a){
-    auto c = getObjectPtrFromJS<JsEnvironment> (a);
+    auto c = JsHelpers::castPtrFromJS<JsEnvironment> (a);
     if (c != nullptr)
     {
         return c->getGlobalObject();
     }
     else
     {
-        LOG ("!!!unknown controllable set from js");
+        LOGE(juce::translate("unknown controllable set from js"));
         jassertfalse;
     }
 
@@ -131,6 +133,7 @@ void JsEnvironment::clearNamespace()
 {
     const  ScopedLock lk (engineLock);
 
+    JsHelpers::clearRefsFromObj(localEnv);
     localEnv->clear();
 
     jsEngine = new JavascriptEngine();
@@ -138,12 +141,12 @@ void JsEnvironment::clearNamespace()
 
     static Identifier createParamListenerId ("createParameterListener");
     localEnv->setMethod (createParamListenerId, &JsEnvironment::createParameterListenerObject);
-    localEnv->setProperty (jsPtrIdentifier, (int64)this);
+//    localEnv->setProperty (jsPtrIdentifier, -1);//(int64)(JsEnvironment*)this);
     if(linkedContainer.get()){
         localEnv->setMethod("getLocal",&getLocal );
     }
-    jsEngine->registerNativeObject (jsLocalIdentifier, localEnv);
-    jsEngine->registerNativeObject (jsGlobalIdentifier, getGlobalEnv());
+    jsEngine->registerNativeObject (JsHelpers::jsLocalIdentifier, localEnv);
+    jsEngine->registerNativeObject (JsHelpers::jsGlobalIdentifier, getGlobalEnv());
 
 
 
@@ -152,9 +155,9 @@ void JsEnvironment::clearNamespace()
 }
 
 
-void    JsEnvironment::removeNamespace (const String& jsNamespace)
+void JsEnvironment::removeNamespace (const String& jsNamespace)
 {
-    removeNamespaceFromObject (jsNamespace, localEnv);
+    JsHelpers::removeNamespaceFromObject (jsNamespace, localEnv);
 }
 
 String JsEnvironment::getParentName()
@@ -242,7 +245,7 @@ void JsEnvironment::internalLoadFile (const File& f )
     else {_isInSyncWithLGML = true;}
 
     String normalizedPath =  getCurrentFilePath();
-    jsParameters->scriptPath->setValue (normalizedPath);
+    jsParameters->scriptPath->setValueFrom (jsParameters,normalizedPath);
     jsListeners.call (&JsEnvironment::Listener::newJsFileLoaded, (bool)r);
 
     // TODO get rid of this once unifying JsEnvironment
@@ -274,7 +277,7 @@ Result JsEnvironment::loadScriptContent (const String& content)
         _hasValidJsFile = false;
         //        jsEngine = nullptr;
         // NLOG(localNamespace,printAllNamespace());
-        NLOG (localNamespace, "!!!" + r.getErrorMessage());
+        NLOGE (localNamespace, r.getErrorMessage());
     }
     else
     {
@@ -287,11 +290,11 @@ Result JsEnvironment::loadScriptContent (const String& content)
 
         if (_isInSyncWithLGML)
         {
-            NLOG (localNamespace, "Content loaded sucessfully");
+            NLOG (localNamespace, juce::translate("Content loaded sucessfully"));
         }
         else
         {
-            NLOG (localNamespace, "!!!" << r.getErrorMessage());
+            NLOGE (localNamespace,  r.getErrorMessage());
         }
     }
 
@@ -302,8 +305,10 @@ Result JsEnvironment::loadScriptContent (const String& content)
 
 void JsEnvironment::clearListeners()
 {
-    for (auto& c : listenedParameters)
+    ListenedParameterType::Iterator it(listenedParameters);
+    while (it.next())
     {
+        auto c = it.getValue();
         if (c.get()) c->removeParameterListener (this);
     }
 
@@ -356,7 +361,7 @@ var JsEnvironment::callFunction (const String& function, const Array<var>& args,
 
         if (result != nullptr)result->fail (noFunctionLogIdentifier.toString());
 
-        if(logResult) NLOG (localNamespace, "!!!" << noFunctionLogIdentifier.toString());
+        if(logResult) NLOGE (localNamespace, noFunctionLogIdentifier.toString());
 
         return var::undefined();
     }
@@ -371,7 +376,7 @@ var JsEnvironment::callFunction (const String& function, const var& args, bool l
     {
         if (result != nullptr)result->fail (noFunctionLogIdentifier.toString());
 
-        if (logResult)NLOG (localNamespace, "!!!" << noFunctionLogIdentifier.toString());
+        if (logResult)NLOGE (localNamespace, noFunctionLogIdentifier.toString());
 
         return var::undefined();
     }
@@ -432,13 +437,13 @@ var JsEnvironment::callFunctionFromIdentifier (const Identifier& function, const
         else
         {
             //      jassertfalse;
-            NLOG (localNamespace, "!!! jsEngine is Locked");
+            NLOGE (localNamespace, juce::translate("jsEngine is Locked"));
         }
     }
 
     if (logResult && result->failed())
     {
-        NLOG (localNamespace, "!!!" << result->getErrorMessage());
+        NLOGE(localNamespace, result->getErrorMessage());
     }
 
     if (resOwned)
@@ -461,7 +466,7 @@ const NamedValueSet& JsEnvironment::getRootObjectProperties()
 
 void JsEnvironment::addToLocalNamespace (const String& elem, DynamicObject* target)
 {
-    addToNamespace (elem, target, localEnv);
+    JsHelpers::addToNamespace (elem, target, localEnv);
 }
 
 void JsEnvironment::setLocalNamespace (DynamicObject& target)
@@ -474,13 +479,16 @@ void JsEnvironment::setLocalNamespace (DynamicObject& target)
         Identifier n = target.getProperties().getName (i);
         localEnv->setProperty (n, target.getProperty (n));
     }
+
+    JsHelpers::assignPtrToObject(this,localEnv);
+
 }
 
 void JsEnvironment::setNamespaceName (const String& s)
 {
     if (s != localNamespace)
     {
-        DynamicObject* d = getNamespaceFromObject (getParentName(), getGlobalEnv());
+        DynamicObject* d = JsHelpers::getNamespaceFromObject (getParentName(), getGlobalEnv());
         jassert (d != nullptr);
 
         if (localEnv.get())
@@ -543,7 +551,7 @@ void JsEnvironment::timerCallback (int timerID)
 String JsEnvironment::printAllNamespace()
 {
     const ScopedLock lk (engineLock);
-    return namespaceToString (jsEngine->getRootObjectProperties(), 0, true, false);
+    return JsHelpers::namespaceToString (jsEngine->getRootObjectProperties(), 0, true, false);
 }
 
 
@@ -599,9 +607,9 @@ Result JsEnvironment::checkUserControllableEventFunction()
 
                     Controllable* c = candidate->getControllableForAddress (localName);
 
-                    if (Parameter* p = dynamic_cast<Parameter*> (c))
+                    if ( ParameterBase* p = dynamic_cast <ParameterBase*> (c))
                     {
-                        listenedParameters.addIfNotAlreadyThere (p);
+                        listenedParameters.set(f->splitedName.joinIntoString("_"),p);
                         found = true;
                         break;
                     }
@@ -640,10 +648,10 @@ Result JsEnvironment::checkUserControllableEventFunction()
         }
 
     }
-
-    for (auto& c : listenedParameters)
+    ListenedParameterType::Iterator it(listenedParameters);
+    while (it.next())
     {
-        c->addParameterListener (this);
+        it.getValue()->addParameterListener (this);
     }
 
     for (auto& cont : listenedContainers)
@@ -666,7 +674,7 @@ void JsEnvironment::updateUserDefinedFunctions()
 
 }
 
-void JsEnvironment::parameterValueChanged (Parameter* p)
+void JsEnvironment::parameterValueChanged ( ParameterBase* p, ParameterBase::Listener * notifier)
 {
     if (p == linkedContainer->nameParam)
     {
@@ -680,17 +688,25 @@ void JsEnvironment::parameterValueChanged (Parameter* p)
             setNamespaceName (namespaceName);
         }
         else{
-//            jassertfalse;
+            //            jassertfalse;
         }
 
     }
 
-    else if (p)callFunction ("on_" + getJsFunctionNameFromAddress (p->getControlAddress()), p->value, false);
+    else if (p){
+        ListenedParameterType::Iterator it(listenedParameters);
+        while (it.next())
+        {
+            if(it.getValue().get()==p){
+                callFunction (it.getKey(),p->value, false);
+            }
+        }
+    }
     else { jassertfalse; }
 
 };
 
-
+#define NON_BLOCKING 0
 void JsEnvironment::controllableFeedbackUpdate (ControllableContainer* originContainer, Controllable* c)
 {
     // avoid root callback (only used to reload if
@@ -698,7 +714,7 @@ void JsEnvironment::controllableFeedbackUpdate (ControllableContainer* originCon
 
     var v = var::undefined();
 
-    if (Parameter* p = dynamic_cast<Parameter*> (c))
+    if ( ParameterBase* p = dynamic_cast <ParameterBase*> (c))
         v = p->value;
 
     String address = c->getControlAddress (originContainer);
@@ -711,7 +727,17 @@ void JsEnvironment::controllableFeedbackUpdate (ControllableContainer* originCon
     for (auto& s : sArr) { add.add (s); }
 
     Array<var> argList = { var (add), v };
-    callFunction ("on_" + getJsFunctionNameFromAddress (originContainer->getControlAddress()), argList, false);
+
+#if NON_BLOCKING
+    auto f=[this,originContainer,argList](){
+#endif
+        callFunction ("on_" + JsHelpers::getJsFunctionNameFromAddress (originContainer->getControlAddress()), argList, false);
+#if NON_BLOCKING
+    };
+
+    if(MessageManager::getInstance()->isThisTheMessageThread()){f();}
+    else{MessageManager::callAsync(f);}
+#endif
 }
 
 
@@ -737,7 +763,12 @@ void JsEnvironment::childStructureChanged (ControllableContainer* notifierC, Con
 void JsEnvironment::sendAllParametersToJS()
 {
 
-    for (auto& t : listenedParameters) { if (t.get())parameterValueChanged (t); }
+    ListenedParameterType::Iterator it(listenedParameters);
+    while (it.next())
+    {
+        auto t = it.getValue();
+        if (t.get())parameterValueChanged (t);
+    }
 
     for (auto& t : listenedContainers)
     {
@@ -754,27 +785,40 @@ void JsEnvironment::sendAllParametersToJS()
 var JsEnvironment::createParameterListenerObject (const var::NativeFunctionArgs& a)
 {
     if (a.numArguments == 0) { return var::undefined(); }
-
-    if (auto  p = getObjectPtrFromObject<Parameter> (a.arguments[0].getDynamicObject()))
+    auto* originEnv =JsHelpers::castPtrFromJS<JsEnvironment> (a);
+    if (originEnv)
     {
-        JsEnvironment* originEnv = dynamic_cast<JsEnvironment*> (a.thisObject.getDynamicObject());
 
-        if (originEnv)
+        DynamicObject* ob = a.arguments->getArray()->getUnchecked(0).getDynamicObject();
+       if(ob) {
+        auto*  p = JsHelpers::castPtrFromObject<ParameterBase>(ob) ;
+        if ( p)
         {
-            JsParameterListenerObject* ob = new JsParameterListenerObject (originEnv, p);
-            originEnv->parameterListenerObjects.add (ob);
-            return ob->object;
+                JsParameterListenerObject* ob = new JsParameterListenerObject (originEnv, p);
+                originEnv->addJsParameterListener (ob);
+                return ob->object;
         }
-    }
 
+        auto  props =a.arguments[0].getDynamicObject()->getProperties();
+        DBG(p->niceName << ", " << p->shortName);
+        for(int i = 0 ; i < props.size() ; i++){
+            DBG(props.getName(i).toString() << ":" << props.getValueAt(i).toString());
+        }
+       }
+    }
+    NLOGE("js","can't create parameterListener object");
     return var::undefined();
 };
+
+
+
+
 ////////////////////////
 // JSEnvContainer
-#include "JsEnvironmentUI.h"
+//#include "JsEnvironmentUI.h"
 
 JSEnvContainer::JSEnvContainer (JsEnvironment* pEnv):
-    ParameterContainer ("jsParams"), jsEnv (pEnv)
+ParameterContainer ("jsParams"), jsEnv (pEnv)
 {
 
     scriptPath = addNewParameter<StringParameter> ("ScriptPath", "path for js script", "");
@@ -788,14 +832,15 @@ JSEnvContainer::JSEnvContainer (JsEnvironment* pEnv):
     autoWatch = addNewParameter<BoolParameter> ("autoWatch", "auto reload if file has been changed", false);
     autoWatch->isSavable = false;
     logT =  addNewParameter<Trigger> ("LogEnvironment", "print hierarchy of JS objects");
+    createT = addNewParameter<Trigger> ("create", "create new script");
 
 }
 
 JSEnvContainer::~JSEnvContainer(){
-    masterReference.clear();
+    JSEnvContainer::masterReference.clear();
 }
 
-void JSEnvContainer::onContainerParameterChanged (Parameter* p)
+void JSEnvContainer::onContainerParameterChanged ( ParameterBase* p)
 {
     if (p == scriptPath)
     {
@@ -810,6 +855,7 @@ void JSEnvContainer::onContainerParameterChanged (Parameter* p)
     {
         jsEnv->setAutoWatch (autoWatch->boolValue());
     }
+
 }
 void JSEnvContainer::onContainerTriggerTriggered (Trigger* p)
 {
@@ -842,8 +888,63 @@ void JSEnvContainer::onContainerTriggerTriggered (Trigger* p)
             jsEnv->loadFile (script);
         }
     }
-}
+    else if (p==createT){
 
+        if(!getEngine()->getCurrentProjectFolder().exists()){
+            FileChooser fc("where to save the script?");
+            if(fc.browseForFileToSave(true)){
+                File scriptFile = fc.getResult();
+                if(scriptFile.exists()){
+                    scriptPath->setValue( scriptFile.getFullPathName());
+                    showT->trigger();
+                }
+            }
+            else{
+                return;
+            }
+        }
+        else{
+            AlertWindow nameWindow ("Create script", "name your script", AlertWindow::AlertIconType::NoIcon);
+            nameWindow.addTextEditor ("Name", "MyScript");
+
+            nameWindow.addButton ("OK", 1, KeyPress (KeyPress::returnKey));
+            nameWindow.addButton ("Cancel", 0, KeyPress (KeyPress::escapeKey));
+
+            int result = nameWindow.runModalLoop();
+
+            if (result)
+            {
+                String sN = nameWindow.getTextEditor("Name")->getText();
+                if(sN.isNotEmpty()){
+                    if( sN.endsWith(".js")){
+                        sN= sN.substring(0, -2);
+                    }
+                    File scriptFile = getEngine()->getCurrentProjectFolder().getChildFile("Scripts/");
+
+                    if(! scriptFile.exists()){
+                        scriptFile.createDirectory();
+                    }
+                    scriptFile = scriptFile.getNonexistentChildFile(sN,".js",true);
+                    if(! scriptFile.exists()){
+                        auto r = scriptFile.create();
+                        if(!r){
+                            LOGE(juce::translate("Can't create script : ") <<scriptFile.getFullPathName() << "("<< r.getErrorMessage()<<")");
+                        }
+                    }
+                    else{
+                        jassertfalse;
+                    }
+                    
+                    if(scriptFile.exists()){
+                        scriptPath->setValue( scriptFile.getFullPathName());
+                        showT->trigger();
+                    }
+                }
+                
+            }
+        }
+    }
+}
 
 //////////////////////
 // JsParameterListenerObject

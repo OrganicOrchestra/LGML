@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -15,6 +15,8 @@
 
  ==============================================================================
  */
+
+#if !ENGINE_HEADLESS
 
 #include "PluginWindow.h"
 
@@ -84,7 +86,7 @@ PluginWindow* PluginWindow::getWindowFor (VSTNode* const node,
             && activePluginWindows.getUnchecked (i)->type == type)
             return activePluginWindows.getUnchecked (i);
 
-    AudioProcessor* processor = dynamic_cast<VSTNode*> (node)->innerPlugin;
+    AudioProcessor* processor = node->innerPlugin;
 
     if (!processor)return nullptr;
 
@@ -110,7 +112,7 @@ PluginWindow* PluginWindow::getWindowFor (VSTNode* const node,
 
     if (ui != nullptr)
     {
-        if (AudioPluginInstance* const plugin = dynamic_cast<AudioPluginInstance*> (processor))
+        if (auto * const plugin = dynamic_cast<AudioPluginInstance*> (processor))
             ui->setName (plugin->getName());
 
         return new PluginWindow (ui, node, type);
@@ -132,3 +134,4 @@ void PluginWindow::closeButtonPressed()
     owner->pluginWindowParameter.isDisplayed->setValue (false);
     delete this;
 }
+#endif

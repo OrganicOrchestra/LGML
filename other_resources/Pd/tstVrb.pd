@@ -1,0 +1,8 @@
+#N canvas 0 23 450 300 10;
+#X obj 273 151 freeverb~;
+#X obj 269 114 adc~;
+#X obj 281 200 dac~;
+#X connect 0 0 2 0;
+#X connect 0 1 2 1;
+#X connect 1 0 0 0;
+#X connect 1 1 0 1;

@@ -33,7 +33,7 @@ class LooperNode :
 {
 
 public:
-    DECLARE_OBJ_TYPE (LooperNode)
+    DECLARE_OBJ_TYPE (LooperNode,"loop your sounds to mash the place up!")
     virtual ~LooperNode();
 
 
@@ -91,7 +91,7 @@ public:
     BoolParameter* outputAllTracksSeparately;
     BoolParameter* autoNextTrackAfterRecord;
     BoolParameter* autoClearPreviousIfEmpty;
-
+    BoolParameter* autoSelectTrack;
     Trigger* exportAudio;
 
     AudioBuffer<float> bufferIn;
@@ -111,8 +111,8 @@ public:
 
 
     void onContainerTriggerTriggered (Trigger* t) override;
-    void onContainerParameterChanged (Parameter* p) override;
-    //  void parameterValueChanged(Parameter *p)override;
+    void onContainerParameterChanged ( ParameterBase* p) override;
+    //  void parameterValueChanged( ParameterBase*p)override;
     // internal
     void processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;
 

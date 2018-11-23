@@ -717,109 +717,98 @@ const char* littleredridinghoodmd_png = (const char*) temp_binary_data_0;
 
 //================== default.lgmllayout ==================
 static const unsigned char temp_binary_data_1[] =
-"{\n"
-"  \"mainLayout\": {\n"
-"    \"type\": 1,\n"
-"    \"width\": 300,\n"
-"    \"height\": 300,\n"
-"    \"direction\": 2,\n"
-"    \"shifters\": [\n"
-"      {\n"
-"        \"type\": 0,\n"
-"        \"width\": 300,\n"
-"        \"height\": 50,\n"
-"        \"currentContent\": \"Time Manager\",\n"
-"        \"tabs\": [\n"
-"          {\n"
-"            \"name\": \"Time Manager\"\n"
-"          }\n"
-"        ]\n"
-"      },\n"
-"      {\n"
-"        \"type\": 1,\n"
-"        \"width\": 300,\n"
-"        \"height\": 695,\n"
-"        \"direction\": 1,\n"
-"        \"shifters\": [\n"
-"          {\n"
-"            \"type\": 1,\n"
-"            \"width\": 432,\n"
-"            \"height\": 300,\n"
-"            \"direction\": 2,\n"
-"            \"shifters\": [\n"
-"              {\n"
-"                \"type\": 0,\n"
-"                \"width\": 300,\n"
-"                \"height\": 300,\n"
-"                \"currentContent\": \"Controllers\",\n"
-"                \"tabs\": [\n"
-"                  {\n"
-"                    \"name\": \"Controllers\"\n"
-"                  }\n"
-"                ]\n"
-"              },\n"
-"              {\n"
-"                \"type\": 0,\n"
-"                \"width\": 300,\n"
-"                \"height\": 389,\n"
-"                \"currentContent\": \"Fast Mapper\",\n"
-"                \"tabs\": [\n"
-"                  {\n"
-"                    \"name\": \"Fast Mapper\"\n"
-"                  }\n"
-"                ]\n"
-"              }\n"
-"            ]\n"
-"          },\n"
-"          {\n"
-"            \"type\": 0,\n"
-"            \"width\": 463,\n"
-"            \"height\": 300,\n"
-"            \"currentContent\": \"Node Manager\",\n"
-"            \"tabs\": [\n"
-"              {\n"
-"                \"name\": \"Node Manager\"\n"
-"              }\n"
-"            ]\n"
-"          },\n"
-"          {\n"
-"            \"type\": 1,\n"
-"            \"width\": 373,\n"
-"            \"height\": 300,\n"
-"            \"direction\": 2,\n"
-"            \"shifters\": [\n"
-"              {\n"
-"                \"type\": 0,\n"
-"                \"width\": 389,\n"
-"                \"height\": 524,\n"
-"                \"currentContent\": \"Outliner\",\n"
-"                \"tabs\": [\n"
-"                  {\n"
-"                    \"name\": \"Outliner\"\n"
-"                  },\n"
-"                  {\n"
-"                    \"name\": \"Inspector\"\n"
-"                  }\n"
-"                ]\n"
-"              },\n"
-"              {\n"
-"                \"type\": 0,\n"
-"                \"width\": 576,\n"
-"                \"height\": 165,\n"
-"                \"currentContent\": \"Logger\",\n"
-"                \"tabs\": [\n"
-"                  {\n"
-"                    \"name\": \"Logger\"\n"
-"                  }\n"
-"                ]\n"
-"              }\n"
-"            ]\n"
-"          }\n"
-"        ]\n"
-"      }\n"
-"    ]\n"
-"  },\n"
-"  \"windows\": null\n"
+"{\r\n"
+"  \"mainLayout\": {\r\n"
+"    \"type\": 1,\r\n"
+"    \"width\": 300,\r\n"
+"    \"height\": 300,\r\n"
+"    \"direction\": 2,\r\n"
+"    \"shifters\": [\r\n"
+"      {\r\n"
+"        \"type\": 1,\r\n"
+"        \"width\": 300,\r\n"
+"        \"height\": 945,\r\n"
+"        \"direction\": 1,\r\n"
+"        \"shifters\": [\r\n"
+"          {\r\n"
+"            \"type\": 1,\r\n"
+"            \"width\": 300,\r\n"
+"            \"height\": 300,\r\n"
+"            \"direction\": 2,\r\n"
+"            \"shifters\": [\r\n"
+"              {\r\n"
+"                \"type\": 0,\r\n"
+"                \"width\": 300,\r\n"
+"                \"height\": 400,\r\n"
+"                \"currentContent\": \"Inspector\",\r\n"
+"                \"tabs\": [\r\n"
+"                  {\r\n"
+"                    \"name\": \"Inspector\"\r\n"
+"                  }\r\n"
+"                ]\r\n"
+"              },\r\n"
+"              {\r\n"
+"                \"type\": 0,\r\n"
+"                \"width\": 302,\r\n"
+"                \"height\": 315,\r\n"
+"                \"currentContent\": \"Controllers\",\r\n"
+"                \"tabs\": [\r\n"
+"                  {\r\n"
+"                    \"name\": \"Controllers\"\r\n"
+"                  },\r\n"
+"                  {\r\n"
+"                    \"name\": \"Fast Mapper\"\r\n"
+"                  }\r\n"
+"                ]\r\n"
+"              },\r\n"
+"              {\r\n"
+"                \"type\": 0,\r\n"
+"                \"width\": 1348,\r\n"
+"                \"height\": 273,\r\n"
+"                \"currentContent\": \"Help\",\r\n"
+"                \"tabs\": [\r\n"
+"                  {\r\n"
+"                    \"name\": \"Help\"\r\n"
+"                  }\r\n"
+"                ]\r\n"
+"              }\r\n"
+"            ]\r\n"
+"          },\r\n"
+"          {\r\n"
+"            \"type\": 1,\r\n"
+"            \"width\": 1346,\r\n"
+"            \"height\": 300,\r\n"
+"            \"direction\": 2,\r\n"
+"            \"shifters\": [\r\n"
+"              {\r\n"
+"                \"type\": 0,\r\n"
+"                \"width\": 492,\r\n"
+"                \"height\": 50,\r\n"
+"                \"currentContent\": \"Time Manager\",\r\n"
+"                \"tabs\": [\r\n"
+"                  {\r\n"
+"                    \"name\": \"Time Manager\"\r\n"
+"                  }\r\n"
+"                ]\r\n"
+"              },\r\n"
+"              {\r\n"
+"                \"type\": 0,\r\n"
+"                \"width\": 995,\r\n"
+"                \"height\": 944,\r\n"
+"                \"currentContent\": \"Node Manager\",\r\n"
+"                \"tabs\": [\r\n"
+"                  {\r\n"
+"                    \"name\": \"Node Manager\"\r\n"
+"                  }\r\n"
+"                ]\r\n"
+"              }\r\n"
+"            ]\r\n"
+"          }\r\n"
+"        ]\r\n"
+"      }\r\n"
+"    ]\r\n"
+"  },\r\n"
+"  \"windows\": null\r\n"
 "}";
 
 const char* default_lgmllayout = (const char*) temp_binary_data_1;
@@ -3895,18 +3884,18 @@ static const unsigned char temp_binary_data_5[] =
 const char* wolf_footprint_debug_png = (const char*) temp_binary_data_5;
 
 
-const char* getNamedResource (const char*, int&) throw();
-const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) throw()
+const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
 {
     unsigned int hash = 0;
-    if (resourceNameUTF8 != 0)
+
+    if (resourceNameUTF8 != nullptr)
         while (*resourceNameUTF8 != 0)
             hash = 31 * hash + (unsigned int) *resourceNameUTF8++;
 
     switch (hash)
     {
         case 0x9bae78ed:  numBytes = 51582; return littleredridinghoodmd_png;
-        case 0x1fa434c2:  numBytes = 2323; return default_lgmllayout;
+        case 0x1fa434c2:  numBytes = 2253; return default_lgmllayout;
         case 0xae53f640:  numBytes = 58335; return removeBT_png;
         case 0xe88b5a8e:  numBytes = 71763; return grandlouloup_png;
         case 0x5550a5bc:  numBytes = 45430; return wolf_footprint_png;
@@ -3915,7 +3904,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) throw
     }
 
     numBytes = 0;
-    return 0;
+    return nullptr;
 }
 
 const char* namedResourceList[] =
@@ -3927,5 +3916,26 @@ const char* namedResourceList[] =
     "wolf_footprint_png",
     "wolf_footprint_debug_png"
 };
+
+const char* originalFilenames[] =
+{
+    "little-red-riding-hood-md.png",
+    "default.lgmllayout",
+    "removeBT.png",
+    "grandlouloup.png",
+    "wolf_footprint.png",
+    "wolf_footprint_debug.png"
+};
+
+const char* getNamedResourceOriginalFilename (const char* resourceNameUTF8)
+{
+    for (unsigned int i = 0; i < (sizeof (namedResourceList) / sizeof (namedResourceList[0])); ++i)
+    {
+        if (namedResourceList[i] == resourceNameUTF8)
+            return originalFilenames[i];
+    }
+
+    return nullptr;
+}
 
 }

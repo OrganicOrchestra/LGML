@@ -35,8 +35,16 @@ public:
     float getRangeMin();
     float getRangeMax();
 
+    float getNormalizedRangeMin();
+    float getNormalizedRangeMax();
+
+    void setNormalizedRangeMinMax(float,float);
+
+    float getNormalizedValue(float);
+    bool hasFiniteRange();
+
     bool checkValueIsTheSame (const var& v1, const var& v2) override;
 
-    DECLARE_OBJ_TYPE (RangeParameter);
+    DECLARE_OBJ_TYPE (RangeParameter,"ranged parameter");
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RangeParameter)
 };

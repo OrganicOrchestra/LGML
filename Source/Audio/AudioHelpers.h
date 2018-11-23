@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -28,8 +28,8 @@
 typedef int sample_clk_t;
 constexpr sample_clk_t MAX_NUMSAMPLES = std::numeric_limits<sample_clk_t>::max();
 
-#define DB0_FOR_01 0.8f
-#define MIN_DB -70.0f
+#define DB0_FOR_01 (0.8f)
+#define MIN_DB (-70.0f)
 
 // create a gain value for a float  between 0 and 1
 // DB0_FOR_01   -> 0dB
@@ -62,7 +62,8 @@ public:
         fadeOutCount = 0;
         fadeInCount = -1;
     }
-    FadeInOut (int numSample): fadeInNumSamples (numSample), fadeOutNumSamples (numSample), crossFade (false), skew (1.0)
+
+    explicit FadeInOut (int numSample): fadeInNumSamples (numSample), fadeOutNumSamples (numSample), crossFade (false), skew (1.0)
     {
 
     }
@@ -85,12 +86,14 @@ public:
         return 0.0;
 
     }
-    double const getLastFade()
+    double  getLastFade() const
     {
         return lastFade;
     }
-
-    inline double const getFade (int cur, int max)
+    bool  isMuted() {
+        return (getCurrentFade()==0) && getLastFade()==0;
+    }
+    double  getFade (int cur, int max) const
     {
         if (skew == 1)return cur * 1.0 / max;
 
@@ -152,8 +155,8 @@ public:
 
     const int fadeInNumSamples;
     const int fadeOutNumSamples;
-    int fadeInCount, fadeOutCount;
-    double lastFade;
+    int fadeInCount{}, fadeOutCount{};
+    double lastFade{};
     double skew;
     const bool crossFade;
 

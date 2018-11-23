@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -15,6 +15,8 @@
 
  ==============================================================================
  */
+
+#if !ENGINE_HEADLESS
 
 #include "ControllableUIHelpers.h"
 #include "../Utils/DebugHelpers.h"
@@ -97,26 +99,26 @@ ControllableReferenceUI::~ControllableReferenceUI()
 }
 
 
-void ControllableReferenceUI::setCurrentControllale (Controllable* c)
+void ControllableReferenceUI::setCurrentControllable (Controllable* c)
 {
 
-    if (currentControllable.get() == c) return;
+
 
     currentControllable = c;
 
     if (c != nullptr)
     {
-        setTooltip ("Current Controllable :" + c->niceName + String ("\n") + c->controlAddress);
+        setTooltip (juce::translate("Current Controllable :") + c->niceName + String ("\n") + c->controlAddress);
         setButtonText (c->niceName);
     }
     else
     {
-        setTooltip ("Choose a controllable");
-        setButtonText ("Target");
+        setTooltip (juce::translate("Choose a controllable"));
+        setButtonText (juce::translate("Target"));
     }
 
-
-    listeners.call (&Listener::choosedControllableChanged, this, c);
+    if (currentControllable.get() != c)
+        listeners.call (&Listener::choosedControllableChanged, this, c);
 }
 
 void ControllableReferenceUI::buttonClicked (Button*)
@@ -125,20 +127,20 @@ void ControllableReferenceUI::buttonClicked (Button*)
 
         ControllableContainerPopupMenu p (rootContainer, &filterOutControllable);
         PopupMenu mainMenu;
-        mainMenu.addSubMenu("Change Target", p);
+        mainMenu.addSubMenu(juce::translate("Change Target"), p);
         int removeId = p.endId+1;
-        mainMenu.addItem(removeId, "Clear Target");
+        mainMenu.addItem(removeId, juce::translate("Clear Target"));
 
         int result = mainMenu.show();
 
         if (result != 0) {
 
             if(result==removeId){
-                setCurrentControllale(nullptr);
+                setCurrentControllable(nullptr);
             }
             else{
                 Controllable* c = p.getControllableForResult(result);
-                if (c != nullptr) setCurrentControllale (c);
+                if (c != nullptr) setCurrentControllable (c);
                 else{jassertfalse;}
             }
         }
@@ -146,8 +148,9 @@ void ControllableReferenceUI::buttonClicked (Button*)
     else{
         ControllableContainerPopupMenu p (rootContainer, &filterOutControllable);
         Controllable* c = p.showAndGetControllable();
-        if (c != nullptr) setCurrentControllale (c);
+        if (c != nullptr) setCurrentControllable (c);
     }
 }
 
 
+#endif

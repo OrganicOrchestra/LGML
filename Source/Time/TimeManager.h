@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 
 
 
-class LinkPimpl;
+class LinkImpl;
 
 class FadeInOut;
 
@@ -100,7 +100,7 @@ public :
 
     IntParameter* quantizedBarFraction;
 
-    ScopedPointer<LinkPimpl> linkPimpl;
+    ScopedPointer<LinkImpl> linkPimpl;
     friend class LinkPimpl;
     FloatParameter* linkLatencyParam;
 
@@ -181,10 +181,6 @@ public :
         virtual void BPMChanged (double /*BPM*/) {};
         virtual void timeJumped (sample_clk_t /*time*/) {};
         virtual void playStop (bool /*playStop*/) {};
-
-
-        // prevent link and other timejumps (while recording track for example)
-        //    virtual bool lockTimeJump()=0;
         // info for stopping manager if needed;
         virtual bool isBoundToTime() = 0;
 
@@ -227,7 +223,7 @@ private:
     void updateState();
     void incrementClock (int block);
 
-    void onContainerParameterChanged (Parameter* )override;
+    void onContainerParameterChanged ( ParameterBase* )override;
     void onContainerTriggerTriggered (Trigger* ) override;
 
 
@@ -246,7 +242,7 @@ private:
 
     };
     bool _isLocked;
-    void updateCurrentPositionInfo();
+
 
     CurrentPositionInfo currentPositionInfo;
 

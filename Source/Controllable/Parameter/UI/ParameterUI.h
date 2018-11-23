@@ -22,16 +22,15 @@
 
 
 class ParameterUI : public InspectableComponent,
-    protected Parameter::AsyncListener,
-    private Parameter::Listener,
-    public SettableTooltipClient,
+    protected ParameterBase::AsyncListener,
+    private ParameterBase::Listener,
     public Controllable::Listener
 {
 public:
-    ParameterUI (Parameter* parameter);
+    ParameterUI ( ParameterBase* parameter);
     virtual ~ParameterUI();
 
-    WeakReference<Parameter> parameter;
+    WeakReference<ParameterBase> parameter;
 
     bool showLabel;
     bool showValue;
@@ -50,8 +49,10 @@ public:
 
     bool isDraggable;
     bool isSelected;
+    void updateOverlayEffect();
 
-
+    void visibilityChanged() override;
+    void parentHierarchyChanged()override;
 
 protected:
 
@@ -62,19 +63,20 @@ protected:
     // here we are bound to only one parameter so no need to pass parameter*
     // for general behaviour see AsyncListener
     virtual void valueChanged (const var& ) {};
-    virtual void rangeChanged (Parameter* ) {};
+    virtual void rangeChanged ( ParameterBase* ) {};
 
-    void updateTooltip();
+    
+    String getTooltip() override;
     virtual void mouseDown (const MouseEvent& e) override;
-
+    virtual void mouseUp (const MouseEvent& e) override;
 
 private:
-    // see Parameter::AsyncListener
-    virtual void newMessage (const Parameter::ParamWithValue& p) override;
+    // see ParameterBase::AsyncListener
+    virtual void newMessage (const ParameterBase::ParamWithValue& p) override;
 
     // never change this as value can be changed from other threads
-    void parameterValueChanged (Parameter* ) override {};
-    void parameterRangeChanged (Parameter* )override {};
+    void parameterValueChanged ( ParameterBase* , ParameterBase::Listener * /*notifier=nullptr*/) override {};
+    void parameterRangeChanged ( ParameterBase* )override {};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ParameterUI)
     friend class LGMLDragger;
@@ -90,11 +92,11 @@ private:
 
 
     bool isMappingDest;
-
+private:
     WeakReference<ParameterUI>::Master masterReference;
     friend class WeakReference<ParameterUI>;
 
-
+    bool wasShowing;
 
 
 };
@@ -112,6 +114,9 @@ public:
     Label controllableLabel;
     int labelWidth;
     ScopedPointer <ParameterUI > ownedParameterUI;
+    void controllableControlAddressChanged (Controllable*)override;
+
+    
 };
 
 

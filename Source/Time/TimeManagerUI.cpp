@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,13 +16,14 @@
  ==============================================================================
  */
 
+#if !ENGINE_HEADLESS
 #include "TimeManagerUI.h"
 #include "../Controllable/Parameter/UI/ParameterUIFactory.h"
 #include "../UI/Style.h"
 
 
 TimeManagerUI::TimeManagerUI (const String& contentName, TimeManager* _timeManager) :
-    ShapeShifterContentComponent (contentName),
+    ShapeShifterContentComponent (contentName,"Be the master of Time"),
     timeManager (_timeManager),
     timeBar (_timeManager)
 {
@@ -39,7 +40,7 @@ TimeManagerUI::TimeManagerUI (const String& contentName, TimeManager* _timeManag
     timeManager->linkEnabled->addAsyncParameterListener (this);
 
     addAndMakeVisible (timeBar);
-    bpmStepper = new IntStepperUI (timeManager->BPM);
+    bpmStepper = new FloatSliderUI (timeManager->BPM);
     //  bpmStepper->assignOnMousePosDirect = true;
     //  bpmStepper->changeParamOnMouseUpOnly = true;
 
@@ -67,8 +68,8 @@ TimeManagerUI::TimeManagerUI (const String& contentName, TimeManager* _timeManag
 
     //    linkNumPeers = ParameterUIFactory::createDefaultUI(timeManager->linkNumPeers);
     //    addAndMakeVisible(linkNumPeers);
-
-    setOpaque (true);
+    infoLabel.setVisible(false);
+    
 }
 
 
@@ -83,7 +84,7 @@ TimeManagerUI::~TimeManagerUI()
 }
 
 
-void TimeManagerUI::newMessage (const Parameter::ParamWithValue& pv)
+void TimeManagerUI::newMessage (const ParameterBase::ParamWithValue& pv)
 {
 
     if (pv.parameter == timeManager->playState)
@@ -112,22 +113,20 @@ void TimeManagerUI::newMessage (const Parameter::ParamWithValue& pv)
     }
     else if (pv.parameter == timeManager->linkEnabled)
     {
-        if (!timeManager->linkEnabled->boolValue())linkEnabled->setCustomText (String::empty);
+        if (!timeManager->linkEnabled->boolValue())linkEnabled->setCustomText ("");
         else {linkEnabled->setCustomText (String (timeManager->linkNumPeers->intValue()) + " link peers");}
     }
 
 }
 
 
-void TimeManagerUI::paint (Graphics& g)
-{
-    g.fillAll (findColour (ResizableWindow::backgroundColourId));
-}
+
 
 #pragma warning(push)
 #pragma warning(disable:4244)
 void TimeManagerUI::resized()
 {
+    ShapeShifterContentComponent::resized();
 
     int width = 800;
     int gap = 2;
@@ -316,3 +315,6 @@ void TimeManagerUI::TimeBar::BeatComponent::paint (Graphics& g)
     g.fillRect (lineR.removeFromLeft ((int) (percentDone * lineR.getWidth())));
 
 }
+
+
+#endif

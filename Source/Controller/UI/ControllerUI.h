@@ -24,7 +24,7 @@
 class StringParameterUI;
 class Outliner;
 
-class ControllerUI : public InspectableComponent, public ButtonListener
+class ControllerUI : public InspectableComponent, public Button::Listener,ComponentListener
 {
 public:
     ControllerUI (Controller* controller);
@@ -39,18 +39,22 @@ public:
 
     Controller* controller;
     ScopedPointer<Outliner> userParamsUI;
-    int getHeight();
+    int getTargetHeight();
     ScopedPointer<DrawableButton> showUserParams;
 
     virtual void paint (Graphics& g) override;
     virtual void resized() override;
 
-    virtual void mouseDown (const MouseEvent& e) override;
+    
     virtual void buttonClicked (Button*) override;
     bool keyPressed (const KeyPress& e) override;
 
     virtual InspectorEditor* createEditor() override;
 
+private:
+    void componentMovedOrResized (Component& component,
+                                          bool wasMoved,
+                                          bool wasResized) override;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ControllerUI)
 };
 

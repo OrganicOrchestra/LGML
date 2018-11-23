@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -18,8 +18,9 @@
 
 #pragma once
 
-#include "../JuceHeaderCore.h"
-#define DOWNLOAD_INPLACE 0 // fancy auto downloading, not activated for now
+
+#include "../JuceHeaderUI.h"
+
 
 class UpdaterDialogModalCallback;
 
@@ -31,7 +32,8 @@ public:
     struct LGMLVersionTriple
     {
         LGMLVersionTriple();
-        LGMLVersionTriple (int lgmlVersionNumber);
+
+        explicit LGMLVersionTriple (int lgmlVersionNumber);
         LGMLVersionTriple (int majorInt, int minorInt, int buildNumber);
 
         static bool fromString (const String& versionString, LGMLVersionTriple& result);
@@ -52,7 +54,7 @@ public:
     };
 
     //==============================================================================
-    LatestVersionChecker();
+    LatestVersionChecker(bool force_show=false);
     ~LatestVersionChecker();
 
     static String getOSString();
@@ -66,11 +68,13 @@ public:
     bool askUserAboutNewVersion (const LGMLVersionTriple& version,
                                  const String& releaseNotes,
                                  URL& newVersionToDownload,
-                                 const String& extraHeaders);
-#if DOWNLOAD_INPLACE
-    void askUserForLocationToDownload (URL& newVersionToDownload, const String& extraHeaders);
+                                 const String& extraHeaders,
+                                 bool hasDirectDownload);
+    bool hasEnded;
+
+
     virtual Result performUpdate (const MemoryBlock& data, File& targetFolder);
-#endif
+
 protected:
     const LGMLServerLocationsAndKeys& getLGMLServerURLsAndKeys() const;
     int getProductVersionNumber() const;
@@ -91,8 +95,10 @@ private:
 
     int statusCode;
     var jsonReply;
+    bool force_show;
     bool hasAttemptedToReadWebsite;
     String newRelativeDownloadPath;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LatestVersionChecker)
 };
+

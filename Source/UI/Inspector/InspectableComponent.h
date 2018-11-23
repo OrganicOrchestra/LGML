@@ -19,16 +19,17 @@
 #include "../../JuceHeaderUI.h"//keep
 
 class ParameterContainer;
-class Parameter;
+class ParameterBase;
 class Inspector;
 class InspectorEditor;
 
 
-class InspectableComponent : public juce::Component
+class InspectableComponent : public juce::Component,public TooltipClient
 {
 public:
-    InspectableComponent (ParameterContainer* relatedContainer = nullptr, const String& inspectableType = "none");
-    InspectableComponent (Parameter* relatedParameter , const String& inspectableType = "none");
+    explicit InspectableComponent (ParameterContainer* relatedContainer , const String& inspectableType = "none");
+    explicit InspectableComponent ( ParameterBase* relatedParameter , const String& inspectableType = "none");
+    explicit InspectableComponent (const String& inspectableType );
 
     virtual ~InspectableComponent();
 
@@ -36,7 +37,7 @@ public:
     const String inspectableType;
 
     ParameterContainer* getRelatedParameterContainer();
-    Parameter * getRelatedParameter();
+    ParameterBase * getRelatedParameter();
     virtual InspectorEditor* createEditor();
 
 
@@ -49,17 +50,18 @@ public:
     bool isSelected;
 
     void selectThis();
-    void setSelected (bool value);
+    void setVisuallySelected (bool value);
     virtual void setSelectedInternal (bool value); //to be overriden
 
 
     //
     void paintOverChildren (juce::Graphics& g) override;
-
+    String getTooltip() override ;
+    void mouseUp (const MouseEvent&) override;
 
 protected:
-    ParameterContainer* relatedParameterContainer;
-    Parameter* relatedParameter;
+    WeakReference<ParameterContainer> relatedParameterContainer;
+    WeakReference<ParameterBase> relatedParameter;
 private:
     WeakReference<InspectableComponent>::Master masterReference;
     friend class WeakReference<InspectableComponent>;

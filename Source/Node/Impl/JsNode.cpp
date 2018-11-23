@@ -15,7 +15,7 @@
 
 #include "JsNode.h"
 #include "../../Engine.h"
-
+#include "../../Scripting/Js/JsHelpers.h"
 
 REGISTER_NODE_TYPE (JsNode)
 
@@ -52,7 +52,7 @@ void JsNode::buildLocalEnv()
     static Identifier addTriggerIdentifier ("addTrigger");
 
     DynamicObject d;
-    d.setProperty (jsPtrIdentifier, (int64)this);
+
     d.setMethod (addIntParameterIdentifier, JsNode::addIntParameter);
     d.setMethod (addFloatParameterIdentifier, JsNode::addFloatParameter);
     d.setMethod (addStringParameterIdentifier, JsNode::addStringParameter);
@@ -65,7 +65,7 @@ void JsNode::buildLocalEnv()
 }
 
 
-void JsNode::onContainerParameterChanged (Parameter* p)
+void JsNode::onContainerParameterChanged ( ParameterBase* p)
 {
     
     NodeBase::onContainerParameterChanged (p);
@@ -76,11 +76,11 @@ void JsNode::onContainerParameterChanged (Parameter* p)
 var JsNode::addIntParameter (const var::NativeFunctionArgs& a)
 {
 
-    JsNode* jsNode = getObjectPtrFromJS<JsNode> (a);
+    JsNode* jsNode = castPtrFromJSEnv<JsNode> (a);
 
     if (a.numArguments < 5)
     {
-        LOG ("!!! wrong number of arg for addIntParameter");
+        LOGE(juce::translate("wrong number of arg for addIntParameter"));
         return var::undefined();
     };
 
@@ -92,11 +92,11 @@ var JsNode::addIntParameter (const var::NativeFunctionArgs& a)
 var JsNode::addFloatParameter (const var::NativeFunctionArgs& a)
 {
 
-    JsNode* jsNode = getObjectPtrFromJS<JsNode> (a);
+    auto* jsNode = castPtrFromJSEnv<JsNode> (a);
 
     if (a.numArguments < 5)
     {
-        LOG ("!!! wrong number of arg for addFloatParameter");
+        LOGE(juce::translate("wrong number of arg for addFloatParameter"));
         return var::undefined();
     };
 
@@ -108,11 +108,11 @@ var JsNode::addFloatParameter (const var::NativeFunctionArgs& a)
 var JsNode::addStringParameter (const var::NativeFunctionArgs& a)
 {
 
-    JsNode* jsNode = getObjectPtrFromJS<JsNode> (a);
+    JsNode* jsNode = castPtrFromJSEnv<JsNode> (a);
 
     if (a.numArguments < 3)
     {
-        LOG ("!!! wrong number of arg for addStringParameter");
+        LOGE(juce::translate("wrong number of arg for addStringParameter"));
         return var::undefined();
     };
 
@@ -124,11 +124,11 @@ var JsNode::addStringParameter (const var::NativeFunctionArgs& a)
 var JsNode::addBoolParameter (const var::NativeFunctionArgs& a)
 {
 
-    JsNode* jsNode = getObjectPtrFromJS<JsNode> (a);
+    JsNode* jsNode = castPtrFromJSEnv<JsNode> (a);
 
     if (a.numArguments < 3)
     {
-        LOG ("!!! wrong number of arg for addStringParameter");
+        LOGE(juce::translate("wrong number of arg for addStringParameter"));
         return var::undefined();
     };
 
@@ -140,11 +140,11 @@ var JsNode::addBoolParameter (const var::NativeFunctionArgs& a)
 var JsNode::addTriggerParameter (const var::NativeFunctionArgs& a)
 {
 
-    JsNode* jsNode = getObjectPtrFromJS<JsNode> (a);
+    JsNode* jsNode = castPtrFromJSEnv<JsNode> (a);
 
     if (a.numArguments < 2)
     {
-        LOG ("!!! wrong number of arg for addTrigger");
+        LOGE(juce::translate("wrong number of arg for addTrigger"));
         return var::undefined();
     };
 

@@ -24,14 +24,14 @@ class AudioMixerNode : public NodeBase
 {
 
 public:
-    DECLARE_OBJ_TYPE (AudioMixerNode);
+    DECLARE_OBJ_TYPE (AudioMixerNode,"mix audio channels together");
     class OutputBus : public ParameterContainer
     {
     public:
         OutputBus (int _outputIndex, int numInput);
         void setNumInput (int numInput);
 
-        void onContainerParameterChanged (Parameter* p)override;
+        void onContainerParameterChanged ( ParameterBase* p)override;
         Array<FloatParameter*, CriticalSection> volumes;
         Array<float> logVolumes;
         Array<float> lastVolumes;
@@ -57,7 +57,7 @@ public:
 
 
     void processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer&)override;
-    void onContainerParameterChanged (Parameter* p) override;
+    void onContainerParameterChanged ( ParameterBase* p) override;
 
 
 

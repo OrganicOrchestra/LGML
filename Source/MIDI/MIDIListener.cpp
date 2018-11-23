@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -25,8 +25,8 @@ int commonNamePartWithInName (String& s,const String & midiPortName);
 
 MIDIListener::MIDIListener():hasValidPort(true)
 {
-    midiPortName = String::empty;
-    outPortName = String::empty;
+    midiPortName = "";
+    outPortName = "";
     MIDIManager::getInstance()->addMIDIListener (this);
 
 }
@@ -48,13 +48,14 @@ void MIDIListener::setCurrentDevice (const String& deviceName)
         return;
     }
     auto mm = MIDIManager::getInstance();
-    mm->updateLists();
+
     if (deviceName.isNotEmpty())
     {
+        mm->updateLists();
         if (mm->inputDevices.indexOf (deviceName) == -1)
         {
             ghostPortName = deviceName;
-            setCurrentDevice (String::empty);
+            setCurrentDevice ("");
             return;
         }
     }
@@ -89,7 +90,7 @@ void MIDIListener::sendNoteOn (int channel, int pitch, int velocity)
 {
     if (midiOutDevice == nullptr)
     {
-        LOG ("!! MIDI Out is null");
+        LOGW(juce::translate("MIDI Out is null"));
         return;
     }
 
@@ -104,7 +105,7 @@ void MIDIListener::sendNoteOff (int channel, int pitch, int velocity)
 {
     if (midiOutDevice == nullptr)
     {
-        LOG ("!! MIDI Out is null");
+        LOGW(juce::translate("MIDI Out is null"));
         return;
     }
 
@@ -116,11 +117,22 @@ void MIDIListener::sendNoteOff (int channel, int pitch, int velocity)
     midiMessageSent();
 }
 
+void MIDIListener::sendMessage(const MidiMessage & msg){
+    if (midiOutDevice == nullptr)
+    {
+        LOGW(juce::translate("MIDI Out is null"));
+        return;
+    }
+
+    midiOutDevice->sendMessageNow (msg);
+    midiMessageSent();
+}
+
 void MIDIListener::sendCC (int channel, int number, int value)
 {
     if (midiOutDevice == nullptr)
     {
-        LOG ("!! MIDI Out is null");
+        LOGW(juce::translate("MIDI Out is null"));
         return;
     }
 
@@ -156,12 +168,12 @@ void MIDIListener::midiInputAdded (String& s)
     if (s == midiPortName)
     {
         setCurrentDevice (midiPortName);
-        ghostPortName = String::empty;
+        ghostPortName = "";
     }
     else if (s == ghostPortName)
     {
         setCurrentDevice (ghostPortName);
-        ghostPortName = String::empty;
+        ghostPortName = "";
     }
 }
 
@@ -170,7 +182,7 @@ void MIDIListener::midiInputRemoved (String& s)
     if (s == midiPortName)
     {
         ghostPortName = s;
-        setCurrentDevice (String::empty);
+        setCurrentDevice ("");
     }
 }
 

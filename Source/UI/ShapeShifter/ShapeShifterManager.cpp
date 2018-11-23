@@ -12,6 +12,7 @@
 *
 */
 
+#if !ENGINE_HEADLESS
 
 #include "ShapeShifterManager.h"
 #include "ShapeShifterFactory.h"
@@ -33,7 +34,7 @@ ShapeShifterManager::ShapeShifterManager() :
 
     if (!defaultFolder.exists() && !defaultFolder.createDirectory())
     {
-        LOG ("!!! can't create default layout directory at : " + defaultFolder.getFullPathName());
+        LOGE(juce::translate("can't create default layout directory at : ") + defaultFolder.getFullPathName());
     }
 
     lastFile = defaultFolder.getChildFile ("_lastSession." + appLayoutExtension);
@@ -185,7 +186,8 @@ ShapeShifterContent* ShapeShifterManager::getContentForName (PanelName contentNa
     return nullptr;
 }
 
-ShapeShifterPanel* ShapeShifterManager::checkCandidateTargetForPanel (ShapeShifterPanel* panel)
+ShapeShifterPanel *
+ShapeShifterManager::checkCandidateTargetForPanel(ShapeShifterPanel *panel, Point<float> relativeMousePoint)
 {
     ShapeShifterPanel* candidate = nullptr;
 
@@ -193,7 +195,7 @@ ShapeShifterPanel* ShapeShifterManager::checkCandidateTargetForPanel (ShapeShift
     {
         if (p == panel) continue;
 
-        if (p->getLocalBounds().contains (p->getLocalPoint (panel, Point<float>()).toInt()))
+        if (p->getLocalBounds().contains(p->getLocalPoint(panel, relativeMousePoint).toInt()))
         {
             candidate = p;
         }
@@ -201,7 +203,7 @@ ShapeShifterPanel* ShapeShifterManager::checkCandidateTargetForPanel (ShapeShift
 
     setCurrentCandidatePanel (candidate);
 
-    if (currentCandidatePanel != nullptr) currentCandidatePanel->checkAttachZone (panel);
+    if (currentCandidatePanel != nullptr) currentCandidatePanel->checkAttachZone(panel, relativeMousePoint);
 
 
     return candidate;
@@ -322,9 +324,9 @@ void ShapeShifterManager::loadLastSessionLayoutFile()
         if(!hasLoadedSuccessfully && hasFile){
             String bkName = lastFile.getFileNameWithoutExtension()+".bak."+appLayoutExtension;
             File bkFile = lastFile.getParentDirectory().getChildFile(bkName);
-            LOG("!!! last layout file not valid moving to :" << bkFile.getFullPathName());
+            LOGE(juce::translate("last layout file not valid moving to :") << bkFile.getFullPathName());
             if(!lastFile.moveFileTo(bkFile)){
-                LOG("!!! can't move last layout file");
+                LOGE(juce::translate("can't move last layout file"));
             }
         }
         loadDefaultLayoutFile();
@@ -345,9 +347,9 @@ void ShapeShifterManager::loadDefaultLayoutFile()
     if(!hasLoadedSuccessfully && hasDefaultFile){
         String bkName = defaultFile.getFileNameWithoutExtension()+".bak."+appLayoutExtension;
         File bkFile = defaultFile.getParentDirectory().getChildFile(bkName);
-        LOG("!!! default layout file not valid moving to :" << bkFile.getFullPathName());
+        LOGE(juce::translate("default layout file not valid moving to :") << bkFile.getFullPathName());
         if(!defaultFile.moveFileTo(bkFile)){
-            LOG("!!! can't move default layout file");
+            LOGE(juce::translate("can't move default layout file"));
         }
     }
     //load from app
@@ -389,7 +391,7 @@ void ShapeShifterManager::saveCurrentLayoutToFile (const File& toFile)
     }
     else
     {
-        LOG ("!!!can't write to " + toFile.getFullPathName());
+        LOGE(juce::translate("can't write to ") + toFile.getFullPathName());
         jassertfalse;
 
     }
@@ -428,9 +430,9 @@ PopupMenu ShapeShifterManager::getPanelsMenu()
 {
     PopupMenu p;
     PopupMenu layoutP;
-    layoutP.addItem (baseSpecialMenuCommandID + 1, "Save Current layout");
-    layoutP.addItem (baseSpecialMenuCommandID + 2, "Load Default Layout");
-    layoutP.addItem (baseSpecialMenuCommandID + 3, "Load Layout...");
+    layoutP.addItem (baseSpecialMenuCommandID + 1, juce::translate("Save Current layout"));
+    layoutP.addItem (baseSpecialMenuCommandID + 2, juce::translate("Load Default Layout"));
+    layoutP.addItem (baseSpecialMenuCommandID + 3, juce::translate("Load Layout..."));
     layoutP.addSeparator();
 
     Array<File> layoutFiles = getLayoutFiles();
@@ -443,17 +445,17 @@ PopupMenu ShapeShifterManager::getPanelsMenu()
         specialIndex++;
     }
 
-    p.addSubMenu ("Layout", layoutP);
+    p.addSubMenu (juce::translate("Layout"), layoutP);
 
     PopupMenu showP;
     int currentID = 1;
 
     for (auto& n : globalPanelNames)
     {
-        showP.addItem (baseMenuCommandID + currentID, n, true);
+        showP.addItem (baseMenuCommandID + currentID, juce::translate(n), true);
         currentID++;
     }
-    p.addSubMenu("Show Panel", showP);
+    p.addSubMenu(juce::translate("Show Panel"), showP);
     return p;
 }
 
@@ -492,3 +494,5 @@ void ShapeShifterManager::handleMenuPanelCommand (int commandID)
     String contentName = globalPanelNames[relCommandID];
     showContent (contentName);
 }
+
+#endif

@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -35,8 +35,11 @@
 #include "../Utils/DebugHelpers.h"
 #include "ProgressWindow.h"
 
+
+class UndoWatcher;
 ApplicationCommandManager& getCommandManager();
 ApplicationProperties * getAppProperties();
+UndoManager & getAppUndoManager();
 AudioDeviceManager& getAudioDeviceManager();
 
 class MainContentComponent   : public juce::Component, public ApplicationCommandTarget, public MenuBarModel, public Engine::EngineListener, private Timer
@@ -95,6 +98,10 @@ private:
     // Your private member variables go here...
     
     TooltipWindow tooltipWindow;
+
+
+    ScopedPointer<UndoWatcher> undoWatcher;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainContentComponent)
 };
 

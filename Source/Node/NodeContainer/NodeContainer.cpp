@@ -75,9 +75,14 @@ void NodeContainer::clear ()
         connections[0]->remove();
     }
 
-
+    while(nodeContainers.size()){
+        auto * n = nodeContainers[0];
+        removeNode(n);
+    }
 
     nodes.clear();
+
+    if(auto * g = getAudioGraph())g->clear();
 
 
 
@@ -96,7 +101,7 @@ void NodeContainer::clear ()
 
 ConnectableNode* NodeContainer::addNodeFromJSONData (DynamicObject* data)
 {
-    ConnectableNode* n = NodeFactory::createBaseFromObject (String::empty, data);
+    ConnectableNode* n = NodeFactory::createBaseFromObject ("", data);
     return addNode (n, n->getNiceName(), data);
 }
 
@@ -123,7 +128,7 @@ ConnectableNode* NodeContainer::addNode (ConnectableNode* n, const String& nodeN
 
     if (nodeData) n->configureFromObject (nodeData);
 
-
+    
     nodeChangeNotifier.addMessage (new NodeChangeMessage (n, true));
     //  nodeContainerListeners.call(&NodeContainerListener::nodeAdded, n);
     return n;
@@ -148,8 +153,15 @@ bool NodeContainer::removeNode (ConnectableNode* n,bool doDelete)
 
 
 
+    if(nodes.contains((NodeBase*)n)){
+        n->clear();
+    }
+    else{
+        // node has already been deleted
+        //jassertfalse;
+        return false;
+    }
 
-    n->clear();
 
 
     if (NodeContainer* nc = dynamic_cast<NodeContainer*> (n)) nodeContainers.removeFirstMatchingValue (nc);
@@ -202,7 +214,7 @@ void NodeContainer::updateAudioGraph (bool lock)
             //            jassertfalse;
             // node is not ready , postponing setup
             if( !isEngineLoadingFile()) {
-                LOG("!! node "+getNiceName()+" is not ready , postponing setup");
+                LOGW(juce::translate("node 123 is not ready , postponing setup").replace("123",getNiceName()));
 //                jassertfalse;
             }
             else{
@@ -212,7 +224,7 @@ void NodeContainer::updateAudioGraph (bool lock)
 
         }
         else{
-//            LOG("! node "+getNiceName()+" is ready");
+//            LOG("! node 123 is ready"+getNiceName()+" is ready");
             getAudioGraph()->setRateAndBufferSizeDetails (NodeBase::getSampleRate(), NodeBase::getBlockSize());
             getAudioGraph()->prepareToPlay (NodeBase::getSampleRate(), NodeBase::getBlockSize());
             getAudioGraph()->suspendProcessing (false);
@@ -259,7 +271,7 @@ DynamicObject* NodeContainer::getObject()
         connectionsData.append (c->getObject());
     }
 
-    //  data.getDynamicObject()->setProperty("nodes", nodesData);
+    
     data->setProperty ("connections", connectionsData);
 
     return data;
@@ -270,7 +282,7 @@ ParameterContainer*   NodeContainer::addContainerFromObject (const String& /*nam
 {
     //  ConnectableNode * node = addNodeFromJSONData(data);
 
-    ConnectableNode* node = NodeFactory::createBaseFromObject ( String::empty, data);
+    ConnectableNode* node = NodeFactory::createBaseFromObject ( "", data);
 
     if (auto n = dynamic_cast<ContainerInNode*> (node)) containerInNode = n;
     else if (auto n = dynamic_cast<ContainerOutNode*> (node)) containerOutNode = n;
@@ -282,7 +294,7 @@ ParameterContainer*   NodeContainer::addContainerFromObject (const String& /*nam
 void NodeContainer::configureFromObject (DynamicObject* data)
 {
     // do we really need that ???
-    //    clear (false);
+//        clear ();
 
 
 
@@ -327,21 +339,21 @@ void NodeContainer::configureFromObject (DynamicObject* data)
 
             if (srcNode == nullptr)
             {
-                NLOG ("loadJSON", "!!! no srcnode for shortName : " + cData.getDynamicObject()->getProperty ("srcNode").toString());
+                NLOGE ("loadJSON", juce::translate("no srcnode for shortName : ") + cData.getDynamicObject()->getProperty ("srcNode").toString());
             }
 
             if (dstNode == nullptr)
             {
-                NLOG ("loadJSON", "!!! no dstnode for shortName : " + cData.getDynamicObject()->getProperty ("dstNode").toString());
+                NLOGE ("loadJSON", juce::translate("no dstnode for shortName : ") + cData.getDynamicObject()->getProperty ("dstNode").toString());
             }
 
 
 #if defined DEBUG
-            LOG ("!!! Available Nodes in " + shortName + " : ");
+            LOGE(juce::translate("Available Nodes in " )+ shortName + " : ");
 
             for (auto& node : nodes)
             {
-                LOG ("!!! > " + node->getNiceName() + "//" + node->shortName);
+                LOGE("> " + node->getNiceName() + "//" + node->shortName);
             }
 
 #endif
@@ -440,7 +452,7 @@ bool NodeContainer::removeConnection (NodeConnection* c)
 
 
 
-void NodeContainer::onContainerParameterChanged (Parameter* p)
+void NodeContainer::onContainerParameterChanged ( ParameterBase* p)
 {
 
     NodeBase::onContainerParameterChanged (p);
@@ -450,7 +462,7 @@ void NodeContainer::onContainerParameterChanged (Parameter* p)
 
 
 
-void NodeContainer::onContainerParameterChangedAsync (Parameter* p, const var& v)
+void NodeContainer::onContainerParameterChangedAsync ( ParameterBase* p, const var& v)
 {
     NodeBase::onContainerParameterChangedAsync (p, v);
 
@@ -465,16 +477,6 @@ void NodeContainer::onContainerParameterChangedAsync (Parameter* p, const var& v
 void NodeContainer::bypassNode (bool /*bypass*/) {}
 
 
-
-bool NodeContainer::hasDataInputs()
-{
-    return containerInNode != nullptr ? containerInNode->hasDataInputs() : false;
-}
-
-bool NodeContainer::hasDataOutputs()
-{
-    return containerOutNode != nullptr ? containerOutNode->hasDataOutputs() : false;
-}
 
 
 void NodeContainer::numChannelsChanged (bool isInput)
@@ -553,7 +555,7 @@ void NodeContainer::processBlockBypassed (AudioBuffer<float>& /*buffer*/, MidiBu
 
 void NodeContainer::removeIllegalConnections()
 {
-    getAudioGraph()->removeIllegalConnections();
+    if( auto * g = getAudioGraph())g->removeIllegalConnections();
     
     for (auto& c : nodeContainers)
     {

@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,18 +16,20 @@
  ==============================================================================
  */
 
+#if !ENGINE_HEADLESS
+
 #include "Outliner.h"
 #include "../Engine.h"
 #include "Style.h"
 #include "../Controllable/Parameter/UI/ParameterUIFactory.h"
 //#include "../Controllable/UI/ParameterEditor.h"
 
+Identifier Outliner::blockSelectionPropagationId("blockSelectionPropagation");
 
-
-Outliner::Outliner (const String& contentName,ParameterContainer * _root,bool showFilterText) : ShapeShifterContentComponent (contentName),
+Outliner::Outliner (const String& contentName,ParameterContainer * _root,bool showFilterText) : ShapeShifterContentComponent (contentName,"Search Parameters in here"),
 baseRoot(_root),
 root(nullptr),
-showUserContainer(false)
+showUserContainer(true)
 {
     if(!baseRoot.get()){
         baseRoot = getEngine();
@@ -40,15 +42,18 @@ showUserContainer(false)
     addAndMakeVisible (treeView);
     treeView.getViewport()->setScrollBarThickness (10);
     if(showFilterText){
+        filterTextEditor.setComponentID("search");
         filterTextEditor.setTextToShowWhenEmpty ("search", Colours::grey);
         addAndMakeVisible (filterTextEditor);
         filterTextEditor.addListener (this);
-        linkToSelected.setTooltip("link viewed to selected node/controller");
+        linkToSelected.setTooltip(juce::translate("link viewed to selected node/controller"));
         linkToSelected.setButtonText("L");
         addAndMakeVisible(linkToSelected);
         linkToSelected.addListener(this);
         linkToSelected.setClickingTogglesState(true);
+        linkToSelected.setToggleState(true,sendNotification);
     }
+    infoLabel.setVisible(false);
 
 
 }
@@ -73,15 +78,21 @@ void Outliner::clear(){
 }
 void Outliner::resized()
 {
+    ShapeShifterContentComponent::resized();
     Rectangle<int> r = getLocalBounds();
-    r.removeFromTop (20);
+
     if(filterTextEditor.isVisible()){
+        r.removeFromTop(10);
         auto headerArea = r.removeFromTop(30);
         linkToSelected.setBounds(headerArea.removeFromLeft(headerArea.getHeight()));
         filterTextEditor.setBounds (headerArea);
 
     }
     treeView.setBounds (r);
+}
+
+int Outliner::getTargetHeight(){
+    return  (filterTextEditor.isVisible()?(10+30):0) + treeView.getViewport()->getViewedComponent()->getHeight();
 }
 
 void Outliner::paint (Graphics& g)
@@ -147,7 +158,7 @@ void Outliner::buildTree (OutlinerItem* parentItem, ParameterContainer* parentCo
 
     }
 
-    auto childControllables = parentContainer->getControllablesOfType<Parameter> (false);
+    auto childControllables = parentContainer->getControllablesOfType<ParameterBase> (false);
 
     for (auto& c : childControllables)
     {
@@ -183,7 +194,16 @@ void Outliner::childStructureChanged (ControllableContainer* notif, Controllable
     }
 
 }
+void  Outliner::containerWillClear (ControllableContainer* origin) {
+    setRoot(nullptr);
+    if (!AsyncUpdater::isUpdatePending())
+    {
 
+            triggerAsyncUpdate();
+        
+    }
+
+}
 
 void Outliner::handleAsyncUpdate()
 {
@@ -263,8 +283,11 @@ void Outliner::currentComponentChanged (Inspector * i ){
             return;
 
 
-        if(auto sel = i->getCurrentContainerSelected())
+        if(auto sel = i->getCurrentContainerSelected()){
+            treeView.getProperties().set(blockSelectionPropagationId, true);
             setRoot(sel);
+            treeView.getProperties().set(blockSelectionPropagationId, false);
+        }
     }
 };
 
@@ -276,6 +299,7 @@ OutlinerItem::OutlinerItem (ParameterContainer* _container,bool generateSubTree)
 container (_container), parameter (nullptr), isContainer (true)
 {
     container->addControllableContainerListener(this);
+
     if(generateSubTree){
     for(auto c:container->getContainersOfType<ParameterContainer>(false)){
        if(!c->isHidenInEditor) addSubItem(new OutlinerItem(c,generateSubTree));
@@ -287,11 +311,13 @@ container (_container), parameter (nullptr), isContainer (true)
     }
 }
 
-OutlinerItem::OutlinerItem (Parameter* _parameter,bool generateSubTree) :
+OutlinerItem::OutlinerItem ( ParameterBase* _parameter,bool generateSubTree) :
 container (nullptr), parameter (_parameter), isContainer (false)
 {
+
     if(auto p = parameter->parentContainer){
         p->addControllableContainerListener(this);
+
     }
     else{
         jassertfalse;
@@ -308,14 +334,16 @@ OutlinerItem::~OutlinerItem(){
         }
     }
     else{
+        if(parameter.get()){
         if(auto p = parameter->parentContainer){
             p->removeControllableContainerListener(this);
         }
         else{
 //            jassertfalse;
         }
+        }
     }
-    masterReference.clear();
+    OutlinerItem::masterReference.clear();
 }
 
 bool OutlinerItem::mightContainSubItems()
@@ -325,6 +353,7 @@ bool OutlinerItem::mightContainSubItems()
 
 Component* OutlinerItem::createItemComponent()
 {
+
     currentDisplayedComponent = new OutlinerItemComponent (this);
     return currentDisplayedComponent;
 }
@@ -366,15 +395,17 @@ void OutlinerItem::controllableContainerRemoved(ControllableContainer * notif,Co
 
 }
 
-void OutlinerItem::controllableAdded (ControllableContainer* notif, Controllable* ori) {
+
+
+void OutlinerItem::childControllableAdded (ControllableContainer* notif, Controllable* ori) {
     if(notif && notif==container){
-        MessageManager::callAsync([this , ori](){addSubItem(new OutlinerItem (dynamic_cast<Parameter*>(ori),true));});
+        MessageManager::callAsync([this , ori](){addSubItem(new OutlinerItem (dynamic_cast <ParameterBase*>(ori),true));});
     }
     else if (container){
         jassertfalse;
     }
 }
-void OutlinerItem::controllableRemoved (ControllableContainer* notif, Controllable* ori) {
+void OutlinerItem::childControllableRemoved (ControllableContainer* notif, Controllable* ori) {
     if(notif && notif==container){
     int i = 0;
     while( i < getNumSubItems()){
@@ -403,11 +434,17 @@ String OutlinerItem::getUniqueName() const
 
 
 void OutlinerItem::itemSelectionChanged (bool isNowSelected){
+    auto owner = getOwnerView();
+    if(owner){
+        var *v =owner->getProperties().getVarPointer(Outliner::blockSelectionPropagationId);
+        if(v!=nullptr && *v)
+            return;
+    }
     if(auto c= static_cast<OutlinerItemComponent*>(currentDisplayedComponent.get())){
         auto* insp = Inspector::getInstance();
         if(insp->getCurrentComponent()!=c){
             if(isNowSelected ){
-            insp->setCurrentComponent(c);
+                insp->setCurrentComponent(c);
             }
             else{
                 insp->setCurrentComponent(nullptr);
@@ -432,8 +469,11 @@ paramUI (nullptr)
         InspectableComponent::relatedParameter = _item->parameter;
         InspectableComponent::relatedParameterContainer = nullptr;
     }
-    setTooltip (item->isContainer ? item->container->getControlAddress() : item->parameter->description + "\nControl Address : " + item->parameter->controlAddress);
-    if(item->isContainer?item->container->isUserDefined : item->parameter->isUserDefined){
+    setTooltip (item->isContainer ? item->container->getControlAddress() : juce::translate(item->parameter->description) + "\n"+juce::translate("Control Address")+" : "  + item->parameter->controlAddress);
+    bool isNameEditable = !item->isContainer && item->parameter->isUserDefined;
+    if(item->isContainer)
+        isNameEditable|=item->container->nameParam->isEditable;
+    if(isNameEditable){
         label.setEditable(false,true,false);
         label.addListener(this);
     }
@@ -459,14 +499,23 @@ paramUI (nullptr)
     if (!_item->isContainer )
     {
         paramUI = ParameterUIFactory::createDefaultUI (item->parameter);
+        item->parameter->addControllableListener(this);
 
     }
     else
     {
         paramUI = ParameterUIFactory::createDefaultUI (item->container->nameParam);
+        item->container->nameParam->addAsyncCoalescedListener(this);
     }
 
     addAndMakeVisible (paramUI);
+}
+
+OutlinerItemComponent::~OutlinerItemComponent(){
+    if(paramUI && paramUI->parameter.get()){
+        paramUI->parameter->removeControllableListener(this);
+        paramUI->parameter->removeAsyncParameterListener(this);
+    }
 }
 void OutlinerItemComponent::resized()
 {
@@ -489,6 +538,20 @@ void OutlinerItemComponent::resized()
     }
     label.setBounds (r);
 
+}
+
+void OutlinerItemComponent::controllableNameChanged (Controllable* ) {
+    if(!item->isContainer)
+        label.setText(  item->parameter->niceName,dontSendNotification);
+    else
+        jassertfalse;
+}
+
+void OutlinerItemComponent::newMessage(const ParameterBase::ParamWithValue &pv){
+    if(item->isContainer && pv.parameter==item->container->nameParam)
+        label.setText(  item->container->nameParam->stringValue(),dontSendNotification);
+    else
+        jassertfalse;
 }
 void OutlinerItemComponent::paint (Graphics& g)
 {
@@ -528,8 +591,8 @@ void OutlinerItemComponent::mouseDown (const MouseEvent& e)
 
     if(e.mods.isRightButtonDown() && item->isContainer){
         PopupMenu m;
-        m.addItem(1, "expand all childs");
-        m.addItem(2, "close all childs");
+        m.addItem(1, juce::translate("expand all childs"));
+        m.addItem(2, juce::translate("close all childs"));
 
         auto res = m.showAt(this);
         if(res==1 || res==2){
@@ -537,10 +600,15 @@ void OutlinerItemComponent::mouseDown (const MouseEvent& e)
         }
     }
     else if(e.getNumberOfClicks()>=2){
+        if(item->isContainer){
         expandItems(item,!item->isOpen());
+        }
+
     }
     else{
         item->setSelected (true, true);
+        if(label.isEditable())
+            label.showEditor();
 //        if(item->isContainer)
 
     }
@@ -579,3 +647,4 @@ void OutlinerItemComponent::labelTextChanged (Label* labelThatHasChanged) {
         item->parameter->setNiceName(label.getTextValue().toString());
     }
 };
+#endif

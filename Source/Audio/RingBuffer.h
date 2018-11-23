@@ -3,7 +3,7 @@
 
  Copyright © Organic Orchestra, 2017
 
- This file is part of LGML. LGML is a software to manipulate sound in realtime
+ This file is part of LGML. LGML is a software to manipulate sound in real-time
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -118,7 +118,7 @@ public:
 
 
 
-    AudioSampleBuffer buf;
+    AudioSampleBuffer buf{};
 private:
     void safeCopy (const float* b, int numSample, int channel)
     {
@@ -139,8 +139,8 @@ private:
     int phantomSize;
     int bufSize;
     int numChannels ;
-    AudioBuffer<float> contiguousBuffer;
-    Array<float*> pointers ;
+    AudioBuffer<float> contiguousBuffer{};
+    Array<float*> pointers{};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PhantomBuffer);
 

@@ -27,11 +27,12 @@ class AudioDeviceOutNode :
 
 {
 public:
-    DECLARE_OBJ_TYPE (AudioDeviceOutNode);
+    DECLARE_OBJ_TYPE (AudioDeviceOutNode,"access your sound card output");
     ~AudioDeviceOutNode();
 
 
     void changeListenerCallback (ChangeBroadcaster* source)override;
+    void processBlockBypassed(AudioBuffer<float>& buffer, MidiBuffer& midiMessages) override;
     void processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer& midiMessages) override;
 
     Array<BoolParameter*> outMutes;
@@ -44,7 +45,8 @@ public:
 
     void numChannelsChanged (bool isInput)override;
 
-    void onContainerParameterChanged (Parameter* p) override;
+    void onContainerParameterChanged ( ParameterBase* p) override;
+    FadeInOut globalFader;
 private :
     void updateVolMutes();
     int lastNumberOfOutputs;

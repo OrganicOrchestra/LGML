@@ -14,10 +14,10 @@
 
 
 #include "NodeManager.h"
-#include "../Impl/DummyNode.h"
+
 #include "../NodeContainer/NodeContainer.h"
 
-IMPL_OBJ_TYPE (NodeManager);
+REGISTER_OBJ_TYPE(NodeBase,NodeManager,"NodeManager");
 extern AudioDeviceManager& getAudioDeviceManager();
 bool isEngineLoadingFile();
 juce_ImplementSingleton (NodeManager);
@@ -48,7 +48,6 @@ void NodeManager::clear()
 
     NodeContainer::clear();
 
-    dataGraph.clear();
 
     nodeManagerListeners.call (&NodeManagerListener::managerCleared);
 }

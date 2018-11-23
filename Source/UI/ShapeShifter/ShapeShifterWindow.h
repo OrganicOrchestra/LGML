@@ -18,9 +18,10 @@
 
 #include "ShapeShifterPanel.h"
 #include "../Style.h" // for USE_GL
-#if JUCE_OPENGL  && USE_GL
-    #include <juce_opengl/juce_opengl.h>
-#endif
+
+// significantly slower on osx
+// TODO benchmark use of GL
+#define USE_GL_FOR_WINDOWS 0
 
 class ShapeShifterWindow :
     public ResizableWindow,
@@ -55,10 +56,8 @@ public:
     void panelEmptied (ShapeShifterPanel*) override;
 
 
-
-#if JUCE_OPENGL  && USE_GL
-    OpenGLContext openGLContext
-    ;
+#if USE_GL_FOR_WINDOWS
+    OpenGLContext openGLContext;
 #endif
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ShapeShifterWindow)
