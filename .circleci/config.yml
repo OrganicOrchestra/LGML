@@ -134,6 +134,7 @@ jobs:
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports $DISTRIB_CODENAME-updates main universe" >> /etc/apt/sources.list
             apt-get install -y git
             git submodule update --init --recursive
+            export CXX=arm-linux-gnueabihf-g++-5
             sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh
             
 
