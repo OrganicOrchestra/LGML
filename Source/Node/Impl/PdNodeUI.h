@@ -29,7 +29,8 @@
 class PdNodeContentUI:
     public ConnectableNodeContentUI,
     private ControllableContainerListener,
-    private ParameterBase::AsyncListener
+    private ParameterBase::AsyncListener,
+    public FilenameComponentListener
 {
 public:
     PdNodeContentUI();
@@ -40,11 +41,12 @@ public:
     PdNode* pdNode;
 
 //    TextButton VSTListShowButton;
-//    TextButton showPluginWindowButton;
+    FilenameComponent loadFileButton;
 
     ScopedPointer<ParameterUI> midiDeviceChooser;
 
     ScopedPointer<ParameterUI> activityBlink;
+
 
     void init() override;
     void resized()override;
@@ -72,6 +74,9 @@ private:
     void handleCommandMessage (int )override;
     void newMessage (const ParameterBase::ParamWithValue&) override;
     bool isDirty;
+
+
+    void filenameComponentChanged (FilenameComponent*) ;
 
 };
 

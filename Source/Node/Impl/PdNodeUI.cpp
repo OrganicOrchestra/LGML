@@ -21,9 +21,16 @@
 
 
 PdNodeContentUI::PdNodeContentUI():
-isDirty (false)
+isDirty (false),
+loadFileButton("load Pd File",//const String& name,
+               File(),//const File& currentFile,
+               true,//bool canEditFilename,
+               false,//bool isDirectory,
+               false,//bool isForSaving,
+               "",//const String& fileBrowserWildcard,
+               ".pd",//const String& enforcedSuffix,
+               "load pd patch")//const String& textWhenNothingSelected);
 {
-
 
 }
 PdNodeContentUI::~PdNodeContentUI()
@@ -51,6 +58,12 @@ void PdNodeContentUI::init()
     midiDeviceChooser = ParameterUIFactory::createDefaultUI(pdNode->midiChooser.getDeviceInEnumParameter());
     addAndMakeVisible(midiDeviceChooser);
     jassert(midiDeviceChooser);
+
+    addAndMakeVisible(loadFileButton);
+    loadFileButton.addListener(this);
+    pdNode->pdPath->addAsyncCoalescedListener(this);
+    newMessage({pdNode->pdPath,pdNode->pdPath->value,false});
+
     updatePdParameters();
     setDefaultSize (250, 100);
 
@@ -119,6 +132,9 @@ void PdNodeContentUI::newMessage (const ParameterBase::ParamWithValue& pv) {
         postCommandMessage (0);
         isDirty = true;
     }
+    else if(pv.parameter==pdNode->pdPath){
+        loadFileButton.setCurrentFile(File(pdNode->pdPath->stringValue()), false,dontSendNotification);
+    }
 }
 
 void PdNodeContentUI::handleCommandMessage (int /*cId*/)
@@ -132,10 +148,12 @@ void PdNodeContentUI::resized()
 {
     Rectangle<int> area = getLocalBounds().reduced (2);
     Rectangle<int> midiR = area.removeFromTop (25);
-    activityBlink->setBounds (midiR.removeFromRight (midiR.getHeight()).reduced (2));
+    loadFileButton.setBounds(midiR.removeFromLeft(midiR.getWidth()/2));
+    activityBlink->setBounds (midiR.removeFromRight (midiR.getHeight()/4).reduced (2));
     midiDeviceChooser->setBounds (midiR);
 
     area.removeFromTop (2);
+
     layoutSliderParameters (area.reduced (2));
 
 }
@@ -194,22 +212,16 @@ void PdNodeContentUI::layoutSliderParameters (Rectangle<int> pArea)
 
 
 //
-//void PdNodeContentUI::buttonClicked (Button* button)
-//{
-//    if (button == &VSTListShowButton)
-//    {
-//        PopupMenu  VSTList;
-//        VSTManager::getInstance()->knownPluginList.addToMenu (VSTList, KnownPluginList::SortMethod::sortByCategory);
-//        closePluginWindow();
-//        VSTList.showAt (&VSTListShowButton, 0, 0, 0, 0, ModalCallbackFunction::forComponent (&PdNodeContentUI::vstSelected, (Component*)this));
-//
-//    }
-//
-//    if (button == &showPluginWindowButton)
-//    {
-//        createPluginWindow();
-//    }
-//}
+void PdNodeContentUI::filenameComponentChanged (FilenameComponent* fc)
+{
+    if (fc == &loadFileButton)
+    {
+        auto f = fc->getCurrentFile();
+        pdNode->pdPath->setValue(f.getFullPathName());
+
+    }
+
+}
 
 
 
