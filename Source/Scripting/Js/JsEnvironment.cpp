@@ -425,14 +425,15 @@ var JsEnvironment::callFunctionFromIdentifier (const Identifier& function, const
         if (!engineIsAlreadyLocked)
         {
 
-            if (!JsGlobalEnvironment::getInstance()->isDirty())
-            {
-                res = jsEngine->callFunction (function, Nargs, result);
-            }
-            else
-            {
-                //      DBG("JS avoiding to call function while global environment is dirty");
-            }
+            if (auto je = JsGlobalEnvironment::getInstanceWithoutCreating())
+                if(je->isDirty())
+                {
+                    res = jsEngine->callFunction (function, Nargs, result);
+                }
+            //            else
+//            {
+//                //      DBG("JS avoiding to call function while global environment is dirty");
+//            }
         }
         else
         {
