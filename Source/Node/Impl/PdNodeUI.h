@@ -76,7 +76,7 @@ private:
     bool isDirty;
 
 
-    void filenameComponentChanged (FilenameComponent*) ;
+    void filenameComponentChanged (FilenameComponent*) override ;
 
 };
 
