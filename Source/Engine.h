@@ -123,6 +123,7 @@ public:
     {
     public:
         MultipleAudioSettingsHandler(): oldSettingsId ("oldAudioSettings") {}
+        void init();
         Identifier oldSettingsId;
         void changeListenerCallback (ChangeBroadcaster* )override;
         void saveCurrent();

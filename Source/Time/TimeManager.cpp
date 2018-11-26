@@ -585,13 +585,13 @@ void TimeManager::setBlockSize (int bS)
     blockSize = bS;
     if(bS!=0&& sampleRate!=0){
         if(AudioIODevice* dev = getAudioDeviceManager().getCurrentAudioDevice()){
-        // heuristical default value for link Latency
-        float heuristicValue  =(dev->getOutputLatencyInSamples() + dev->getCurrentBufferSizeSamples())*1000.0/dev->getCurrentSampleRate();
-        linkLatencyParam->defaultValue = heuristicValue;
+            // heuristical default value for link Latency
+            float heuristicValue  =(dev->getOutputLatencyInSamples() + dev->getCurrentBufferSizeSamples())*1000.0/dev->getCurrentSampleRate();
+            linkLatencyParam->defaultValue = heuristicValue;
 
-        if(!linkLatencyParam->isOverriden ){
-            linkLatencyParam->resetValue();
-        }
+            if(!linkLatencyParam->isOverriden ){
+                linkLatencyParam->resetValue();
+            }
         }
     }
 

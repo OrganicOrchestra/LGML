@@ -268,7 +268,7 @@ void Engine::initAudio()
     // timeManager should be the first audio Callback added to ensure that time is updated each new block
     getAudioDeviceManager().addAudioCallback (TimeManager::getInstance());
     getAudioDeviceManager().addAudioCallback (&graphPlayer);
-
+    audioSettingsHandler.init();
     DBG ("init audio");
 
 }
@@ -369,7 +369,9 @@ void Engine::stimulateAudio ( bool s)
 }
 
 
-
+void Engine::MultipleAudioSettingsHandler::init(){
+    lastConfigName=getConfigName();
+}
 
 void Engine::MultipleAudioSettingsHandler::changeListenerCallback (ChangeBroadcaster*)
 {
@@ -378,7 +380,7 @@ void Engine::MultipleAudioSettingsHandler::changeListenerCallback (ChangeBroadca
 }
 void Engine::MultipleAudioSettingsHandler::timerCallback()
 {
-
+    stopTimer();
     String configName = getConfigName();
 
     if (lastConfigName == configName) {return;}
@@ -411,7 +413,7 @@ void Engine::MultipleAudioSettingsHandler::timerCallback()
         }
     }
 
-    stopTimer();
+
 
 }
 
