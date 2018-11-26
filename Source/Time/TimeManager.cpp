@@ -38,6 +38,7 @@ juce_ImplementSingleton (TimeManager);
 #include "../Utils/DebugHelpers.h"
 #include "../Audio/AudioHelpers.h"
 
+extern AudioDeviceManager& getAudioDeviceManager();
 
 #include "LinkImpl.hpp"
 
@@ -95,8 +96,8 @@ TimeManager::TimeManager():
     linkPimpl = new LinkImpl (this);
 
 #endif
-    linkLatencyParam = addNewParameter<FloatParameter> ("linkLatency", "link latency to add for lgml", 10.f, -30.f, 80.f);
-
+    linkLatencyParam = addNewParameter<FloatParameter> ("linkLatency", "link latency to add for lgml (ms)", 10.f, 0.f, 1000.f);
+    linkLatencyParam->isSavable = false;
 
     clickFader = new FadeInOut (10000, 10000, true, 1.0 / 3.0);
 
@@ -583,10 +584,14 @@ void TimeManager::setBlockSize (int bS)
     jassert (bS != 0);
     blockSize = bS;
     if(bS!=0&& sampleRate!=0){
+        if(AudioIODevice* dev = getAudioDeviceManager().getCurrentAudioDevice()){
         // heuristical default value for link Latency
-        linkLatencyParam->defaultValue = (float)(10 + 1000.0*2 *blockSize/sampleRate );
+        float heuristicValue  =(dev->getOutputLatencyInSamples() + dev->getCurrentBufferSizeSamples())*1000.0/dev->getCurrentSampleRate();
+        linkLatencyParam->defaultValue = heuristicValue;
+
         if(!linkLatencyParam->isOverriden ){
             linkLatencyParam->resetValue();
+        }
         }
     }
 

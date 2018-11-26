@@ -27,7 +27,8 @@ class LinkImpl
 public:
     LinkImpl (TimeManager* o): owner (o), linkSession (120.0),
     linkTimeLine (ableton::link::Timeline(), true),
-    linkLatency (00)
+    linkLatency (00),
+    linkTime(-1)
     {
         linkSession.setNumPeersCallback (&LinkImpl::linkNumPeersCallBack);
         linkSession.setTempoCallback (&LinkImpl::linkTempoCallBack);
@@ -40,7 +41,10 @@ public:
     std::chrono::microseconds linkLatency;
 
     void updateTime(){
-        linkTime = std::chrono::microseconds((long long)Time::getMillisecondCounterHiRes()*1000)+linkLatency;
+        auto nlinkTime = std::chrono::microseconds((long long)(Time::getMillisecondCounterHiRes()*1000.0))+linkLatency;
+        if(nlinkTime>linkTime){ // link time has to be monotonic, so take care of linkLatency changes
+            linkTime = nlinkTime;
+        }
         //        linkTime = linkFilter.sampleTimeToHostTime (owner->audioClock) + linkLatency;
     }
     void checkDrift()
