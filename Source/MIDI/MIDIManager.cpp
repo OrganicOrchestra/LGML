@@ -78,7 +78,7 @@ public:
 
             if(note>=0){
                 // avoid repetition on holded keys
-                for ( auto k:keysDown){if(k->key == key){ return false;}}
+                for ( auto k:keysDown){if(k->key == key){ return true;}}
 
                 handleIncomingMidiMessage (MidiMessage::noteOn(channel,note,vel)
                                            .withTimeStamp(time / 1000.));
@@ -117,8 +117,7 @@ public:
             }
             i++;
         }
-
-
+        
         return nWasDown>0;
     }
 
