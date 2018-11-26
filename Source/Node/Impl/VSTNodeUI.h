@@ -33,7 +33,7 @@ class VSTNodeContentUI:
 public:
     VSTNodeContentUI();
     ~VSTNodeContentUI();
-    OwnedArray<FloatSliderUI> paramSliders;
+    OwnedArray<ParameterUI> paramSliders;
 
     VSTNode* vstNode;
 

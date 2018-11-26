@@ -166,12 +166,13 @@ void VSTNode::onContainerParameterChanged ( ParameterBase* p)
         if (blockFeedback)return;
 
         const OwnedArray<juce::AudioProcessorParameter>& vstParams (innerPlugin->getParameters());
+        
         for (int i = VSTParameters.size() - 1; i >= 0; --i)
         {
             if (VSTParameters.getUnchecked (i) == p)
             {
                 if (auto* param = vstParams[i])
-                    return param->setValue (VSTParameters.getUnchecked (i)->value);
+                    param->setValue (VSTParameters.getUnchecked (i)->value);
                 break;
             }
 
@@ -192,11 +193,20 @@ void VSTNode::initParametersFromProcessor (AudioPluginInstance* p)
         }
 
         VSTParameters.clear();
-        VSTParameters.ensureStorageAllocated (p->getNumParameters());
+        VSTParameters.ensureStorageAllocated (p->getParameters().size());
 
         for (auto param : p->getParameters())
         {
-            VSTParameters.add (addNewParameter<FloatParameter> (param->getName(maxVSTParamNameSize), param->getLabel(), param->getValue ()));
+            if(param->isBoolean()){
+                VSTParameters.add (addNewParameter<BoolParameter> (param->getName(maxVSTParamNameSize), param->getLabel(), param->getValue ()));
+            }
+            else if(param->isDiscrete()){
+                VSTParameters.add (addNewParameter<IntParameter> (param->getName(maxVSTParamNameSize), param->getLabel(), param->getValue (),0,param->getNumSteps()));
+            }
+            else{
+                VSTParameters.add (addNewParameter<FloatParameter> (param->getName(maxVSTParamNameSize), param->getLabel(), param->getValue ()));
+            }
+
         }
 
     }
@@ -273,7 +283,7 @@ void VSTNode::audioProcessorChanged (juce::AudioProcessor* p )
 {
     if (!innerPlugin || p != innerPlugin) return;
 
-    if (innerPlugin->getNumParameters() != VSTParameters.size())
+    if (parameterHaveChanged())
     {
         NLOG("VSTNode : " + innerPlugin->getName(), "rebuildingParameters");
         initParametersFromProcessor (innerPlugin);
@@ -331,7 +341,29 @@ void VSTNode::audioProcessorParameterChanged (AudioProcessor* p,
     }
 }
 
+bool VSTNode::parameterHaveChanged(){
+    if(VSTParameters.size()==innerPlugin->getParameters().size()){
+        int i = 0;
+        for(auto & p:VSTParameters){
+            const auto & p2 = innerPlugin->getParameters().getUnchecked(i);
+            if(p2->getName(maxVSTParamNameSize)!=p->niceName){
+                return true;
+            }
+            else if(p2->isBoolean() && !dynamic_cast<BoolParameter*>(p)){
+                return true;
+            }
+            else if(p2->isDiscrete() && !p2->isBoolean() && !dynamic_cast<IntParameter*>(p)){
+                return true;
+            }
 
+            i++;
+        }
+        return false;
+    }
+    else{
+        return true;
+    }
+}
 
 
 void VSTNode::handleIncomingMidiMessage (MidiInput*,
@@ -361,10 +393,7 @@ void VSTNode::setStateInformation (const void* data, int sizeInBytes)
     if ( nb!=stateInfo)
 
     {
-
         stateInfo.replaceWith (data,sizeInBytes);
-
-
         triggerAsyncUpdate();
 
     };
@@ -404,27 +433,13 @@ void VSTNode::handleAsyncUpdate()
         const ScopedLock lk(pluginStateMutex);
         int oldNumInput = innerPlugin->getTotalNumInputChannels();
         int oldNumOutput = innerPlugin->getTotalNumOutputChannels();
-        Array<String> pNames ;
-        for(auto & p:innerPlugin->getParameters()){pNames.add(p->getName(maxVSTParamNameSize));}
 
         DBG ("loading state for vst " + getNiceName() + (parentContainer ? "in : " + parentContainer->getNiceName() : ""));
         innerPlugin->setStateInformation (stateInfo.getData() ,(int) stateInfo.getSize());
 
         inOutChanged |= oldNumInput!=innerPlugin->getTotalNumInputChannels();
         inOutChanged |= oldNumOutput!=innerPlugin->getTotalNumOutputChannels();
-        if(pNames.size()==innerPlugin->getParameters().size()){
-            int i = 0;
-            for(auto & p:pNames){
-                if(innerPlugin->getParameters().getUnchecked(i)->getName(maxVSTParamNameSize)!=p){
-                    paramChanged = true;
-                    break;
-                }
-                i++;
-            }
-        }
-        else{
-            paramChanged=true;
-        }
+        paramChanged = parameterHaveChanged();
         stateInfo.reset();
 
 

@@ -96,9 +96,9 @@ void VSTNodeContentUI::updateVSTParameters()
 
     for (auto& p : vstNode->VSTParameters)
     {
-        FloatSliderUI* slider = new FloatSliderUI (p);
-        paramSliders.add (slider);
-        addAndMakeVisible (slider);
+        ParameterUI* pui = ParameterUIFactory::createDefaultUI(p);
+        paramSliders.add (pui);
+        addAndMakeVisible (pui);
         pCount++;
 
         if (pCount > maxParameter)

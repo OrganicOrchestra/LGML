@@ -35,7 +35,7 @@ public:
     ~VSTNode();
 
     StringParameter*   identifierString;
-    Array<FloatParameter*> VSTParameters;
+    Array<ParameterBase*> VSTParameters;
 
 
 
@@ -152,6 +152,8 @@ private:
     int innerPluginMaxCommonChannels = 0;
 
     void handleAsyncUpdate() override;
+
+    bool parameterHaveChanged();
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (VSTNode)
 };
 

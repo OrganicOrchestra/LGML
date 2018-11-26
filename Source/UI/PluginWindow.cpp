@@ -34,7 +34,11 @@ PluginWindow::PluginWindow (Component* const pluginEditor,
       owner (o),
       type (t)
 {
-    setSize (400, 300);
+    if(pluginEditor->getWidth()>0 && pluginEditor->getHeight()>0)
+            setSize (pluginEditor->getWidth(), pluginEditor->getHeight());
+    else
+            setSize (400, 300);
+        
 
     setContentOwned (pluginEditor, true);
 
@@ -99,6 +103,7 @@ PluginWindow* PluginWindow::getWindowFor (VSTNode* const node,
 
         if (ui == nullptr)
             type = Generic;
+
     }
 
     if (ui == nullptr)
@@ -114,6 +119,9 @@ PluginWindow* PluginWindow::getWindowFor (VSTNode* const node,
     {
         if (auto * const plugin = dynamic_cast<AudioPluginInstance*> (processor))
             ui->setName (plugin->getName());
+
+        if((ui->getWidth()==0) || (ui->getHeight()==0))
+            ui->setSize(ui->getWidth()>0?ui->getWidth():200,ui->getHeight()>0?ui->getHeight():200);
 
         return new PluginWindow (ui, node, type);
     }
