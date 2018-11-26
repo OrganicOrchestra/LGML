@@ -21,7 +21,7 @@
 
 #include "../../MIDI/MIDIListener.h"
 #include "../../MIDI/MIDIHelpers.h"
-//#define VSTLOADING_THREADED
+//#define VSTLOADING_THREADED // TODO remove ref, as loading VST has to be on the main thread
 class VSTNode :
     public NodeBase,
     public AudioProcessorListener,
@@ -138,6 +138,8 @@ public:
     bool bProcessWhenBypassed;
     Trigger* midiActivityTrigger;
 
+private:
+    bool needParamReload;
     
     void handleIncomingMidiMessage (MidiInput* source,
                                     const MidiMessage& message) override;
