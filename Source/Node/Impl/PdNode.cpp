@@ -58,7 +58,8 @@ midiChooser(this,false,true)
     isLoadedParam = addNewParameter<BoolParameter>("is loaded", "is file loaded", false);
     isLoadedParam->isEditable=false;
     reloadPatch = addNewParameter<Trigger>("reload Patch","reload current patch");
-    midiActivityTrigger= addNewParameter<Trigger>("midi trigger", "trigger when incomming midi messages");
+    midiActivityTrigger= addNewParameter<Trigger>("midi Activity", "trigger when incomming midi messages");
+    midiActivityTrigger->isControllableExposed = false;
 
     libpd_set_verbose(999);
     libpd_set_printhook(lgml_print_hook);
@@ -349,7 +350,12 @@ void PdNode::parseParameters(){
         }
         c = file.readByte();
     }
-    
+
+    // TODO make params userDefined, for more control from lgml, but it should be persistent across reload of pd files
+//    for(auto& p:pdParameters){
+//        p->isUserDefined = true;
+//    }
+
 }
 
 
