@@ -7,7 +7,7 @@ import gzip
 import tempfile 
 # import githubrelease
 
-raiseErrorOnDifferentSha = True;
+raiseErrorOnDifferentSha = False;
 distPath = os.path.expanduser("~/owncloud/DEVSPECTACLES/Tools/LGML/App-Dev/dist/")
 desiredVersion = "1.2.8"
 lastVPath = os.path.join(distPath,"bleedingEdge",desiredVersion)
@@ -117,8 +117,7 @@ def deployBinsToOwncloud():
   vpublicFolder = os.path.join(publicFolder,desiredVersion)
   if not os.path.exists(vpublicFolder):
     os.makedirs(vpublicFolder)
-  print (vpublicFolder)
-  exit()
+
   jsonF = createJSON(vpublicFolder);
   copy2(changeLogPath,vpublicFolder)
 
