@@ -93,7 +93,7 @@ OSCController::OSCController (const String& _name) :
 
 OSCController::~OSCController()
 {
-    
+    receiver.disconnect();
 }
 
 void OSCController::setupReceiver()
