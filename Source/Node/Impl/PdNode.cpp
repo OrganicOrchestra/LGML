@@ -15,8 +15,13 @@
 REGISTER_NODE_TYPE (PdNode)
 
 
+String pdPrintMsg="";
 static void lgml_print_hook(const char * m){
-    LOGW(m);
+    pdPrintMsg+=m;
+    if(String(m).indexOf("\n")!=-1){
+        LOGW(pdPrintMsg);
+        pdPrintMsg= "";
+    }
 }
 
 
@@ -54,10 +59,11 @@ midiChooser(this,false,true)
     isLoadedParam->isEditable=false;
     reloadPatch = addNewParameter<Trigger>("reload Patch","reload current patch");
     midiActivityTrigger= addNewParameter<Trigger>("midi trigger", "trigger when incomming midi messages");
-    if(libpd_init()==0){
-        libpd_set_verbose(999);
-        libpd_set_printhook(lgml_print_hook);
-    }
+
+    libpd_set_verbose(999);
+    libpd_set_printhook(lgml_print_hook);
+    libpd_init();
+
     pdinstance = libpd_new_instance();
     jassert(pdinstance!=NULL);
     libpd_set_instance(pdinstance);
@@ -98,6 +104,7 @@ void PdNode::numChannelsChanged (bool isInput) {
 
 void PdNode::prepareToPlay(double sr, int blk) {
     jassert(sr>0);
+    libpd_set_instance(pdinstance);
     messageCollector.reset(sr);
     libpd_init_audio(getTotalNumInputChannels(),getTotalNumOutputChannels(),sr);
 
@@ -106,7 +113,7 @@ void PdNode::prepareToPlay(double sr, int blk) {
     jassert(blk%DEFDACBLKSIZE==0 && blk>DEFDACBLKSIZE);
     tempInBuf = HeapBlock<float>(blk*getTotalNumInputChannels());
     tempOutBuf = HeapBlock<float>(blk*getTotalNumOutputChannels(),true);
-    libpd_init_audio(getTotalNumInputChannels(),getTotalNumOutputChannels(),getSampleRate());
+
 }
 
 
@@ -134,6 +141,7 @@ void PdNode::processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer& incom
             libpd_controlchange(message.getChannel(), message.getControllerNumber(), message.getControllerValue());
         }
     }
+    incomingMidi.clear();
     AudioDataConverters::interleaveSamples(buffer.getArrayOfReadPointers(), tempInBuf, buffer.getNumSamples(),getTotalNumInputChannels());
     jassert( libpd_process_float(numTicks, tempInBuf, tempOutBuf)==0);
     AudioDataConverters::deinterleaveSamples(tempOutBuf, buffer.getArrayOfWritePointers(), buffer.getNumSamples(), getTotalNumOutputChannels());
