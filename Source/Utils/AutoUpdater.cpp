@@ -25,6 +25,13 @@
 #error BUILD_VERSION_UID should be defined in Version.h
 #endif
 
+#if DEBUG
+#define FORCE_CHECK_VERSION 1
+#define SKIP_DOWNLOAD 1
+#else
+#define FORCE_CHECK_VERSION 0
+#define SKIP_DOWNLOAD 0
+#endif
 
 //// code adapted from projucer
 
@@ -130,7 +137,7 @@ struct RelaunchTimer  : private Timer
             .getChildFile ("LGML").setExecutePermission (true);
 #endif
 
-            app.startAsProcess();
+            app.startAsProcess("--dummy");
         }
 
 
@@ -157,6 +164,9 @@ public:
     static void performDownload (LatestVersionChecker& versionChecker, URL u,
                                  const String& extraHeaders, File targetFolder)
     {
+#if SKIP_DOWNLOAD
+           new RelaunchTimer (targetFolder);
+#else
         DownloadNewVersionThread d (versionChecker, u, extraHeaders, targetFolder);
 
         if (d.runThread())
@@ -168,10 +178,12 @@ public:
                                                   d.result.getErrorMessage());
             }
             else
+
             {
                 new RelaunchTimer (targetFolder);
             }
         }
+    #endif
     }
 
     void run() override
@@ -721,7 +733,7 @@ bool LatestVersionChecker::askUserAboutNewVersion (const LatestVersionChecker::L
 {
     LGMLVersionTriple currentVersion (getProductVersionNumber());
 
-    if (force_show || (version > currentVersion))
+    if (FORCE_CHECK_VERSION || force_show || (version > currentVersion))
     {
         File appParentFolder (File::getSpecialLocation (File::currentApplicationFile).getParentDirectory());
         DialogWindow* modalDialog = nullptr;
