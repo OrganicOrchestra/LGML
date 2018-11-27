@@ -121,10 +121,10 @@ def deployBinsToOwncloud():
   jsonF = createJSON(vpublicFolder);
   copy2(changeLogPath,vpublicFolder)
 
-  for k,c in allCfgs.items():
-    print("copying : %s"%k)
-    copy2(c["local_bin"],os.path.join(vpublicFolder,os.path.basename(c["local_bin"])))
-    copy2(c["local_zip"],os.path.join(vpublicFolder,c["dst_zip_name"]))
+  # for k,c in allCfgs.items():
+  #   print("copying : %s"%k)
+  #   copy2(c["local_bin"],os.path.join(vpublicFolder,os.path.basename(c["local_bin"])))
+  #   copy2(c["local_zip"],os.path.join(vpublicFolder,c["dst_zip_name"]))
 
 def deployBinsToGithub():
   global allCfgs

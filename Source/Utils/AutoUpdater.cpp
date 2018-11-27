@@ -26,8 +26,8 @@
 #endif
 
 #if DEBUG
-#define FORCE_CHECK_VERSION 1
-#define SKIP_DOWNLOAD 1
+#define FORCE_CHECK_VERSION 0
+#define SKIP_DOWNLOAD 0
 #else
 #define FORCE_CHECK_VERSION 0
 #define SKIP_DOWNLOAD 0
