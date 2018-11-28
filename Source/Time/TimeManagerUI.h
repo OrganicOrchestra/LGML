@@ -29,7 +29,10 @@
 #include "../UI/ShapeShifter/ShapeShifterContent.h"
 
 
-class TimeManagerUI : public ShapeShifterContentComponent, public ParameterBase::AsyncListener
+class TimeManagerUI :
+public ShapeShifterContent,
+public InspectableComponent,
+public ParameterBase::AsyncListener
 {
 
 public :
@@ -103,6 +106,8 @@ public :
 
     TimeBar timeBar;
     TimeManager* timeManager;
+
+    
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeManagerUI);
 };
