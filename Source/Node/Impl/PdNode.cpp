@@ -61,7 +61,7 @@ midiChooser(this,false,true)
     midiActivityTrigger= addNewParameter<Trigger>("midi Activity", "trigger when incomming midi messages");
     midiActivityTrigger->isControllableExposed = false;
 
-    libpd_set_verbose(999);
+    libpd_set_verbose(1);
     libpd_set_printhook(lgml_print_hook);
     libpd_init();
 
@@ -94,13 +94,11 @@ void PdNode::numChannelsChanged (bool isInput) {
     libpd_init_audio(getTotalNumInputChannels(),getTotalNumOutputChannels(),getSampleRate());
     jassert(getBlockSize()%DEFDACBLKSIZE==0);
     numTicks =0;// getBlockSize() / DEFDACBLKSIZE; //DEFDACBLKSIZE in libpd
-    // [; pd dsp $1(
 
 
 
-    libpd_start_message(1);
-    libpd_add_float(true);
-    libpd_finish_message("pd", "dsp");
+
+
 }
 
 void PdNode::prepareToPlay(double sr, int blk) {
@@ -114,6 +112,11 @@ void PdNode::prepareToPlay(double sr, int blk) {
     jassert(blk%DEFDACBLKSIZE==0 && blk>=DEFDACBLKSIZE);
     tempInBuf = HeapBlock<float>(blk*getTotalNumInputChannels());
     tempOutBuf = HeapBlock<float>(blk*getTotalNumOutputChannels(),true);
+
+    // [; pd dsp $1(
+    libpd_start_message(1);
+    libpd_add_float(true);
+    libpd_finish_message("pd", "dsp");
 
 }
 
