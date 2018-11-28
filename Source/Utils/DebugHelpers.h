@@ -94,7 +94,8 @@ public:
             }
             else
             {
-                _arr->set (0, _arr->getReference (0).substring ((int)severity + 1));
+                if(severity!=LOG_NONE)
+                    _arr->set (0, _arr->getReference (0).substring ((int)severity + 2));
             }
 
         }
