@@ -100,7 +100,7 @@ maxNumElement (100),
 totalLogRow (0),
 lastUpdateTime(0)
 {
-    
+
     logger->addLogListener (this);
     TableHeaderComponent* thc = new TableHeaderComponent();
     thc->addColumn (juce::translate("Time"), 1, 60);
@@ -126,9 +126,14 @@ lastUpdateTime(0)
     clearB.addListener (this);
     addAndMakeVisible (clearB);
 
-    copyB.setButtonText(juce::translate("Copy to Clipboard"));
+    copyB.setButtonText(juce::translate("Copy All to Clipboard"));
     copyB.addListener(this);
     addAndMakeVisible(copyB);
+    logListComponent->setMouseCursor(MouseCursor::IBeamCursor);
+
+    logListComponent->setMultipleSelectionEnabled(true);
+    setInterceptsMouseClicks(true,false);
+    addMouseListener(this, true);
 
 }
 
@@ -142,6 +147,7 @@ LGMLLoggerUI::~LGMLLoggerUI()
 
 void LGMLLoggerUI::resized()
 {
+
     ShapeShifterContentComponent::resized();
     Rectangle<int> area = getLocalBounds().withTop(5);
     auto footer =area.removeFromBottom (30).reduced (5);
@@ -288,6 +294,50 @@ const Colour& LGMLLoggerUI::getSeverityColourForRow (const int r) const
 };
 
 
+bool LGMLLoggerUI::keyPressed (const KeyPress& k)            {
+    
+    if(k == KeyPress('c',ModifierKeys::commandModifier,0)){
+        String textToCopy;
+        Array<Range<int>> ranges = logListComponent->getSelectedRows().getRanges();
+        for(auto &r:ranges){
+            for(int i = r.getStart() ; i < r.getEnd() ;i++){
+                StringArray arr;
+                for(int c = 1 ; c <= 3 ; c++){
+                    if(logListComponent->getHeader().isColumnVisible(c)){
+                        arr.add(logList.getTextAt(i, c));
+                    }
+                }
+                textToCopy+=arr.joinIntoString("\t")+"\n";
+            }
+        }
+        if(textToCopy.isNotEmpty()){
+            SystemClipboard::copyTextToClipboard(textToCopy);
+            return true;
+        }
+    }
+    return false;
+}
+
+void LGMLLoggerUI::mouseDown  (const MouseEvent& me) {
+    auto pos = me.getEventRelativeTo(logListComponent);
+    auto rowUnderMouse =  logListComponent->getRowContainingPosition(pos.x,pos.y);
+    logListComponent->selectRow(rowUnderMouse);
+    grabKeyboardFocus();
+
+};
+
+void LGMLLoggerUI::mouseDrag  (const MouseEvent& me) {
+    auto pos = me.getEventRelativeTo(logListComponent);
+    auto rowUnderMouse =  logListComponent->getRowContainingPosition(pos.x,pos.y);
+    auto rowStart =logListComponent->getRowContainingPosition(pos.getMouseDownX(),pos.getMouseDownY());
+    logListComponent->selectRangeOfRows(rowStart, rowUnderMouse);
+
+};
+
+MouseCursor  LGMLLoggerUI::getMouseCursor(){
+    return MouseCursor::IBeamCursor;
+}
+
 
 //////////////
 // logList
@@ -305,10 +355,13 @@ int LGMLLoggerUI::LogList::getNumRows()
 void LGMLLoggerUI::LogList::paintRowBackground (Graphics& g,
                                                 int rowNumber,
                                                 int width, int height,
-                                                bool)
+                                                bool isSelected)
 {
-
-    g.setColour (owner->getSeverityColourForRow (rowNumber).withAlpha ((rowNumber % 2 == 0 ? 0.7f : 0.6f)));
+    auto c = owner->getSeverityColourForRow (rowNumber).withAlpha ((rowNumber % 2 == 0 ? 0.7f : 0.6f));
+    if(isSelected){
+        c = c.brighter();
+    }
+    g.setColour (c);
     g.fillRect (0, 0, width, height);
 };
 
@@ -318,14 +371,8 @@ const Font  getLogFont(){
     static Font  f(12);
     return f;
 }
-void LGMLLoggerUI::LogList::paintCell (Graphics& g,
-                                       int rowNumber,
-                                       int columnId,
-                                       int width, int height,
-                                       bool)
-{
 
-    g.setColour (owner->findColour (Label::textColourId));
+String LGMLLoggerUI::LogList::getTextAt(int rowNumber,int columnId){
     String text;
 
 
@@ -343,6 +390,45 @@ void LGMLLoggerUI::LogList::paintCell (Graphics& g,
             text = owner->getContentForRow (rowNumber);
             break;
     }
+    return text;
+
+}
+#if LOGGER_USE_LABEL
+Component * LGMLLoggerUI::LogList::refreshComponentForCell (int rowNumber, int columnId, bool isRowSelected,
+                                     Component* existingComponentToUpdate){
+    Colour color = owner->findColour (Label::textColourId);
+    String text = getTextAt(rowNumber, columnId);
+    Label * lp=nullptr;
+
+    if(existingComponentToUpdate){
+        lp = dynamic_cast<Label*>(existingComponentToUpdate);
+
+    }
+    else{
+        lp = new Label();
+        lp->setFont(getLogFont());
+        lp->setEditable(true);
+//        lp->showEditor();
+
+    }
+    jassert(lp);
+    if(lp){
+        lp->setText(text,dontSendNotification);
+    }
+    return lp;
+}
+#endif
+void LGMLLoggerUI::LogList::paintCell (Graphics& g,
+                                       int rowNumber,
+                                       int columnId,
+                                       int width, int height,
+                                       bool )
+{
+
+    Colour c =owner->findColour (Label::textColourId);
+    g.setColour (c);
+#if !LOGGER_USE_LABEL
+    String text=getTextAt(rowNumber,columnId);
 
 #if USE_CACHED_GLYPH
     if(cachedG.contains(text)){
@@ -362,8 +448,8 @@ void LGMLLoggerUI::LogList::paintCell (Graphics& g,
 
     g.drawText(text, 0, 0, width,height, Justification::left,true);
 #endif
-//    g.drawFittedText (text, 0, 0, width, height, Justification::left, 1);
 
+#endif
 };
 
 String LGMLLoggerUI::LogList::getCellTooltip (int rowNumber, int /*columnId*/)

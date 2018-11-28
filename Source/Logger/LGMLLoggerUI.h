@@ -25,7 +25,9 @@
 #include "../Utils/DebugHelpers.h"
 
 // no true performance gain proved atm
-#define USE_CACHED_GLYPH 1
+#define USE_CACHED_GLYPH 0
+
+#define LOGGER_USE_LABEL 0
 
 class LGMLLoggerUI : public ShapeShifterContentComponent,
     public LGMLLogger::Listener,
@@ -49,12 +51,18 @@ public:
                                  int rowNumber,
                                  int width, int height,
                                  bool rowIsSelected) override;
-
+#if LOGGER_USE_LABEL
+        Component * refreshComponentForCell (int rowNumber, int columnId, bool isRowSelected,
+                                                        Component* existingComponentToUpdate) override;
+#endif
         void paintCell (Graphics&,
                         int rowNumber,
                         int columnId,
                         int width, int height,
                         bool rowIsSelected) override;
+
+        String getTextAt(int rowNumber,int columnId);
+
         String getCellTooltip (int /*rowNumber*/, int /*columnId*/)    override;
 
     private:
@@ -62,6 +70,8 @@ public:
         HashMap<String,CachedGlyph > cachedG;
         void cleanUnusedGlyphs();
 #endif
+
+
         int minRow,maxRow;
         LGMLLoggerUI* owner;
         friend class LGMLLoggerUI;
@@ -81,6 +91,16 @@ public:
     OwnedArray<LogElement> logElements;
     void newMessage (const String& ) override;
 private:
+
+
+    bool keyPressed (const KeyPress&) override;
+    
+    MouseCursor  getMouseCursor() override;
+    void mouseDown  (const MouseEvent&) override;
+    void mouseDrag  (const MouseEvent&) override;
+
+    
+
     Atomic<int> totalLogRow;
     void updateTotalLogRow();
     const LogElement * getElementForRow(const int r) const;
