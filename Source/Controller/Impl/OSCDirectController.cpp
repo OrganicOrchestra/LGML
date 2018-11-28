@@ -86,13 +86,16 @@ Result OSCDirectController::processMessageInternal (const OSCMessage& msg)
     String addr = msg.getAddressPattern().toString();
     auto addrArray = OSCAddressToArray (addr);
 
-
+    bool wasInUserParams = false;
 
     if (auto* up = ( ParameterBase*)userContainer.getControllableForAddress (addrArray))
     {
         if (!setParameterFromMessage (up, msg))
         {
             result =  Result::fail ("Controllable type not handled in user Parameter");
+        }
+        else{
+            wasInUserParams=true;
         }
     }
     auto root = ParameterContainer::getRoot(true);
@@ -107,7 +110,7 @@ Result OSCDirectController::processMessageInternal (const OSCMessage& msg)
             {
                 if (c->isControllableExposed && c->isEditable)
                 {
-                    if (!setParameterFromMessage (c, msg,false,false))
+                    if (!setParameterFromMessage (c, msg,false,false) )
                     {
                         result = Result::fail ("Controllable type not handled");
                     }
@@ -134,7 +137,7 @@ Result OSCDirectController::processMessageInternal (const OSCMessage& msg)
                 }
             }
         }
-        else
+        else if( !wasInUserParams)
         {
             result = Result::fail ("Controllable not found");
 
