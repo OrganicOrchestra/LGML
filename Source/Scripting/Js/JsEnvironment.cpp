@@ -53,7 +53,7 @@ isEnabled (true)
     getEngine()->addControllableContainerListener (this);
     //  addToNamespace(localNamespace, localEnv, getGlobalEnv());
 
-
+    JsGlobalEnvironment::getInstance();
     triesToLoad = 5;
 
 }
@@ -426,7 +426,7 @@ var JsEnvironment::callFunctionFromIdentifier (const Identifier& function, const
         {
 
             if (auto je = JsGlobalEnvironment::getInstanceWithoutCreating())
-                if(je->isDirty())
+                if(!je->isDirty())
                 {
                     res = jsEngine->callFunction (function, Nargs, result);
                 }
