@@ -22,7 +22,7 @@
 #include "LooperNode.h"
 #include "../UI/ConnectableNodeContentUI.h"
 
-class LooperNodeContentUI: public ConnectableNodeContentUI, public LooperNode::LooperListener
+class LooperNodeContentUI: public ConnectableNodeContentUI, public LooperNode::LooperListener,ParameterBase::AsyncListener
 {
 public:
 
@@ -54,10 +54,11 @@ public:
 
         void paint (Graphics& g)override;
         void paintOverChildren (Graphics& g) override;
-        void mouseUp (const MouseEvent&) override {track->askForSelection (true);}
+
 
         void resized()override;
-        void trackSelectedAsync (bool _isSelected)override { isSelected = _isSelected; repaint();}
+        void mouseUp (const MouseEvent&) override ;
+        void trackSelectedAsync (bool _isSelected)override ;
 
         void trackStateChangedAsync (const LooperTrack::TrackState& /*state*/)override {};
 
@@ -102,6 +103,10 @@ public:
 
     OwnedArray<TrackUI> tracksUI;
     LooperNode* looperNode;
+
+private:
+    void newMessage (const ParameterBase::ParamWithValue&) override;
+    void checkSoloState();
 
 };
 

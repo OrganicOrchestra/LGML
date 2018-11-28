@@ -1,16 +1,16 @@
 /* Copyright © Organic Orchestra, 2017
-*
-* This file is part of LGML.  LGML is a software to manipulate sound in realtime
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation (version 3 of the License).
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*/
+ *
+ * This file is part of LGML.  LGML is a software to manipulate sound in realtime
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation (version 3 of the License).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
 
 #if !ENGINE_HEADLESS
 
@@ -63,8 +63,10 @@ void LooperNodeContentUI::init()
 
 
     trackNumChanged (looperNode->numberOfTracks->intValue());
-
-    if (looperNode->selectTrack->intValue() >= 0)looperNode->trackGroup.tracks.getUnchecked (looperNode->selectTrack->intValue())->setSelected (true);
+    checkSoloState();
+//    
+//    if (looperNode->selectTrack->intValue() >= 0 )
+//        looperNode->trackGroup.tracks.getUnchecked (looperNode->selectTrack->intValue())->setSelected (true);
 }
 
 void LooperNodeContentUI::resized()
@@ -95,6 +97,7 @@ void LooperNodeContentUI::reLayoutHeader()
     monitoringButton->setBounds (area.removeFromTop (area.getHeight()).reduced (pad));
 
 }
+
 void LooperNodeContentUI::reLayoutTracks()
 {
     if (tracksUI.size() == 0) return;
@@ -140,30 +143,55 @@ void LooperNodeContentUI::trackNumChanged (int num)
 {
 
     execOrDefer ([ = ]()
-    {
-        if (num < tracksUI.size())
-        {
-            tracksUI.removeRange (num, tracksUI.size() - num);
-        }
-        else
-        {
+                 {
+                     if (num < tracksUI.size())
+                     {
 
-            int safe_num = jmin (looperNode->trackGroup.tracks.size(), num);
+                         tracksUI.removeRange (num, tracksUI.size() - num);
 
-            for (int i = tracksUI.size() ; i < safe_num ; i++)
-            {
-                TrackUI* t = new TrackUI (looperNode->trackGroup.tracks.getUnchecked (i));
-                tracksUI.add (t);
-                trackContainer.addAndMakeVisible (t);
-            }
-        }
+                     }
+                     else
+                     {
 
-        resized();
-    }
-                );
+                         int safe_num = jmin (looperNode->trackGroup.tracks.size(), num);
+
+                         for (int i = tracksUI.size() ; i < safe_num ; i++)
+                         {
+                             auto * track = looperNode->trackGroup.tracks.getUnchecked (i);
+                             track->solo->addAsyncParameterListener(this);
+                             TrackUI* t = new TrackUI (track);
+                             tracksUI.add (t);
+                             trackContainer.addAndMakeVisible (t);
+                         }
+                     }
+
+
+                     resized();
+                 }
+                 );
 
 };
 
+
+void LooperNodeContentUI::newMessage (const ParameterBase::ParamWithValue& pv) {
+    checkSoloState();
+}
+void LooperNodeContentUI::checkSoloState(){
+    const auto & tracks = looperNode->trackGroup.tracks;
+    bool hasOneSolo = false;
+    for(auto & t :tracks){
+        if(t->solo->boolValue()){
+            hasOneSolo = true;
+            break;
+        }
+
+    }
+    for(auto & tui : tracksUI){
+        tui->muteButton->setAlpha(hasOneSolo?0.2:1);
+    }
+
+
+}
 
 
 //////////////
@@ -172,7 +200,7 @@ void LooperNodeContentUI::trackNumChanged (int num)
 
 
 LooperNodeContentUI::TrackUI::TrackUI (LooperTrack* track) :InspectableComponent(track), track (track),
-    isSelected (false), timeStateUI (track)
+isSelected (track->isSelected), timeStateUI (track)
 {
     recPlayButton = ParameterUIFactory::createDefaultUI (track->recPlayTrig);
     recPlayButton->setCustomText (">");
@@ -202,6 +230,7 @@ LooperNodeContentUI::TrackUI::TrackUI (LooperTrack* track) :InspectableComponent
     addAndMakeVisible (sampleChoiceDDL);
     addAndMakeVisible(selectMeButton);
     selectMeButton->toBack();
+
 }
 
 LooperNodeContentUI::TrackUI::~TrackUI()
@@ -260,6 +289,18 @@ void LooperNodeContentUI::TrackUI::resized()
 }
 
 
+void LooperNodeContentUI::TrackUI::mouseUp (const MouseEvent&)  {
+    track->askForSelection (true);
+}
+
+void LooperNodeContentUI::TrackUI::trackSelectedAsync (bool _isSelected) {
+    isSelected = _isSelected;
+    repaint();
+    if(_isSelected)
+        selectThis();
+}
+
+
 
 
 
@@ -273,7 +314,7 @@ LooperNodeContentUI::TrackUI::TimeStateUI::TimeStateUI (LooperTrack* _track): tr
     track->addTrackListener (this);
     setTrackTimeUpdateRateHz (10);
     trackStateChangedAsync (_track->trackState);
-    
+
 }
 LooperNodeContentUI::TrackUI::TimeStateUI::~TimeStateUI()
 {
@@ -333,25 +374,25 @@ void LooperNodeContentUI::TrackUI::TimeStateUI::trackStateChangedAsync (const Lo
         case LooperTrack::TrackState::WILL_RECORD:
             mainColour = Colours::orange;
             break;
-
+            
         case LooperTrack::TrackState::WILL_PLAY:
             mainColour = Colours::cadetblue;
             break;
-
+            
         case LooperTrack::TrackState::CLEARED:
             mainColour = Colours::grey;
             break;
-
+            
         case LooperTrack::TrackState::STOPPED:
         case LooperTrack::TrackState::WILL_STOP:
             mainColour = Colours::grey.darker();
             break;
-
+            
         default:
             jassertfalse;
             break;
     }
-
+    
     repaint();
 }
 void LooperNodeContentUI::TrackUI::TimeStateUI::trackTimeChangedAsync (double /*beat*/)

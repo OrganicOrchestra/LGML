@@ -64,7 +64,9 @@ LooperNode::LooperNode (StringRef name) :
 
     trackGroup.setNumTracks (numberOfTracks->intValue());
 
-    selectTrack->setValue (0, false, true);
+    selectTrack->setValueFrom (0, false, false);
+    if(trackGroup.tracks.size()>=0 ){trackGroup.tracks[0]->setSelected(true);}
+    
     setPlayConfigDetails (1, 1, 44100, 256);
     TimeManager::getInstance()->playState->addParameterListener (this);
     TimeManager::getInstance()->BPM->addParameterListener (this);
@@ -219,6 +221,7 @@ void LooperNode::processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer& m
 
 void LooperNode::TrackGroup::addTrack()
 {
+
     LooperTrack* t = new LooperTrack (owner, tracks.size());
     t->setNumChannels(owner->numberOfAudioChannelsIn->intValue());
     tracks.add (t);
