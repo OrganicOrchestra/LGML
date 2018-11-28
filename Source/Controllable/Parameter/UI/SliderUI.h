@@ -60,7 +60,10 @@ public:
 
 
 protected:
-    
+
+    void processUICommand(int ) override;
+    const UICommandType &  getUICommands( ) const override;
+
     void valueChanged (const var&) override ;
     bool scrollWheelAllowed;
     Time lastMouseWheelTime;

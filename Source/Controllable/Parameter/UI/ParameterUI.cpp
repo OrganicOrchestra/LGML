@@ -81,18 +81,28 @@ void ParameterUI::setCustomText (const String text)
     repaint();
 }
 
-
+const ParameterUI::UICommandType & ParameterUI::getUICommands() const{
+    static UICommandType dummy;
+    return dummy;
+}
 void ParameterUI::mouseDown (const MouseEvent& e)
 {
     UndoableHelpers::startNewTransaction(parameter,true);
     if (e.mods.isRightButtonDown())
     {
         PopupMenu p;
-        p.addItem (1, juce::translate("SelectParameterBase (Alt+click)"));
+        p.addItem (1, juce::translate("Select Parameter (Alt+click)"));
         p.addItem (2, juce::translate("Copy control address"));
         p.addItem (3, juce::translate("Add FastMap To"));
         p.addItem (4, juce::translate("Add FastMap From"));
-
+        const UICommandType & cmds(getUICommands());
+        if(cmds.size()){
+        p.addSeparator();
+            auto it = UICommandType::Iterator(cmds);
+            while (it.next()){
+                p.addItem (it.getKey()+100, juce::translate(it.getValue()));
+            }
+        }
         int result = p.show();
 
         switch (result)
@@ -100,6 +110,7 @@ void ParameterUI::mouseDown (const MouseEvent& e)
             case 1:
                 Inspector::getInstance()->setCurrentComponent(this);
                 break;
+
             case 2:
                 SystemClipboard::copyTextToClipboard (parameter->controlAddress);
                 break;
@@ -110,6 +121,12 @@ void ParameterUI::mouseDown (const MouseEvent& e)
 
             case 4:
                 FastMapper::getInstance()->addFastMap()->referenceIn->setParamToReferTo ( ParameterBase::fromControllable (parameter));
+                break;
+
+            default:
+                if(result>=100){
+                    this->processUICommand(result-100);
+                }
                 break;
 
         }

@@ -191,7 +191,7 @@ void SliderUI<T>::mouseDown (const MouseEvent& e)
 
     if (e.mods.isShiftDown())
     {
-        parameter->resetValue();
+        UndoableHelpers::resetValueUndoable(parameter);
     }
 
     if (e.mods.isCommandDown())
@@ -241,6 +241,36 @@ void SliderUI<T>::mouseDrag (const MouseEvent& e)
         }
     }
 }
+
+
+template<class T>
+void SliderUI<T>::processUICommand(int i) {
+    switch (i){
+        case 1:
+            UndoableHelpers::resetValueUndoable(parameter);
+            break;
+        case 2:
+            UndoableHelpers::setValueUndoable(parameter, parameter->floatValue()>0?0:(T)parameter->lastValue);
+            break;
+        default:
+            break;
+
+    }
+
+
+};
+
+
+template<class T>
+const ParameterUI::UICommandType & SliderUI<T>::getUICommands( ) const {
+    static UICommandType res;
+    if(res.size()==0){
+        res.set(1,juce::translate("reset value (Shift+click)"));
+        res.set(2,juce::translate("toggle value (Meta+click)"));
+    }
+    return res;
+};
+
 
 template<class T>
 void SliderUI<T>::mouseUp (const MouseEvent& me)
