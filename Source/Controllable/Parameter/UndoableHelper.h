@@ -13,7 +13,7 @@
 namespace UndoableHelpers{
 
     void setValueUndoable ( ParameterBase* p,const var & _value, bool silentSet = false, bool force = false);
-    
+    void resetValueUndoable ( ParameterBase* p,bool silentSet=false);
     void startNewTransaction( ParameterBase*p,bool force=false);
     void setParameterCoalesced(bool t);
     

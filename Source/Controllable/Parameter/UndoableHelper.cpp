@@ -16,11 +16,11 @@ namespace UndoableHelpers{
 
 class UndoableSetValueAction : public UndoableAction{
 public:
-    UndoableSetValueAction( ParameterBase* p,const var & _value, bool _silentSet, bool _force):
+    UndoableSetValueAction( ParameterBase* p,const var & _value, bool _silentSet, bool _force,bool _isResetAction=false):
     silentSet(_silentSet),
     force(_force),
-    parameter(p)
-
+    parameter(p),
+    isResetAction(_isResetAction)
     {
         if(parameter.get()){
             lastValue = parameter->value.clone();
@@ -32,7 +32,12 @@ public:
 
     bool perform() override{
         if(parameter.get()){
-            parameter->setValue(value,silentSet,force);
+            if(isResetAction){
+                parameter->resetValue();
+            }
+            else{
+                parameter->setValue(value,silentSet,force);
+            }
             return true;
         }
         return false;
@@ -52,7 +57,7 @@ public:
 
         if(auto n = dynamic_cast<UndoableSetValueAction*>(nextAction)){
             if(n->parameter==parameter){
-                auto na = new UndoableSetValueAction(parameter,n->value,n->silentSet,n->force);
+                auto na = new UndoableSetValueAction(parameter,n->value,n->silentSet,n->force,n->isResetAction);
                 na->lastValue = lastValue.clone();
                 return na;
             }
@@ -64,6 +69,7 @@ public:
     WeakReference<ParameterBase> parameter;
     bool silentSet,force;
     var value,lastValue;
+    bool isResetAction;
 };
     bool isCoalescing = false;
     void setParameterCoalesced(bool t){
@@ -75,6 +81,13 @@ public:
             getAppUndoManager().perform(new UndoableSetValueAction(p,_value,silentSet,force));
         }
     }
+    void resetValueUndoable ( ParameterBase* p, bool silentSet ){
+        if(p){
+            if(!isCoalescing)startNewTransaction(p);
+            getAppUndoManager().perform(new UndoableSetValueAction(p,var(),silentSet,false,true));
+        }
+    }
+
     void startNewTransaction( ParameterBase*p,bool force){
         String tname ("set " + p->niceName + (p->parentContainer?("from : " + p->parentContainer->getNiceName()):""));
         if(force || tname!=getAppUndoManager().getCurrentTransactionName()){
