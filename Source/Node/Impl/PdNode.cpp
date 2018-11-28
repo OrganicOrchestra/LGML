@@ -111,7 +111,7 @@ void PdNode::prepareToPlay(double sr, int blk) {
 
 
     numTicks = blk / DEFDACBLKSIZE;
-    jassert(blk%DEFDACBLKSIZE==0 && blk>DEFDACBLKSIZE);
+    jassert(blk%DEFDACBLKSIZE==0 && blk>=DEFDACBLKSIZE);
     tempInBuf = HeapBlock<float>(blk*getTotalNumInputChannels());
     tempOutBuf = HeapBlock<float>(blk*getTotalNumOutputChannels(),true);
 
