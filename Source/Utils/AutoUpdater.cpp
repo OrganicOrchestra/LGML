@@ -673,7 +673,7 @@ bool LatestVersionChecker::processResult (const var& reply, const String& downlo
             {
                 String extraHeaders;
                 String urlPage = reply.getProperty("download_page",
-                                                   "http://organic-orchestra.com/forum/d/6-lgml-telechargements").toString();
+                                                   "http://lab.organic-orchestra.com/lgml/download").toString();
                 URL newVersionToDownload (urlPage);
                 bool hasDirectDownload = false;
 
