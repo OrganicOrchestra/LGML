@@ -67,7 +67,7 @@ public:
         minimumValue = min;
         maximumValue = max;
         //  check validity of parameter
-        setValueFrom(notifier,value,false,true);
+        setValueFrom(notifier,value,false,false);
         listeners.call (&Listener::parameterRangeChanged, this);
         var arr;
         arr.append (minimumValue);
