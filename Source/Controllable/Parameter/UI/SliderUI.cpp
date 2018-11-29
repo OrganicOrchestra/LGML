@@ -283,7 +283,7 @@ void SliderUI<T>::mouseUp (const MouseEvent& me)
 
     BailOutChecker checker (this);
 
-    if(me.getDistanceFromDragStart()==0 && !me.mods.isAnyModifierKeyDown()){
+    if(!me.mouseWasDraggedSinceMouseDown() && !me.mods.isAnyModifierKeyDown()){
         if(valueBox && !valueBox->isVisible()){
             valueBox->setText(String((T)parameter->value), dontSendNotification);
             valueBox->setVisible(true);

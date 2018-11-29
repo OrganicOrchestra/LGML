@@ -376,7 +376,7 @@ void LGMLDragger::endDraggingComponent (Component*   /*componentToDrag*/, const 
     else
     {
 
-        auto* c = (dragCandidate && e.getDistanceFromDragStart()==0)? dragCandidate->originComp.get() : nullptr;
+        auto* c = (dragCandidate && !e.mouseWasDraggedSinceMouseDown())? dragCandidate->originComp.get() : nullptr;
         setSelected (c);
     }
 
