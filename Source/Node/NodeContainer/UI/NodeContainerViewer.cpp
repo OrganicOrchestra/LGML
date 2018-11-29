@@ -744,7 +744,7 @@ void NodeContainerViewer::addOrRemoveNodeUndoable(const String & tid,const Point
 
 
 void NodeContainerViewer::removeNodeListUndoable(Array<NodeBase*> nl){
-    getAppUndoManager().beginNewTransaction("addList"+String(Random::Random().nextInt()));
+    getAppUndoManager().beginNewTransaction("addList"+String(Random().nextInt()));
     for(auto n:nl){
         if(n->canBeRemovedByUser)
             removeNodeUndoable(n);
