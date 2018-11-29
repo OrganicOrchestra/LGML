@@ -689,7 +689,7 @@ void TimeManager::setBPMFromTransportTimeInfo (const TransportTimeInfo& info, bo
 
 #if LINK_SUPPORT
 
-    linkPimpl->setBPM (info.bpm, std::chrono::microseconds ((long long) (atSample * 1000000.0 / sampleRate)));
+    linkPimpl->setBPMNow (info.bpm, std::chrono::microseconds ((long long) (atSample * 1000000.0 / sampleRate)));
 
 #endif
     //jassert((int)(barLength*beatPerBar->intValue())>0);

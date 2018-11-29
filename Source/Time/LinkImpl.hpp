@@ -26,7 +26,7 @@ class LinkImpl
 {
 public:
     LinkImpl (TimeManager* o): owner (o), linkSession (120.0),
-    linkTimeLine (ableton::link::Timeline(), true),
+    linkSessionState (ableton::link::ApiState(), true),
     linkLatency (00),
     linkTime(-1)
     {
@@ -35,7 +35,7 @@ public:
     };
     ableton::Link linkSession;
 
-    ableton::Link::Timeline  linkTimeLine;
+    ableton::Link::SessionState  linkSessionState;
     std::chrono::microseconds  linkTime;
     //    ableton::link::HostTimeFilter<ableton::link::platform::Clock> linkFilter;
     std::chrono::microseconds linkLatency;
@@ -50,12 +50,12 @@ public:
     void checkDrift()
     {
 
-        linkTimeLine = linkSession.captureAudioTimeline();
+        linkSessionState = linkSession.captureAudioSessionState();
         const double quantum = owner->beatPerBar->intValue() / owner->quantizedBarFraction->doubleValue();
         jassert (quantum > 0);
 
-        const double linkBeat = linkTimeLine.beatAtTime (linkTime, quantum);
-        //    auto phaseAtTime = linkTimeLine.phaseAtTime(linkTime, tstQ);
+        const double linkBeat = linkSessionState.beatAtTime (linkTime, quantum);
+        //    auto phaseAtTime = linkSessionState.phaseAtTime(linkTime, tstQ);
         //    auto localPhase = fmod(localBeat,tstQ);
         const double localBeat = owner->getBeat();
         const float driftMs = (linkBeat - localBeat) * owner->beatTimeInSample * 1000.0f / owner->sampleRate;
@@ -71,35 +71,34 @@ public:
 
     void notifyJump()
     {
-        linkTimeLine.requestBeatAtTime (owner->getBeat(),
-                                        //                      std::chrono::system_clock::now().time_since_epoch(),
+        linkSessionState.requestBeatAtTime (owner->getBeat(),
                                         linkTime,
                                         owner->beatPerBar->intValue() * 1.0 / owner->quantizedBarFraction->intValue());
-        linkSession.commitAudioTimeline (linkTimeLine);
+        linkSession.commitAudioSessionState (linkSessionState);
 
     }
     void captureTimeLine()
     {
-        linkTimeLine = linkSession.captureAudioTimeline();
+        linkSessionState = linkSession.captureAudioSessionState();
     }
 
     void commitBPM (double BPM)
     {
-        linkTimeLine = linkSession.captureAudioTimeline();
-        linkTimeLine.setTempo (BPM, linkTime);
-        linkSession.commitAudioTimeline (linkTimeLine);
+        linkSessionState = linkSession.captureAudioSessionState();
+        linkSessionState.setTempo (BPM, linkTime);
+        linkSession.commitAudioSessionState (linkSessionState);
 
     }
 
 
-    void setBPM (double bpm, std::chrono::microseconds delta)
+    void setBPMNow (double bpm, std::chrono::microseconds delta)
     {
-        linkTimeLine = ableton::Link::Timeline (ableton::link::Timeline(), true);
+        linkSessionState = ableton::Link::SessionState (ableton::link::ApiState(), true); // we force other peers to jump
 
-        linkTimeLine.setTempo (bpm, linkTime);
-        linkTimeLine.forceBeatAtTime (0, linkTime + delta, 0);
+        linkSessionState.setTempo (bpm, linkTime);
+        linkSessionState.forceBeatAtTime (0, linkTime + delta, 0);
 
-        linkSession.commitAudioTimeline (linkTimeLine);
+        linkSession.commitAudioSessionState (linkSessionState);
     }
     void enable (bool b)
     {
@@ -108,12 +107,12 @@ public:
         if (b)
         {
 
-            auto lTl = linkSession.captureAppTimeline();
+            auto lTl = linkSession.captureAppSessionState();
             lTl.requestBeatAtTime (owner->getBeat(),
                                    //                      std::chrono::system_clock::now().time_since_epoch(),
                                    linkTime,
                                    owner->beatPerBar->intValue() * 1.0 / owner->quantizedBarFraction->intValue());
-            linkSession.commitAppTimeline (lTl);
+            linkSession.commitAppSessionState (lTl);
         }
     }
 
