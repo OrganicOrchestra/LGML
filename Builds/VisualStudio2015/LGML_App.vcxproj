@@ -100,7 +100,7 @@
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalIncludeDirectories>..\..\third_party\VST3_SDK;..\..\JuceLibraryCode;..\..\..\JUCE\modules;$(ASIOSDK)\common;../../../JUCE/modules/juce_audio_processors/format_types/VST3_SDK/;../../third_party/VST2_SDK/;../../third_party/libpd/pure-data/src;../../third_party/serial/include;../../third_party/rubberband/;../../third_party/link/include/;../../third_party/link/modules/asio-standalone/asio/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;LINK_PLATFORM_WINDOWS=1;PTW32_STATIC_LIB=1;PD_INTERNAL=1;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=1.2.9;JUCE_APP_VERSION_HEX=0x10209;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;LINK_PLATFORM_WINDOWS=1;PTW32_STATIC_LIB=1;PD_INTERNAL=1;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=1.2.10;JUCE_APP_VERSION_HEX=0x1020a;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader/>
@@ -147,7 +147,7 @@
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalIncludeDirectories>..\..\third_party\VST3_SDK;..\..\JuceLibraryCode;..\..\..\JUCE\modules;$(ASIOSDK)\common;../../../JUCE/modules/juce_audio_processors/format_types/VST3_SDK/;../../third_party/VST2_SDK/;../../third_party/libpd/pure-data/src;../../third_party/serial/include;../../third_party/rubberband/;../../third_party/link/include/;../../third_party/link/modules/asio-standalone/asio/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;LINK_PLATFORM_WINDOWS=1;PTW32_STATIC_LIB=1;PD_INTERNAL=1;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=1.2.9;JUCE_APP_VERSION_HEX=0x10209;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;LINK_PLATFORM_WINDOWS=1;PTW32_STATIC_LIB=1;PD_INTERNAL=1;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=1.2.10;JUCE_APP_VERSION_HEX=0x1020a;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader/>
@@ -195,7 +195,7 @@
       <Optimization>Full</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalIncludeDirectories>..\..\third_party\VST3_SDK;..\..\JuceLibraryCode;..\..\..\JUCE\modules;$(ASIOSDK)\common;../../../JUCE/modules/juce_audio_processors/format_types/VST3_SDK/;../../third_party/VST2_SDK/;../../third_party/libpd/pure-data/src;../../third_party/serial/include;../../third_party/rubberband/;../../third_party/link/include/;../../third_party/link/modules/asio-standalone/asio/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;LINK_PLATFORM_WINDOWS=1;PTW32_STATIC_LIB=1;PD_INTERNAL=1;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=1.2.9;JUCE_APP_VERSION_HEX=0x10209;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;LINK_PLATFORM_WINDOWS=1;PTW32_STATIC_LIB=1;PD_INTERNAL=1;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=1.2.10;JUCE_APP_VERSION_HEX=0x1020a;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader/>
@@ -244,7 +244,7 @@
       <Optimization>Full</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalIncludeDirectories>..\..\third_party\VST3_SDK;..\..\JuceLibraryCode;..\..\..\JUCE\modules;$(ASIOSDK)\common;../../../JUCE/modules/juce_audio_processors/format_types/VST3_SDK/;../../third_party/VST2_SDK/;../../third_party/libpd/pure-data/src;../../third_party/serial/include;../../third_party/rubberband/;../../third_party/link/include/;../../third_party/link/modules/asio-standalone/asio/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;LINK_PLATFORM_WINDOWS=1;PTW32_STATIC_LIB=1;PD_INTERNAL=1;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=1.2.9;JUCE_APP_VERSION_HEX=0x10209;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;LINK_PLATFORM_WINDOWS=1;PTW32_STATIC_LIB=1;PD_INTERNAL=1;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=1.2.10;JUCE_APP_VERSION_HEX=0x1020a;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader/>
