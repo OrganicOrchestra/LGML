@@ -1,50 +1,59 @@
 import os, glob, json
 
-from PyUtils import gitUtils
+
 from shutil import copy2 , copyfileobj
 import zipfile
 import gzip
-import tempfile 
-# import githubrelease
 
-raiseErrorOnDifferentSha = False;
+
+
+raiseErrorOnDifferentSha = True;
+dry_run = False;
 distPath = os.path.expanduser("~/owncloud/DEVSPECTACLES/Tools/LGML/App-Dev/dist/")
-desiredVersion = "1.2.8"
+if not os.path.exists(distPath):
+  distPath = "/var/www/owncloud/data/admin/files/OrganicRoot/Spectacles/Tools/LGML/App-Dev/dist/"
+if not os.path.exists(distPath):
+  raise NameError("dist path not found")
+
+desiredVersion = "1.2.9"
 lastVPath = os.path.join(distPath,"bleedingEdge",desiredVersion)
 publicFolder = '/Volumes/sshfs/owncloud/tools/LGML/'
+if not os.path.exists(publicFolder):
+  publicFolder = os.path.expanduser("~/tools/LGML");
+if not os.path.exists(publicFolder):
+  raise NameError("public folder path not found") 
 # publicFolder = '/tmp/LGML/dist'
 changeLogPath  = os.path.join(lastVPath,"CHANGELOG.md")
 
 
 allCfgs={}
 for c in glob.glob(lastVPath+"/*.cfg"):
-  with open(c,'r') as fp:
-    allCfgs [os.path.basename(c)[:-4]]=json.load(fp)
+  if not "Debug" in c:
+    with open(c,'r') as fp:
+      allCfgs [os.path.basename(c)[:-4]]=json.load(fp)
 
-currentSha = gitUtils.getGitSha()
+currentSha = ""
 
 def checkIntegrity(errorOnWrongSha=True):
   global currentSha
-  sha = currentSha
+  
   if( not os.path.exists(changeLogPath)):
-    raise NameError("can't find CHANGELOG")
+    raise NameError("can't find CHANGELOG at "+changeLogPath)
 
   shas = { k:v["git_sha"] for k,v in allCfgs.items()}
-  print (shas)
-  for k,v in shas.items():
-    if v!= currentSha:
-      print ("warning sha is not current : %s vs %s"%(v,currentSha))
-      break;
-
+  
   
   for k,v in shas.items():
-    currentSha = sha
-    if sha!= v:
-      err = "mismatching sha for %s: %s vs %s"%(k,sha,v)
+    if currentSha=="":
+      currentSha = v;
+    if currentSha!= v:
+      print (shas)
+      err = "mismatching sha for %s: %s vs %s"%(k,currentSha,v)
       if errorOnWrongSha:
         raise NameError(err)
       else:
         print (err)
+
 
 
   bins = {k:os.path.join(lastVPath,os.path.basename(allCfgs[k]["packaged_name"])) for k in allCfgs.keys()}
@@ -52,17 +61,20 @@ def checkIntegrity(errorOnWrongSha=True):
     if not os.path.exists(b):
       raise NameError("not found bin for cfg : %s"%b)
     allCfgs[k]["local_bin"] = b;
+    allCfgs[k]["published_basename"] = "LGML_v"+desiredVersion+'_'+allCfgs[k]["build_version_uid"]
+
 
   zips = {k:os.path.join(lastVPath,k+".zip") for k in allCfgs.keys()}
   for k,z in zips.items():
     if not os.path.exists(z):
       raise NameError("not found zip for cfg : %s"%z)
     allCfgs[k]["local_zip"] = z;
-    allCfgs[k]["dst_zip_name"] = "LGML_v"+desiredVersion+'_'+allCfgs[k]["build_version_uid"]+".zip"
+    
+    
 
   exported_zips = {}
   for k,v in allCfgs.items():
-    print(k)
+    # print(k)
     bid= v["build_version_uid"]
     cf = v["build_cfg_name"]
     if "Release" in cf:
@@ -83,7 +95,7 @@ def createJSON(destFolder):
       "notes":notes,
       "version":desiredVersion,
       "download_page" : "http://organic-orchestra.com/forum/d/6-lgml-telechargements",
-      "zip_link" : {v["build_version_uid"]:v["dst_zip_name"] for v in allCfgs.values()}
+      "zip_link" : {v["build_version_uid"]:v["published_basename"]+'.zip' for v in allCfgs.values()}
       }
   vf = os.path.join(destFolder,"version.json")
   with open(vf,'w') as fp:
@@ -107,7 +119,7 @@ def printReleaseMessage():
   for k,v in builds.items():
     msg+=k+" : \n"
     for bn in v:
-      msg+=baseLink+bn+'\n'
+      msg+=bn+'\n'
     msg+='\n'
   print (msg)
 
@@ -119,27 +131,56 @@ def deployBinsToOwncloud():
     os.makedirs(vpublicFolder)
 
   jsonF = createJSON(vpublicFolder);
-  copy2(changeLogPath,vpublicFolder)
-
-  # for k,c in allCfgs.items():
-  #   print("copying : %s"%k)
-  #   copy2(c["local_bin"],os.path.join(vpublicFolder,os.path.basename(c["local_bin"])))
-  #   copy2(c["local_zip"],os.path.join(vpublicFolder,c["dst_zip_name"]))
-
-def deployBinsToGithub():
-  global allCfgs
-
+  copy2(jsonF,publicFolder+'/');
+  copy2(changeLogPath,vpublicFolder);
+  
 
   for k,c in allCfgs.items():
     print("copying : %s"%k)
-    copy2(c["local_bin"],os.path.join(vpublicFolder,os.path.basename(c["local_bin"])))
-    copy2(c["local_zip"],os.path.join(vpublicFolder,c["dst_zip_name"]))
+  #   #copy2(c["local_bin"],os.path.join(vpublicFolder,os.path.basename(c["local_bin"])))
+    copy2(c["local_zip"],os.path.join(vpublicFolder,c["published_basename"]+'.zip'))
+
+def deployBinsToGithub():
+  global allCfgs,dry_run
+  import github_release as gh
+  repo_name = "OrganicOrchestra/LGML"
+  #checkNotReleased
+  rl = gh.get_releases(repo_name)
+  for r in rl:
+    assert(r['tag_name']!=desiredVersion)
+
+  tempD = '/tmp/githubExports'
+  if(not os.path.exists(tempD)):
+    os.makedirs(tempD)
+  
+  # print(json.dumps(allCfgs,indent=4))
+  allAssets = []
+  for k,v in allCfgs.items():
+      ext = os.path.splitext(v["local_bin"])[1]
+      if v["local_bin"].endswith(".tar.gz"):
+        ext = ".tar.gz";
+      tmpRenamed = tempD+'/'+v["published_basename"]+ext
+      copy2(v["local_bin"],tmpRenamed)
+      allAssets+= [tmpRenamed]
+  print (allAssets)
+  gh.gh_release_create(repo_name,desiredVersion,publish=True,asset_pattern =allAssets, name=desiredVersion,body=notes,dry_run=dry_run)
+
+
+
+  
+  
 
 
 
 if __name__ == '__main__':
   
-  
+  print(json.dumps(allCfgs,indent=1))
   printReleaseMessage()
-  deployBinsToOwncloud()
+  print ('doyouwantToProceed (y/N)')
+  nn = input()
+  if nn=='y':
+    deployBinsToOwncloud()
+    deployBinsToGithub()
+  else:
+    print('not deploying')
   
