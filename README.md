@@ -1,7 +1,12 @@
 # LGML
+[![Build Status](https://travis-ci.org/OrganicOrchestra/LGML.svg?branch=master)](https://travis-ci.org/OrganicOrchestra/LGML)
+[![CircleCI](https://circleci.com/gh/OrganicOrchestra/LGML/tree/master.svg?style=svg)](https://circleci.com/gh/OrganicOrchestra/LGML/tree/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/l1rd556j6ogglg6p/branch/master?svg=true)](https://ci.appveyor.com/project/MartinHN/lgml/branch/master)
+(develop Branch
 [![Build Status](https://travis-ci.org/OrganicOrchestra/LGML.svg?branch=develop)](https://travis-ci.org/OrganicOrchestra/LGML)
 [![CircleCI](https://circleci.com/gh/OrganicOrchestra/LGML/tree/develop.svg?style=svg)](https://circleci.com/gh/OrganicOrchestra/LGML/tree/develop)
-[![Build status](https://ci.appveyor.com/api/projects/status/bt4r87i23v7f44qq/branch/develop?svg=true)](https://ci.appveyor.com/project/OrganicOrchestra/lgml/branch/develop)
+[![Build status](https://ci.appveyor.com/api/projects/status/l1rd556j6ogglg6p/branch/develop?svg=true)](https://ci.appveyor.com/project/MartinHN/lgml/branch/develop)
+)
 
 
 (c) Organic-Orchestra 2017 , 
