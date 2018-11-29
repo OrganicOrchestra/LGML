@@ -193,16 +193,24 @@ void ControllerManagerUI::buttonClicked (Button* b )
 
 }
 
-void ControllerManagerUI::addControllerUndoable(const String & typeId){
-    getAppUndoManager().beginNewTransaction("add Controller :"+typeId);
+
+void addOrRemoveControllerUndoable(const String & typeId,Controller * controller,ControllerManager *manager){
+    getAppUndoManager().beginNewTransaction(String(controller?"remove":"add")+" Controller :"+typeId);
     getAppUndoManager().perform(new
-                                FactoryUIHelpers::UndoableFactoryCreate<Controller>
+                                FactoryUIHelpers::UndoableFactoryCreateOrDelete<Controller>
                                 (typeId,
                                  [=](Controller * c){manager->addController(c);},
-                                 [=](Controller * c){manager->removeController(c);}
-
-                                )
+                                 [=](Controller * c){manager->removeController(c);},
+                                 controller
+                                 )
                                 );
+}
+void ControllerManagerUI::addControllerUndoable(const String & typeId){
+    addOrRemoveControllerUndoable(typeId,nullptr,manager);
+}
+void ControllerManagerUI::removeControllerUndoable(Controller * controller){
+    const String typeId  =controller->getFactoryTypeId().toString();
+   addOrRemoveControllerUndoable(typeId,controller,manager);
 }
 
 #endif

@@ -122,24 +122,24 @@ class UndoableCreate:public UndoableAction{
 };
 
 template<class T>
-class UndoableFactoryCreate:public UndoableAction{
+class UndoableFactoryCreateOrDelete:public UndoableAction{
     public:
         typedef std::function<void(T*)> addFType;
         typedef std::function<void(T*)> rmFType;
-        UndoableFactoryCreate(String _typeID,addFType _addF,rmFType _rmF):addF(_addF),rmF(_rmF),typeID(_typeID){
-            
+        UndoableFactoryCreateOrDelete(String _typeID,addFType _addF,rmFType _rmF,T * originToRemove):addF(_addF),rmF(_rmF),typeID(_typeID),obj(originToRemove),isRemove(originToRemove!=nullptr){
+            obSettings = originToRemove?originToRemove->getObject()->clone():nullptr;
         };
 
         bool perform() override{
-            obj = FactoryBase<T>::createFromTypeID(typeID);
-            if(obj){
-                addF(obj);
-                return true;
-            }
-            return false;
+            return  isRemove?removeObj():createObj();
         }
 
         bool undo() override{
+            return  !isRemove?removeObj():createObj();
+        }
+
+        bool removeObj(){
+            jassert(obj);
             if(obj){
                 rmF(obj);
                 obj=nullptr;
@@ -148,10 +148,22 @@ class UndoableFactoryCreate:public UndoableAction{
 
             return false;
         }
+
+    bool createObj(){
+        jassert(!obj);
+        obj = FactoryBase<T>::createFromTypeID(typeID,"",obSettings.getDynamicObject());
+        if(obj){
+            addF(obj);
+            return true;
+        }
+        return false;
+    }
     String typeID;
         addFType addF;
         rmFType rmF;
     WeakReference<T> obj;
+    var obSettings;
+    bool isRemove;
 
 };
 

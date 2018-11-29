@@ -373,6 +373,9 @@ void NodeContainerViewer::finishEditingConnection()
 ConnectableNodeUI * getRelatedConnectableNodeUIForDrag(Component * c,bool allowChild){
 
     // dont drag if comming from param or text editor
+    if(dynamic_cast<ConnectorComponent*>(c)){
+        return nullptr;
+    }
 
     if( auto nui = dynamic_cast<ConnectableNodeUI*>(c)){
         return nui;
@@ -535,26 +538,15 @@ void NodeContainerViewer::mouseUp (const MouseEvent& e)
 
     // select nodeviewer
     if (e.eventComponent == this ){
-        if(getLassoSelection().getItemArray().size()==0)
+        if(selectedItems.getNumSelected()==0)
             selectThis();
     }
-    else if(auto nui = getRelatedConnectableNodeUIForDrag(e.eventComponent,true) ){
-        if(!e.mods.isAltDown()){
-            selectedItems.addToSelectionOnMouseUp(nui,e.mods,
-                                                  hasDraggedDuringClick ,
-                                                  resultOfMouseDownSelectMethod);
-            // trigger selection when first and alone
-            if(Inspector::getInstance()->getCurrentComponent()!=nui &&
-               getLassoSelection().getItemArray().size()==1){
-                nui->selectThis();
-            }
-        }
 
-    }
-    else {
+    else if(!getRelatedConnectableNodeUIForDrag(e.eventComponent,true) ) {
         for( auto & i:selectedItems){
             if(i.get())i->setVisuallySelected(false);
         }
+        selectedItems.deselectAll();
     }
 
     selectedInitBounds.clear();
@@ -590,6 +582,23 @@ bool NodeContainerViewer::keyPressed (const KeyPress& key)
         }
 
         return true;
+    }
+    else if (key.getKeyCode() == KeyPress::deleteKey || key.getKeyCode() == KeyPress::backspaceKey)
+    {
+        Array<NodeBase* > toRemove;
+        for(auto sel:selectedItems.getItemArray()){
+            if (auto ui=sel.get()){
+
+                if(auto * pc = ui->getRelatedParameterContainer()){
+                    if(auto * cn = dynamic_cast<NodeBase*>(pc)){
+                        toRemove.add(cn);
+                    }
+                }
+            }
+        }
+        removeNodeListUndoable(toRemove);
+
+        return toRemove.size()>0;
     }
 
     return false;
@@ -667,16 +676,10 @@ void NodeContainerViewer::findLassoItemsInArea (Array<SelectedUIType>& itemsFoun
         }
     }
 
-    auto insp = Inspector::getInstance();
-    if(itemsFound.size()){
-        // unselect this if needed
-        if(insp->getCurrentComponent()==this){
-            insp->setCurrentComponent(nullptr);
-        }
-    }
-    else{
-        insp->setCurrentComponent(nullptr);
-    }
+        auto insp = Inspector::getInstance();
+            if(selectedItems.getNumSelected()>=0)
+                insp->setCurrentComponent(selectedItems.getSelectedItem(0));
+
 };
 
 SelectedItemSet<SelectedUIType>& NodeContainerViewer::getLassoSelection() {
@@ -696,18 +699,35 @@ void NodeContainerViewer::changeListenerCallback (ChangeBroadcaster* source){
 
 }
 
-void NodeContainerViewer::addNodeUndoable(const String & tid,const Point<int> & mousePos){
-    getAppUndoManager().beginNewTransaction("add Node :"+tid);
-    getAppUndoManager().perform(new FactoryUIHelpers::UndoableFactoryCreate<NodeBase>
+void NodeContainerViewer::addOrRemoveNodeUndoable(const String & tid,const Point<int> & mousePos,NodeBase * originNodeToRemove){
+
+    var  savedUiParamsObject;
+    if(originNodeToRemove){
+        auto savedUiParamsInstance = dynamic_cast<ConnectableNodeUIParams*>(uiParams->getControllableContainerByName(originNodeToRemove->shortName));
+        savedUiParamsObject = savedUiParamsInstance->getObject()->clone();
+
+    }
+
+    getAppUndoManager().perform(new FactoryUIHelpers::UndoableFactoryCreateOrDelete<NodeBase>
                                         (tid,
                                          [=](NodeBase* c){
                                              if(c)
                                              {
                                                  ConnectableNode* n = (ConnectableNode*)nodeContainer->addNode (c);
                                                  jassert (n != nullptr);
+                                                 
                                                  if(auto m = getUIForNode(n)){
-                                                     m->nodePosition->setPoint (mousePos - m->nodeSize->getPoint() / 2);
-                                                     m->nodeMinimizedPosition->setPoint (mousePos - m->nodeSize->getPoint() / 2);
+                                                     if(originNodeToRemove){
+                                                         if(auto * sO = savedUiParamsObject.getDynamicObject()){
+                                                             auto nodeUIParams = dynamic_cast<ParameterContainer*>(uiParams->getControllableContainerByName(n->shortName));
+                                                             nodeUIParams->configureFromObject(sO);
+                                                         }
+                                                     }
+                                                     if(!originNodeToRemove){
+                                                         m->nodePosition->setPoint (mousePos - m->nodeSize->getPoint() / 2);
+                                                         m->nodeMinimizedPosition->setPoint (mousePos - m->nodeSize->getPoint() / 2);
+                                                     }
+                                                     m->selectThis();
                                                  }
 
                                              }
@@ -716,9 +736,31 @@ void NodeContainerViewer::addNodeUndoable(const String & tid,const Point<int> & 
                                                  jassertfalse;
                                              }
                                          },
-                                         [=](NodeBase *c){nodeContainer->removeNode(c);}
+                                         [=](NodeBase *c){nodeContainer->removeNode(c);},
+                                         originNodeToRemove
                                         ));
 
 }
+
+
+void NodeContainerViewer::removeNodeListUndoable(Array<NodeBase*> nl){
+    getAppUndoManager().beginNewTransaction("addList"+String(Random::Random().nextInt()));
+    for(auto n:nl){
+        if(n->canBeRemovedByUser)
+            removeNodeUndoable(n);
+    }
+}
+void NodeContainerViewer::addNodeUndoable(const String & tid,const Point<int> & mousePos){
+
+    addOrRemoveNodeUndoable(tid, mousePos, nullptr);
+}
+void NodeContainerViewer::removeNodeUndoable(NodeBase * originNodeToRemove){
+    if(originNodeToRemove->canBeRemovedByUser)
+        addOrRemoveNodeUndoable(originNodeToRemove->getFactoryTypeId().toString(), Point<int>(), originNodeToRemove);
+    else
+        jassertfalse;
+}
+
+
 
 #endif

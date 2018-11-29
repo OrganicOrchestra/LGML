@@ -331,13 +331,16 @@ void ConnectableNodeUI::childBoundsChanged (Component* c)
 
 void ConnectableNodeUI::mouseDown (const juce::MouseEvent& /*e*/)
 {
+
 UndoableHelpers::startNewTransaction(getCurrentPositionParam(),true);
     UndoableHelpers::setParameterCoalesced(true);
 
 }
 
-void ConnectableNodeUI::mouseUp (const juce::MouseEvent&)
+void ConnectableNodeUI::mouseUp (const juce::MouseEvent& me)
 {
+    if(!me.mouseWasDraggedSinceMouseDown())
+        selectThis();
     isDraggingFromUI = false;
     UndoableHelpers::setParameterCoalesced(false);
 }
@@ -359,16 +362,7 @@ bool ConnectableNodeUI::keyPressed (const KeyPress& key)
 {
     if (!isSelected) return false;
 
-    if (key.getKeyCode() == KeyPress::deleteKey || key.getKeyCode() == KeyPress::backspaceKey)
-    {
-        if (connectableNode->canBeRemovedByUser)
-        {
-            connectableNode->remove();
-        }
-
-        return true;
-    }
-    else if (key.getModifiers().isCommandDown() && key.getKeyCode() == KeyPress::downKey)
+    if (key.getModifiers().isCommandDown() && key.getKeyCode() == KeyPress::downKey)
     {
         if (NodeContainer* c = dynamic_cast<NodeContainer* > (connectableNode.get()))
         {

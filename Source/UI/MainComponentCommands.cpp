@@ -333,7 +333,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
         case CommandIDs::cutSelection:
         {
             Array<InspectableComponent*> icl;
-
+            
             auto nvl = ShapeShifterManager::getInstance()->getAllSPanelsOfType<NodeManagerUIViewport>(true);
             if(nvl.size()>0){
                 if(auto vw = nvl[0]->nmui->currentViewer.get())
@@ -360,6 +360,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                             if(ncv && ncv->uiParams){
                                 auto nodeUIParams = ncv->uiParams->getControllableContainerByName(cc->shortName);
                                 data.getDynamicObject()->setProperty ("uiData",nodeUIParams->getObject());
+
                             }
 
                             if (info.commandID == CommandIDs::cutSelection)
@@ -376,6 +377,14 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                 }
                 auto jsonObj = new DynamicObject();
                 jsonObj->setProperty("list", datal);
+                Point<int> minSelectionPoint(10e5,10e5);
+                for(auto & ic:icl){
+                    minSelectionPoint.x = jmin(ic->getX(),minSelectionPoint.x);
+                    minSelectionPoint.y = jmin(ic->getY(),minSelectionPoint.y);
+                }
+                jsonObj->setProperty("minSelectionPoint", Array<var>({minSelectionPoint.x,minSelectionPoint.y}));
+
+
                 SystemClipboard::copyTextToClipboard (JSON::toString (jsonObj));
             }
         }
@@ -417,8 +426,8 @@ bool MainContentComponent::perform (const InvocationInfo& info)
         case CommandIDs::pasteSelection:
         {
             String clipboard = SystemClipboard::getTextFromClipboard();
-
-            var datal = JSON::parse (clipboard).getProperty("list", "");
+            var clipboardOb =JSON::parse (clipboard);
+            var datal = clipboardOb.getProperty("list", "");
 
             if(datal.isArray()){
                 auto arr = datal.getArray();
@@ -452,13 +461,23 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                                         if(ncv){
                                             auto nodeUI = ncv->getUIForNode(n);
                                             if(nodeUI){
+
+
                                                 if(auto o = d->getProperty ("uiData").getDynamicObject()){
                                                     auto nodeUIParams = dynamic_cast<ParameterContainer*>(ncv->uiParams->getControllableContainerByName(n->shortName));
                                                     nodeUIParams->configureFromObject(o);
                                                 }
                                                 nodeUI->uid=Uuid();
-                                                nodeUI->nodePosition->setPoint (ncv->getMouseXYRelative());
-                                                nodeUI->nodeMinimizedPosition->setPoint (ncv->getMouseXYRelative());
+                                                Point<int> offset(0,0);
+                                                if(auto o = clipboardOb.getProperty("minSelectionPoint",var()).getArray()){
+                                                    if(o->size()==2){
+                                                        offset.x = o->getUnchecked(0);
+                                                        offset.y = o->getUnchecked(1);
+                                                        offset=ncv->getMouseXYRelative()-offset;
+                                                    }
+                                                }
+                                                nodeUI->nodePosition->setPoint (nodeUI->nodePosition->getPoint()+offset);
+                                                nodeUI->nodeMinimizedPosition->setPoint (nodeUI->nodeMinimizedPosition->getPoint()+offset);
                                             }
                                             else{
                                                 jassertfalse;

@@ -260,7 +260,7 @@ public :
             if (result > 0)
             {
                 String tid(FactoryUIHelpers::getFactoryTypeNameFromMenuIdx<NodeFactory>(result));
-                nmui->currentViewer->addNodeUndoable(tid, destPos);
+                nmui->currentViewer->addOrRemoveNodeUndoable(tid, destPos,nullptr);
             }
 
         }

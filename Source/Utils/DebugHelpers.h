@@ -50,6 +50,9 @@ juce::Logger::writeToLog(tempDbgBuf);)
 #define NLOGW(n,t) NLOG(n,"!! " << t)
 #define NLOGE(n,t) NLOG(n,"!!! " << t)
 
+inline void debugDobj(const var & v){
+    DBG(JSON::toString(v));
+}
 
 inline String getLogSource (const String& logString)
 {

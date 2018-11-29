@@ -96,6 +96,9 @@ public :
     SelectedItemSet<SelectedUIType> selectedItems;
 
     void addNodeUndoable(const String & type,const Point<int> & mousePos);
+    void removeNodeUndoable(NodeBase * originNodeToRemove);
+    void removeNodeListUndoable(Array<NodeBase*> nl);
+    void addOrRemoveNodeUndoable(const String & tid,const Point<int> & mousePos,NodeBase * originNodeToRemove);
     String getTooltip() override{return "";}
 private:
 

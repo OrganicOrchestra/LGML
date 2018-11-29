@@ -54,6 +54,9 @@ public:
     int getContentHeight() const;
 
     void clear();
+    void addControllerUndoable(const String & typeId);
+    void removeControllerUndoable(Controller * c);
+
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ControllerManagerUI)
 
@@ -63,7 +66,8 @@ private:
 
 
     void buttonClicked (Button*) override;
-    void addControllerUndoable(const String & typeId);
+
+
 };
 
 

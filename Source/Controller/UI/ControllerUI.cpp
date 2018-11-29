@@ -16,6 +16,7 @@
 
 #include "ControllerUI.h"
 #include "ControllerEditor.h"
+#include "ControllerManagerUI.h"
 #include "../../UI/Style.h"
 #include "../../Controllable/Parameter/UI/TriggerBlinkUI.h"
 #include "../../Controllable/Parameter/UI/StringParameterUI.h"
@@ -168,7 +169,8 @@ void ControllerUI::buttonClicked (Button* b)
 {
     if (b == &removeBT)
     {
-        controller->remove();
+        auto cmui = findParentComponentOfClass<ControllerManagerUI>();
+        cmui->removeControllerUndoable(controller);
     }
     else if(b==showUserParams){
         setSize(getWidth(),getTargetHeight());
@@ -182,7 +184,8 @@ bool ControllerUI::keyPressed (const KeyPress& key)
 
     if (key.getKeyCode() == KeyPress::deleteKey || key.getKeyCode() == KeyPress::backspaceKey)
     {
-        controller->remove();
+        auto cmui = findParentComponentOfClass<ControllerManagerUI>();
+        cmui->removeControllerUndoable(controller);
         return true;
     }
 
