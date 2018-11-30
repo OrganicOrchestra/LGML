@@ -153,11 +153,13 @@ void ParameterContainer::childControllableRemoved (ControllableContainer*, Contr
         p->removeAsyncParameterListener (this);
     }
 }
-ParameterBase*   ParameterContainer::addParameter ( ParameterBase* p)
+
+ParameterBase*   ParameterContainer::addParameter ( ParameterBase* p,int idxToSwap)
 {
 
     p->setParentContainer (this);
-    controllables.add (p);
+    if(idxToSwap==-1)controllables.add (p);
+    else controllables.set(idxToSwap, p);
     controllableContainerListeners.call (&ControllableContainerListener::childControllableAdded, this, p);
     notifyStructureChanged (this,true,true,false);
     addControllableInternal (p);
@@ -165,9 +167,9 @@ ParameterBase*   ParameterContainer::addParameter ( ParameterBase* p)
     p->addAsyncParameterListener (this);
     p->isUserDefined = isUserDefined;
     return p;
-
-
 }
+
+
 
 
 
@@ -240,7 +242,7 @@ void ParameterContainer::configureFromObject (DynamicObject* dyn)
 
                 for (auto& p : props)
                 {
-                    if (Controllable* c = getControllableByName (p.name.toString(), true))
+                    if (Controllable* c = getControllableByName (p.name.toString()))
                     {
                         if (c->isSavable)
                         {

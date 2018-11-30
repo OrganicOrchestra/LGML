@@ -43,6 +43,10 @@ public:
 
     template<class T, class... Args>
     T* addNewParameter (const String& _niceName, const String& desc, Args...args);
+
+    template<class T, class... Args>
+    T* addNewUniqueParameter (const String& _niceName, const String& desc, Args...args);
+
     StringParameter* nameParam;
     String info;
     String const getNiceName() override;
@@ -91,7 +95,7 @@ public:
 
     void setUserDefined (bool v) override;
 
-    ParameterBase* addParameter ( ParameterBase* );
+    ParameterBase* addParameter ( ParameterBase* ,int idxToSwap=-1);
     Array<WeakReference<ParameterBase>> getAllParameters (bool recursive = false, bool getNotExposed = false);
 
     // Inherited via ParameterBase::Listener
@@ -143,4 +147,15 @@ T* ParameterContainer::addNewParameter (const String& _niceName, const String& d
     return static_cast<T*> (addParameter (p));
 
 
+}
+
+template<class T, class... Args>
+T* ParameterContainer::addNewUniqueParameter (const String& targetName, const String& desc, Args...args)
+{
+
+    T* p = new T (targetName, desc, args...);
+    p->resetValue (true,true);
+    return static_cast<T*> (addParameter (p));
+
+    
 }
