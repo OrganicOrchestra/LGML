@@ -79,7 +79,9 @@ void DummyNode::onContainerParameterChanged ( ParameterBase* p)
 
 }
 
-
+void DummyNode::prepareToPlay(double sr,int bs) {
+    sleep(1);
+}
 
 
 
