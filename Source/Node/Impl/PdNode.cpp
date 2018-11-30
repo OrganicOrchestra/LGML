@@ -61,7 +61,7 @@ midiChooser(this,false,true)
     midiActivityTrigger= addNewParameter<Trigger>("midi Activity", "trigger when incomming midi messages");
     midiActivityTrigger->isControllableExposed = false;
 
-    libpd_set_verbose(1);
+    libpd_set_verbose(0);
     libpd_set_printhook(lgml_print_hook);
     libpd_init();
 
