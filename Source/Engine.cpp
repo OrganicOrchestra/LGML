@@ -105,7 +105,7 @@ hasDefaultOSCControl(false)
     addChildControllableContainer (ControllerManager::getInstance());
     addChildControllableContainer (FastMapper::getInstance());
 
-    DBG ("max recording time : " << std::numeric_limits<sample_clk_t>().max() / (44100.0 * 60.0 * 60.0) << "hours @ 44.1kHz");
+//    DBG ("max recording time : " << std::numeric_limits<sample_clk_t>().max() / (44100.0 * 60.0 * 60.0) << "hours @ 44.1kHz");
     initDefaultUserSettings();
     setLanguage(getAppProperties()->getUserSettings()->getValue("language"));
 
@@ -285,7 +285,7 @@ void Engine::suspendAudio (bool shouldBeSuspended)
 
 
         if (shouldBeSuspended){
-            ap->releaseResources();
+//            ap->releaseResources();
         }
         else
         {
