@@ -677,8 +677,10 @@ void NodeContainerViewer::findLassoItemsInArea (Array<SelectedUIType>& itemsFoun
     }
 
         auto insp = Inspector::getInstance();
-            if(selectedItems.getNumSelected()>=0)
+            if(selectedItems.getNumSelected()>0)
                 insp->setCurrentComponent(selectedItems.getSelectedItem(0));
+            else
+                insp->setCurrentComponent(this);
 
 };
 
