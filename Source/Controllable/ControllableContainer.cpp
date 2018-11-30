@@ -283,7 +283,7 @@ void ControllableContainer::localIndexChanged() {};
 
 ControllableContainer* ControllableContainer::getControllableContainerByName (const String& _name, bool searchNiceName)
 {
-    
+
     ScopedLock lk (controllableContainers.getLock());
     if( searchNiceName){
         for (auto & c : controllableContainers)
@@ -306,19 +306,6 @@ ControllableContainer* ControllableContainer::getControllableContainerByName (co
 }
 
 
-//ControllableContainer* ControllableContainer::getControllableContainerByName (const String& name, bool searchNiceNameToo)
-//{
-//
-//    ScopedLock lk (controllableContainers.getLock());
-//
-//    for (auto& cc : controllableContainers)
-//    {
-//        if (cc.get() && (cc->shortName.compareIgnoreCase(name)==0 || (searchNiceNameToo && cc->getNiceName().compareIgnoreCase(name)==0))) return cc;
-//    }
-//
-//    return nullptr;
-//
-//}
 ControllableContainer * ControllableContainer::getMirroredContainer(ControllableContainer * other,ControllableContainer * root ){
 
     StringArray arr = other->getControlAddressArray(root);
