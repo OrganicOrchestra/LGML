@@ -31,7 +31,11 @@
     #define LINK_SUPPORT 0
 #endif
 
-
+#if JUCE_DBG
+#define DBGTIME(x) //DBG(x)
+#else
+#define DBGTIME(x)
+#endif
 juce_ImplementSingleton (TimeManager);
 
 #include "../Node/NodeBase.h"
@@ -663,7 +667,7 @@ TransportTimeInfo TimeManager::findTransportTimeInfoForLength (sample_clk_t time
     res.makeValidForGranularity (samplePerBeatGranularity);
 
     res.bpm = 60.0 / res.beatTime;
-    DBG ("found beat Sample : " << String (res.beatInSample) << " : " << time);
+    DBGTIME ("found beat Sample : " << String (res.beatInSample) << " : " << time);
 
     return res;
 }
