@@ -214,10 +214,10 @@ inline void updateRMS (const AudioBuffer<float>& buffer,
 
     float globalS = 0;
 
-    // @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
-    const double decayFactor = 0.9;
-    const float lowThresh = 0.0001f;
-    const int downSample = 2;
+
+    constexpr double decayFactor = 0.9;
+    constexpr float lowThresh = 0.0001f;
+    constexpr int downSample = 2;
     const float factor = .9 * downSample * 1.0 / numSamples;
 
     if (buffer.hasBeenCleared())
