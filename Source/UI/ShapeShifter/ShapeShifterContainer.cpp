@@ -45,7 +45,7 @@ void ShapeShifterContainer::insertShifterAt (ShapeShifter* shifter, int index, b
         gg->addGrabberListener (this);
     }
 
-    DBG ("Insert shifter at : " << shifter->getPreferredWidth());
+//    DBG ("Insert shifter at : " << shifter->getPreferredWidth());
 
     if (resizeAfter) {
         if(getMinWidth()> getWidth() || getMinHeight()>getHeight()){

@@ -97,7 +97,7 @@ ShapeShifterPanel* ShapeShifterManager::createPanel (ShapeShifterContent* conten
 
     //if(content != nullptr) panel->setSize(content->getWidth(), content->getHeight());
 
-    DBG ("Add shape shifter panel listener from manager");
+//    DBG ("Add shape shifter panel listener from manager");
     panel->addShapeShifterPanelListener (this);
     openedPanels.add (panel);
     return panel;

@@ -101,7 +101,7 @@ public:
     void addShapeShifterPanelListener (Listener* newListener)
     {
         if (header.tabs.size() > 0){
-            DBG ("Panel, addListener (" << header.tabs[0]->content->contentName << ")");
+//            DBG ("Panel, addListener (" << header.tabs[0]->content->contentName << ")");
         }
 
         listeners.add (newListener);
