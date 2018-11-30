@@ -45,8 +45,9 @@ public:
 
     int keyToPitch(int kc){
 
-        constexpr int numpitches = 12;
-        static int pitches[numpitches] = {'q','z','s','e','d','f','t','g','y','h','u','j'};
+        constexpr int numpitches = 12+5;
+        static int pitches[numpitches] = {'q','z','s','e','d','f','t','g','y','h','u','j',
+                                            'k','o','l','p','m'};
         for(int i = 0 ; i < numpitches ; i++){
             if(kc==pitches[i]){
                 return i + 12*octave;
