@@ -25,6 +25,9 @@ Identifier EnumParameter::modelIdentifier ("model");
 Identifier EnumParameter::selectedSetIdentifier ("selected");
 //////////////
 //
+
+#if JUCE_DEBUG && 0
+#define DBGENUM(x) DBG(x)
 #define LOG_ENUM DBG("////////////////");DBG(dumpVarObj(enumData));
 String dumpVarObj(const var & v ,const int indent=0){
     String res;
@@ -53,6 +56,11 @@ String dumpVarObj(const var & v ,const int indent=0){
     return res;
 
 }
+
+#else
+#define LOG_ENUM
+#define DBGENUM(x)
+#endif
 ///////////////////
 // EnumParameter
 
@@ -190,7 +198,7 @@ void EnumParameter::selectId (Identifier key, bool shouldSelect, bool appendSele
         auto msg = EnumChangeMessage::newSelectionMessage (key, shouldSelect, getModel()->isValidId (key));
         processForMessage (*msg, enumListeners);
         asyncNotifier.addMessage (msg);
-        DBG ("enum : " << key.toString() << (!shouldSelect ? " not" : "") << " selected" << (!msg->isValid ? " not" : "") << " valid ");
+        DBGENUM ("enum : " << key.toString() << (!shouldSelect ? " not" : "") << " selected" << (!msg->isValid ? " not" : "") << " valid ");
 
 
     }
@@ -298,19 +306,19 @@ bool EnumParameter::checkValueIsTheSame (const var& v1, const var& v2)
     bool modelChanged = getModelPropsFromVar (v1) != getModelPropsFromVar (v2);
     bool hasChanged = (selectionChanged || modelChanged);
 
-    //    DBG("sel");
+    //    DBGENUM("sel");
     //    for(auto d:getSelectedSetIds(v1)){
-    //      DBG("v1 : " << d);
+    //      DBGENUM("v1 : " << d);
     //    }
     //    for(auto d:getSelectedSetIds(v2)){
-    //      DBG("v2 : " << d);
+    //      DBGENUM("v2 : " << d);
     //    }
-    //    DBG("model");
+    //    DBGENUM("model");
     //    for(auto d:getModelPropsFromVar(v1)){
-    //      DBG("v1 : " << d.name);
+    //      DBGENUM("v1 : " << d.name);
     //    }
     //    for(auto d:getModelPropsFromVar(v2)){
-    //      DBG("v2 : " << d.name);
+    //      DBGENUM("v2 : " << d.name);
     //    }
 
 
@@ -322,7 +330,7 @@ bool EnumParameter::checkValueIsTheSame (const var& v1, const var& v2)
 void EnumParameter::setValueInternal (const var& _value)
 {
     // try to select
-    DBG ("enum value : " << _value.toString());
+    DBGENUM ("enum value : " << _value.toString());
 
     if (selectFromVar (_value, true, false)) {}
     else if (_value.isUndefined())

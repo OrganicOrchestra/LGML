@@ -59,9 +59,10 @@ public:
 
     void clearContainer();
 
+    void addControllable(Controllable *c);
     void removeControllable (Controllable* c);
 
-    Controllable* getControllableByName (const String& name, bool searchNiceNameToo = false);
+    Controllable* getControllableByName (const String& name, bool searchNiceNameToo = false,bool searchOnlyNiceName=false);
 
     ControllableContainer* addChildControllableContainer (ControllableContainer* container, bool notify = true);
     ControllableContainer* getRoot(bool getGlobal);
@@ -161,7 +162,7 @@ public:
     StringArray getControlAddressArray (const ControllableContainer* relativeTo = nullptr) const;
 
 
-    String getUniqueNameInContainer (const String& sourceName, int suffix = 0, void* me = nullptr);
+    String getUniqueNameInContainer (const String& sourceName, int suffix = 0, void* me = nullptr); // relates to nice names for efficiency
 
     int numContainerIndexed;
     int localIndexedPosition;
@@ -261,7 +262,7 @@ protected :
     static const Identifier controllablesId;
     friend class PresetManager;
 
-    void notifyStructureChanged (ControllableContainer* origin,bool isAdded);
+    void notifyStructureChanged (ControllableContainer* origin,bool isAdded,bool controllableUpdated, bool containerUpdated);
     void notifyChildAddressChanged (ControllableContainer* origin);
 
 
@@ -270,7 +271,7 @@ protected :
 private:
     WeakReference< ControllableContainer >::Master masterReference;
     friend class WeakReference<ControllableContainer>;
-
+    
     
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ControllableContainer)

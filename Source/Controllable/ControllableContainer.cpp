@@ -109,18 +109,22 @@ void ControllableContainer::removeControllable (Controllable* c)
 
 
     controllables.removeObject (c);
-    notifyStructureChanged (this,false);
+    notifyStructureChanged (this,false,true,false);
 }
 
+void ControllableContainer::addControllable(Controllable *c){
+    controllables.add(c);
+    notifyStructureChanged (this,true,true,false);
+}
 
-void ControllableContainer::notifyStructureChanged (ControllableContainer* origin,bool isAdded)
+void ControllableContainer::notifyStructureChanged (ControllableContainer* origin,bool isAdded,bool controllableUpdated, bool containerUpdated)
 {
-
+    
     controllableContainerListeners.call (&Listener::childStructureChanged, this, origin,isAdded);
 
     if (parentContainer)
     {
-        parentContainer->notifyStructureChanged (origin,isAdded);
+        parentContainer->notifyStructureChanged (origin,isAdded,controllableUpdated,containerUpdated);
     }
 }
 
@@ -161,14 +165,25 @@ void ControllableContainer::setAutoShortName()
 
 
 
-Controllable* ControllableContainer::getControllableByName (const String& _name, bool searchNiceNameToo)
+Controllable* ControllableContainer::getControllableByName (const String& _name, bool searchNiceNameToo, bool searchOnlyNiceName)
 {
     
-    const String name = Controllable::toShortName(_name);
+
     ScopedLock lk (controllables.getLock());
-    for (auto& c : controllables)
+    Controllable * res = nullptr;
+    if(searchOnlyNiceName || searchNiceNameToo){
+        for (auto * c : controllables)
+        {
+            if(c->niceName == _name) {res = c;break;}
+        }
+        if(searchOnlyNiceName || res!=nullptr)return res;
+    }
+
+    const String name = Controllable::toShortName(_name);
+
+    for (auto * c : controllables)
     {
-        if ((c->shortName.compareIgnoreCase(name)==0) || (searchNiceNameToo && c->niceName == _name)) return c;
+        if (c->shortName.compareIgnoreCase(name)==0) return c;
     }
 
     return nullptr;
@@ -193,7 +208,7 @@ ControllableContainer* ControllableContainer::addChildControllableContainer (Con
     if (notify)
     {
         controllableContainerListeners.call (&Listener::controllableContainerAdded, this, container);
-        notifyStructureChanged (this,true);
+        notifyStructureChanged (this,true,false,true);
     }
 
     return container;
@@ -215,7 +230,7 @@ void ControllableContainer::removeChildControllableContainer (ControllableContai
     controllableContainers.removeAllInstancesOf (container);
 
       
-    notifyStructureChanged (this,false);
+    notifyStructureChanged (this,false,false,true);
     container->setParentContainer (nullptr);
 }
 
@@ -233,7 +248,7 @@ void ControllableContainer::addChildIndexedControllableContainer (ControllableCo
     //  container->addControllableContainerListener(this);
     container->setParentContainer (this);
     controllableContainerListeners.call (&Listener::controllableContainerAdded, this, container);
-    notifyStructureChanged (this,true);
+    notifyStructureChanged (this,true,false,true);
 }
 
 
@@ -405,7 +420,7 @@ Array<WeakReference<Controllable> > ControllableContainer::getAllControllables (
     {
         ScopedLock lk (controllables.getLock());
 
-        for (auto& c : controllables)
+        for (const auto& c : controllables)
         {
             if (getNotExposed || c->isControllableExposed) result.add (c);
         }
@@ -470,7 +485,7 @@ Controllable* ControllableContainer::getControllableForAddress (StringArray addr
         //DBG("Check controllable Address : " + shortName);
         const ScopedLock lk (controllables.getLock());
 
-        for (auto& c : controllables)
+        for (const auto& c : controllables)
         {
             if (c->shortName.compareIgnoreCase( addressSplit[0])==0)
             {
@@ -516,7 +531,7 @@ Array<Controllable*> ControllableContainer::getControllablesForExtendedAddress (
             //DBG("Check controllable Address : " + shortName);
             const ScopedLock lk (controllables.getLock());
 
-            for (auto& c : controllables)
+            for (const auto& c : controllables)
             {
                 if (c->isControllableExposed || getNotExposed){
                     OSCAddress ad("/"+c->shortName);
@@ -622,7 +637,7 @@ String ControllableContainer::getUniqueNameInContainer (const String& sourceName
         }
     }
 
-    void* elem = getControllableByName (resultName, true);
+    void* elem = getControllableByName (resultName, true,true);
 
     if ( elem != nullptr && elem != me)
     {

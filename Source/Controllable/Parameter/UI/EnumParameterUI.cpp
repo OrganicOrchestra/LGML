@@ -17,6 +17,13 @@
 
 #include "../UndoableHelper.h"
 
+
+#if JUCE_DEBUG && 0
+#define DBGENUM(x) DBG(x)
+#else
+#define DBGENUM(x)
+#endif
+
 EnumParameterUI::EnumParameterUI ( ParameterBase* parameter) :
     ParameterUI (parameter),
     ep ((EnumParameter*)parameter),
@@ -84,7 +91,7 @@ void EnumParameterUI::updateComboBox()
 
     
     String sel = ep->getFirstSelectedId().toString();
-//    DBG("enum CB Select " << sel << " ; " << ep->shortName);
+//    DBGENUMENUM("enum CB Select " << sel << " ; " << ep->shortName);
     selectString (sel);
 
     if (ep->isEditable)
@@ -121,11 +128,14 @@ void EnumParameterUI::enumOptionRemoved (EnumParameter*, const Identifier&)
 }
 void EnumParameterUI::enumOptionSelectionChanged (EnumParameter*, bool _isSelected, bool isValid, const Identifier& name)
 {
-    DBG ("enum change : " << name.toString() << (!_isSelected ? " not" : "") << " selected " << (!isValid ? "in-" : "") << "valid");
+    DBGENUM ("enum change : " <<parameter->niceName <<"->"<< name.toString() << (!_isSelected ? " not" : "") << " selected " << (!isValid ? "in-" : "") << "valid");
 
     if (isValid)
     {
-        jassert (keyIdMap.contains (name.toString()));
+        if(!keyIdMap.contains (name.toString())){
+            updateComboBox();
+            jassert(keyIdMap.contains (name.toString()));
+        }
         cb.setSelectedId (_isSelected ? keyIdMap[name.toString()] : 0, dontSendNotification);
     }
 }

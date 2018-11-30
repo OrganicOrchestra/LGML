@@ -159,7 +159,7 @@ ParameterBase*   ParameterContainer::addParameter ( ParameterBase* p)
     p->setParentContainer (this);
     controllables.add (p);
     controllableContainerListeners.call (&ControllableContainerListener::childControllableAdded, this, p);
-    notifyStructureChanged (this,true);
+    notifyStructureChanged (this,true,true,false);
     addControllableInternal (p);
     p->addParameterListener (this);
     p->addAsyncParameterListener (this);
@@ -275,9 +275,9 @@ void ParameterContainer::configureFromObject (DynamicObject* dyn)
 
             if (cD)
             {
-                auto ob = cD->getProperties();
+                const auto ob = cD->getProperties();
 
-                for (auto& o : ob)
+                for (const auto& o : ob)
                 {
                     auto cont = dynamic_cast<ParameterContainer*> (getControllableContainerByName (o.name.toString()));
 
