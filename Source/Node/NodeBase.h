@@ -125,9 +125,8 @@ private:
 
     AudioProcessorGraph::Node*   getAudioNode();
     friend class NodeConnection;
-    virtual void addToAudioGraph (AudioProcessorGraph*);
-    virtual void removeFromAudioGraph();
     AudioProcessorGraph::Node::Ptr audioNode;
+    friend class NodeContainer;
     AudioProcessor* getAudioProcessor();
 
     WeakReference<NodeBase>::Master masterReference;

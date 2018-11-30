@@ -174,7 +174,8 @@ void NodeBase::configureFromObject (DynamicObject* data)
 void NodeBase::setParentNodeContainer (NodeContainer* _parentNodeContainer)
 {
     ConnectableNode::setParentNodeContainer (_parentNodeContainer);
-    addToAudioGraph (_parentNodeContainer->getAudioGraph());
+    if(_parentNodeContainer)
+        _parentNodeContainer->addToAudioGraph (this);
 }
 
 AudioProcessorGraph::Node* NodeBase::getAudioNode()
@@ -184,27 +185,9 @@ AudioProcessorGraph::Node* NodeBase::getAudioNode()
 }
 
 
-void NodeBase::addToAudioGraph (AudioProcessorGraph* g)
-{
-    audioNode = g->addNode (getAudioProcessor());
-//    jassert(g->getSampleRate()!=0 && g->getBlockSize()!=0);
-//    getAudioProcessor()->setRateAndBufferSizeDetails (g->getSampleRate(), g->getBlockSize());
 
-}
 
-void NodeBase::removeFromAudioGraph()
-{
-    if (parentNodeContainer)
-    {
-        if (auto pG = parentNodeContainer->getAudioGraph())
-        {
-            const ScopedLock lk (pG->getCallbackLock());
-            pG->removeNode (audioNode);
-        }
 
-        parentNodeContainer->updateAudioGraph (true);
-    }
-}
 
 AudioProcessor* NodeBase::getAudioProcessor()
 {
@@ -494,9 +477,10 @@ void NodeBase::remove()
     
     if (audioNode.get())
     {
-        removeFromAudioGraph();
+        if(parentNodeContainer)
+            parentNodeContainer->removeFromAudioGraph(this);
         jassert (audioNode.get()->getReferenceCount() == 1);
-        // audioNode is owning the pointer so triggers it's deletion instead
+        // audioNode is owning the pointer to this AudioProcessor so triggers it's deletion instead
         audioNode = nullptr;
     }
     else

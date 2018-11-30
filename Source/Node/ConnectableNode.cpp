@@ -74,6 +74,7 @@ ConnectableNode::~ConnectableNode()
 
 void ConnectableNode::setParentNodeContainer (NodeContainer* _parentNodeContainer)
 {
+    jassert(parentNodeContainer==nullptr ||_parentNodeContainer==nullptr );
     parentNodeContainer = _parentNodeContainer;
 
 

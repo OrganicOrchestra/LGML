@@ -31,6 +31,7 @@
 
 class NodeManager;
 
+class GraphBuildWatcher;
 
 //Listener
 
@@ -104,6 +105,11 @@ public:
     ContainerOutNode* containerOutNode;
     ScopedPointer<AudioProcessorGraph> innerGraph;
     AudioProcessorGraph* getAudioGraph() {return innerGraph;};
+    void addToAudioGraph(NodeBase * );
+    void removeFromAudioGraph(NodeBase *);
+
+    
+
 
 
     //NODE AND CONNECTION MANAGEMENT
@@ -213,7 +219,7 @@ public:
     class RebuildTimer : public Timer
     {
     public:
-        RebuildTimer (NodeContainer* o): owner (o) ,maxRebuildTime(40000),lastTime(0){
+        RebuildTimer (NodeContainer* o): owner (o) ,maxRebuildTime(20000),lastTime(0){
         curRebuildTime = maxRebuildTime;
         };
         void timerCallback()override
@@ -245,8 +251,19 @@ public:
     RebuildTimer rebuildTimer;
     NodeChangeQueue nodeChangeNotifier;
 
+
+private:
+
+    WeakReference<NodeContainer>::Master masterReference;
+    friend class WeakReference<NodeContainer>;
+    bool isParentBuildingSession();
+    void setBuildSessionGraph(bool stop=false);
+    Atomic<int> isBuildingSession;
+    
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeContainer)
 
+    ScopedPointer<GraphBuildWatcher> gWatcher;
 
 
 };
