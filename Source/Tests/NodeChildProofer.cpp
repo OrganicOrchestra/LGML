@@ -219,7 +219,7 @@ bool buildTests()
         
         for (auto nName : NodeFactory::getRegisteredTypes())
         {
-            if (nName != "t_ContainerIn" && nName != "t_ContainerOut" && !nName.contains ("AudioDevice"))
+            if (nName != "t_ContainerInNode" && nName != "t_ContainerOutNode" && !nName.contains ("AudioDevice"))
                 new NodeChildProofer (nName, 10);
         }
         
