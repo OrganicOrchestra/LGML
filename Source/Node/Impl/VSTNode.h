@@ -75,7 +75,6 @@ public:
     void loadPresetInternal (PresetManager::Preset* preset)override;
     void savePresetInternal (PresetManager::Preset* preset)override;
 
-    void initParametersFromProcessor (AudioPluginInstance* p);
 
 
     // load state on message thread (some plugin crash if not)
@@ -139,6 +138,9 @@ public:
     Trigger* midiActivityTrigger;
 
 private:
+
+    void initParametersFromProcessor (AudioPluginInstance* p);
+    void updateParametersFromProcessor (AudioPluginInstance* p);
     bool needParamReload;
     
     void handleIncomingMidiMessage (MidiInput* source,
@@ -154,6 +156,7 @@ private:
     void handleAsyncUpdate() override;
 
     bool parameterHaveChanged();
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (VSTNode)
 };
 
