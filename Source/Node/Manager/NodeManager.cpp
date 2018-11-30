@@ -66,20 +66,12 @@ void NodeManager::configureFromObject (DynamicObject* data)
 
 }
 
-void NodeManager::rebuildAudioGraph()
-{
-    if (!isLoading && !isEngineLoadingFile())
-    {
-        updateAudioGraph();
-    }
 
-}
 
 
 void NodeManager::notifiedJobsEnded()
 {
     isLoading = false;
-    rebuildAudioGraph();
     nodeManagerListeners.call (&NodeManagerListener::managerEndedLoading);
 
 }

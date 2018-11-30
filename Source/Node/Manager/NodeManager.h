@@ -38,10 +38,6 @@ public:
     juce_DeclareSingleton (NodeManager, true);
 
 
-
-
-    void rebuildAudioGraph();
-
     void clear()override;
 
 
