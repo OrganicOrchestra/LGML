@@ -62,7 +62,7 @@ public:
     void addControllable(Controllable *c);
     void removeControllable (Controllable* c);
 
-    Controllable* getControllableByName (const String& name, bool searchNiceNameToo = false,bool searchOnlyNiceName=false);
+    Controllable* getControllableByName (const String& name, bool searchNiceName=false);
 
     ControllableContainer* addChildControllableContainer (ControllableContainer* container, bool notify = true);
     ControllableContainer* getRoot(bool getGlobal);
@@ -143,7 +143,7 @@ public:
 
     bool containsContainer (ControllableContainer* );
 
-    ControllableContainer* getControllableContainerByName (const String& name, bool searchNiceNameToo = false);
+    ControllableContainer* getControllableContainerByName (const String& name, bool searchNiceName = false);
     ControllableContainer* getControllableContainerForAddress ( StringArray  address);
 
     void setParentContainer (ControllableContainer* container);
