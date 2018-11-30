@@ -399,7 +399,12 @@ void OutlinerItem::controllableContainerRemoved(ControllableContainer * notif,Co
 
 void OutlinerItem::childControllableAdded (ControllableContainer* notif, Controllable* ori) {
     if(notif && notif==container){
-        MessageManager::callAsync([this , ori](){addSubItem(new OutlinerItem (dynamic_cast <ParameterBase*>(ori),true));});
+        auto safeOri = WeakReference<Controllable>(ori);
+        auto outlinerItemParent = WeakReference<OutlinerItem>(this);
+        MessageManager::callAsync([outlinerItemParent , safeOri](){
+            if(safeOri && outlinerItemParent)
+                outlinerItemParent.get()->addSubItem(new OutlinerItem (dynamic_cast <ParameterBase*>(safeOri.get()),true));
+        });
     }
     else if (container){
         jassertfalse;
@@ -427,8 +432,8 @@ void OutlinerItem::childControllableRemoved (ControllableContainer* notif, Contr
 String OutlinerItem::getUniqueName() const
 {
     // avoid empty names
-    if (isContainer) {return "/it/" + container.get()->getControlAddress();}
-    else            {return "/it/" + parameter.get()->getControlAddress();}
+    if (isContainer) {return "/it/" + (container.get()?container.get()->getControlAddress():"old");}
+    else            {return "/it/" + (parameter.get()?parameter.get()->getControlAddress():"old");}
 
 };
 
