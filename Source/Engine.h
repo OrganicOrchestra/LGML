@@ -194,7 +194,6 @@ public:
         virtual void startEngine() {};
         virtual void stopEngine() {};
         virtual void startLoadFile() {};
-        // TODO implement progression
         virtual void fileProgress (float percent, int state) {};
         virtual void endLoadFile() {};
     };
