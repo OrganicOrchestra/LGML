@@ -62,7 +62,7 @@ public:
     ParameterContainer*   addContainerFromObject (const String& name, DynamicObject*   fData) override;
 
 
-
+    bool isParameterMapped (ParameterBase * p);
 
 private:
 

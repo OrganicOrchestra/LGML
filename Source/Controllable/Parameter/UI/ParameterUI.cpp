@@ -20,6 +20,7 @@
 #include "../../../FastMapper/FastMapper.h"
 #include "../UndoableHelper.h"
 
+Array<WeakReference<ParameterUI>> allParameterUIs;
 //==============================================================================
 ParameterUI::ParameterUI ( ParameterBase* _parameter) :
     InspectableComponent(_parameter,"ParameterUI"),
@@ -32,6 +33,7 @@ ParameterUI::ParameterUI ( ParameterBase* _parameter) :
     isSelected (false),
     wasShowing(true)
 {
+    allParameterUIs.add(this);
     setBufferedToImage(true);
     if (parameter.get())
     {
@@ -50,15 +52,15 @@ ParameterUI::ParameterUI ( ParameterBase* _parameter) :
     setName (parameter->niceName);
     parameter->addControllableListener (this);
     mappingState = NOMAP;
-    setMappingState (LGMLDragger::getInstance()->isMappingActive);
+    LGMLDragger::getInstance()->applyMappingState (this);
 
-    
-    
+
 
 }
 
 ParameterUI::~ParameterUI()
 {
+    allParameterUIs.removeAllInstancesOf(this);
     if(auto * draggerI = LGMLDragger::getInstanceWithoutCreating()){
         draggerI->unRegisterDragCandidate (this);
     }
@@ -72,7 +74,9 @@ ParameterUI::~ParameterUI()
 
     ParameterUI::masterReference.clear();
 }
-
+const Array<WeakReference<ParameterUI>> & ParameterUI::getAllParameterUIs(){
+    return allParameterUIs;
+}
 
 void ParameterUI::setCustomText (const String text)
 {
@@ -195,7 +199,7 @@ void ParameterUI::visibilityChanged(){
         }
     }
     if (auto ld = LGMLDragger::getInstanceWithoutCreating())
-        setMappingState (ld->isMappingActive);
+        ld->applyMappingState(this);
     wasShowing =_isShowing;
 
 }
@@ -203,19 +207,27 @@ void ParameterUI::parentHierarchyChanged(){
     visibilityChanged();
 };
 
+void ParameterUI::setHasMappedParameter(bool s){
+
+    hasMappedParameter = s;
+    updateOverlayEffect();
+}
+
 class MapEffect : public ImageEffectFilter
 {
 public:
-    MapEffect (const Colour& colour, uint32 _amount, String _text):
+    MapEffect (const Colour& colour, uint32 _amount, String _text,bool _isMapped):
         amount (_amount),
         pRef (colour.getAlpha(), colour.getRed(), colour.getGreen(), colour.getBlue()),
-        text (_text)
+        text (_text),
+        isMapped(_isMapped)
     {
     }
     PixelARGB pRef;
     uint32 amount;
     String text;
     uint32 trueAmount;
+    bool isMapped;
 
     template<typename T>
     void  applyFunction (Image::BitmapData& data)
@@ -257,6 +269,12 @@ public:
 
 
         g.drawImage (image, image.getBounds().toFloat());
+        if(isMapped){
+            auto r = image.getBounds();
+            g.setColour(Colours::red);
+            int side = 8;
+            g.fillRect(r.removeFromBottom(side).removeFromRight(side));
+        }
 //        g.setColour (Colours::white);
 //        g.drawFittedText (text, 0, 0, image.getWidth(), image.getHeight(), Justification::centred, 2);
 
@@ -295,7 +313,7 @@ void ParameterUI::updateOverlayEffect(){
     {
         Colour c =isMappingDest ? Colours::red : Colours::blue;
         if (isSelected) c = Colours::green;
-        mapEffect  = new MapEffect (c, isSelected? 100:50, getName());
+        mapEffect  = new MapEffect (c, isSelected? 100:50, getName(),FastMapper::getInstance()->isParameterMapped(parameter));
     }
     else
     {

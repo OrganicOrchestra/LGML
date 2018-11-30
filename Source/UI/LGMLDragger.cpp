@@ -237,7 +237,12 @@ void LGMLDragger::mouseExit (const MouseEvent& e)
 
 
 
-
+void LGMLDragger::applyMappingState(ParameterUI* ch){
+    if (!dynamic_cast<NamedParameterUI*> (ch))
+    {
+        ch->setMappingState (isMappingActive);
+    }
+}
 
 void setAllComponentMappingState (Component* c, bool b)
 {
@@ -267,6 +272,7 @@ void setAllComponentMappingState (Component* c, bool b)
 
 void LGMLDragger::setMappingActive (bool b)
 {
+    
     isMappingActive = b;
     setAllComponentMappingState (mainComp, b);
 
@@ -426,4 +432,7 @@ void LGMLDragger::setSelected (ParameterUI* c,LGMLDragger::Listener * from)
 
     }
 }
+
+
+
 #endif

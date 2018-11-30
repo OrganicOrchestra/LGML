@@ -25,6 +25,7 @@ class ParameterUI : public InspectableComponent,
     protected ParameterBase::AsyncListener,
     private ParameterBase::Listener,
     public Controllable::Listener
+
 {
 public:
     ParameterUI ( ParameterBase* parameter);
@@ -34,7 +35,7 @@ public:
 
     bool showLabel;
     bool showValue;
-
+    static const Array<WeakReference<ParameterUI>> & getAllParameterUIs();
     void setCustomText (const String text);
 
     enum MappingState
@@ -46,7 +47,7 @@ public:
 
     void setMappingState (const bool  s);
     void setMappingDest (bool _isMappingDest);
-
+    
     bool isDraggable;
     bool isSelected;
     void updateOverlayEffect();
@@ -80,6 +81,9 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ParameterUI)
     friend class LGMLDragger;
+    friend class FastMapper;
+
+    void setHasMappedParameter(bool s);
     MappingState mappingState;
     bool hasValidControllable;
     ScopedPointer<ImageEffectFilter> mapEffect;
@@ -102,6 +106,7 @@ private:
     friend class WeakReference<ParameterUI>;
 
     bool wasShowing;
+    bool hasMappedParameter;
 
 
 };
