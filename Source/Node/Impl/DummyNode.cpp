@@ -52,7 +52,7 @@ DummyNode::DummyNode (StringRef name) :
     //AUDIO
     setPlayConfigDetails (2, 3, getSampleRate(), getBlockSize());
 
-
+    sleep(2);
 }
 
 DummyNode::~DummyNode()
@@ -80,7 +80,7 @@ void DummyNode::onContainerParameterChanged ( ParameterBase* p)
 }
 
 void DummyNode::prepareToPlay(double sr,int bs) {
-    sleep(1);
+    sleep(4);
 }
 
 
