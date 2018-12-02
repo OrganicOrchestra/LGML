@@ -210,7 +210,7 @@ def buildLocalMT(strs,locale='fr'):
   mtfile = os.path.join(baseTranslationPath,'mt.'+locale+'.json')
   from googletrans import Translator
   translator = MTranslator()
-  
+  anglicisms = getAnglicisms(translator,locale)
   i = 0
   if os.path.exists(mtfile):
     with open(mtfile ,'r') as fp:
@@ -220,6 +220,7 @@ def buildLocalMT(strs,locale='fr'):
 
   res = {}
   
+  checkUntranslatable(strs)
 
   def doBatchTranslate(txtL,mt,res,strs):
       if isinstance(txtL,str):
@@ -250,7 +251,8 @@ def buildLocalMT(strs,locale='fr'):
           trsL+=['\\n'.join(trs[idx:idx+toJoin])]
           idx+=toJoin
           idxOr+=1
-      
+      trsL = list(map(unifyLanguage,trsL))
+      trsL = list(map(anglicisms,trsL))
       print('trsL',trsL)
       # print('textL',txtL)
 
@@ -259,10 +261,11 @@ def buildLocalMT(strs,locale='fr'):
         kk = txtL[i] 
         if(kk==''):
           continue 
+
         mt[kk]=trsL[i]
         res[kk] = {'trans':mt[kk],'meta':strs[kk]}
-      with open(mtfile,'w') as fp:
-        json.dump(mt,fp)
+      with open(mtfile,'w',encoding='utf-8') as fp:
+        json.dump(mt,fp,ensure_ascii=False)
 
   txt=""
   maxNumChars = translator.maxNumChar
@@ -337,6 +340,18 @@ def getDefaultStrings():
   return res
 
 
+def getAnglicisms(translator,dest):
+  anglicisms = ["Node"]
+  trs = translator.translate(anglicisms,src='en',dest=dest)
+  # print (trs)
+  assert(len(trs)==len(anglicisms))
+  trs = list(map(unifyLanguage,trs))
+  def replace(line):
+    for i in range(len(trs)):
+      # print('checking',trs[i],anglicisms[i],line)
+      line = re.sub("%s"%trs[i],anglicisms[i],line,flags=re.IGNORECASE)
+    return line
+  return replace
 
 
 
@@ -344,6 +359,28 @@ def makeRawFile(tel):
   with open(baseTranslationPath+ 'raw.txt','w') as fp:
     fp.write('\n'.join(list(tel.keys())))
 
+
+def unifyLanguage(line):
+  subs = [("œ","oe")]
+  for s in subs:
+    line = re.sub(s[0],s[1],line)
+  return line
+
+def checkUntranslatable(strs):
+  regs = []
+  untranslated = []
+  regs+=list(map(re.compile,["^Link$","^Link Peers$","^Link Latency$"]))
+  for k in strs:
+    found = False
+    for r in regs:
+      if r.match(k):
+        found = True
+        break;
+    if found:
+      print('not translating ',k)
+      untranslated +=[k]
+  for k in untranslated:
+    del strs[k]
 
 
 if __name__ == "__main__":
@@ -355,7 +392,15 @@ if __name__ == "__main__":
   # it = re.finditer(r,s)
   # for i in it:
   #   print (i.groups())
+  # # exit()
+  # t = MTranslator()
+  # s = t.translate(['master volume for this node'],'en','fr')[0]
+  # print (s)
+  # s= unifyLanguage(s)
+  # a = getAnglicisms(t,"fr")(s)
+  # print(a)
   # exit()
+
 
   fl = getFileList()
   tel = {}
