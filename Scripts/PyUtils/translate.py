@@ -23,30 +23,6 @@ def getFileList():
   return files
 
 
-# def getEnclosed(s,start,opc='(',clc=')',ignore_escaped=False):
-#   starti = -1;
-#   i=start-1
-#   depth = 0
-#   wasEscaped = False
-#   for c in s[start:]:
-#     i+=1
-#     if wasEscaped:
-#       wasEscaped=False
-#       continue
-#     if c==clc and depth>0:
-#       depth-=1
-#     elif c==opc:
-#       depth+=1
-#       if starti<0 :
-#         starti = i;
-#     elif ignore_escaped and c=='\\':
-#       wasEscaped = True
-
-#     if starti>=0 and depth==0:
-#       return (starti,i)
-#   return None
-
-
 
 def buildRegFunction(fname,valid_mask,strict = True):
   anys = r"[\s\n\r]*"
@@ -107,62 +83,6 @@ def getRegExs(fl):
           # print (os.path.basename(f),lineNum,i)
         # if m : print(m);
   return res
-
-# def getAllStrings(fl):
-#   valid_s = re.compile("([A-Za-z0-9\ ]+)")
-#   digit_s = re.compile("([0-9\ ]+)")
-#   res ={}
-#   for f in fl:
-#     if "test" in f.lower():
-#       continue
-#     # print('reading strings from %s'%f)
-#     with open(f,'r',errors='replace',encoding='utf-8') as fp:
-
-#       i = 0
-#       for l in fp.readlines():
-#         i+=1
-#         l = l.strip('/ ')
-#         if "DBG" in l:
-#           continue
-#         found_idx = 0
-#         sub = getEnclosed(l,found_idx,'"','"',True)
-#         while sub:
-#           innerT = l[sub[0]+1:sub[1]]
-#           if re.match(valid_s,innerT) and len(innerT)>1 and innerT[-2:] != '.h' and not re.match(digit_s,innerT) and not '_' in innerT and not 'http' in innerT:
-#             res[innerT]=(f,i)
-#           found_idx=l.find('"',sub[1]+1)
-#           if found_idx<0:
-#             break;
-          
-#           sub = getEnclosed(l,found_idx,'"','"',True)
-          
-
-
-#   return res
-
-# def splitEscaped(s):
-#   wasEscaped = False
-#   cur = ""
-#   ls = []
-#   escaped = []
-#   for c in s:
-#     if wasEscaped:
-#       escaped+=['\\'+c]
-#       ls+=[cur]
-#       cur=""
-#       wasEscaped=False
-#     elif c=='\\':
-#       wasEscaped=True
-#     else:
-#       cur+=c
-#   ls+=[cur]
-#   return ls,escaped
-
-# def mergeEscaped(ls,escaped):
-#   res = ls[0]
-#   for i in range(1,len(ls)):
-#     res+=escaped[i-1]+ls[i]
-#   return res
 
 
 # class YTranslator():
@@ -289,9 +209,12 @@ def buildLocalMT(strs,locale='fr'):
 
 
 def buildPO(mt,lang):
+  from ProJucerUtils import getXmlVersion
+  version = getXmlVersion()
+  print ("version ",version)
   po = polib.POFile(encoding='utf-8')
   po.metadata = {
-      'Project-Id-Version': '1.2.10',
+      'Project-Id-Version': version,
       'Report-Msgid-Bugs-To': 'lab@organic-orchestra.com',
       'POT-Creation-Date': '2007-10-18 14:00+0100',
       'PO-Revision-Date': '2007-10-18 14:00+0100',
@@ -314,7 +237,7 @@ def buildPO(mt,lang):
     )
     entry.occurrences=[(relSrcFile,lineNum)]
     po.append(entry)
-  po.save(os.path.join(baseTranslationPath,'%s.po'%lang['name']))
+  po.save(os.path.join(baseTranslationPath,'%s.po'%(lang['name'])))
 
 
 def toJUCEfmt(mt,lang):
@@ -341,7 +264,8 @@ def getDefaultStrings():
 
 
 def getAnglicisms(translator,dest):
-  anglicisms = ["Node"]
+  #these are not translated but we try to spot them in full sentences
+  anglicisms = ["Node","Logger"]
   trs = translator.translate(anglicisms,src='en',dest=dest)
   # print (trs)
   assert(len(trs)==len(anglicisms))
@@ -361,12 +285,14 @@ def makeRawFile(tel):
 
 
 def unifyLanguage(line):
+  # try to have a consistenet ortograph (french : 'nœud' is sometimes spelled 'noeud' )
   subs = [("œ","oe")]
   for s in subs:
     line = re.sub(s[0],s[1],line)
   return line
 
 def checkUntranslatable(strs):
+  #these are not translated if they fully match regEx (usually exact match)
   regs = []
   untranslated = []
   regs+=list(map(re.compile,["^Link$","^Link Peers$","^Link Latency$"]))
@@ -385,22 +311,6 @@ def checkUntranslatable(strs):
 
 if __name__ == "__main__":
 
-  # with open('/tmp/tstReg.txt' ,'r') as fp:
-  #   s = fp.read()
-  # r=buildRegFunction("ShapeShifterContentComponent",[0,1])
-  # print (s)
-  # it = re.finditer(r,s)
-  # for i in it:
-  #   print (i.groups())
-  # # exit()
-  # t = MTranslator()
-  # s = t.translate(['master volume for this node'],'en','fr')[0]
-  # print (s)
-  # s= unifyLanguage(s)
-  # a = getAnglicisms(t,"fr")(s)
-  # print(a)
-  # exit()
-
 
   fl = getFileList()
   tel = {}
@@ -414,9 +324,9 @@ if __name__ == "__main__":
   # print (autoEl)
   langs  = [
   {'code':'fr','name':'french'},
-  {'code':'es','name':'spanish'},
-  {'code':'ru','name':'russian'},
-  {'code':'el','name':'greek'}
+  # {'code':'es','name':'spanish'},
+  # {'code':'ru','name':'russian'},
+  # {'code':'el','name':'greek'}
   ]
   # tel.update({k['name']:('None',0) for k in langs})
   for lang in langs:
