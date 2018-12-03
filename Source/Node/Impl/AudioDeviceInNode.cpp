@@ -24,12 +24,9 @@ REGISTER_NODE_TYPE (AudioDeviceInNode)
 AudioDeviceManager& getAudioDeviceManager();
 
 AudioDeviceInNode::AudioDeviceInNode (StringRef name) :
-    NodeBase (name),
+    NodeBase (name,false),
     AudioGraphIOProcessor (AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioInputNode)
 {
-
-    //canHavePresets = false;
-    hasMainAudioControl = false;
 
     {
         MessageManagerLock ml;
