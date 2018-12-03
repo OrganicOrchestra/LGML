@@ -817,7 +817,7 @@ void LatestVersionChecker::timerCallback()
     else
     {
         stopTimer();
-        startThread (3);
+        startThread (0);
     }
 }
 
