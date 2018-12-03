@@ -40,7 +40,7 @@ public:
 
 
 
-    void newJsFileLoaded()override;
+    
 
 
 

@@ -68,6 +68,9 @@
         <FILE compile="0" file="Source/Controllable/ControllableIndexedContainer.h"
               id="W7C4WZ" name="ControllableIndexedContainer.h" resource="0"/>
         <GROUP id="lRGBzB" name="Parameter">
+          <FILE id="yoeRWg" name="FileParameter.cpp" compile="1" resource="0"
+                file="Source/Controllable/Parameter/FileParameter.cpp"/>
+          <FILE id="ioCHmj" name="FileParameter.h" compile="0" resource="0" file="Source/Controllable/Parameter/FileParameter.h"/>
           <FILE id="hjYavb" name="UndoableHelper.cpp" compile="1" resource="0"
                 file="Source/Controllable/Parameter/UndoableHelper.cpp"/>
           <FILE id="qj0HsL" name="UndoableHelper.h" compile="0" resource="0"
@@ -77,6 +80,10 @@
           <FILE id="zSQQ5G" name="ParameterContainerSync.h" compile="0" resource="0"
                 file="Source/Controllable/Parameter/ParameterContainerSync.h"/>
           <GROUP id="y1gtRH" name="UI">
+            <FILE id="BJ6JLD" name="FileParameterUI.cpp" compile="1" resource="0"
+                  file="Source/Controllable/Parameter/UI/FileParameterUI.cpp"/>
+            <FILE id="X7VG29" name="FileParameterUI.h" compile="0" resource="0"
+                  file="Source/Controllable/Parameter/UI/FileParameterUI.h"/>
             <FILE id="EPzCSu" name="ParameterListUI.cpp" compile="1" resource="0"
                   file="Source/Controllable/Parameter/UI/ParameterListUI.cpp"/>
             <FILE id="aSq0F3" name="ParameterListUI.h" compile="0" resource="0"

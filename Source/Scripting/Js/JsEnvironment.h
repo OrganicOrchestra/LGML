@@ -33,7 +33,8 @@ class JSEnvContainer;
 
 class JsEnvironment : public MultiTimer, //timer for autoWatch & timer for calling update() in scripts
     private ParameterBase::Listener,
-private ControllableContainer::FeedbackListener
+private ControllableContainer::FeedbackListener,
+private FileParameter::Listener
 
 {
 public:
@@ -43,13 +44,11 @@ public:
 
 
     ScopedPointer<JSEnvContainer> jsParameters;
-
+    FileParameter * getJsFileParameter();
 
     // should be implemented to build localenv
     virtual void buildLocalEnv() = 0;
 
-    // sub classes can check new namespaces from this function
-    virtual void newJsFileLoaded() {};
 
     // can check that if want to avoid unnecessary (and potentially unsecure) method calls on non-valid jsFile
     bool hasValidJsFile() {return _hasValidJsFile;}
@@ -67,29 +66,19 @@ public:
     void setScriptEnabled (bool t);
 
 
-    bool    loadFile (const String& path);
-    bool    loadFile (const File& f);
+    
+
     Result    loadScriptContent (const String& content);
-    const File& getCurrentFile();
-    void    reloadFile();
-    void    showFile();
+    
+    
+    
 
 
 
 
     String printAllNamespace();
 
-    class Listener
-    {
-    public:
-        virtual ~Listener() {};
-        // listeners can check new namespaces from this function
-        virtual void newJsFileLoaded (bool ) {};
-        virtual void jsScriptLoaded (bool ) {};
-
-    };
-    void addListener (Listener* l) {jsListeners.add (l);}
-    void removeListener (Listener* l) {jsListeners.remove (l);}
+    
     void setAutoWatch (bool );
 
     var callFunction (const String& function, const Array<var>& args, bool logResult = true, Result* = nullptr);
@@ -106,6 +95,7 @@ private:
 
 protected :
 
+    Result    loadFile (const File& f);
 
     // this firstCheck if function exists to avoid poluting Identifier global pool
 
@@ -121,7 +111,7 @@ protected :
     // module name is the last element of dot separated localNamespace
     String getModuleName();
     String getParentName();
-    String getCurrentFilePath();
+
 
 
     const NamedValueSet& getRootObjectProperties();
@@ -129,12 +119,12 @@ protected :
 
     bool functionIsDefined (const String&);
     bool functionIdentifierIsDefined (const Identifier& i);
-    File currentFile;
+    
 
     static var createParameterListenerObject (const var::NativeFunctionArgs& a);
 
 
-protected :
+
     typedef HashMap<String ,WeakReference<ParameterBase> > ListenedParameterType ;
     ListenedParameterType listenedParameters;
     Array<WeakReference<ControllableContainer> > listenedContainers;
@@ -148,10 +138,14 @@ protected :
         const int interval;
     };
 
-    static const JsTimerType autoWatchTimer ;
+    
     static const JsTimerType onUpdateTimer;
     void setTimerState (const JsTimerType& t, bool state);
     friend class Controller;
+
+    friend class JSEnvContainer;
+
+    
 
 
 
@@ -169,10 +163,7 @@ private:
     String localNamespace;
 
 
-    ListenerList<Listener> jsListeners;
-
-
-    void internalLoadFile (const File&);
+    
 
 
     bool _hasValidJsFile;
@@ -245,8 +236,8 @@ private:
     CriticalSection engineLock;
 
     void timerCallback (int timerID)override;
-    Time lastFileModTime;
-    bool autoWatch;
+
+    
 
     void clearListeners();
     Result checkUserControllableEventFunction();
@@ -352,13 +343,10 @@ public:
 
     void onContainerParameterChanged ( ParameterBase* p) override;
     void onContainerTriggerTriggered (Trigger* p)override;
-    StringParameter* scriptPath;
-    Trigger* loadT;
-    Trigger* reloadT;
-    Trigger* showT;
+    FileParameter* scriptPath;
+
     Trigger* logT;
-    Trigger * createT;
-    BoolParameter* autoWatch;
+
     JsEnvironment* jsEnv;
 
 private:

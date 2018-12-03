@@ -290,8 +290,10 @@
     <ClCompile Include="..\..\Source\Controllable\ControllableContainer.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\ControllableUIHelpers.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\ControllableIndexedContainer.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\FileParameter.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\UndoableHelper.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\ParameterContainerSync.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\FileParameterUI.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\UI\ParameterListUI.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\UI\GenericParameterContainerEditor.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\UI\BetterStepper.cpp"/>
@@ -2279,8 +2281,10 @@
     <ClInclude Include="..\..\Source\Controllable\ControllableContainer.h"/>
     <ClInclude Include="..\..\Source\Controllable\ControllableUIHelpers.h"/>
     <ClInclude Include="..\..\Source\Controllable\ControllableIndexedContainer.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\FileParameter.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\UndoableHelper.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\ParameterContainerSync.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\FileParameterUI.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\UI\ParameterListUI.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\UI\GenericParameterContainerEditor.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\UI\BetterStepper.h"/>

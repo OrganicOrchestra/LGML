@@ -21,15 +21,7 @@
 
 
 PdNodeContentUI::PdNodeContentUI():
-isDirty (false),
-loadFileButton("load Pd File",//const String& name,
-               File(),//const File& currentFile,
-               true,//bool canEditFilename,
-               false,//bool isDirectory,
-               false,//bool isForSaving,
-               "",//const String& fileBrowserWildcard,
-               ".pd",//const String& enforcedSuffix,
-               "load pd patch")//const String& textWhenNothingSelected);
+isDirty (false)
 {
 
 }
@@ -38,7 +30,6 @@ PdNodeContentUI::~PdNodeContentUI()
 
     if(pdNode){
         pdNode->removeControllableContainerListener(this);
-        pdNode->isLoadedParam->removeAsyncParameterListener(this);
 
     }
 
@@ -59,16 +50,15 @@ void PdNodeContentUI::init()
     addAndMakeVisible(midiDeviceChooser);
     jassert(midiDeviceChooser);
 
-    addAndMakeVisible(loadFileButton);
-    loadFileButton.addListener(this);
-    pdNode->pdPath->addAsyncCoalescedListener(this);
-    newMessage({pdNode->pdPath,pdNode->pdPath->value,false});
+    fileChooser = ParameterUIFactory::createDefaultUI(pdNode->pdPath);
+    addAndMakeVisible(fileChooser);
+    
+
 
     updatePdParameters();
     setDefaultSize (250, 100);
 
     pdNode->addControllableContainerListener(this);
-    pdNode->isLoadedParam->addAsyncCoalescedListener(this);
     //DBG("Set Node and ui -> " << vstNode->midiPortNameParam->stringValue());
 
 }
@@ -124,19 +114,6 @@ void PdNodeContentUI::controllableContainerRemoved (ControllableContainer*, Cont
 
 
 
-void PdNodeContentUI::newMessage (const ParameterBase::ParamWithValue& pv) {
-
-    if(pv.parameter == pdNode->isLoadedParam){
-        if (isDirty) return;
-
-        postCommandMessage (0);
-        isDirty = true;
-    }
-    else if(pv.parameter==pdNode->pdPath){
-        loadFileButton.setCurrentFile(File(pdNode->pdPath->stringValue()), false,dontSendNotification);
-    }
-}
-
 void PdNodeContentUI::handleCommandMessage (int /*cId*/)
 {
     updatePdParameters();
@@ -148,7 +125,7 @@ void PdNodeContentUI::resized()
 {
     Rectangle<int> area = getLocalBounds().reduced (2);
     Rectangle<int> midiR = area.removeFromTop (25);
-    loadFileButton.setBounds(midiR.removeFromLeft(midiR.getWidth()/2));
+    fileChooser->setBounds(midiR.removeFromLeft(midiR.getWidth()/2));
     activityBlink->setBounds (midiR.removeFromRight (midiR.getHeight()/4).reduced (2));
     midiDeviceChooser->setBounds (midiR);
 
@@ -212,16 +189,7 @@ void PdNodeContentUI::layoutSliderParameters (Rectangle<int> pArea)
 
 
 //
-void PdNodeContentUI::filenameComponentChanged (FilenameComponent* fc)
-{
-    if (fc == &loadFileButton)
-    {
-        auto f = fc->getCurrentFile();
-        pdNode->pdPath->setValue(f.getFullPathName());
 
-    }
-
-}
 
 
 

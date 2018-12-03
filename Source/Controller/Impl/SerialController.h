@@ -49,7 +49,7 @@ public:
     BoolParameter* logIncoming;
 
     void onContainerParameterChanged ( ParameterBase* p) override;
-    void newJsFileLoaded() override;
+    
 
 
 

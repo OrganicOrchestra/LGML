@@ -19,7 +19,7 @@
 #include "../../Scripting/Js/JsEnvironmentUI.h"
 #include "../UI/ConnectableNodeContentUI.h"
 
-class JsNodeUI : public ConnectableNodeContentUI, private ControllableContainerListener, JsEnvironment::Listener
+class JsNodeUI : public ConnectableNodeContentUI, private ControllableContainerListener,FileParameter::Listener
 {
 
 
@@ -32,7 +32,7 @@ public:
 
     void resized() override;
 
-    void newJsFileLoaded (bool )override;
+    void loadingEnded(FileParameter * ) override;
     ScopedPointer<JsEnvironmentUI> jsUI;
 
     OwnedArray<ParameterUI> varUI;

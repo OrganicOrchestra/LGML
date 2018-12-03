@@ -77,8 +77,10 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/ControllableContainer_a2acad5b.o \
   $(JUCE_OBJDIR)/ControllableUIHelpers_49826e4b.o \
   $(JUCE_OBJDIR)/ControllableIndexedContainer_32b95300.o \
+  $(JUCE_OBJDIR)/FileParameter_be7c65ea.o \
   $(JUCE_OBJDIR)/UndoableHelper_584c3b19.o \
   $(JUCE_OBJDIR)/ParameterContainerSync_5c3cffa0.o \
+  $(JUCE_OBJDIR)/FileParameterUI_18aa3fb3.o \
   $(JUCE_OBJDIR)/ParameterListUI_d20d268d.o \
   $(JUCE_OBJDIR)/GenericParameterContainerEditor_282bb6ae.o \
   $(JUCE_OBJDIR)/BetterStepper_3cf8b0d3.o \
@@ -299,6 +301,11 @@ $(JUCE_OBJDIR)/ControllableIndexedContainer_32b95300.o: ../../Source/Controllabl
 	@echo "Compiling ControllableIndexedContainer.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/FileParameter_be7c65ea.o: ../../Source/Controllable/Parameter/FileParameter.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling FileParameter.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/UndoableHelper_584c3b19.o: ../../Source/Controllable/Parameter/UndoableHelper.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling UndoableHelper.cpp"
@@ -307,6 +314,11 @@ $(JUCE_OBJDIR)/UndoableHelper_584c3b19.o: ../../Source/Controllable/Parameter/Un
 $(JUCE_OBJDIR)/ParameterContainerSync_5c3cffa0.o: ../../Source/Controllable/Parameter/ParameterContainerSync.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling ParameterContainerSync.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/FileParameterUI_18aa3fb3.o: ../../Source/Controllable/Parameter/UI/FileParameterUI.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling FileParameterUI.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/ParameterListUI_d20d268d.o: ../../Source/Controllable/Parameter/UI/ParameterListUI.cpp

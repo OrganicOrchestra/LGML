@@ -110,6 +110,10 @@
 			isa = PBXBuildFile;
 			fileRef = B53FE1801A20D137E4AD0FAC;
 		};
+		36B2F02434055E8CD9444FDB = {
+			isa = PBXBuildFile;
+			fileRef = 5B151687DA17268304805D97;
+		};
 		0860E6A9528B43AA711D9E5C = {
 			isa = PBXBuildFile;
 			fileRef = 07BBD52759F300DABBA46635;
@@ -117,6 +121,10 @@
 		9870EC2174EF123A69A756B1 = {
 			isa = PBXBuildFile;
 			fileRef = F12B30C71CEAAC024F62DC25;
+		};
+		E653AA8D8EB22848C4EF3A6A = {
+			isa = PBXBuildFile;
+			fileRef = 7ACBCB2033D66EBB39C356B9;
 		};
 		60569F6DCD109352CE1EA767 = {
 			isa = PBXBuildFile;
@@ -1728,6 +1736,13 @@
 			path = ../../Source/UI/ShapeShifter/ShapeShifterFactory.h;
 			sourceTree = "SOURCE_ROOT";
 		};
+		5B151687DA17268304805D97 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = FileParameter.cpp;
+			path = ../../Source/Controllable/Parameter/FileParameter.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
 		5B5C6F6E64FB76AA88C579FD = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -2048,6 +2063,13 @@
 			lastKnownFileType = sourcecode.cpp.objcpp;
 			name = "include_juce_data_structures.mm";
 			path = "../../JuceLibraryCode/include_juce_data_structures.mm";
+			sourceTree = "SOURCE_ROOT";
+		};
+		7ACBCB2033D66EBB39C356B9 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = FileParameterUI.cpp;
+			path = ../../Source/Controllable/Parameter/UI/FileParameterUI.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		7B2EA069333249407321D309 = {
@@ -2645,6 +2667,13 @@
 			path = ../../Source/Controllable/Parameter/UI/TriggerBlinkUI.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
+		B9AFDBE429380689B0770D1A = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = FileParameterUI.h;
+			path = ../../Source/Controllable/Parameter/UI/FileParameterUI.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		BCD07C8F3E892DA25B9D2B16 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.objcpp;
@@ -3156,6 +3185,13 @@
 			path = ../../Source/Controller/Impl/OSCDirectController.h;
 			sourceTree = "SOURCE_ROOT";
 		};
+		E98B5BA80245DB01D422E4E9 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = FileParameter.h;
+			path = ../../Source/Controllable/Parameter/FileParameter.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		EA5D06AFA6F6B6169135D7DF = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 220628A8DE3734BED06BD605;
@@ -3466,6 +3502,8 @@
 		9302F6CAA4843524949EA164 = {
 			isa = PBXGroup;
 			children = (
+				7ACBCB2033D66EBB39C356B9,
+				B9AFDBE429380689B0770D1A,
 				421CB52DFA82740750173839,
 				C3930238C911EFC83C21B3FA,
 				59AD637EBC01DE0167C23164,
@@ -3499,6 +3537,8 @@
 		9E74F7F77F049833AA1283EA = {
 			isa = PBXGroup;
 			children = (
+				5B151687DA17268304805D97,
+				E98B5BA80245DB01D422E4E9,
 				07BBD52759F300DABBA46635,
 				A346B7E243384CB339313798,
 				F12B30C71CEAAC024F62DC25,
@@ -4526,8 +4566,10 @@
 				2A288C5D2C4A12594CBB2360,
 				27FD4423B5E0A23AF45FA359,
 				76BC7AF0F4DD662F91AA5491,
+				36B2F02434055E8CD9444FDB,
 				0860E6A9528B43AA711D9E5C,
 				9870EC2174EF123A69A756B1,
+				E653AA8D8EB22848C4EF3A6A,
 				60569F6DCD109352CE1EA767,
 				23B41906FCEA05733D391BF8,
 				1585CBBDD702781E33168DF6,

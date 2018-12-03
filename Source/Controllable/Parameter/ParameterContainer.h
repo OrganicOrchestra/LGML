@@ -21,6 +21,7 @@
 #include "../Parameter/RangeParameter.h"
 #include "../Parameter/ParameterList.h"
 #include "../Parameter/Trigger.h"
+#include "../Parameter/FileParameter.h"
 
 #include "../../Preset/PresetManager.h"
 #include "../../Utils/FactoryObject.h"

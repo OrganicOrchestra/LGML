@@ -30,8 +30,6 @@ OSCJsController::OSCJsController (StringRef name) :
 
     buildLocalEnv();
 
-    jsPath = addNewParameter<StringParameter> ("js File Path", "path from where to load JS", "");
-    jsPath->isControllableExposed = false;
 
 
 }
@@ -208,10 +206,7 @@ void OSCJsController::onContainerParameterChanged ( ParameterBase* p)
     {
         setNamespaceName ("controllers." + shortName);
     }
-    else if (p == jsPath)
-    {
-        loadFile (jsPath->stringValue());
-    }
+
     else if (p == enabledParam)
     {
         setScriptEnabled (enabledParam->boolValue());
@@ -232,11 +227,6 @@ void OSCJsController::onContainerTriggerTriggered (Trigger* t)
 };
 
 
-void OSCJsController::newJsFileLoaded()
-{
-
-    jsPath->setValue (getCurrentFilePath(), true);
-}
 
 
 void OSCJsController::clearNamespace()

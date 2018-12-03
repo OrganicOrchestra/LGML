@@ -22,9 +22,8 @@ public:
 
     ~PdNode();
 
-    StringParameter* pdPath;
-    BoolParameter *isLoadedParam;
-    Trigger *reloadPatch;
+    FileParameter* pdPath;
+    
     Array<ParameterBase*> pdParameters;
 
     MIDIHelpers::MIDIIOChooser midiChooser;
@@ -51,7 +50,7 @@ private:
     void unloadFile();
     HeapBlock<float> tempInBuf,tempOutBuf;
 
-    void loadValidPdFile();
+    Result loadPdFile(const File & f);
     t_pdinstance * pdinstance;
     void * patchHandle;
     int numTicks;

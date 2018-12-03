@@ -92,10 +92,6 @@ void SerialController::setCurrentPort (SerialPort* _port)
 
 }
 
-void SerialController::newJsFileLoaded()
-{
-
-}
 
 void SerialController::onContainerParameterChanged ( ParameterBase* p)
 {
@@ -179,14 +175,14 @@ void SerialController::childControllableAdded (ControllableContainer*, Controlla
 {
     if (c->isUserDefined)
     {
-        reloadFile();
+        getJsFileParameter()->triggerFileChange();
     }
 }
 void SerialController::childControllableRemoved (ControllableContainer*, Controllable* c)
 {
     if (c->isUserDefined)
     {
-        reloadFile();
+        getJsFileParameter()->triggerFileChange();
     }
 
 }

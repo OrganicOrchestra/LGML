@@ -34,6 +34,8 @@
 
 #include "../ParameterProxy.h"
 #include "ParameterProxyUI.h"
+#include "../FileParameter.h"
+#include "FileParameterUI.h"
 
 #include "../RangeParameter.h"
 #include "RangeParameterUI.h"
@@ -62,6 +64,7 @@ ParameterUI* ParameterUIFactory::createDefaultUI ( ParameterBase* t)
     CHKNRETURN (t, EnumParameter, EnumParameterUI)
     CHKNRETURN (t, RangeParameter, RangeParameterUI)
     CHKNRETURN (t, ParameterProxy, ParameterProxyUI)
+    CHKNRETURN (t, FileParameter, FileParameterUI)
     CHKNRETURNSLIDER(t,ParameterList<int>, ParameterListUI<int>)
     CHKNRETURNSLIDER(t,ParameterList<floatParamType>, ParameterListUI<floatParamType>)
     

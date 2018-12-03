@@ -574,11 +574,17 @@
     <ClCompile Include="..\..\Source\Controllable\ControllableIndexedContainer.cpp">
       <Filter>LGML\Source\Controllable</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\FileParameter.cpp">
+      <Filter>LGML\Source\Controllable\Parameter</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Controllable\Parameter\UndoableHelper.cpp">
       <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Controllable\Parameter\ParameterContainerSync.cpp">
       <Filter>LGML\Source\Controllable\Parameter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\FileParameterUI.cpp">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Controllable\Parameter\UI\ParameterListUI.cpp">
       <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
@@ -3033,11 +3039,17 @@
     <ClInclude Include="..\..\Source\Controllable\ControllableIndexedContainer.h">
       <Filter>LGML\Source\Controllable</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\FileParameter.h">
+      <Filter>LGML\Source\Controllable\Parameter</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Controllable\Parameter\UndoableHelper.h">
       <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Controllable\Parameter\ParameterContainerSync.h">
       <Filter>LGML\Source\Controllable\Parameter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\FileParameterUI.h">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Controllable\Parameter\UI\ParameterListUI.h">
       <Filter>LGML\Source\Controllable\Parameter\UI</Filter>

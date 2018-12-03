@@ -1,16 +1,16 @@
 /* Copyright © Organic Orchestra, 2017
-*
-* This file is part of LGML.  LGML is a software to manipulate sound in realtime
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation (version 3 of the License).
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*/
+ *
+ * This file is part of LGML.  LGML is a software to manipulate sound in realtime
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation (version 3 of the License).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
 
 #if !ENGINE_HEADLESS
 #include "JsNodeUI.h"
@@ -24,7 +24,7 @@ JsNodeUI::~JsNodeUI()
     if ( node.get())
     {
         node->removeControllableContainerListener (this);
-        ((JsNode*)node.get())->JsEnvironment::removeListener (this);
+        ((JsNode*)node.get())->jsParameters->scriptPath->removeFileListener (this);
     };
 
 };
@@ -38,29 +38,28 @@ void JsNodeUI::init()
     addAndMakeVisible (jsUI);
 
 
-    jsNode->JsEnvironment::addListener (this);
+    jsNode->jsParameters->scriptPath->addFileListener (this);
 
     if (jsNode->hasValidJsFile())
     {
-        newJsFileLoaded (true);
+        loadingEnded(nullptr);
     }
 
     setDefaultSize (350, 150);
 
 };
 
-void JsNodeUI::newJsFileLoaded (bool v)
+void JsNodeUI::loadingEnded (FileParameter*)
 {
     JsNode* jsNode = (JsNode*) node.get();
     varUI.clear();
 
-//    if (v)
-//    {
-        for (auto& c : jsNode->jsDynamicParameters)
-        {
-            childControllableAdded (jsNode, c);
-        }
-//    }
+
+    for (auto& c : jsNode->jsDynamicParameters)
+    {
+        childControllableAdded (jsNode, c);
+    }
+
 };
 
 void JsNodeUI::resized()
@@ -112,13 +111,13 @@ void JsNodeUI::childControllableRemoved (ControllableContainer*, Controllable* c
             varUI.removeObject (comp);
             break;
         }
-
+        
     }
-
-
+    
+    
     layoutUI();
-
-
+    
+    
 };
 
 #endif

@@ -66,7 +66,7 @@ public :
     static var sendSysExFromJS (const var::NativeFunctionArgs& v);
 
     void callJs (const MidiMessage& message);
-    void newJsFileLoaded()override;
+    
 
 //    class MIDIControllerListener
 //    {

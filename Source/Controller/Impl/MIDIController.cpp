@@ -275,11 +275,7 @@ void MIDIController::buildLocalEnv()
 };
 
 
-void MIDIController::newJsFileLoaded()
-{
 
-
-};
 
 // @ben do we do the same as OSC MIDI IN/OUt controllers
 
