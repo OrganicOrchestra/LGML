@@ -20,10 +20,7 @@
 #include "JsHelpers.h"
 // needed for T* castPtrFromJSEnv()
 
-//template<class T>
-//class JsObjectRef;
-
-
+#include "../../Controllable/Parameter/FileParameter.h"
 
 
 
@@ -33,8 +30,7 @@ class JSEnvContainer;
 
 class JsEnvironment : public MultiTimer, //timer for autoWatch & timer for calling update() in scripts
     private ParameterBase::Listener,
-private ControllableContainer::FeedbackListener,
-private FileParameter::Listener
+private ControllableContainer::FeedbackListener
 
 {
 public:
@@ -334,6 +330,7 @@ public :
 
 //////////////////
 /// JSEnvContainer
+
 class JSEnvContainer : public ParameterContainer
 {
 public:

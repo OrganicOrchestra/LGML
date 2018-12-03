@@ -38,7 +38,7 @@ class SerialProtocol : public EnumParameterModel{
 
 static SerialProtocol serialProtocolModel;
 */
-
+//#include "../../Controllable/Parameter/FileParameter.h" // TODO check why userDefined parameter needs to trigger changes
 
 SerialController::SerialController (StringRef name) :
 JsEnvironment ("controllers.serial", this),
@@ -173,17 +173,17 @@ void SerialController::serialDataReceived (const var& data)
 
 void SerialController::childControllableAdded (ControllableContainer*, Controllable* c)
 {
-    if (c->isUserDefined)
-    {
-        getJsFileParameter()->triggerFileChange();
-    }
+//    if (c->isUserDefined)
+//    {
+//        getJsFileParameter()->triggerFileChange();
+//    }
 }
 void SerialController::childControllableRemoved (ControllableContainer*, Controllable* c)
 {
-    if (c->isUserDefined)
-    {
-        getJsFileParameter()->triggerFileChange();
-    }
+//    if (c->isUserDefined)
+//    {
+//        getJsFileParameter()->triggerFileChange();
+//    }
 
 }
 var SerialController::sendMessageFromScript (const var::NativeFunctionArgs&)

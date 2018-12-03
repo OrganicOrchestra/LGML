@@ -19,7 +19,6 @@
 
 #include "JsEnvironment.h"
 #include "../../Controllable/Parameter/UI/ParameterUI.h"
-class StringParameterUI;
 
 class JsEnvironmentUI : public juce::Component
 {

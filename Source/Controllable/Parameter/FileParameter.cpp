@@ -16,15 +16,21 @@ REGISTER_PARAM_TYPE (FileParameter)
                           //String getNormalizedFilePath (const File& f);
                           //File getFileAtNormalizedPath (const String& path);
 
-static HashMap<FileType, StringArray> fileTypes;
+
+struct FileTypeInfo{
+    StringArray extensions;
+    String fullName;
+
+};
+static HashMap<FileType, FileTypeInfo> fileTypes;
 
 
 
 int initBaseFileTypes(){
-    fileTypes.set(Js,StringArray {"js"});
-    fileTypes.set(Audio, StringArray {"wav","aif","aiff","mp3"});
-    fileTypes.set(PdPatch, StringArray {"pd"});
-    fileTypes.set(Preset,StringArray {"json"});
+    fileTypes.set(Js,{StringArray {"js"},"Javascript"});
+    fileTypes.set(Audio, {StringArray {"wav","aif","aiff","mp3"},"Audio"});
+    fileTypes.set(PdPatch, {StringArray {"pd"},"Pure-data"});
+    fileTypes.set(Preset,{StringArray {"json"},"Preset"});
 
 
     return 0;
@@ -175,7 +181,7 @@ String  FileParameter::getAllowedExtensionsFilter(bool includeWildCards){
     }
     else{
         StringArray allowed;
-        for(auto & s: fileTypes[fileType]){
+        for(auto & s: fileTypes[fileType].extensions){
             allowed.add(String(includeWildCards?"*":"")+"."+s);
         }
 
@@ -184,6 +190,14 @@ String  FileParameter::getAllowedExtensionsFilter(bool includeWildCards){
 
 
 
+}
+String FileParameter::getFullTypeName(){
+    if(fileType==Any){
+        return "";
+    }
+    else{
+        return fileTypes[fileType].fullName;
+    }
 }
 
 bool FileParameter::fileHasValidExtension(const File & f){

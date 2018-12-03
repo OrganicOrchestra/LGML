@@ -16,6 +16,8 @@
 #include "../../MIDI/MIDIListener.h"
 #include "../../MIDI/MIDIHelpers.h"
 
+#include "../../Controllable/Parameter/FileParameter.h"
+
 class PdNode:public NodeBase,public MIDIListener{
 public:
     DECLARE_OBJ_TYPE (PdNode,"load Pd Patch");

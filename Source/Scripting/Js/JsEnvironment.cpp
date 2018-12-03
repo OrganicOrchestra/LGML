@@ -45,7 +45,7 @@ isEnabled (true)
 
 {
     jsParameters = new JSEnvContainer (this);
-    jsParameters->scriptPath->addFileListener(this);
+
     linkedContainer->addChildControllableContainer (jsParameters);
 
     linkedContainer->nameParam->addParameterListener(this);
@@ -61,7 +61,7 @@ isEnabled (true)
 
 JsEnvironment::~JsEnvironment()
 {
-    jsParameters->scriptPath->removeFileListener(this);
+
     if (getEngine())
     {
         getEngine()->removeControllableContainerListener (this);

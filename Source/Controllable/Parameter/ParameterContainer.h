@@ -21,7 +21,7 @@
 #include "../Parameter/RangeParameter.h"
 #include "../Parameter/ParameterList.h"
 #include "../Parameter/Trigger.h"
-#include "../Parameter/FileParameter.h"
+//#include "../Parameter/FileParameter.h" // used sparsely so require explicit include
 
 #include "../../Preset/PresetManager.h"
 #include "../../Utils/FactoryObject.h"

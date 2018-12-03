@@ -182,8 +182,8 @@ void show(FileParameter * fp){
     fp->getFile().startAsProcess();
 }
 
-ScopedPointer<FileChooser> getFcForFp(FileParameter * fp,bool save){
-    return new FileChooser (juce::translate(String(save?"save":"load")+" file"),//    const String& chooserBoxTitle,
+ScopedPointer<FileChooser> getFcForFp(FileParameter * fp,String && name){
+    return new FileChooser (name,//    const String& chooserBoxTitle,
                    getEngine()->getCurrentProjectFolder(),//    const File& currentFileOrDirectory,
                    fp->getAllowedExtensionsFilter(true),//    const String& fileFilters,
                    true,//    const bool useNativeBox,
@@ -194,7 +194,7 @@ ScopedPointer<FileChooser> getFcForFp(FileParameter * fp,bool save){
 }
 
 void openFile(FileParameter *fp){
-    auto fc = getFcForFp(fp,false);
+    auto fc = getFcForFp(fp,juce::translate(String("open 123 file").replace("123", fp->getFullTypeName())));
     if(fc->browseForFileToOpen()){
         File file = fc->getResult();
         if(file.exists()){
@@ -205,7 +205,7 @@ void openFile(FileParameter *fp){
 
 void createFile(FileParameter *fp){
     if(!getEngine()->getCurrentProjectFolder().exists()){
-        auto fc = getFcForFp(fp,true);
+        auto fc = getFcForFp(fp,juce::translate(String("save 123 file").replace("123", fp->getFullTypeName())));
         auto res = fc->browseForFileToSave(true);
         if(res){
             File file = fc->getResult();

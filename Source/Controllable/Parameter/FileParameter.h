@@ -68,6 +68,7 @@ public:
 
 
     String  getAllowedExtensionsFilter(bool includeWildCards);
+    String getFullTypeName();
 
     ListenerList<Listener> fileListeners;
 
