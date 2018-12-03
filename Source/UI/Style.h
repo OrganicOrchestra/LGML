@@ -58,12 +58,12 @@ enum ColorsIds
 }
 
 
-class AddElementButton : public Button
+class AddElementButton : public DrawableButton
 {
 public:
     AddElementButton();
     ~AddElementButton();
-
+    static Drawable * createDrawable(bool isHovered=false);
     void paintButton (Graphics& g,
                       bool isMouseOverButton,
                       bool isButtonDown)override;

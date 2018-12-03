@@ -101,34 +101,72 @@ void LGMLUIUtils::forceRepaint(Component * c) {
 // AddElementButton
 ///////////////////////
 
-AddElementButton::AddElementButton(): Button ("Add") {
-
+AddElementButton::AddElementButton(): DrawableButton ("Add",DrawableButton::ButtonStyle::ImageFitted) {
+    setImages(createDrawable(),createDrawable(true));
 };
 AddElementButton::~AddElementButton(){
 
 };
+
+Drawable * AddElementButton::createDrawable(bool isHovered){
+
+//    auto area = getLocalBounds();
+    auto color = Colours::green;
+    float scale= 25;
+    if(isHovered){
+        color = color.brighter();
+    }
+    auto bgColor = Colours::transparentWhite;
+    float thickness = .05*scale;
+    Path circlePath;
+    circlePath.addEllipse(0, 0, 1*scale, 1*scale);
+
+    Path crossPath;
+    float padOut = thickness + .1*scale;
+    float width = thickness/2.0;
+    crossPath.addRoundedRectangle(padOut, .5*scale-width/2.0, 1.0*scale-2.0*padOut, width, width/4.0);
+    crossPath.addRoundedRectangle( .5*scale-width/2.0,padOut, width,1.0*scale-2.0*padOut, width/4.0);
+    DrawableComposite *dp = new DrawableComposite();
+    dp->setBoundingBox({0,0,1*scale,1*scale});
+    
+    auto * cd = new DrawablePath();
+    cd->setPath(circlePath);
+    cd->setFill(FillType(color));
+    cd->setStrokeFill(FillType(color));
+    cd->setStrokeThickness(thickness);
+
+    color = Colours::white;
+    auto * crd = new DrawablePath();
+    crd->setFill(FillType(bgColor));
+    crd->setStrokeFill(FillType(color));
+    crd->setStrokeThickness(thickness);
+    crd->setPath(crossPath);
+    dp->addAndMakeVisible(cd);
+    dp->addAndMakeVisible(crd);
+    
+    return dp;
+}
 void AddElementButton::paintButton (Graphics& g,
                                     bool isMouseOverButton,
                                     bool isButtonDown)
 {
-
-    auto area = getLocalBounds();
-    auto bgColor = findColour (TextButton::buttonColourId);
-
-    if((isButtonDown || isMouseOverButton) ){
-        bgColor = bgColor.brighter();
-    }
-    g.setColour (  bgColor);
-    const float stroke = 1;
-    g.drawEllipse (area.toFloat().reduced (stroke / 2), stroke);
-    g.setColour (findColour (TextButton::textColourOffId));
-    const float hw = stroke;//area.getHeight()/18.0;
-    const float offset = area.getWidth() / 4.0f ;
-
-    const float corner = hw;
-
-    g.fillRoundedRectangle (area.getX() + offset, area.getCentre().getY() - hw, area.getWidth() - 2 * offset, 2 * hw, corner);
-    g.fillRoundedRectangle ( area.getCentre().getX() - hw, area.getY() + offset, 2 * hw, area.getHeight() - 2 * offset,  corner);
+//    auto bgColor = Colours::green;//findColour (TextButton::buttonOnColourId);
+//
+//
+//    if((isButtonDown || isMouseOverButton) ){
+//        bgColor = bgColor.brighter();
+//    }
+//    g.setColour (  bgColor);
+//    const float stroke = 1;
+//    g.drawEllipse (area.toFloat().reduced (stroke / 2), stroke);
+//    //    g.setColour (findColour (TextButton::textColourOffId));
+//    const float hw = stroke;//area.getHeight()/18.0;
+//    const float offset = area.getWidth() / 4.0f ;
+//
+//    const float corner = hw;
+//
+//    g.fillRoundedRectangle (area.getX() + offset, area.getCentre().getY() - hw, area.getWidth() - 2 * offset, 2 * hw, corner);
+//    g.fillRoundedRectangle ( area.getCentre().getX() - hw, area.getY() + offset, 2 * hw, area.getHeight() - 2 * offset,  corner);
 
 }
 
