@@ -10,24 +10,21 @@
 
 #include "FileParameterUI.h"
 #include "../../../Engine.h"
+#include "StringParameterUI.h"
 
+#include "../../../UI/Style.h" // for addElementButton
 void createFile(FileParameter* fp);
 void openFile(FileParameter* fp);
 
-FileParameterUI::FileParameterUI (FileParameter* p): ParameterUI (p), fnComponent (p->niceName,//const String& name,
-                                                                  File(),//const File& currentFile,
-                                                                  p->isEditable,//canEditFilename),
-                                                                  false,//bool isDirectory,
-                                                                  true,//,bool isForSaving,
-                                                                  "",//const String& fileBrowserWildcard,
-                                                                  "",//const String& enforcedSuffix,
-                                                                  p->description)//const String& textWhenNothingSelected);
-,options()
+FileParameterUI::FileParameterUI (FileParameter* p): ParameterUI (p)
+,options("options",DrawableButton::ButtonStyle::ImageFitted)
 {
     options.addListener(this);
+    options.setImages(AddElementButton::createDrawable());
     addAndMakeVisible(options);
     valueChanged(p->value);
-    fnComponent.addListener (this);
+    fnComponent  = new StringParameterUI(p);
+    fnComponent->trimStart = true;
     addAndMakeVisible (fnComponent);
     p->addFileListener(this);
     addAndMakeVisible(errorLed);
@@ -42,60 +39,18 @@ FileParameterUI::~FileParameterUI(){
 }
 
 
-void reLayout(FileParameterUI *  ui ){
-
-//    reloadT =  addNewParameter<Trigger> ("reloadFile", "reload current file");
-//    reloadT->isControllableExposed = false;
-//    showT =  addNewParameter<Trigger> ("showFile", "open file in text editor");
-//    showT->isControllableExposed = false;
-//    autoWatch = addNewParameter<BoolParameter> ("autoWatch", "auto reload if file has been changed", false);
-//    autoWatch->isSavable = false;
-
-//    else if (p == loadT)
-//    {
-//        File  startFolder (jsEnv->getCurrentFile());
-//
-//        if (startFolder.exists()) {startFolder = startFolder.getParentDirectory();}
-//        else {startFolder = getEngine()->getCurrentProjectFolder();}
-//
-//        FileChooser myChooser ("Please select the script you want to load...",
-//                               startFolder,
-//                               "*.js");
-//
-//        if (myChooser.browseForFileToOpen())
-//        {
-//            File script (myChooser.getResult());
-//            jsEnv->loadFile (script);
-//        }
-//    }
-    
-}
-
-void FileParameterUI::valueChanged (const var& v)
-{
-    fnComponent.setCurrentFile(getFileParameter()->getFile(), true);
-
-};
-
-void FileParameterUI::filenameComponentChanged (FilenameComponent* fileComponentThatHasChanged) {
-    if(fileComponentThatHasChanged == &fnComponent){
-        getFileParameter()->setValueFrom(this,getEngine()->getNormalizedFilePath(fnComponent.getCurrentFile()));
-    }
-};
-
-
 
 void FileParameterUI::resized()
 {
     auto r =getLocalBounds();
-    options.setBounds(r.removeFromLeft(10));
+    options.setBounds(r.removeFromLeft(r.getHeight()));
     if(auto fp = getFileParameter()){
         if(!fp->hasValidPath(true) || fp->getLoadingState()==LOADED_WITH_ERROR){
             errorLed.setBounds(r.removeFromLeft(10));
         }
 
     }
-    fnComponent.setBounds (r);
+    fnComponent->setBounds (r);
 
 }
 
@@ -109,34 +64,36 @@ const File  FileParameterUI::getCurrentFile() const{
 void FileParameterUI::buttonClicked (Button*) {
     PopupMenu menu;
     auto * fp = getFileParameter();
+
     if(fp->hasValidPath(false)){
-        menu.addItem(1, "reload");
-        menu.addItem(2, "show");
-        menu.addItem(3, "watch",true,getFileParameter()->isWatching);
+        menu.addItem(3, "reload");
+        menu.addItem(4, "show");
+        menu.addItem(5, "watch",true,getFileParameter()->isWatching);
+        menu.addSeparator();
     }
-    else{
-        menu.addItem(4,"create");
-        menu.addItem(5,"open");
-    }
+    menu.addItem(1,"create");
+    menu.addItem(2,"open");
+
     auto res = menu.show();
     switch(res){
         case 1:
+            createFile(getFileParameter());
+            break;
+        case 2:
+            openFile(getFileParameter());
+            break;
+        case 3:
             if(auto * fp =getFileParameter())
                 fp->triggerFileChange();
             break;
-        case 2:
+        case 4:
             if (getCurrentFile().existsAsFile())
                 getCurrentFile().startAsProcess();
-        case 3:
+        case 5:
             if(auto * fp =getFileParameter())
                 fp->setIsWatching(!getFileParameter()->isWatching);
             break;
-        case 4:
-            createFile(getFileParameter());
-            break;
-        case 5:
-            openFile(getFileParameter());
-            break;
+
     }
 
 }
@@ -158,12 +115,17 @@ void FileParameterUI::loadingEnded(FileParameter * fp){
     circle.addEllipse (Rectangle<float> (0, 0, (float)size, (float)size));
     errorLed.setPath (circle);
 
+    if(!fp->hasValidPath(false)){
 
+    }
     if(fp->getLoadingState()==LOADED  || fp->stringValue().isEmpty()){
         errorLed.setVisible(false);
+
+
     }
     else{
         errorLed.setVisible(true);
+
 
     }
     errorLed.setFill (FillType (!fp->hasValidPath(true)? Colours::red:
@@ -171,9 +133,7 @@ void FileParameterUI::loadingEnded(FileParameter * fp){
                                    Colours::green)));
 
     resized();
-//    validLed.setFill (FillType ((env->hasValidJsFile() && env->isInSyncWithLGML()) ? Colours::green :
-//                                  (env->hasValidJsFile() ? Colours::orange :
-//                                   Colours::red)));
+
 };
 
 // TODO add auto show
@@ -260,5 +220,40 @@ void createFile(FileParameter *fp){
             
         }
     }
+}
+
+bool FileParameterUI::isInterestedInFileDrag (const StringArray& files) {
+    if(files.size()==1){
+        File  f (files[0]);
+        if(f.exists()){
+            return f.hasFileExtension(getFileParameter()->getAllowedExtensionsFilter(false));
+        }
+
+    }
+    return false;
+};
+
+void FileParameterUI::fileDragEnter (const StringArray& files, int x, int y){
+    hoveredByFile = true;
+    repaint();
+};
+
+void FileParameterUI::fileDragExit (const StringArray& files){
+    hoveredByFile = false;
+    repaint();
+};
+void FileParameterUI::filesDropped (const StringArray& files, int x, int y) {
+    jassert(isInterestedInFileDrag(files));
+    getFileParameter()->setFile(files[0]);
+};
+
+void FileParameterUI::paintOverChildren(Graphics & g) {
+    if(hoveredByFile){
+        auto r = getLocalBounds();
+        g.setColour(findColour(TextButton::buttonOnColourId));
+        g.drawRect(r);
+    }
+    
+    
 }
 

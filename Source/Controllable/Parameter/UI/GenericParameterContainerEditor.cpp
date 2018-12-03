@@ -24,11 +24,9 @@
 #include "../../../UI/Style.h"
 
 
-#include "../../../Scripting/Js/JsEnvironmentUI.h"
-
 GenericParameterContainerEditor::GenericParameterContainerEditor (ParameterContainer* _sourceContainer) :
     InspectorEditor(),
-    parentBT ("Up", "Go back to parent container")
+parentBT (juce::translate("Up"), juce::translate("Go back to parent container"))
 {
 
     parentBT.addListener (this);
@@ -55,7 +53,7 @@ GenericParameterContainerEditor::~GenericParameterContainerEditor()
 void GenericParameterContainerEditor::setCurrentInspectedContainer (ParameterContainer* cc, bool forceUpdate,    int recursiveInspectionLevel, bool canInspectChildContainersBeyondRecursion)
 {
 //    if (cc == nullptr) return;
-
+    
     if (innerContainer != nullptr)
     {
         if (!forceUpdate && cc == innerContainer->container) return;
@@ -216,7 +214,8 @@ void CCInnerContainerUI::rebuild()
 
     for (auto& c : container->getControllablesOfType<ParameterBase> (false))
     {
-        if (!c->isHidenInEditor) addParameterUI (c);
+        if(c==container->nameParam && !c->isEditable)continue;
+        if (!c->isHidenInEditor ) addParameterUI (c);
     }
 
     if (level < maxLevel)
@@ -267,20 +266,13 @@ void CCInnerContainerUI::removeCCInnerUI (ParameterContainer* cc)
 
 void CCInnerContainerUI::addCCLink (ParameterContainer* cc)
 {
-//TODO implement more generic parameterContainer UI factory
-    if(auto jsCont = dynamic_cast<JSEnvContainer*> (cc)){
 
-        auto subEditor = new JsEnvironmentUI (jsCont->jsEnv->jsParameters);
-        addAndMakeVisible (subEditor);
-        lowerContainerLinks.add (subEditor);
-    }
-    else
-    {
+
         CCLinkBT* bt = new CCLinkBT (cc);
         bt->addListener (this);
         addAndMakeVisible (bt);
         lowerContainerLinks.add (bt);
-    }
+
 }
 
 void CCInnerContainerUI::removeCCLink (ParameterContainer* cc)
@@ -297,7 +289,7 @@ void CCInnerContainerUI::removeCCLink (ParameterContainer* cc)
 
 void CCInnerContainerUI::addParameterUI ( ParameterBase* c)
 {
-    if ( !c->isControllableExposed) return;
+    if ( c->isHidenInEditor) return;
 
 
     NamedParameterUI* cui = new NamedParameterUI (ParameterUIFactory::createDefaultUI (c), 100);
@@ -463,9 +455,9 @@ void CCInnerContainerUI::resized()
                 auto ccL = dynamic_cast<CCInnerContainerUI::CCLinkBT*> (cclink) ;
                 bool isCustom = ccL == nullptr;
 
-                if (!isCustom && ccL->targetContainer->isUserDefined) continue;
+                if (!isCustom && ccL->targetContainer->isUserDefined) continue; // hide userDefined in inspector
 
-                cclink->setBounds (r.removeFromTop (ccLinkHeight * (isCustom ? 3 : 1)));
+                cclink->setBounds ( r.removeFromTop (ccLinkHeight) );
                 r.removeFromTop (gap);
             }
 

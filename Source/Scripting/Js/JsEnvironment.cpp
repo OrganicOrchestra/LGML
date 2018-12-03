@@ -740,8 +740,8 @@ var JsEnvironment::createParameterListenerObject (const var::NativeFunctionArgs&
 JSEnvContainer::JSEnvContainer (JsEnvironment* pEnv):
 ParameterContainer ("jsParams"), jsEnv (pEnv)
 {
-
-    scriptPath = addNewParameter<FileParameter> ("ScriptPath", "path for js script", "",Js,std::bind(&JsEnvironment::loadFile,jsEnv,std::placeholders::_1));
+    nameParam->isEditable = false;
+    scriptPath = addNewParameter<FileParameter> ("ScriptPath", "path for js script", "",Js,std::bind(&JsEnvironment::loadFile,jsEnv,std::placeholders::_1),true);
     scriptPath->isControllableExposed = false;
 
     logT =  addNewParameter<Trigger> ("LogEnvironment", "print hierarchy of JS objects");
@@ -750,6 +750,7 @@ ParameterContainer ("jsParams"), jsEnv (pEnv)
 }
 
 JSEnvContainer::~JSEnvContainer(){
+    
     JSEnvContainer::masterReference.clear();
 }
 

@@ -28,11 +28,13 @@ typedef enum {
 }LoadingState;
 
 class FileWatcher;
+class FileLoaderJob;
 
 class FileParameter : public StringParameter{
 public:
     typedef std::function<Result(const File & f)> LoaderFunctionType;
-    FileParameter (const String& niceName, const String& description = "", const String& initialValue = "",const FileType t=Any,LoaderFunctionType loaderFuntion=[](const File &){return Result::fail("no loader");});
+    static LoaderFunctionType dummyLoader;
+    FileParameter (const String& niceName, const String& description = "", const String& initialValue = "",const FileType t=Any,LoaderFunctionType loaderFuntion=dummyLoader,bool isAsync=false);
     ~FileParameter();
     static void addFileType(String Name,StringArray allowedExtensions);
     static void initBaseFileTypes();
@@ -83,6 +85,9 @@ protected:
     void startLoading();
     void endLoading(const Result & result);
 private:
+    bool isAsync;
+    friend class FileLoaderJob;
+    WeakReference<FileLoaderJob> fileLoaderJob;
     LoadingState loadingState;
     ScopedPointer<FileWatcher> fileWatcher;
     WeakReference<FileParameter>::Master masterReference;

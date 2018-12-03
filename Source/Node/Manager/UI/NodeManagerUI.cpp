@@ -42,7 +42,7 @@ public:
 
 class NodeManagerUIFactory : public ParameterContainer{
 public:
-    NodeManagerUIFactory():ParameterContainer("NodesUI"){}
+    NodeManagerUIFactory():ParameterContainer("NodesUI"){nameParam->isEditable=false;}
 
     ParameterContainer* addContainerFromObject (const String& name, DynamicObject*   data) override{
         ParameterContainer * res;

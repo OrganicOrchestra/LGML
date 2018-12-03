@@ -45,6 +45,7 @@ public:
     public:
         PluginWindowParameters(): ParameterContainer ("PluginWindow Parameters")
         {
+            nameParam->isEditable=false;
             x = addNewParameter<FloatParameter> ("x", "x position of plugin window", (float)Random::getSystemRandom().nextInt (500), 0.f, 1000.f);
             y = addNewParameter<FloatParameter> ("y", "y position of plugin window", (float)Random::getSystemRandom().nextInt (500), 0.f, 1000.f);
             isDisplayed = addNewParameter<BoolParameter> ("isDisplayed", "is the plugin window displayed", false);

@@ -18,6 +18,10 @@
 #include "../../../UI/Style.h"
 #include "../UndoableHelper.h"
 
+
+String descriptionPrefix("--- "); //used to display info when empty string params
+
+
 String varToString(const var &v){
     String stringValue;
     if(v.isArray()){
@@ -35,21 +39,23 @@ String varToString(const var &v){
 }
 
 StringParameterUI::StringParameterUI ( ParameterBase* p) :
-    ParameterUI (p), autoSize (false), maxFontHeight (12)
+    ParameterUI (p), autoSize (false), maxFontHeight (12),trimStart(false)
 {
 
     addChildComponent (nameLabel);
     setNameLabelVisible (false);
     addAndMakeVisible (valueLabel);
+
     addMouseListener(this, true);
-    nameLabel.setJustificationType (Justification::topLeft);
+    nameLabel.setJustificationType (Justification::centredLeft);
     nameLabel.setText (prefix + parameter->niceName + suffix, NotificationType::dontSendNotification);
 
-    valueLabel.setJustificationType (Justification::topLeft);
-    valueLabel.setText (varToString(parameter->value), NotificationType::dontSendNotification);
+    valueLabel.setJustificationType (Justification::centredLeft);
+    valueChanged(parameter->value);
 
     bool stringEditable = parameter->isEditable ;
-    valueLabel.setEditable (false, stringEditable);
+    valueLabel.setEditable ( stringEditable,stringEditable);
+
 
     valueLabel.addListener (this);
 
@@ -110,6 +116,7 @@ void StringParameterUI::resized()
     }
 
     valueLabel.setBounds (r);
+    valueChanged(parameter->value);
     valueLabel.setFont (valueLabel.getFont().withHeight (jmin<float> ((float)r.getHeight(), maxFontHeight)));
 
 }
@@ -117,9 +124,11 @@ void StringParameterUI::resized()
 
 void StringParameterUI::valueChanged (const var& v)
 {
+
     String stringValue = varToString(v);
 
-valueLabel.setText (prefix + stringValue+ suffix, NotificationType::dontSendNotification);
+    setValueTextTrimmed( prefix + stringValue+ suffix);
+
     if (autoSize)
     {
         int nameLabelWidth = nameLabel.getFont().getStringWidth (nameLabel.getText());
@@ -133,8 +142,52 @@ valueLabel.setText (prefix + stringValue+ suffix, NotificationType::dontSendNoti
 
 }
 
+void StringParameterUI::setValueTextTrimmed(String s){
+
+    bool noValue = s.isEmpty() ;
+    if(noValue){
+        s = descriptionPrefix +parameter->description ;
+        Colour bgColor =valueLabel.findColour(Label::backgroundColourId);
+        Colour txtColor = findColour(Label::textColourId);
+
+        valueLabel.setColour(Label::textColourId,bgColor.interpolatedWith(txtColor, 0.5));
+    }
+    else{
+        valueLabel.setColour(Label::textColourId,findColour(Label::textColourId));
+    }
+    static String ellipse("...");
+    int desiredWidth = valueLabel.getFont().getStringWidth(s);
+    int availableWidth =getWidth();
+    int overflow = desiredWidth - availableWidth;
+    bool _trimStart = !noValue && trimStart; //
+    if(overflow>0 && availableWidth>0){
+        if(_trimStart){
+            s = s.substring(ellipse.length());
+            while(overflow>0){
+                s = s.substring(1);
+                overflow = valueLabel.getFont().getStringWidth(s) - availableWidth;
+            }
+            s = ellipse+s;
+        }
+        else{
+            s = s.substring(0,s.length()-ellipse.length());
+            while(overflow>0){
+                s = s.substring(0,s.length()-1);
+                overflow = valueLabel.getFont().getStringWidth(s) - availableWidth;
+            }
+            s = s+ellipse;
+        }
+    }
+
+     valueLabel.setText (s, NotificationType::dontSendNotification);
+
+}
+
 void StringParameterUI::labelTextChanged (Label*)
 {
+    if(valueLabel.getText().startsWith(descriptionPrefix)){ // ignore description
+        return;
+    }
     if(arraySize!=-1){
         StringArray arr;
         String sv = valueLabel.getText();

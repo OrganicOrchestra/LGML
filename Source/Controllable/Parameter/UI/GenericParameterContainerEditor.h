@@ -97,7 +97,7 @@ public :
     WeakReference<ParameterContainer> sourceContainer;
     ScopedPointer<CCInnerContainerUI> innerContainer;
 
-    void setCurrentInspectedContainer (ParameterContainer*, bool forceUpdate = false, int recursiveInspectionLevel = 0, bool canInspectChildContainersBeyondRecursion = true);
+    void setCurrentInspectedContainer (ParameterContainer*, bool forceUpdate = false, int recursiveInspectionLevel = 1, bool canInspectChildContainersBeyondRecursion = true);
 
     virtual int getContentHeight() const override;
 

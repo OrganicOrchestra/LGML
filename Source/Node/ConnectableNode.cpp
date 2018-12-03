@@ -36,7 +36,7 @@ ConnectableNode::ConnectableNode (const String& name, bool _hasMainAudioControl)
 {
     //set Params
     ParameterContainer::nameParam->isEditable = true;
-    descriptionParam = addNewParameter<StringParameter> ("Description", "Set a custom description for this node.", "Description");
+    descriptionParam = addNewParameter<StringParameter> ("Description", "Set a custom description for this node.", "");
     enabledParam = addNewParameter<BoolParameter> ("Enabled", "Enable processing of the node.\nDisable will bypass the node and pass the audio flux to the output", true);
 
 

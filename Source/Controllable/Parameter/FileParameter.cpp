@@ -17,25 +17,30 @@ REGISTER_PARAM_TYPE (FileParameter)
                           //File getFileAtNormalizedPath (const String& path);
 
 
+FileParameter::LoaderFunctionType FileParameter::dummyLoader =[](const File &){return Result::fail("no loader");};
+
 struct FileTypeInfo{
     StringArray extensions;
     String fullName;
 
 };
-static HashMap<FileType, FileTypeInfo> fileTypes;
+
+
+class FileTypeMap:public HashMap<FileType, FileTypeInfo>,public DeletedAtShutdown{
+public:
+    FileTypeMap(){
+        set(Js,{StringArray {"js"},"Javascript"});
+        set(Audio, {StringArray {"wav","aif","aiff","mp3"},"Audio"});
+        set(PdPatch, {StringArray {"pd"},"Pure-data"});
+        set(Preset,{StringArray {"json"},"Preset"});
+    }
+};
+
+static FileTypeMap* fileTypes = new FileTypeMap(); // will be deleted at shutdown
 
 
 
-int initBaseFileTypes(){
-    fileTypes.set(Js,{StringArray {"js"},"Javascript"});
-    fileTypes.set(Audio, {StringArray {"wav","aif","aiff","mp3"},"Audio"});
-    fileTypes.set(PdPatch, {StringArray {"pd"},"Pure-data"});
-    fileTypes.set(Preset,{StringArray {"json"},"Preset"});
 
-
-    return 0;
-
-}
 static const int watchInterval = 500;
 
 class FileWatcher : private Timer{
@@ -68,19 +73,21 @@ public:
 };
 
 
-FileParameter::FileParameter (const String& niceName, const String& description, const String& initialValue,const FileType type,LoaderFunctionType _loaderFunction):StringParameter(niceName,description,initialValue)
+FileParameter::FileParameter (const String& niceName, const String& description, const String& initialValue,const FileType type,LoaderFunctionType _loaderFunction,bool _isAsync):StringParameter(niceName,description,initialValue)
 ,fileType(type)
 ,isWatchable(false)
 ,isReloadable(false)
 ,isWatching(false)
 ,loaderFunction(_loaderFunction)
 ,loadingState(EMPTY)
+,isAsync(_isAsync)
 {
     
 
 }
 
 FileParameter::~FileParameter(){
+    jassert(fileLoaderJob.get()==nullptr);
     masterReference.clear();
 }
 const File  FileParameter::getFile() const{
@@ -104,6 +111,61 @@ LoadingState FileParameter::getLoadingState(){
 }
 
 
+class FileLoaderJob : public ThreadPoolJob,public AsyncUpdater{
+public:
+    FileLoaderJob(const WeakReference<FileParameter> _fp):ThreadPoolJob("FileLoader"),fp(_fp){
+
+    }
+
+    ~FileLoaderJob(){
+        masterReference.clear();
+    }
+    ThreadPoolJob::JobStatus runJob() override{
+        loadFileImpl(fp);
+        return ThreadPoolJob::JobStatus::jobHasFinished;
+    }
+    void loadFileImpl(const WeakReference<FileParameter> fp){
+        Result r=Result::fail("file not processed");
+        if(fp.get()){
+
+            if(!fp.get()->hasValidPath(true)){
+                r = Result::fail("path not valid");
+            }
+            else{
+                const File f = fp->getFile();
+                r = fp->loaderFunction(f);
+            }
+
+
+            if(r){
+                fp.get()->loadingState = LOADED;
+            }
+            else{
+                fp.get()->loadingState = LOADED_WITH_ERROR;
+                fp.get()->errorMsg = r.getErrorMessage();
+            }
+
+            {
+            MessageManagerLock ml;
+            handleAsyncUpdate();
+            }
+
+        }
+        
+    }
+    void handleAsyncUpdate()override{
+        if(fp.get())
+            fp.get()->fileListeners.call(&FileParameter::Listener::loadingEnded,fp.get());
+//        delete this;
+    }
+    
+    WeakReference<FileParameter> fp;
+
+private:
+    WeakReference<FileLoaderJob>::Master masterReference;
+    friend class WeakReference<FileLoaderJob>;
+    
+};
 
 void FileParameter::startLoading(){
     jassert(loadingState!=LOADING);
@@ -120,24 +182,18 @@ void FileParameter::startLoading(){
     }
     loadingState = LOADING;
     fileListeners.call(&Listener::loadingStarted,this);
-    Result r=Result::fail("file not processed");
-    if(!hasValidPath(true)){
-        r = Result::fail("path not valid");
+    if(isAsync && fileLoaderJob){
+
+    }
+    fileLoaderJob=new FileLoaderJob(this);
+    if(isAsync){
+        getEngineThreadPool()->addJob(fileLoaderJob,true); // job will auto delete
     }
     else{
-        const File f = getFile();
-        r = loaderFunction(f);
+        fileLoaderJob->runJob();
+        fileLoaderJob = nullptr;
     }
 
-
-    if(r){
-        loadingState = LOADED;
-    }
-    else{
-        loadingState = LOADED_WITH_ERROR;
-        errorMsg = r.getErrorMessage();
-    }
-    fileListeners.call(&Listener::loadingEnded,this);
 }
 
 
@@ -145,10 +201,10 @@ void  FileParameter::setValueInternal (const var& newVal)
 {
     String path = newVal.toString();
     if(File::isAbsolutePath(path)){
-        value = path;
+        value = getEngine()->getNormalizedFilePath(path);
     }
     else{
-        value = getEngine()->getNormalizedFilePath(path);
+        value = path;
     }
 
     if(loaderFunction){
@@ -181,7 +237,7 @@ String  FileParameter::getAllowedExtensionsFilter(bool includeWildCards){
     }
     else{
         StringArray allowed;
-        for(auto & s: fileTypes[fileType].extensions){
+        for(auto & s: fileTypes->getReference(fileType).extensions){
             allowed.add(String(includeWildCards?"*":"")+"."+s);
         }
 
@@ -196,7 +252,7 @@ String FileParameter::getFullTypeName(){
         return "";
     }
     else{
-        return fileTypes[fileType].fullName;
+        return fileTypes->getReference(fileType).fullName;
     }
 }
 
@@ -213,5 +269,3 @@ bool FileParameter::fileHasValidExtension(const File & f){
 
 
 
-// static initialization of filetypes hopefully safe enough
-int dummy = initBaseFileTypes();

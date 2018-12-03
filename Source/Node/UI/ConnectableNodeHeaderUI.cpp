@@ -67,11 +67,13 @@ void ConnectableNodeHeaderUI::setNodeAndNodeUI (ConnectableNode* _node, Connecta
     updateVuMeters();
 
     titleUI = new StringParameterUI (node->nameParam);
+    titleUI->valueLabel.setEditable(false,true);
     titleUI->setBackGroundIsTransparent (true);
     addAndMakeVisible (titleUI);
 
     descriptionUI = new StringParameterUI (node->descriptionParam);
     descriptionUI->setBackGroundIsTransparent (true);
+    descriptionUI->valueLabel.setEditable(false,true);
     addAndMakeVisible (descriptionUI);
     descriptionUI->valueLabel.setColour (Label::ColourIds::textColourId, findColour (Label::textColourId).darker (.3f));
 

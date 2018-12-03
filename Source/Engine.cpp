@@ -501,6 +501,7 @@ engine(e),
 ParameterContainer("stats"),
 isListeningGlobal(false),
 timerTicks(0){
+    nameParam->isEditable=false;
     setUserDefined(false);
     audioCpu = addNewParameter<Point2DParameter<floatParamType>>("audioCpu",
                                                         "cpu percentage used by Audio",

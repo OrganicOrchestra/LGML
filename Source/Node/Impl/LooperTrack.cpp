@@ -49,7 +49,7 @@ startRecBeat (0),
 logVolume (float01ToGain (DB0_FOR_01), 0.5),
 hadOnset(false)
 {
-
+    
 
     selectTrig =  addNewParameter<Trigger> ("Select", "Select this track");
     recPlayTrig =  addNewParameter<Trigger> ("Rec Or Play", "Tells the track to wait for the next bar and then start record or play");

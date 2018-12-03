@@ -65,6 +65,7 @@ ConnectableNodeUIParams::~ConnectableNodeUIParams(){
     }
 }
 ConnectableNodeUIParams::ConnectableNodeUIParams(StringRef n): ParameterContainer(n){
+    nameParam->isEditable=false;
     nodePosition=addNewParameter<Point2DParameter<int>> ("nodePosition", "position on canvas", 0, 0, Array<var> {0, 0});
     nodeMinimizedPosition= addNewParameter<Point2DParameter<int>> ("nodeMinimizedPosition", "position in minimode on canvas", 0, 0, Array<var> {0, 0});
     nodeSize=addNewParameter<Point2DParameter<int>> ("nodeSize", "Node Size", 180, 100, Array<var> {30, 30});
