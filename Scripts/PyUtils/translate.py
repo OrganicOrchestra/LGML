@@ -265,7 +265,7 @@ def getDefaultStrings():
 
 def getAnglicisms(translator,dest):
   #these are not translated but we try to spot them in full sentences
-  anglicisms = ["Node","Logger"]
+  anglicisms = ["Node","Logger","x","y","X","Y","onset"]
   trs = translator.translate(anglicisms,src='en',dest=dest)
   # print (trs)
   assert(len(trs)==len(anglicisms))
@@ -295,7 +295,7 @@ def checkUntranslatable(strs):
   #these are not translated if they fully match regEx (usually exact match)
   regs = []
   untranslated = []
-  regs+=list(map(re.compile,["^Link$","^Link Peers$","^Link Latency$"]))
+  regs+=list(map(re.compile,["^"+s+"$" for x in ["Link","Link Peers","Link Latency","x","y","X","Y"]]))
   for k in strs:
     found = False
     for r in regs:
