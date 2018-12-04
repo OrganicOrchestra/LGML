@@ -30,7 +30,7 @@ public:
     explicit ShapeShifterPanel (ShapeShifterContent* innerComponent = nullptr, ShapeShifterPanelTab* sourceTab = nullptr);
     virtual ~ShapeShifterPanel();
 
-    const int headerHeight = 20;
+    static constexpr int headerHeight = 20;
     ShapeShifterPanelHeader header;
 
     OwnedArray<ShapeShifterContent> contents;
@@ -108,7 +108,10 @@ public:
     }
     void removeShapeShifterPanelListener (Listener* listener) { listeners.remove (listener); }
 
-
+    bool isMini();
+    void setMini(bool m);
+    void setFlexibleDimension(int d);
+    int getFlexibleDimension();
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ShapeShifterPanel)
 
     

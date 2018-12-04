@@ -42,7 +42,7 @@ uiParams(uiP),
 ParameterContainer(container->getNiceName()),
 nodesLayer(new NodeLayerComponent())
 {
-    selectedItems.addChangeListener(this);
+
     setInterceptsMouseClicks (true, true);
     nodesLayer->addMouseListener(this, true);
     nodeContainer->addNodeContainerListener (this);
@@ -436,12 +436,14 @@ void NodeContainerViewer::mouseDown (const MouseEvent& event)
 
         if(auto nui=getRelatedConnectableNodeUIForDrag(event.eventComponent,true)){
             if(!event.mods.isAltDown()){
-                resultOfMouseDownSelectMethod = selectedItems.addToSelectionOnMouseDown(nui, event.mods);
+                resultOfMouseDownSelectMethod = getLassoSelection().addToSelectionOnMouseDown(nui, event.mods);
                 selectedInitBounds.clear();
-                for(auto s: selectedItems){
+                for(auto s: getLassoSelection()){
                     if(s.get()){
-                        Component * tSize = s->mainComponentContainer.contentContainer;
-                        selectedInitBounds.set(s, s->getBoundsInParent().withSize(tSize->getWidth(), tSize->getHeight()));
+                        if(auto * nodeUI = dynamic_cast<ConnectableNodeUI*>(s.get())){
+                            Component * tSize = nodeUI->mainComponentContainer.contentContainer;
+                            selectedInitBounds.set(s, s->getBoundsInParent().withSize(tSize->getWidth(), tSize->getHeight()));
+                        }
                     }
 
                 }
@@ -479,7 +481,7 @@ void NodeContainerViewer::mouseDrag (const MouseEvent&  e)
 
     }
 
-    if (e.eventComponent == this){
+    if (e.eventComponent == this && e.getDistanceFromDragStart()>0){
         lassoSelectionComponent.dragLasso(e);
         lassoSelectionComponent.toFront(false);
 
@@ -494,7 +496,7 @@ void NodeContainerViewer::mouseDrag (const MouseEvent&  e)
         Point<int> diff = Point<int> (e.getPosition() - e.getMouseDownPosition());
         if(!isResizing && nui){
             hasDraggedDuringClick = diff.getDistanceSquaredFromOrigin()>0;
-            for(auto s: selectedItems){
+            for(auto s: getLassoSelection()){
                 if(s.get()){
                     if(selectedInitBounds.contains(s)){
                         Point <int> newPos = selectedInitBounds.getReference(s).getPosition() + diff;
@@ -508,12 +510,13 @@ void NodeContainerViewer::mouseDrag (const MouseEvent&  e)
             }
         }
         else if(isResizing &&  !minimizeAll->boolValue()){
-            for(auto s: selectedItems){
+            for(auto s: getLassoSelection()){
                 if(s.get()){
                     if(selectedInitBounds.contains(s)){
                         Point <int> newSize = selectedInitBounds.getReference(s).withPosition(Point<int>(0,0)).getBottomRight() + diff;
-                        auto nodeS = s->nodeSize;
-                        nodeS->setPoint(newSize);
+
+                        if(auto nodeUI = dynamic_cast<ConnectableNodeUI*>(s.get()))
+                            nodeUI->nodeSize->setPoint(newSize);
                     }
                     else{
                         jassertfalse;
@@ -537,29 +540,27 @@ void NodeContainerViewer::mouseUp (const MouseEvent& e)
     }
 
     // select nodeviewer
-    if (e.eventComponent == this ){
-        if(selectedItems.getNumSelected()==0)
-            selectThis();
+    if (e.eventComponent == this && e.getDistanceFromDragStart()==0){
+        selectThis();
     }
-
-    else if(!getRelatedConnectableNodeUIForDrag(e.eventComponent,true) ) {
-        for( auto & i:selectedItems){
-            if(i.get())i->setVisuallySelected(false);
-        }
-        selectedItems.deselectAll();
-    }
-
-    selectedInitBounds.clear();
-    for(auto& s: selectedItems){
-        if(s.get()){
-            Component * tSize = s->mainComponentContainer.contentContainer;
-            selectedInitBounds.set(s, s->getBoundsInParent().withSize(tSize->getWidth(), tSize->getHeight()));
-        }
-
-    }
-
 
     lassoSelectionComponent.endLasso();
+
+    
+
+    selectedInitBounds.clear();
+    for(auto& s: getLassoSelection()){
+        if(s.get()){
+            if(auto * nodeUI = dynamic_cast<ConnectableNodeUI*>(s.get())){
+            Component * tSize = nodeUI->mainComponentContainer.contentContainer;
+            selectedInitBounds.set(s, s->getBoundsInParent().withSize(tSize->getWidth(), tSize->getHeight()));
+            }
+        }
+
+    }
+
+
+
 
 
 }
@@ -586,7 +587,7 @@ bool NodeContainerViewer::keyPressed (const KeyPress& key)
     else if (key.getKeyCode() == KeyPress::deleteKey || key.getKeyCode() == KeyPress::backspaceKey)
     {
         Array<NodeBase* > toRemove;
-        for(auto sel:selectedItems.getItemArray()){
+        for(auto sel:getLassoSelection()){
             if (auto ui=sel.get()){
 
                 if(auto * pc = ui->getRelatedParameterContainer()){
@@ -676,30 +677,13 @@ void NodeContainerViewer::findLassoItemsInArea (Array<SelectedUIType>& itemsFoun
         }
     }
 
-    auto insp = Inspector::getInstance();
-    if(selectedItems.getNumSelected()>0)
-        insp->setCurrentComponent(selectedItems.getSelectedItem(0));
-    else
-        insp->setCurrentComponent(this);
 
 };
 
 SelectedItemSet<SelectedUIType>& NodeContainerViewer::getLassoSelection() {
-    return selectedItems;
+    return *Inspector::getInstance();
 };
 
-void NodeContainerViewer::changeListenerCallback (ChangeBroadcaster* source){
-    if(source== &selectedItems){
-        for(auto n: nodesUI){
-            n->setVisuallySelected(selectedItems.getItemArray().contains(n));
-        }
-        if(selectedItems.getItemArray().size()){
-            // TODO : refactor inspector to global selection set
-            //            inspector->setSelectedItemSet(selectedItems);
-        }
-    }
-
-}
 
 void NodeContainerViewer::addOrRemoveNodeUndoable(const String & tid,const Point<int> & mousePos,NodeBase * originNodeToRemove){
 

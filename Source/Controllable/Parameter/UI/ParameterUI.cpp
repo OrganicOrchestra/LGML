@@ -112,7 +112,7 @@ void ParameterUI::mouseDown (const MouseEvent& e)
         switch (result)
         {
             case 1:
-                Inspector::getInstance()->setCurrentComponent(this);
+                Inspector::getInstance()->selectOnly(this);
                 break;
 
             case 2:
@@ -136,7 +136,7 @@ void ParameterUI::mouseDown (const MouseEvent& e)
         }
     }
     if(e.mods.isAltDown()){
-        Inspector::getInstance()->setCurrentComponent(this);
+        Inspector::getInstance()->selectOnly(this);
     }
 
 }

@@ -332,18 +332,15 @@ bool MainContentComponent::perform (const InvocationInfo& info)
         case CommandIDs::copySelection:
         case CommandIDs::cutSelection:
         {
-            Array<InspectableComponent*> icl;
+            Array<WeakReference<InspectableComponent>> icl ( Inspector::getInstance()->getItemArray());
             
             auto nvl = ShapeShifterManager::getInstance()->getAllSPanelsOfType<NodeManagerUIViewport>(true);
-            if(nvl.size()>0){
-                if(auto vw = nvl[0]->nmui->currentViewer.get())
-                    icl.addArray(vw->selectedItems.getItemArray());
-            }
+
             if(icl.size()>0){
 
                 var datal = Array<var>();
-                for(auto * ic : icl){
-
+                for(auto  ic : icl){
+                    if(!ic.get())continue;
                     ParameterContainer* cc = ic->getRelatedParameterContainer();
 
                     if (cc != nullptr)
@@ -352,7 +349,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                         var data (new DynamicObject());
                         data.getDynamicObject()->setProperty ("type", ic->inspectableType);
                         data.getDynamicObject()->setProperty ("data", cc->getObject());
-                        auto *relatedComponent = ic;
+                        auto *relatedComponent = ic.get();
 //                        if(auto relatedComponent =Inspector::getInstance()->getCurrentComponent()){
 
                             NodeContainerViewer *  ncv = dynamic_cast<NodeContainerViewer*>(relatedComponent);
@@ -439,7 +436,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                     {
 
                         String type = d->getProperty ("type");
-                        auto relatedComponent =Inspector::getInstance()->getCurrentComponent();
+                        auto relatedComponent =Inspector::getInstance()->getFirstCurrentComponent();
 
                         if (relatedComponent != nullptr)
                         {
@@ -457,7 +454,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                                     {
                                         n->uid = Uuid();
                                         NodeContainerViewer *  ncv = dynamic_cast<NodeContainerViewer*>(relatedComponent);
-                                        if(!ncv)ncv=Inspector::getInstance()->getCurrentComponent()->findParentComponentOfClass<NodeContainerViewer>();
+                                        if(!ncv)ncv=relatedComponent->findParentComponentOfClass<NodeContainerViewer>();
                                         if(ncv){
                                             auto nodeUI = ncv->getUIForNode(n);
                                             if(nodeUI){

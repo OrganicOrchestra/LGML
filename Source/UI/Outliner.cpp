@@ -267,7 +267,7 @@ void Outliner::buttonClicked(Button *b){
     if(b==&linkToSelected){
         if(linkToSelected.getToggleState()){
             Inspector::getInstance()->addInspectorListener(this);
-            if(auto sel = Inspector::getInstance()->getCurrentContainerSelected())
+            if(auto sel = Inspector::getInstance()->getFirstCurrentContainerSelected())
                 setRoot(sel);
         }
         else{
@@ -276,14 +276,14 @@ void Outliner::buttonClicked(Button *b){
         }
     }
 }
-void Outliner::currentComponentChanged (Inspector * i ){
+void Outliner::selectionChanged (Inspector * i ){
     if(linkToSelected.getToggleState()){
         // ignore child components
-        if(isParentOf(i->getCurrentComponent()))
+        if(isParentOf(i->getFirstCurrentComponent()))
             return;
 
 
-        if(auto sel = i->getCurrentContainerSelected()){
+        if(auto sel = i->getFirstCurrentContainerSelected()){
             treeView.getProperties().set(blockSelectionPropagationId, true);
             setRoot(sel);
             treeView.getProperties().set(blockSelectionPropagationId, false);
@@ -447,12 +447,12 @@ void OutlinerItem::itemSelectionChanged (bool isNowSelected){
     }
     if(auto c= static_cast<OutlinerItemComponent*>(currentDisplayedComponent.get())){
         auto* insp = Inspector::getInstance();
-        if(insp->getCurrentComponent()!=c){
+        if(insp->getFirstCurrentComponent()!=c){
             if(isNowSelected ){
-                insp->setCurrentComponent(c);
+                insp->selectOnly(c);
             }
             else{
-                insp->setCurrentComponent(nullptr);
+                insp->deselectAll();
             }
 
         }

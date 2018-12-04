@@ -20,7 +20,7 @@
 #include "../../UI/ConnectableNodeUI.h"
 
 class DragResizer;
-typedef WeakReference<ConnectableNodeUI> SelectedUIType;
+typedef WeakReference<InspectableComponent> SelectedUIType;
 
 class NodeConnectionUI;
 class ParameterUI;
@@ -28,7 +28,7 @@ class NodeContainerViewer :
     public InspectableComponent,
     public NodeContainerListener,
     public ParameterContainer,
-public ChangeListener, // multiselection
+//public ChangeListener, // multiselection
 private LassoSource<SelectedUIType>
 {
 public :
@@ -93,7 +93,6 @@ public :
     ParameterContainer * uiParams;
 
 
-    SelectedItemSet<SelectedUIType> selectedItems;
 
     void addNodeUndoable(const String & type,const Point<int> & mousePos);
     void removeNodeUndoable(NodeBase * originNodeToRemove);
@@ -102,7 +101,7 @@ public :
     String getTooltip() override{return "";}
 private:
 
-    void changeListenerCallback (ChangeBroadcaster* source) override;
+//    void changeListenerCallback (ChangeBroadcaster* source) override;
     LassoComponent<SelectedUIType> lassoSelectionComponent;
     ScopedPointer<Component> nodesLayer;
     bool resultOfMouseDownSelectMethod,hasDraggedDuringClick;

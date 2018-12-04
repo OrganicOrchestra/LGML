@@ -131,7 +131,7 @@ public:
 
 private:
 
-    void currentComponentChanged (Inspector *)override;
+    void selectionChanged (Inspector *)override;
     void buttonClicked(Button *b) override;
     void saveCurrentOpenChilds();
     void restoreCurrentOpenChilds();

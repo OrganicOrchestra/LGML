@@ -397,25 +397,35 @@ void ShapeShifterContainer::resized()
 
     Rectangle<int> r = getLocalBounds();
     int index = 0;
+    int lastNonMinimizedShifter = shifters.size()-1;
+    constexpr int miniSize = ShapeShifterPanel::headerHeight;
+    for (; lastNonMinimizedShifter>0 ; lastNonMinimizedShifter--)
+    {
+        if(!shifters[lastNonMinimizedShifter]->isMini)break;
+    }
+    int trailingMinimizedShifters = (shifters.size()-1-lastNonMinimizedShifter);
 
     for (auto& p : shifters)
     {
-        bool isLastShifter = index == numShifters - 1;
-
-
-        //        if (direction == HORIZONTAL) p->setBounds (r.removeFromLeft (p->getPreferredWidth()));
-        //        else p->setBounds (r.removeFromTop (p->getPreferredHeight()));
-
-        if (!isLastShifter)
+        bool isLastNonMinimizedShifter = index == lastNonMinimizedShifter;
+        bool isLastShifter  =index ==shifters.size()-1;
+        if (!isLastNonMinimizedShifter)
         {
-            if (direction == HORIZONTAL) p->setBounds (r.removeFromLeft (p->getPreferredWidth()));
-            else p->setBounds (r.removeFromTop (p->getPreferredHeight()));
-            Rectangle<int> gr = (direction == HORIZONTAL) ? r.removeFromLeft (gap) : r.removeFromTop (gap);
-            grabbers[index]->setBounds (gr);
+            if (direction == HORIZONTAL) p->setBounds (r.removeFromLeft (p->isMini?miniSize:p->getPreferredWidth()));
+            else p->setBounds (r.removeFromTop (p->isMini?miniSize:p->getPreferredHeight()));
         }
         else{
-            jassert(r.getWidth()>=p->getMinWidth() && r.getHeight()>=p->getMinHeight());
-            p->setBounds(r);
+            auto nonMinimizedR = r;
+            if (direction == HORIZONTAL)nonMinimizedR.removeFromRight(trailingMinimizedShifters*minSize);
+            else nonMinimizedR.removeFromBottom(trailingMinimizedShifters*minSize);
+            jassert(isMini || (nonMinimizedR.getWidth()>=p->getMinWidth() && nonMinimizedR.getHeight()>=p->getMinHeight()));
+            p->setBounds(nonMinimizedR);
+            if (direction == HORIZONTAL) r.removeFromLeft(nonMinimizedR.getWidth());
+            else r.removeFromTop(nonMinimizedR.getHeight());
+        }
+        if(!isLastShifter){
+        Rectangle<int> gr = (direction == HORIZONTAL) ? r.removeFromLeft (gap) : r.removeFromTop (gap);
+        grabbers[index]->setBounds (gr);
         }
 
         index++;
@@ -580,5 +590,7 @@ int ShapeShifterContainer::getMinHeight(){
     return minSize;
 
 }
+
+
 
 #endif

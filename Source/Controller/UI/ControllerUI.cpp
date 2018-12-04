@@ -124,8 +124,8 @@ void ControllerUI::paint (Graphics& g)
 
 }
 
-const int headerHeight = 20;
-const int maxUsrParamHeight = 200;
+constexpr int headerHeight = 20;
+constexpr int maxUsrParamHeight = 200;
 
 void ControllerUI::componentMovedOrResized (Component& component,
                               bool wasMoved,

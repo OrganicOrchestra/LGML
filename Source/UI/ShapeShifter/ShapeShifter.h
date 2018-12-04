@@ -19,7 +19,7 @@
 #include "../../JuceHeaderUI.h"//keep
 
 class ShapeShifterContainer;
-
+class MiniTimer;
 class ShapeShifter : public juce::Component
 {
 public :
@@ -53,7 +53,18 @@ public :
 
     static const int minSize;
 
+    void setMini(bool s,bool resizeNow=true);
+    bool isMini;
+    void mouseUp(const MouseEvent & )override;
+    void mouseExit(const MouseEvent & )override;
+    void mouseEnter(const MouseEvent &) override;
+    ScopedPointer <MiniTimer> miniTimer;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ShapeShifter)
+    
+private:
+    WeakReference<ShapeShifter>::Master masterReference;
+    friend class WeakReference<ShapeShifter>;
+
 };
 
 

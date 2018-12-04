@@ -89,7 +89,7 @@ void InspectableComponent::selectThis()
         ShapeShifterManager::getInstance()->showPanelWindowForContent (PanelName::InspectorPanel);
     }
 
-    Inspector::getInstance()->setCurrentComponent (this);
+    Inspector::getInstance()->selectOnly(this);
 }
 
 void InspectableComponent::setVisuallySelected (bool value)

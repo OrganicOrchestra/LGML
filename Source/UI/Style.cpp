@@ -108,43 +108,58 @@ AddElementButton::~AddElementButton(){
 
 };
 
-Drawable * AddElementButton::createDrawable(bool isHovered){
-
-//    auto area = getLocalBounds();
-    auto color = Colours::green;
-    float scale= 25;
-    if(isHovered){
-        color = color.brighter();
+class ElemDrawables : public DeletedAtShutdown{
+public:
+    ElemDrawables(){
+        normal = build(false);
+        hovered  = build(true);
     }
-    auto bgColor = Colours::transparentWhite;
-    float thickness = .05*scale;
-    Path circlePath;
-    circlePath.addEllipse(0, 0, 1*scale, 1*scale);
+    DrawableComposite * build(bool isHovered){
+        //    auto area = getLocalBounds();
+        auto color = Colours::green;
+        float scale= 25;
+        if(isHovered){
+            color = color.brighter();
+        }
+        auto bgColor = Colours::transparentWhite;
+        float thickness = .05*scale;
+        Path circlePath;
+        circlePath.addEllipse(0, 0, 1*scale, 1*scale);
 
-    Path crossPath;
-    float padOut = thickness + .1*scale;
-    float width = thickness/2.0;
-    crossPath.addRoundedRectangle(padOut, .5*scale-width/2.0, 1.0*scale-2.0*padOut, width, width/4.0);
-    crossPath.addRoundedRectangle( .5*scale-width/2.0,padOut, width,1.0*scale-2.0*padOut, width/4.0);
-    DrawableComposite *dp = new DrawableComposite();
-    dp->setBoundingBox({0,0,1*scale,1*scale});
-    
-    auto * cd = new DrawablePath();
-    cd->setPath(circlePath);
-    cd->setFill(FillType(color));
-    cd->setStrokeFill(FillType(color));
-    cd->setStrokeThickness(thickness);
+        Path crossPath;
+        float padOut = thickness + .1*scale;
+        float width = thickness/2.0;
+        crossPath.addRoundedRectangle(padOut, .5*scale-width/2.0, 1.0*scale-2.0*padOut, width, width/4.0);
+        crossPath.addRoundedRectangle( .5*scale-width/2.0,padOut, width,1.0*scale-2.0*padOut, width/4.0);
+        DrawableComposite * dp = new DrawableComposite();
+        dp->setBoundingBox({0,0,1*scale,1*scale});
 
-    color = Colours::white;
-    auto * crd = new DrawablePath();
-    crd->setFill(FillType(bgColor));
-    crd->setStrokeFill(FillType(color));
-    crd->setStrokeThickness(thickness);
-    crd->setPath(crossPath);
-    dp->addAndMakeVisible(cd);
-    dp->addAndMakeVisible(crd);
-    
-    return dp;
+        auto * cd = new DrawablePath();
+        cd->setPath(circlePath);
+        cd->setFill(FillType(color));
+        cd->setStrokeFill(FillType(color));
+        cd->setStrokeThickness(thickness);
+
+        color = Colours::white;
+        auto * crd = new DrawablePath();
+        crd->setFill(FillType(bgColor));
+        crd->setStrokeFill(FillType(color));
+        crd->setStrokeThickness(thickness);
+        crd->setPath(crossPath);
+        
+        
+        dp->addAndMakeVisible(cd);
+        dp->addAndMakeVisible(crd);
+        return dp;
+    }
+    ScopedPointer<DrawableComposite> normal,hovered;
+
+};
+Drawable * AddElementButton::createDrawable(bool isHovered){
+    static ElemDrawables * el (nullptr);
+    if(!el){el = new ElemDrawables();}
+
+    return !isHovered?el->normal:el->hovered;
 }
 void AddElementButton::paintButton (Graphics& g,
                                     bool isMouseOverButton,

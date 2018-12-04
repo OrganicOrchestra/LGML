@@ -144,9 +144,9 @@ public:
          }
     }
 
-    void currentComponentChanged (Inspector* ) override{
+    void selectionChanged (Inspector* ) override{
         if(auto i = Inspector::getInstanceWithoutCreating()){
-            if(auto * curNode = dynamic_cast<ConnectableNode*>(i->getCurrentContainerSelected())){
+            if(auto * curNode = dynamic_cast<ConnectableNode*>(i->getFirstCurrentContainerSelected())){
                 descriptionParameter = curNode->descriptionParam;
             }
         }
