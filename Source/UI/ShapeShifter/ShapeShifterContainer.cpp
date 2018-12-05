@@ -416,13 +416,14 @@ void ShapeShifterContainer::resized()
         }
         else{
             auto nonMinimizedR = r;
-            if (direction == HORIZONTAL)nonMinimizedR.removeFromRight(trailingMinimizedShifters*minSize);
-            else nonMinimizedR.removeFromBottom(trailingMinimizedShifters*minSize);
+            if (direction == HORIZONTAL)nonMinimizedR.removeFromRight(trailingMinimizedShifters*miniSize);
+            else nonMinimizedR.removeFromBottom(trailingMinimizedShifters*miniSize);
             jassert(isMini || (nonMinimizedR.getWidth()>=p->getMinWidth() && nonMinimizedR.getHeight()>=p->getMinHeight()));
             p->setBounds(nonMinimizedR);
             if (direction == HORIZONTAL) r.removeFromLeft(nonMinimizedR.getWidth());
             else r.removeFromTop(nonMinimizedR.getHeight());
         }
+        
         if(!isLastShifter){
         Rectangle<int> gr = (direction == HORIZONTAL) ? r.removeFromLeft (gap) : r.removeFromTop (gap);
         grabbers[index]->setBounds (gr);

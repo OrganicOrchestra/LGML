@@ -145,13 +145,13 @@ void ShapeShifter::setMini(bool s,bool resizeNow){
         for(auto & s:parent->shifters){allMinimized&=s->isMini;}
         if (resizeNow && allMinimized){jassert(!isMini);return;}
 
-        for(auto & c:getChildren()){ // we keep this component visible to recieve mouse events
-            if(auto * sp = dynamic_cast<ShapeShifterPanel*>(c)){
-                if(sp->currentContent && sp->currentContent->contentComponent){
-                    sp->currentContent->contentComponent->setVisible(!isMini);
-                }
+        if(auto * sp = dynamic_cast<ShapeShifterPanel*>(this)){
+            if(sp->currentContent && sp->currentContent->contentComponent){
+                sp->currentContent->contentComponent->setVisible(!isMini);
             }
-            else{
+        }
+        else{
+            for(auto & c:getChildren()){ // we keep this component visible to recieve mouse events
                 c->setVisible(!isMini);
             }
         }
