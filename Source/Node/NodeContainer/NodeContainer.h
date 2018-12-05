@@ -127,7 +127,7 @@ public:
     bool removeNode (ConnectableNode* n,bool doDelete=true);
 
     ConnectableNode* getNodeForName (const String& name);
-
+    void setConnectionFromObject(const Array<var> & connectionsData);
     NodeConnection* getConnection (const int index) const noexcept { return connections[index]; }
     NodeConnection* getConnectionBetweenNodes (ConnectableNode* sourceNode, ConnectableNode* destNode, NodeConnection::ConnectionType connectionType);
     Array<NodeConnection*> getAllConnectionsForNode (ConnectableNode* node);

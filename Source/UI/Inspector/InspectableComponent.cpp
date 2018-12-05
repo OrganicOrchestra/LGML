@@ -83,6 +83,18 @@ void InspectableComponent::mouseUp (const MouseEvent&)
     selectThis();
 }
 
+
+DynamicObject * InspectableComponent::createObject(){
+    if(auto * pc = getRelatedParameterContainer()){
+        return pc->createObject();
+    }
+    else if(auto * p = getRelatedParameter()){
+        return p->createObject();
+    }
+    jassertfalse; // should override for custom InspectableComponent
+    return new DynamicObject();
+}
+
 Component * getFirstInspectableContainer(Component* c,int depthCount){
     for(auto *cc:c->getChildren()){
         if(auto ic = dynamic_cast<InspectableComponent*>(cc)){

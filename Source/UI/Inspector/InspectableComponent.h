@@ -52,6 +52,7 @@ public:
     void selectThis();
 
     String getTooltip() override ;
+    virtual DynamicObject * createObject();
     
 protected:
     bool keyPressed (const KeyPress&)override;

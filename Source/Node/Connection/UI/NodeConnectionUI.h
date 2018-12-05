@@ -62,7 +62,7 @@ public:
 
     void setSourceConnector (Connector* c);
     void setDestConnector (Connector* c);
-
+    DynamicObject * createObject() override;
 
     Path path;
     Path hitPath;

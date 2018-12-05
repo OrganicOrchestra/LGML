@@ -104,6 +104,9 @@ void NodeConnectionUI::resized()
     buildPath();
 }
 
+DynamicObject * NodeConnectionUI::createObject(){
+    return connection->createObject();
+}
 void NodeConnectionUI::buildPath()
 {
     path.clear();

@@ -369,71 +369,69 @@ void NodeContainer::configureFromObject (DynamicObject* data)
 
     setBuildSessionGraph(false);
     //    updateAudioGraph(true);
-
-    // save connection and remove them from object to pass valid object to NodeBaseParsing
-    Array<var>* _connectionsData = data->getProperty ("connections").getArray();
-    Array<var> connectionsData;
-    if(_connectionsData){
-        for (auto &v:*_connectionsData){
-            connectionsData.add(v);
-        }
+    if( auto *  connectionsData = data->getProperty ("connections").getArray()){
+        setConnectionFromObject(*connectionsData);
     }
 
-    for (var& cData : connectionsData)
-    {
+}
 
-        ConnectableNode* srcNode = (ConnectableNode*) (getNodeForName (cData.getDynamicObject()->getProperty ("srcNode").toString())) ;
-        ConnectableNode* dstNode = (ConnectableNode*) (getNodeForName (cData.getDynamicObject()->getProperty ("dstNode").toString()));
+void NodeContainer::setConnectionFromObject(const Array<var> & connectionsData){
+    // save connection and remove them from object to pass valid object to NodeBaseParsing
 
-        int cType = cData.getProperty ("connectionType", var());
-
-        if (srcNode && dstNode && isPositiveAndBelow (cType, (int)NodeConnection::ConnectionType::UNDEFINED))
+        for (var& cData : connectionsData)
         {
-            NodeConnection* c = addConnection (srcNode, dstNode, NodeConnection::ConnectionType (cType));
 
-            // if c == null connection already exist, should never happen loading JSON but safer to check
-            if (c)
+            ConnectableNode* srcNode = (ConnectableNode*) (getNodeForName (cData.getDynamicObject()->getProperty ("srcNode").toString())) ;
+            ConnectableNode* dstNode = (ConnectableNode*) (getNodeForName (cData.getDynamicObject()->getProperty ("dstNode").toString()));
+
+            int cType = cData.getProperty ("connectionType", var());
+
+            if (srcNode && dstNode && isPositiveAndBelow (cType, (int)NodeConnection::ConnectionType::UNDEFINED))
             {
-                c->configureFromObject (cData.getDynamicObject());
+                NodeConnection* c = addConnection (srcNode, dstNode, NodeConnection::ConnectionType (cType));
+
+                // if c == null connection already exist, should never happen loading JSON but safer to check
+                if (c)
+                {
+                    c->configureFromObject (cData.getDynamicObject());
+                }
+
+
             }
-
-
-        }
-        else
-        {
-            // TODO nicely handle file format errors?
-
-            if (srcNode == nullptr)
+            else
             {
-                NLOGE ("loadJSON", juce::translate("no srcnode for shortName : ") + cData.getDynamicObject()->getProperty ("srcNode").toString());
-            }
+                // TODO nicely handle file format errors?
 
-            if (dstNode == nullptr)
-            {
-                NLOGE ("loadJSON", juce::translate("no dstnode for shortName : ") + cData.getDynamicObject()->getProperty ("dstNode").toString());
-            }
+                if (srcNode == nullptr)
+                {
+                    NLOGE ("loadJSON", juce::translate("no srcnode for shortName : ") + cData.getDynamicObject()->getProperty ("srcNode").toString());
+                }
+
+                if (dstNode == nullptr)
+                {
+                    NLOGE ("loadJSON", juce::translate("no dstnode for shortName : ") + cData.getDynamicObject()->getProperty ("dstNode").toString());
+                }
 
 
 #if defined DEBUG
-            LOGE(juce::translate("Available Nodes in " )+ shortName + " : ");
+                LOGE(juce::translate("Available Nodes in " )+ shortName + " : ");
 
-            for (auto& node : nodes)
-            {
-                LOGE("> " + node->getNiceName() + "//" + node->shortName);
-            }
+                for (auto& node : nodes)
+                {
+                    LOGE("> " + node->getNiceName() + "//" + node->shortName);
+                }
 
 #endif
 
-            jassertfalse;
+                jassertfalse;
+            }
         }
-    }
 
-
-
-
+    
+    
+    
     removeIllegalConnections();
 }
-
 
 NodeConnection* NodeContainer::getConnectionBetweenNodes (ConnectableNode* sourceNode, ConnectableNode* destNode, NodeConnection::ConnectionType connectionType)
 {

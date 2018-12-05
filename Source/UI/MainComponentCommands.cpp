@@ -348,7 +348,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                         minSelectionPoint.y = jmin(ic->getY(),minSelectionPoint.y);
                     }
                 }
-                
+                var connectionsl = Array<var>();
                 for(auto  ic : icl){
                     if(!ic.get())continue;
                     ParameterContainer* cc = ic->getRelatedParameterContainer();
@@ -381,6 +381,9 @@ bool MainContentComponent::perform (const InvocationInfo& info)
 
 //                        }
                     }
+                    else if(ic->inspectableType=="NodeConnectionUI"){
+                        connectionsl.append(ic->createObject());
+                    }
                 }
                 var jsonVar(new DynamicObject());
                 DynamicObject::Ptr  jsonObj = jsonVar.getDynamicObject();
@@ -388,7 +391,9 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                 jsonObj->setProperty("list", datal);
 
                 jsonObj->setProperty("minSelectionPoint", Array<var>({minSelectionPoint.x,minSelectionPoint.y}));
-
+                if(connectionsl.size()){
+                    jsonObj->setProperty("connections", connectionsl);
+                }
 
                 SystemClipboard::copyTextToClipboard (JSON::toString (jsonVar));
 
@@ -434,7 +439,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
             String clipboard = SystemClipboard::getTextFromClipboard();
             var clipboardOb =JSON::parse (clipboard);
             var datal = clipboardOb.getProperty("list", "");
-
+            HashMap<String,String> newNames;
             if(datal.isArray()){
                 auto arr = datal.getArray();
                 for(auto data:*arr){
@@ -466,7 +471,10 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                                         NodeContainerViewer *  ncv = dynamic_cast<NodeContainerViewer*>(relatedComponent);
                                         if(!ncv)ncv=relatedComponent->findParentComponentOfClass<NodeContainerViewer>();
                                         if(ncv){
+                                            String oldName = n->shortName;
                                             ncv->addNodeUndoable(n, Point<int>());
+                                            String newName =n->shortName;
+                                            newNames.set(oldName,newName);
                                             auto nodeUI = ncv->getUIForNode(n);
                                             if(nodeUI){
 
@@ -499,6 +507,22 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                             }
                         }
                         
+                    }
+                }
+                auto connections = clipboardOb.getProperty("connections", "");
+                if(auto connL = connections.getArray()){
+                    auto relatedComponent =Inspector::getInstance()->getFirstCurrentComponent();
+                    NodeContainerViewer *  ncv = dynamic_cast<NodeContainerViewer*>(relatedComponent);
+                    if(!ncv)ncv=relatedComponent->findParentComponentOfClass<NodeContainerViewer>();
+                    if(ncv){
+                    NodeContainer * nc = ncv->nodeContainer;
+                        for(auto c:*connL){
+                            if(auto * o = c.getDynamicObject()){
+                                o->setProperty("srcNode",newNames[o->getProperty("srcNode")]);
+                                o->setProperty("dstNode",newNames[o->getProperty("dstNode")]);
+                            }
+                        }
+                    nc->setConnectionFromObject(*connL);
                     }
                 }
             }

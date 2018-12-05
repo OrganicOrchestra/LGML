@@ -696,24 +696,9 @@ SelectedItemSet<SelectedUIType>& NodeContainerViewer::getLassoSelection() {
     return *Inspector::getInstance();
 };
 
-class CheckDelete{
-public:
-    CheckDelete(){
-        count = 0;
-        DBG("createC");
-    }
-
-    ~CheckDelete(){
-        DBG("deleteC");
-    }
-    String inc(){count++; return String(count);}
-    int count;
-//    JUCE_DECLARE_NON_COPYABLE(CheckDelete);
-};
 
 void NodeContainerViewer::addOrRemoveNodeUndoable(const String & tid,const Point<int> & mousePos,NodeBase * originNodeToRemove,bool isRemove){
-    CheckDelete d;
-    DBG(d.inc());
+
     var  savedUiParamsObject;
     if(originNodeToRemove  && isRemove){
         auto * savedUiParamsInstance = dynamic_cast<ConnectableNodeUIParams*>(uiParams->getControllableContainerByName(originNodeToRemove->shortName));
@@ -726,7 +711,6 @@ void NodeContainerViewer::addOrRemoveNodeUndoable(const String & tid,const Point
     getAppUndoManager().perform(new FactoryUIHelpers::UndoableFactoryCreateOrDelete<NodeBase>
                                 (tid,
                                  [=](NodeBase* c){
-                                     DBG(d.count);
                                      if(c)
                                      {
                                          ConnectableNode* n = (ConnectableNode*)nodeContainer->addNode (c);
