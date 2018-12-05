@@ -69,6 +69,7 @@ ControllerUI::ControllerUI (Controller* controller) :
         addMouseListener (this, true);
     }
     nameTF = new StringParameterUI (controller->nameParam);
+    nameTF->valueLabel.setEditable(false,true);
     nameTF->setBackGroundIsTransparent (true);
     addAndMakeVisible (nameTF);
 

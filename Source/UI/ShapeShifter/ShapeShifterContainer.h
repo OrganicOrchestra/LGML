@@ -55,7 +55,7 @@ public:
 
     Array<ShapeShifter*> shifters;
 
-    const int gap = 6;
+    static constexpr int gap = 6;
 
     void resized() override;
 

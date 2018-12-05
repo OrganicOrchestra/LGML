@@ -201,7 +201,8 @@ void addOrRemoveControllerUndoable(const String & typeId,Controller * controller
                                 (typeId,
                                  [=](Controller * c){manager->addController(c);},
                                  [=](Controller * c){manager->removeController(c);},
-                                 controller
+                                 controller,
+                                 controller!=nullptr
                                  )
                                 );
 }

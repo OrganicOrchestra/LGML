@@ -93,11 +93,11 @@ public :
     ParameterContainer * uiParams;
 
 
-
-    void addNodeUndoable(const String & type,const Point<int> & mousePos);
+    void addNodeUndoable(NodeBase * node,const Point<int> & mousePos);
+    void createNodeUndoable(const String & type,const Point<int> & mousePos);
     void removeNodeUndoable(NodeBase * originNodeToRemove);
     void removeNodeListUndoable(Array<NodeBase*> nl);
-    void addOrRemoveNodeUndoable(const String & tid,const Point<int> & mousePos,NodeBase * originNodeToRemove);
+    void addOrRemoveNodeUndoable(const String & tid,const Point<int> & mousePos,NodeBase * originNodeToRemove,bool isRemove);
     String getTooltip() override{return "";}
 private:
 

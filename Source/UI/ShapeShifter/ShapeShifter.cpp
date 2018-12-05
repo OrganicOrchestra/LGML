@@ -86,7 +86,7 @@ var ShapeShifter::getCurrentLayout()
     dob->setProperty ("type", (int)shifterType);
     dob->setProperty ("width", preferredWidth);
     dob->setProperty ("height", preferredHeight);
-    dob->setProperty("isMini",isMini && miniTimer==nullptr);
+    dob->setProperty("isMini",isMini || (miniTimer!=nullptr));
     var layout (dob);
     return layout;
 }
@@ -98,6 +98,7 @@ void ShapeShifter::loadLayout (var layout)
     setPreferredHeight (dob->getProperty ("height"));
     setMini(dob->getProperty("isMini"),false);
     loadLayoutInternal (layout);
+    resized();
 }
 
 
@@ -120,7 +121,7 @@ public:
         s->parentShifterContainer->resized();
     }
     void requestEnd(){
-        startTimer(200);
+        startTimer(800);
     }
     void timerCallback() override{
         stopTimer();
@@ -137,13 +138,12 @@ void ShapeShifter::setMini(bool s,bool resizeNow){
     if(miniTimer){
         if(!s && !miniTimer->isTimerRunning()){miniTimer=nullptr;} // be sure to delete it if stopped
     }
+    isMini = s;
     ShapeShifterContainer * parent = parentShifterContainer;
     if(parent){
         bool allMinimized = true;
         for(auto & s:parent->shifters){allMinimized&=s->isMini;}
-        if (allMinimized){jassert(!isMini);return;}
-        isMini = s;
-
+        if (resizeNow && allMinimized){jassert(!isMini);return;}
 
         for(auto & c:getChildren()){ // we keep this component visible to recieve mouse events
             if(auto * sp = dynamic_cast<ShapeShifterPanel*>(c)){

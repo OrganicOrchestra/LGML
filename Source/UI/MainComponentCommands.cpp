@@ -339,6 +339,15 @@ bool MainContentComponent::perform (const InvocationInfo& info)
             if(icl.size()>0){
 
                 var datal = Array<var>();
+
+                Point<int> minSelectionPoint(10e5,10e5);
+                for(auto & ic:icl){
+                    if(ic){
+                        minSelectionPoint.x = jmin(ic->getX(),minSelectionPoint.x);
+                        minSelectionPoint.y = jmin(ic->getY(),minSelectionPoint.y);
+                    }
+                }
+                
                 for(auto  ic : icl){
                     if(!ic.get())continue;
                     ParameterContainer* cc = ic->getRelatedParameterContainer();
@@ -362,7 +371,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
 
                             if (info.commandID == CommandIDs::cutSelection)
                             {
-                                if (ic->inspectableType == "node") ((ConnectableNode*)cc)->remove();
+                                if (ncv && ic->inspectableType == "node") ncv->removeNodeUndoable(dynamic_cast<NodeBase*>(cc));
                                 else if (ic->inspectableType == "controller") ((Controller*)cc)->remove();
 
                                 //            else if (ic->inspectableType == "fastMap") ((FastMap *)cc)->remove();
@@ -372,13 +381,10 @@ bool MainContentComponent::perform (const InvocationInfo& info)
 //                        }
                     }
                 }
-                auto jsonObj = new DynamicObject();
+                DynamicObject* jsonObj =  new DynamicObject();
+
                 jsonObj->setProperty("list", datal);
-                Point<int> minSelectionPoint(10e5,10e5);
-                for(auto & ic:icl){
-                    minSelectionPoint.x = jmin(ic->getX(),minSelectionPoint.x);
-                    minSelectionPoint.y = jmin(ic->getY(),minSelectionPoint.y);
-                }
+
                 jsonObj->setProperty("minSelectionPoint", Array<var>({minSelectionPoint.x,minSelectionPoint.y}));
 
 
@@ -443,11 +449,12 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                             if (type == "node" && relatedComponent->inspectableType == "node")
                             {
                                 ConnectableNode* cn = dynamic_cast<ConnectableNode*> (relatedComponent->getRelatedParameterContainer());
-                                NodeContainer* container = (dynamic_cast<NodeContainer*> (cn)) ? dynamic_cast<NodeContainer*> (cn) : cn->getParentNodeContainer();
+//                                NodeContainer* container = (dynamic_cast<NodeContainer*> (cn)) ? dynamic_cast<NodeContainer*> (cn) : cn->getParentNodeContainer();
 
                                 if (cn != nullptr)
                                 {
-                                    ConnectableNode* n = container->addNodeFromJSONData (d->getProperty ("data").getDynamicObject());
+                                    NodeBase* n = NodeFactory::createBaseFromObject ("", d->getProperty ("data").getDynamicObject());
+
 
                                     // ensure to have different uuid than the one from JSON
                                     if (n)
@@ -456,6 +463,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                                         NodeContainerViewer *  ncv = dynamic_cast<NodeContainerViewer*>(relatedComponent);
                                         if(!ncv)ncv=relatedComponent->findParentComponentOfClass<NodeContainerViewer>();
                                         if(ncv){
+                                            ncv->addNodeUndoable(n, Point<int>());
                                             auto nodeUI = ncv->getUIForNode(n);
                                             if(nodeUI){
 

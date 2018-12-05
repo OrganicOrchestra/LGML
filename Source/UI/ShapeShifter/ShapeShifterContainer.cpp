@@ -388,7 +388,7 @@ void ShapeShifterContainer::resized()
     }
 
     int totalSpace = (direction == HORIZONTAL) ? getWidth() : getHeight();
-
+    if (totalSpace==0)return;
     int numShifters = shifters.size();
     int totalSpaceWithoutGap = totalSpace - gap * (numShifters - 1);
 
