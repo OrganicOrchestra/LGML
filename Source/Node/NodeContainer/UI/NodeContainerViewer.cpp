@@ -567,6 +567,7 @@ void NodeContainerViewer::mouseUp (const MouseEvent& e)
 
 bool NodeContainerViewer::keyPressed (const KeyPress& key)
 {
+
     if (key.getTextCharacter() == 'a')
     {
         Point<int> mousePos = getMouseXYRelative();
@@ -602,7 +603,8 @@ bool NodeContainerViewer::keyPressed (const KeyPress& key)
         return toRemove.size()>0;
     }
 
-    return false;
+    return InspectableComponent::keyPressed(key);
+
 };
 
 

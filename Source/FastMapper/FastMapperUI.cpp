@@ -24,7 +24,8 @@
 #include "../Utils/FactoryUIHelpers.h"
 
 FastMapperUI::FastMapperUI (const String& contentName,FastMapper* _fastMapper, ContainerType* _viewFilterContainer) :
-ShapeShifterContentComponent (contentName,"Link parameters together\nAdd FastMap here\nCmd+m toggles mapping mode"),
+InspectableComponent(_fastMapper),
+ShapeShifterContent (this,contentName,"Link parameters together\nAdd FastMap here\nCmd+m toggles mapping mode"),
 fastMapper (_fastMapper), viewFilterContainers {WeakReference<ContainerType>(_viewFilterContainer)},
 mapsUI(new StackedContainerUI<FastMapUI, FastMap>(
                                                   [](FastMapUI* ui){return ui->fastMap;},
@@ -180,7 +181,7 @@ int FastMapperUI::getContentHeight() const
 
 void FastMapperUI::resized()
 {
-    ShapeShifterContentComponent::resized();
+    
     Rectangle<int> r = getLocalBounds().reduced (2);
     auto inputHeader  = r.removeFromTop (getTargetHeight());
     candidateLabel.setBounds(inputHeader.removeFromLeft(100));
@@ -195,8 +196,8 @@ void FastMapperUI::resized()
     // empty shows help
     if(mapsUI.getNumStacked()==0){
         auto labelR = r.removeFromTop(r.getHeight()/2);
-        infoLabel.setVisible(true);
-        infoLabel.setBounds(labelR);
+//        infoLabel.setVisible(true);
+//        infoLabel.setBounds(labelR);
         int side = (int)( jmin(r.getWidth(),r.getHeight()) * .95);
         addFastMapButton.setBounds(r.withSizeKeepingCentre(side,side));
 
@@ -205,7 +206,7 @@ void FastMapperUI::resized()
         r.removeFromTop (5);
         r.reduce (2, 0);
         mapsUI.setBounds(r);
-        infoLabel.setVisible(false);
+//        infoLabel.setVisible(false);
         addFastMapButton.setFromParentBounds (r);
     }
 

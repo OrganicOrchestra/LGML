@@ -50,16 +50,19 @@ public:
     bool isSelected;
 
     void selectThis();
-    void setVisuallySelected (bool value);
-    virtual void setSelectedInternal (bool value); //to be overriden
 
-
-    //
-    void paintOverChildren (juce::Graphics& g) override;
     String getTooltip() override ;
-    void mouseUp (const MouseEvent&) override;
-
+    
 protected:
+    bool keyPressed (const KeyPress&)override;
+
+    void paintOverChildren (juce::Graphics& g) override;
+
+
+    virtual void setSelectedInternal (bool value); //to be overriden
+    void setVisuallySelected (bool value);
+    friend class Inspector;
+    void mouseUp (const MouseEvent&) override;
     WeakReference<ParameterContainer> relatedParameterContainer;
     WeakReference<ParameterBase> relatedParameter;
 private:

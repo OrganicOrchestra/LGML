@@ -33,7 +33,8 @@ class FastMapperUI :
     private Button::Listener,
     private Inspector::InspectorListener,
     private LGMLDragger::Listener,
-    public ShapeShifterContentComponent
+    public ShapeShifterContent,
+    public InspectableComponent
 
 {
 public:

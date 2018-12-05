@@ -190,7 +190,7 @@ bool ControllerUI::keyPressed (const KeyPress& key)
         return true;
     }
 
-    return false;
+    return InspectableComponent::keyPressed(key);
 }
 
 

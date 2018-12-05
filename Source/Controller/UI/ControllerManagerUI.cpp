@@ -25,7 +25,8 @@
 //==============================================================================
 ControllerManagerUI::ControllerManagerUI (const String & contentName, ControllerManager* _manager):
     manager (_manager),
-ShapeShifterContentComponent (contentName,
+InspectableComponent(_manager),
+ShapeShifterContent (this,contentName,
                               "Communicate with the real world\nAdd your controllers here\n OSC / MIDI / Serial"),
 controllersUI(new StackedContainerUI<ControllerUI, Controller>
               (
@@ -125,13 +126,13 @@ void ControllerManagerUI::resized()
     if(controllersUI.getNumStacked()==0){
         int side = (int)( jmin(getWidth(),getHeight()) * .5);
         addControllerBt.setBounds(getLocalBounds().withSizeKeepingCentre(side,side));
-        infoLabel.setVisible(true);
+//        infoLabel.setVisible(true);
         auto labelR =getLocalBounds().withBottom(addControllerBt.getY());
         labelR=labelR.withSizeKeepingCentre(jmax(250,getWidth()),labelR.getHeight());
-        infoLabel.setBounds(labelR);
+//        infoLabel.setBounds(labelR);
     }
     else{
-        infoLabel.setVisible(false);
+//        infoLabel.setVisible(false);
         addControllerBt.setFromParentBounds (getLocalBounds());
     }
 }

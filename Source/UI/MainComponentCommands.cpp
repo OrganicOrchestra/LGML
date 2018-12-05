@@ -103,8 +103,9 @@ void MainContentComponent::getCommandInfo (CommandID commandID, ApplicationComma
 
         case CommandIDs::showAudioSettings:
             result.setInfo (juce::translate("Audio settings..."), "", category, 0);
-            result.addDefaultKeypress ('a', ModifierKeys::commandModifier);
+            result.addDefaultKeypress ('a', ModifierKeys::commandModifier | ModifierKeys::shiftModifier );
             break;
+
         case CommandIDs::showAppSettings:
             result.setInfo (juce::translate("Settings..."), "", category, 0);
             result.addDefaultKeypress (',', ModifierKeys::commandModifier);
@@ -381,14 +382,16 @@ bool MainContentComponent::perform (const InvocationInfo& info)
 //                        }
                     }
                 }
-                DynamicObject* jsonObj =  new DynamicObject();
+                var jsonVar(new DynamicObject());
+                DynamicObject::Ptr  jsonObj = jsonVar.getDynamicObject();
 
                 jsonObj->setProperty("list", datal);
 
                 jsonObj->setProperty("minSelectionPoint", Array<var>({minSelectionPoint.x,minSelectionPoint.y}));
 
 
-                SystemClipboard::copyTextToClipboard (JSON::toString (jsonObj));
+                SystemClipboard::copyTextToClipboard (JSON::toString (jsonVar));
+
             }
         }
             break;

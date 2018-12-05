@@ -34,7 +34,7 @@ canInspectChildContainersBeyondRecursion (true),
 isSelected (false),
 paintBordersWhenSelected (true),
 bringToFrontOnSelect (true){
-
+setWantsKeyboardFocus(true);
 }
 InspectableComponent::InspectableComponent (ParameterContainer* _relatedContainer, const String& _inspectableType) :
 inspectableType (_inspectableType),
@@ -46,6 +46,7 @@ isSelected (false),
 paintBordersWhenSelected (true),
 bringToFrontOnSelect (true)
 {
+    setWantsKeyboardFocus(true);
 
 }
 
@@ -59,7 +60,7 @@ isSelected (false),
 paintBordersWhenSelected (true),
 bringToFrontOnSelect (true)
 {
-
+    setWantsKeyboardFocus(true);
 }
 InspectableComponent::~InspectableComponent()
 {
@@ -82,6 +83,41 @@ void InspectableComponent::mouseUp (const MouseEvent&)
     selectThis();
 }
 
+Component * getFirstInspectableContainer(Component* c,int depthCount){
+    for(auto *cc:c->getChildren()){
+        if(auto ic = dynamic_cast<InspectableComponent*>(cc)){
+            return c;
+        }
+    }
+    if(depthCount>0){
+        for(auto *cc:c->getChildren()){
+            if(auto ccc = getFirstInspectableContainer(cc, depthCount-1)){
+                return ccc;
+            }
+        }
+    }
+    return nullptr;
+
+}
+
+bool InspectableComponent::keyPressed (const KeyPress& k){
+    if(k==KeyPress('a',ModifierKeys::commandModifier,0) ){
+        if(Component * iC = getFirstInspectableContainer(this,4)){
+        Array<WeakReference<InspectableComponent> > toSelect;
+        for(auto *c:iC->getChildren()){
+            if(auto ic = dynamic_cast<InspectableComponent*>(c)){
+                toSelect.add(ic);
+            }
+        }
+        if(toSelect.size()){
+            Inspector::getInstance()->selectComponents( toSelect);
+            return true;
+        }
+        }
+    }
+    return false;
+}
+
 void InspectableComponent::selectThis()
 {
     if (Inspector::getInstanceWithoutCreating() == nullptr)
@@ -90,6 +126,8 @@ void InspectableComponent::selectThis()
     }
 
     Inspector::getInstance()->selectOnly(this);
+    if(isShowing())
+        grabKeyboardFocus();
 }
 
 void InspectableComponent::setVisuallySelected (bool value)

@@ -375,7 +375,7 @@ bool ConnectableNodeUI::keyPressed (const KeyPress& key)
         }
     }
 
-    return false;
+    return InspectableComponent::keyPressed(key);
 }
 
 ////////////    MAIN CONTAINER
