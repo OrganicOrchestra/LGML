@@ -716,11 +716,12 @@ var JsEnvironment::createParameterListenerObject (const var::NativeFunctionArgs&
         {
                 JsParameterListenerObject* ob = new JsParameterListenerObject (originEnv, p);
                 originEnv->addJsParameterListener (ob);
+                DBG(p->niceName << ", " << p->shortName);
                 return ob->object;
         }
 
         auto  props =a.arguments[0].getDynamicObject()->getProperties();
-        DBG(p->niceName << ", " << p->shortName);
+
         for(int i = 0 ; i < props.size() ; i++){
             DBG(props.getName(i).toString() << ":" << props.getValueAt(i).toString());
         }

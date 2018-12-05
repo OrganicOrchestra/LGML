@@ -502,7 +502,7 @@ String NodeConnectionUI::getTooltip() {
         if(auto nb = sourceConnector->getNodeBase())
              tt+="\nin : " + String(nb->getTotalNumOutputChannels());
     if(destConnector)
-        if(auto nb = sourceConnector->getNodeBase())
+        if(auto nb = destConnector->getNodeBase())
             tt+="\nout : " + String(nb->getTotalNumOutputChannels());
 
     }

@@ -95,15 +95,15 @@ DynamicObject * InspectableComponent::createObject(){
     return new DynamicObject();
 }
 
-Component * getFirstInspectableContainer(Component* c,int depthCount){
+Component * getFirstInspectableContainer(Component* c,int maxDepthCount){
     for(auto *cc:c->getChildren()){
-        if(auto ic = dynamic_cast<InspectableComponent*>(cc)){
+        if(dynamic_cast<InspectableComponent*>(cc)){
             return c;
         }
     }
-    if(depthCount>0){
+    if(maxDepthCount>0){
         for(auto *cc:c->getChildren()){
-            if(auto ccc = getFirstInspectableContainer(cc, depthCount-1)){
+            if(auto ccc = getFirstInspectableContainer(cc, maxDepthCount-1)){
                 return ccc;
             }
         }

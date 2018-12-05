@@ -195,7 +195,7 @@ void FastMapperUI::resized()
 
     // empty shows help
     if(mapsUI.getNumStacked()==0){
-        auto labelR = r.removeFromTop(r.getHeight()/2);
+//        auto labelR = r.removeFromTop(r.getHeight()/2);
 //        infoLabel.setVisible(true);
 //        infoLabel.setBounds(labelR);
         int side = (int)( jmin(r.getWidth(),r.getHeight()) * .95);

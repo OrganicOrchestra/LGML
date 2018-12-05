@@ -463,46 +463,47 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                                 {
                                     NodeBase* n = NodeFactory::createBaseFromObject ("", d->getProperty ("data").getDynamicObject());
 
+                                    NodeContainerViewer *  ncv = dynamic_cast<NodeContainerViewer*>(relatedComponent);
+                                    if(!ncv)ncv=relatedComponent->findParentComponentOfClass<NodeContainerViewer>();
 
-                                    // ensure to have different uuid than the one from JSON
-                                    if (n)
+                                    if (n && ncv)
                                     {
-                                        n->uid = Uuid();
-                                        NodeContainerViewer *  ncv = dynamic_cast<NodeContainerViewer*>(relatedComponent);
-                                        if(!ncv)ncv=relatedComponent->findParentComponentOfClass<NodeContainerViewer>();
-                                        if(ncv){
-                                            String oldName = n->shortName;
-                                            ncv->addNodeUndoable(n, Point<int>());
-                                            String newName =n->shortName;
-                                            newNames.set(oldName,newName);
-                                            auto nodeUI = ncv->getUIForNode(n);
-                                            if(nodeUI){
+                                        n->uid = Uuid();// ensure to have different uuid than the one from JSON
+
+                                        String oldName = n->shortName;
+                                        ncv->addNodeUndoable(n, Point<int>());
+                                        String newName =n->shortName;
+                                        newNames.set(oldName,newName);
+                                        auto nodeUI = ncv->getUIForNode(n);
+                                        if(nodeUI){
 
 
-                                                if(auto o = d->getProperty ("uiData").getDynamicObject()){
-                                                    auto nodeUIParams = dynamic_cast<ParameterContainer*>(ncv->uiParams->getControllableContainerByName(n->shortName));
-                                                    nodeUIParams->configureFromObject(o);
-                                                }
-                                                nodeUI->uid=Uuid();
-                                                Point<int> offset(0,0);
-                                                if(auto o = clipboardOb.getProperty("minSelectionPoint",var()).getArray()){
-                                                    if(o->size()==2){
-                                                        offset.x = o->getUnchecked(0);
-                                                        offset.y = o->getUnchecked(1);
-                                                        offset=ncv->getMouseXYRelative()-offset;
-                                                    }
-                                                }
-                                                nodeUI->nodePosition->setPoint (nodeUI->nodePosition->getPoint()+offset);
-                                                nodeUI->nodeMinimizedPosition->setPoint (nodeUI->nodeMinimizedPosition->getPoint()+offset);
+                                            if(auto o = d->getProperty ("uiData").getDynamicObject()){
+                                                auto nodeUIParams = dynamic_cast<ParameterContainer*>(ncv->uiParams->getControllableContainerByName(n->shortName));
+                                                nodeUIParams->configureFromObject(o);
                                             }
-                                            else{
-                                                jassertfalse;
+                                            nodeUI->uid=Uuid();
+                                            Point<int> offset(0,0);
+                                            if(auto o = clipboardOb.getProperty("minSelectionPoint",var()).getArray()){
+                                                if(o->size()==2){
+                                                    offset.x = o->getUnchecked(0);
+                                                    offset.y = o->getUnchecked(1);
+                                                    offset=ncv->getMouseXYRelative()-offset;
+                                                }
                                             }
+                                            nodeUI->nodePosition->setPoint (nodeUI->nodePosition->getPoint()+offset);
+                                            nodeUI->nodeMinimizedPosition->setPoint (nodeUI->nodeMinimizedPosition->getPoint()+offset);
                                         }
                                         else{
                                             jassertfalse;
                                         }
                                     }
+                                    else{
+
+                                        jassertfalse;
+                                        n->remove();
+                                    }
+
                                 }
                             }
                         }

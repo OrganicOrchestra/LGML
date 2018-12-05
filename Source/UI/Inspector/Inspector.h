@@ -54,6 +54,10 @@ public:
 
     void contentSizeChanged (InspectorEditor*) override;
 
+    template<class T>
+    Array<WeakReference<T>> getSelectedComponentsOfType();
+    template<class T>
+    Array<WeakReference<T>> getSelectedContainersOfType();
 
     //Listener
     class  InspectorListener :private ChangeListener
@@ -100,6 +104,28 @@ private:
     friend class InspectorViewport;
 
 };
+
+template<class T>
+Array<WeakReference<T>> Inspector::getSelectedComponentsOfType(){
+    Array<WeakReference<T>> res;
+    for(auto & c : getItemArray()){
+        if(auto * cc = dynamic_cast<T*>(c.get())){
+            res.add(WeakReference<T>(cc));
+        }
+    }
+    return res;
+}
+
+template<class T>
+Array<WeakReference<T>> Inspector::getSelectedContainersOfType(){
+    Array<WeakReference<T>> res;
+    for(auto & c : getContainersSelected()){
+        if(auto * cc = dynamic_cast<T*>(c.get())){
+            res.add(WeakReference<T>(cc));
+        }
+    }
+    return res;
+}
 
 class InspectorViewport : public ShapeShifterContentComponent, public Inspector::InspectorListener
 {

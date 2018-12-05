@@ -32,7 +32,7 @@ struct itercomp{
         func(c,idx,args... );
         for (auto & ch:c->getChildren()){
             doit(func,ch,idx+1,args...);
-            jassert(ch->getParentComponent()==c);
+            jassert(ch && (ch->getParentComponent()==c));
         }
     }
 };

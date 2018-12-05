@@ -55,7 +55,8 @@ MinMaxParameter ( niceName, description, startPoint, minPoint, maxPoint, enabled
 
 template <class T>
 void ParameterList<T>::updateParamsFromValue() {
-    auto a  = value.getArray();
+    auto  * a  = value.getArray();
+    if(!a) {jassertfalse;return;}
     int targetSize = a?a->size():0;
 
     // avoid shrinking for now

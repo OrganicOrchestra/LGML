@@ -468,7 +468,6 @@ void VSTNode::handleAsyncUpdate()
 
     if(innerPlugin && stateInfo.getSize() ){
         inOutChanged = false;
-        numParamChanged = needParamReload;
         const ScopedLock lk(pluginStateMutex);
         int oldNumInput = innerPlugin->getTotalNumInputChannels();
         int oldNumOutput = innerPlugin->getTotalNumOutputChannels();
