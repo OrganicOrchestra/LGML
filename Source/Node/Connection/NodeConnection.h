@@ -78,7 +78,7 @@ public:
 
     // save / load
 
-    DynamicObject* getObject()override;
+    DynamicObject* createObject()override;
     void configureFromObject (DynamicObject* data) override;
 
     //Listener

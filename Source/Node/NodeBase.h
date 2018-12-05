@@ -59,7 +59,7 @@ public:
     virtual void clearInternal() {};
 
     String getPresetFilter() override;
-    DynamicObject* getObject() override;
+    DynamicObject* createObject() override;
     void configureFromObject (DynamicObject* data) override;
 
 

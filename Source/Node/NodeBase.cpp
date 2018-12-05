@@ -133,9 +133,9 @@ String NodeBase::getPresetFilter()
     return getFactoryTypeName() + String ("_") + uid.toString();
 }
 
-DynamicObject* NodeBase::getObject()
+DynamicObject* NodeBase::createObject()
 {
-    auto data = ConnectableNode::getObject();
+    auto data = ConnectableNode::createObject();
 
     MemoryBlock m;
 

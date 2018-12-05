@@ -716,7 +716,7 @@ void NodeContainerViewer::addOrRemoveNodeUndoable(const String & tid,const Point
     if(originNodeToRemove  && isRemove){
         auto * savedUiParamsInstance = dynamic_cast<ConnectableNodeUIParams*>(uiParams->getControllableContainerByName(originNodeToRemove->shortName));
         if(savedUiParamsInstance){
-            savedUiParamsObject = var(savedUiParamsInstance->getObject());
+            savedUiParamsObject = var(savedUiParamsInstance->createObject());
         }
 
     }

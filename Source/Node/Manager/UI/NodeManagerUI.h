@@ -72,7 +72,7 @@ public:
     void removeNodeManagerUIListener (NodeManagerUIListener* listener) { nodeManagerUIListeners.remove (listener); }
     bool keyPressed (const KeyPress& key)override;
 
-//    DynamicObject* getObject();
+//    DynamicObject* createObject();
 //    void setFromObject(const DynamicObject * obj);
 
 

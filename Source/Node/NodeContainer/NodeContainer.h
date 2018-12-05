@@ -145,7 +145,7 @@ public:
 
 
     //save / load
-    DynamicObject* getObject() override;
+    DynamicObject* createObject() override;
     void configureFromObject (DynamicObject* data) override;
     ParameterContainer*   addContainerFromObject (const String& name, DynamicObject*   v)override;
 

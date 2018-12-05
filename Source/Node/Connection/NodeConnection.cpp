@@ -239,7 +239,7 @@ void NodeConnection::audioOutputRemoved (ConnectableNode* n, int channel)
 }
 
 
-DynamicObject* NodeConnection::getObject()
+DynamicObject* NodeConnection::createObject()
 {
     auto data = new DynamicObject();
 

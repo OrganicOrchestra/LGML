@@ -242,7 +242,7 @@ public:
     }
 
 
-    virtual DynamicObject* getObject() = 0;
+    virtual DynamicObject* createObject() = 0;
 
     static ControllableContainer * globalRoot;
 

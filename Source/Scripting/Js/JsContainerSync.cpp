@@ -136,7 +136,7 @@ JsContainerSync::createDynamicObjectFromContainer (ControllableContainer* contai
     }
     else
     {
-        myObj = container->getObject();
+        myObj = container->createObject();
     }
 
 

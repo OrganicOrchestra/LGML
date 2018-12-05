@@ -38,9 +38,9 @@ public:
         return !minimumValue.isUndefined() && !maximumValue.isUndefined();
     }
 
-    DynamicObject* getObject() override
+    DynamicObject* createObject() override
     {
-        auto res = ParameterBase::getObject();
+        auto res = ParameterBase::createObject();
         res->setProperty (minValueIdentifier, minimumValue);
         res->setProperty (maxValueIdentifier, maximumValue);
         return res;

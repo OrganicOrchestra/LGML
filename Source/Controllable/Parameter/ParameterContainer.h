@@ -60,7 +60,7 @@ public:
     virtual ParameterBase* addParameterFromVar (const String& name, const var& data) ;
 
     virtual void configureFromObject (DynamicObject* data) override;
-    virtual DynamicObject* getObject() override;
+    virtual DynamicObject* createObject() override;
     
 
     //  controllableContainer::Listener

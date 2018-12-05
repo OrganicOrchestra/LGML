@@ -46,7 +46,7 @@ DynamicObject* Trigger::createDynamicObject()
     return dObject;
 }
 
-DynamicObject* Trigger::getObject()
+DynamicObject* Trigger::createObject()
 {
     return new DynamicObject();
 }

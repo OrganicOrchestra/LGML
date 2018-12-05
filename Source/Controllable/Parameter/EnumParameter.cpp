@@ -31,7 +31,7 @@ Identifier EnumParameter::selectedSetIdentifier ("selected");
 #define LOG_ENUM DBG("////////////////");DBG(dumpVarObj(enumData));
 String dumpVarObj(const var & v ,const int indent=0){
     String res;
-    if(auto obj = dynamic_cast<DynamicObject*>(v.getObject())){
+    if(auto obj = v.getDynamicObject()){
         res += "\n";
         for (auto vv:obj->getProperties()){
 

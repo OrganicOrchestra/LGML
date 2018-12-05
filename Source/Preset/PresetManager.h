@@ -52,7 +52,7 @@ public:
 
         void clear();
 
-        DynamicObject*   getObject();
+        DynamicObject*   createObject();
 
         void configureFromObject (DynamicObject* data);
 
@@ -78,7 +78,7 @@ public:
     void clear();
 
 
-    DynamicObject* getObject();
+    DynamicObject* createObject();
     void configureFromObject (DynamicObject* data);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PresetManager)

@@ -145,7 +145,7 @@ public:
 
 
     //JS Helper
-    virtual DynamicObject* getObject() override;
+    virtual DynamicObject* createObject() override;
     virtual var getVarState() override;
 
 

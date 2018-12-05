@@ -109,7 +109,7 @@ public:
     //    #endif
 
     // our Saving methods
-    DynamicObject* getObject() override;
+    DynamicObject* createObject() override;
     void loadJSONData (const var& data, ProgressTask* loadingTask);
 
     bool checkFileVersion (DynamicObject* metaData);

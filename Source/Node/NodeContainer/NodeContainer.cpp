@@ -325,15 +325,15 @@ int NodeContainer::getNumConnections()
 
 
 
-DynamicObject* NodeContainer::getObject()
+DynamicObject* NodeContainer::createObject()
 {
-    auto data = ConnectableNode::getObject();
+    auto data = ConnectableNode::createObject();
 
     var connectionsData;
 
     for (auto& c : connections)
     {
-        connectionsData.append (c->getObject());
+        connectionsData.append (c->createObject());
     }
 
 

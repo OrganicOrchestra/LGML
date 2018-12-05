@@ -94,7 +94,7 @@ Array<WeakReference<ParameterBase>> ParameterContainer::getAllParameters (bool r
 }
 
 
-DynamicObject* ParameterContainer::getObject()
+DynamicObject* ParameterContainer::createObject()
 {
 
     DynamicObject* data = new DynamicObject();
@@ -128,7 +128,7 @@ DynamicObject* ParameterContainer::getObject()
 
         for (auto controllableCont : controllableContainers)
         {
-            childData->setProperty (controllableCont->shortName, controllableCont.get()->getObject());
+            childData->setProperty (controllableCont->shortName, controllableCont.get()->createObject());
         }
 
         data->setProperty (childContainerId, childData);

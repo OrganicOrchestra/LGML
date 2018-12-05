@@ -206,7 +206,7 @@ void Engine::handleAsyncUpdate()
 Result Engine::saveDocument (const File& file)
 {
 
-    var data = getObject();
+    var data = createObject();
 
     if (file.exists()) file.deleteFile();
     {
@@ -248,7 +248,7 @@ void Engine::setLastDocumentOpened (const File& file)
 
 }
 
-DynamicObject* Engine::getObject()
+DynamicObject* Engine::createObject()
 {
 
     auto data = new DynamicObject();
@@ -261,17 +261,17 @@ DynamicObject* Engine::getObject()
 
     data->setProperty ("metaData", metaData);
 
-    data->setProperty ("presetManager", PresetManager::getInstance()->getObject());
+    data->setProperty ("presetManager", PresetManager::getInstance()->createObject());
 
 
     if( auto p = getControllableContainerByName("NodesUI")){
-        data->setProperty("NodesUI",p->getObject());
+        data->setProperty("NodesUI",p->createObject());
     }
 
-    data->setProperty ("nodeManager", NodeManager::getInstance()->getObject());
-    data->setProperty ("controllerManager", ControllerManager::getInstance()->getObject());
-    data->setProperty("timeManager" , TimeManager::getInstance()->getObject());
-    data->setProperty ("fastMapper", FastMapper::getInstance()->getObject());
+    data->setProperty ("nodeManager", NodeManager::getInstance()->createObject());
+    data->setProperty ("controllerManager", ControllerManager::getInstance()->createObject());
+    data->setProperty("timeManager" , TimeManager::getInstance()->createObject());
+    data->setProperty ("fastMapper", FastMapper::getInstance()->createObject());
 
     return data;
 }

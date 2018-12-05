@@ -357,7 +357,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
 
                         var data (new DynamicObject());
                         data.getDynamicObject()->setProperty ("type", ic->inspectableType);
-                        data.getDynamicObject()->setProperty ("data", cc->getObject());
+                        data.getDynamicObject()->setProperty ("data", cc->createObject());
                         auto *relatedComponent = ic.get();
 //                        if(auto relatedComponent =Inspector::getInstance()->getCurrentComponent()){
 
@@ -365,7 +365,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                             if(!ncv)ncv=relatedComponent->findParentComponentOfClass<NodeContainerViewer>();
                             if(ncv && ncv->uiParams){
                                 auto nodeUIParams = ncv->uiParams->getControllableContainerByName(cc->shortName);
-                                data.getDynamicObject()->setProperty ("uiData",nodeUIParams->getObject());
+                                data.getDynamicObject()->setProperty ("uiData",nodeUIParams->createObject());
 
                             }
 

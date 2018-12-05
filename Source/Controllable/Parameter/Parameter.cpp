@@ -218,7 +218,7 @@ void ParameterBase::configureFromObject (DynamicObject* ob)
     }
 }
 
-DynamicObject* ParameterBase::getObject()
+DynamicObject* ParameterBase::createObject()
 {
     DynamicObject* res = new DynamicObject();
     res->setProperty (valueIdentifier, value);

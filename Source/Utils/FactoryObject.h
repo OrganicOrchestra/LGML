@@ -35,7 +35,7 @@ public:
     virtual const Identifier & getFactoryTypeId() const =0;
     virtual const String& getFactoryTypeName() const = 0;
     virtual void configureFromObject (DynamicObject*) = 0;
-    virtual DynamicObject* getObject() = 0;
+    virtual DynamicObject* createObject() = 0;
     virtual const String & getFactoryInfo() const = 0;
 
 
