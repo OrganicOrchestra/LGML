@@ -36,6 +36,7 @@ public:
 
     StringParameter*   identifierString;
     Array<ParameterBase*> VSTParameters;
+    StringParameter* stateInformation;
 
 
 
@@ -45,15 +46,16 @@ public:
     public:
         PluginWindowParameters(): ParameterContainer ("PluginWindow Parameters")
         {
-            nameParam->isEditable=false;
+            nameParam->setInternalOnlyFlags(true,false);
             x = addNewParameter<FloatParameter> ("x", "x position of plugin window", (float)Random::getSystemRandom().nextInt (500), 0.f, 1000.f);
             y = addNewParameter<FloatParameter> ("y", "y position of plugin window", (float)Random::getSystemRandom().nextInt (500), 0.f, 1000.f);
             isDisplayed = addNewParameter<BoolParameter> ("isDisplayed", "is the plugin window displayed", false);
-            currentPresetName->isPresettable = false;
+
             isHidenInEditor = true;
-            x->isControllableExposed = false;
-            y->isControllableExposed = false;
-            isDisplayed->isControllableExposed = false;
+            currentPresetName->isPresettable = false;
+            x->setInternalOnlyFlags(false,true);
+            y->setInternalOnlyFlags(false,true);
+            isDisplayed->setInternalOnlyFlags(false,true);
             
         }
 
@@ -73,8 +75,6 @@ public:
                                          float newValue) override;
 
     void audioProcessorChanged (AudioProcessor*) override;
-    void loadPresetInternal (PresetManager::Preset* preset)override;
-    void savePresetInternal (PresetManager::Preset* preset)override;
 
 
 
@@ -122,9 +122,7 @@ public:
     }
     void releaseResources() override { if (innerPlugin) { innerPlugin->releaseResources(); } };
     bool hasEditor() const override { if (innerPlugin) { return innerPlugin->hasEditor(); } return false; };
-    void getStateInformation (MemoryBlock& destData)override ;
-    void setStateInformation (const void* data, int sizeInBytes)override ;
-    MemoryBlock stateInfo;
+
     CriticalSection pluginStateMutex;
     void processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;
     void processBlockBypassed (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;
@@ -138,7 +136,14 @@ public:
     bool bProcessWhenBypassed;
     Trigger* midiActivityTrigger;
 
+    ParameterBase * addParameterFromVar(const String & name,const var & data)override;
+
 private:
+
+    void setVSTState();
+    void getVSTState();
+    String stateInfoPluginID;
+
 
     void initParametersFromProcessor (AudioPluginInstance* p);
     void updateParametersFromProcessor (AudioPluginInstance* p);
@@ -157,6 +162,9 @@ private:
     void handleAsyncUpdate() override;
 
     bool parameterHaveChanged();
+
+
+    ParameterBase * generateFromVST(const AudioProcessorParameter* param);
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (VSTNode)
 };

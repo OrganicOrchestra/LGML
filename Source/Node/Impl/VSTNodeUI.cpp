@@ -101,7 +101,7 @@ void VSTNodeContentUI::updateVSTParameters()
         addAndMakeVisible (pui);
         pCount++;
 
-        if (pCount > maxParameter)
+        if (pCount >= maxParameter)
         {
             break;
         }
@@ -148,14 +148,11 @@ void VSTNodeContentUI::handleCommandMessage (int /*cId*/)
 void VSTNodeContentUI::resized()
 {
     Rectangle<int> area = getLocalBounds().reduced (2);
-    Rectangle<int> midiR = area.removeFromTop (25);
-    activityBlink->setBounds (midiR.removeFromRight (midiR.getHeight()).reduced (2));
-    midiDeviceChooser->setBounds (midiR);
-
-    area.removeFromTop (2);
     Rectangle<int> headerArea = area.removeFromTop (25);
-    VSTListShowButton.setBounds (headerArea.removeFromLeft (headerArea.getWidth() / 2));
-    showPluginWindowButton.setBounds (headerArea);
+    activityBlink->setBounds (headerArea.removeFromRight (headerArea.getHeight()/2).reduced (2));
+    showPluginWindowButton.setBounds (headerArea.removeFromRight (headerArea.getHeight()));
+    midiDeviceChooser->setBounds (headerArea.removeFromRight (headerArea.getWidth() / 2));
+    VSTListShowButton.setBounds (headerArea);
     layoutSliderParameters (area.reduced (2));
 
 }
@@ -163,11 +160,16 @@ void VSTNodeContentUI::resized()
 void VSTNodeContentUI::layoutSliderParameters (Rectangle<int> pArea)
 {
     if (paramSliders.size() == 0) return;
+    if(pArea.getHeight()==0) return;
 
-    int maxLines = 4;
+    const float targetSliderAR = 4;
+    const float AR = pArea.getWidth()*1.0/pArea.getHeight();
 
-    int numLines = jmin (maxLines, paramSliders.size());
-    int numCols = (paramSliders.size() - 1) / maxLines + 1;
+    int targetNumLine = sqrt(paramSliders.size())*targetSliderAR/AR;
+    targetNumLine = jmax(1,targetNumLine);
+
+    int numLines = jmin ((int)(targetNumLine), paramSliders.size());
+    int numCols = ceil((paramSliders.size() ) *1.0f/ numLines ) ;
 
     int w = pArea.getWidth() / numCols;
     int h = pArea.getHeight() / numLines;

@@ -19,11 +19,33 @@
 #include "../../Utils/DebugHelpers.h"
 #include "../../Audio/VSTManager.h"
 #include "../../Time/TimeManager.h"
-
+#include "../../Controllable/Parameter/ParameterFactory.h"
 
 constexpr int maxVSTParamNameSize = 100;
 
 extern AudioDeviceManager& getAudioDeviceManager();
+
+#define USE_JUCE_B64 1
+String toBase64(MemoryBlock &m){
+#if USE_JUCE_B64
+    return m.toBase64Encoding();
+#else
+    return Base64::toBase64(m.getData(), m.getSize());
+#endif
+}
+
+MemoryBlock fromBase64(const String & s){
+#if USE_JUCE_B64
+    MemoryBlock m;
+    m.fromBase64Encoding(s);
+    return m;
+#else
+    MemoryOutputStream os(s.length()*sizeof(s[0]));
+    Base64::convertFromBase64(os, s);
+    return os.getMemoryBlock();
+#endif
+
+}
 
 REGISTER_NODE_TYPE (VSTNode)
 //class VSTLoaderJob : public ThreadPoolJob
@@ -50,8 +72,7 @@ blockFeedback (false),
 midiChooser(this,false,true)
 {
     identifierString = addNewParameter<StringParameter> ("VST Identifier", "string that identify a VST", "");
-    identifierString->isEditable = false;
-    identifierString->isHidenInEditor = true;
+    identifierString->setInternalOnlyFlags(false,true);
 
     addChildControllableContainer (&pluginWindowParameter);
 
@@ -62,6 +83,9 @@ midiChooser(this,false,true)
 
     processWhenBypassed = addNewParameter<BoolParameter> ("processWhenBypassed", "some effects (Reverbs ...) need to process constantly even when bypassed", false);
     bProcessWhenBypassed = processWhenBypassed->boolValue();
+
+    stateInformation = addNewParameter<StringParameter>("stateInformation", "state of current plugin", "");
+    stateInformation->setInternalOnlyFlags(true,true);
     setPreferedNumAudioInput (2);
     setPreferedNumAudioOutput (2);
 }
@@ -112,7 +136,13 @@ void VSTNode::onContainerParameterChanged ( ParameterBase* p)
                 generatePluginFromDescription (pd);
                 DBG ("VST generated");
                 needParamReload = true;
-                triggerAsyncUpdate();
+                if(stateInfoPluginID==pd->createIdentifierString())
+                    setVSTState();
+                else{
+                    initParametersFromProcessor(innerPlugin);
+                    getVSTState();
+                }
+
 
 #endif
             }
@@ -159,48 +189,158 @@ void VSTNode::onContainerParameterChanged ( ParameterBase* p)
         // pass to bool for fast access in callback;
         bProcessWhenBypassed = processWhenBypassed->boolValue();
     }
-
+    else if(p==stateInformation){
+        setVSTState();
+    }
     // a VSTParameter is changed
-    else
+    else if(p!=nameParam && innerPlugin &&p!=currentPresetName)
     {
+
         if (blockFeedback)return;
 
         const OwnedArray<juce::AudioProcessorParameter>& vstParams (innerPlugin->getParameters());
-        
+        if(VSTParameters.size()!=vstParams.size()){
+            jassertfalse;
+            return;
+        }
+        bool found = false;
         for (int i = VSTParameters.size() - 1; i >= 0; --i)
         {
             if (VSTParameters.getUnchecked (i) == p)
             {
-                if (auto* param = vstParams[i])
-                    param->setValue (VSTParameters.getUnchecked (i)->value);
+                    vstParams.getUnchecked(i)->setValue (p->floatValue());
+                found = true;
+                //getVSTState();
                 break;
             }
 
         }
+        jassert(found);
     }
 };
 
-ParameterBase * generateFromVST(const AudioProcessorParameter* param){
+
+
+void VSTNode::setVSTState(){
+    if(innerPlugin ){
+
+        stateInfoPluginID = innerPlugin->getPluginDescription().createIdentifierString();
+
+        bool inOutChanged = true;
+        bool numParamChanged = true;
+
+        if(stateInformation->stringValue().length()){
+            if(stateInfoPluginID==innerPlugin->getPluginDescription().createIdentifierString()){
+                inOutChanged = false;
+                const ScopedLock lk(pluginStateMutex);
+                int oldNumInput = innerPlugin->getTotalNumInputChannels();
+                int oldNumOutput = innerPlugin->getTotalNumOutputChannels();
+
+                DBG ("loading state for vst " + getNiceName() + (parentContainer ? "in : " + parentContainer->getNiceName() : ""));
+                MemoryBlock stateInfo (fromBase64(stateInformation->stringValue()));
+#if JUCE_DEBUG
+                MemoryBlock currentInfo;
+                innerPlugin->getStateInformation(currentInfo);
+                jassert(currentInfo!=stateInfo);
+#endif
+
+                innerPlugin->setStateInformation (stateInfo.getData() ,(int) stateInfo.getSize());
+
+                inOutChanged |= oldNumInput!=innerPlugin->getTotalNumInputChannels();
+                inOutChanged |= oldNumOutput!=innerPlugin->getTotalNumOutputChannels();
+                int curPSize = innerPlugin->getParameters().size();
+                numParamChanged =  curPSize!=VSTParameters.size();
+
+            }
+            else{
+                LOGE("trying to load old vst state");
+                jassertfalse;
+            }
+
+
+        }
+
+
+        if (inOutChanged && parentNodeContainer)  parentNodeContainer->updateAudioGraph();
+        
+        if (numParamChanged)   initParametersFromProcessor (innerPlugin);
+        else updateParametersFromProcessor(innerPlugin);
+        
+        needParamReload = false;
+        suspendProcessing (false);
+
+
+    }
+}
+
+void VSTNode::getVSTState(){
+    if(innerPlugin ){
+        juce::MemoryBlock stateInfo;
+        innerPlugin->getStateInformation(stateInfo);
+        stateInfoPluginID = innerPlugin->getPluginDescription().createIdentifierString();
+#if JUCE_DEBUG
+        MemoryBlock currentInfo = fromBase64(stateInformation->stringValue());
+        if(stateInfo!=currentInfo){
+            int a = 0; a++;
+        }
+        else{
+            int a = 0; a++;
+//            jassertfalse;
+        }
+#endif
+
+        stateInformation->setValueFrom(this,toBase64(stateInfo),true );
+//        auto & vstP = innerPlugin->getParameters();
+//        int i = 0;
+//        for(auto &p : VSTParameters){
+//            auto v = vstP.getUnchecked(i);
+//            if(v->getValue()!=p->floatValue()){
+//                v->setValue(p->floatValue());
+//            }
+//            i++;
+//        }
+
+
+    }
+}
+
+ParameterBase * VSTNode::generateFromVST(const AudioProcessorParameter* param){
     String name = param->getName(maxVSTParamNameSize);
     String label = param->getLabel();
-
+    if(label.isEmpty())
+        label =  String("parameter : ")+name;
+    String uniqueName = getUniqueNameInContainer(name);
+    ParameterBase * p;
     if(param->isBoolean()){
-        return new BoolParameter (name, label, param->getValue ());
+
+        p = new BoolParameter (uniqueName, label, param->getValue ());
     }
     else if(param->isDiscrete()){
-        return new IntParameter (name,label, param->getValue (),0,param->getNumSteps());
+        p = new IntParameter (uniqueName,label, param->getValue (),0,param->getNumSteps());
     }
     else{
-        return new FloatParameter (name,label, param->getValue ());
+        p = new FloatParameter (uniqueName,label, param->getValue ());
+    }
+    if(name!=p->niceName){
+        DBG("renaming p : " + name + " >> " + p->niceName);
     }
 
+    p->isSavableAsObject = true;
+
+    return p;
 
 }
-void VSTNode::initParametersFromProcessor (AudioPluginInstance* p)
+
+ParameterBase * VSTNode::addParameterFromVar(const String & name,const var & data){
+    auto p = ParameterContainer::addParameterFromVar(name, data);
+    VSTParameters.add(p);
+    return p;
+}
+void VSTNode::initParametersFromProcessor (AudioPluginInstance* pi)
 {
 
     // will check if not already here
-    p->addListener (this);
+    pi->addListener (this);
     {
         ScopedLock lk (controllables.getLock());
 
@@ -210,12 +350,15 @@ void VSTNode::initParametersFromProcessor (AudioPluginInstance* p)
         }
 
         VSTParameters.clear();
-        VSTParameters.ensureStorageAllocated (p->getParameters().size());
+        if(pi){
+        VSTParameters.ensureStorageAllocated (pi->getParameters().size());
 
-        String name,label;
-        for (auto param : p->getParameters())
+//        String name,label;
+        for (const auto & param : pi->getParameters())
         {
             VSTParameters.add(ParameterContainer::addParameter(generateFromVST(param)));
+
+        }
         }
 
     }
@@ -224,41 +367,74 @@ void VSTNode::initParametersFromProcessor (AudioPluginInstance* p)
     vstNodeListeners.call (&VSTNodeListener::newVSTSelected);
 }
 
-void VSTNode::updateParametersFromProcessor (AudioPluginInstance* p)
+void VSTNode::updateParametersFromProcessor (AudioPluginInstance* pi)
 {
+    if(!innerPlugin){
+        jassert(VSTParameters.size()==0);
+        return;
+    }
     jassert(VSTParameters.size()==innerPlugin->getParameters().size());
+    bool hadOneChange = false;
+
+    ScopedLock lk (controllables.getLock());
     if(VSTParameters.size()==innerPlugin->getParameters().size()){
         int i = 0;
         int baseVSTPIdx = VSTParameters.size()?controllables.indexOf(VSTParameters.getUnchecked(0)):-1;
         for(auto *p:VSTParameters){
             bool res = false;
+            bool isCast = false;
             const auto * p2 = innerPlugin->getParameters().getUnchecked(i);
-            if(p2->getName(maxVSTParamNameSize)!=p->niceName){
+            const auto vstPname = p2->getName(maxVSTParamNameSize);
+            if(vstPname!=p->niceName && !p->niceName.startsWith(vstPname+" ")){
                 res = true;
             }
             else if(p2->isBoolean() && !dynamic_cast<BoolParameter*>(p)){
-                res  =true;
+                isCast = true;
             }
             else if(p2->isDiscrete() && !p2->isBoolean() && !dynamic_cast<IntParameter*>(p)){
-                res =  true;
+                isCast = true;
             }
-            if(res){
-                ScopedLock lk (controllables.getLock());
-                VSTParameters.set(i ,ParameterContainer::addParameter(generateFromVST(p2),baseVSTPIdx+i));
+            if(res || isCast){
+                float oldValue = p->floatValue();
+                removeControllable(p);
+                auto newP =generateFromVST(p2);
+                VSTParameters.set(i , ParameterContainer::addParameter(newP,baseVSTPIdx+i));
+                if(isCast)
+                    newP->setValue(oldValue);
+
+                hadOneChange = true;
             }
+
             i++;
         }
     }
+//    if(hadOneChange)loadVSTState();
     vstNodeListeners.call (&VSTNodeListener::newVSTSelected);
 }
 
+//
+//void VSTNode::updateParametersToProcessor(AudioPluginInstance* pi){
+//    jassert(VSTParameters.size()==innerPlugin->getParameters().size());
+//    ScopedLock lk (controllables.getLock());
+//    if(VSTParameters.size()==innerPlugin->getParameters().size()){
+//        int i = 0;
+//        for(auto *p:VSTParameters){
 
-/*
- String VSTNode::getPresetFilter()
- {
- return identifierString->stringValue();
- }
- */
+//            auto * p2 = innerPlugin->getParameters().getUnchecked(i);
+//            const auto p2Name = p2->getName(maxVSTParamNameSize);
+//            if(p2Name==p->niceName  || p->niceName.startsWith(p2Name+" ")){
+//                p2->setValue(p->floatValue());
+//            }
+//            else{
+//                jassertfalse;
+//            }
+//            i++;
+//        }
+//    }
+//
+//    }
+
+
 
 
 void VSTNode::generatePluginFromDescription (PluginDescription* desc)
@@ -305,6 +481,8 @@ void VSTNode::generatePluginFromDescription (PluginDescription* desc)
         messageCollector.reset (result.sampleRate);
 
 
+
+
     }
 
     else
@@ -324,11 +502,19 @@ void VSTNode::audioProcessorChanged (juce::AudioProcessor* p )
     if(p->getParameters().size()!=VSTParameters.size())
     {
         NLOG("VSTNode : " + innerPlugin->getName(), "rebuilding Parameters");
+        jassertfalse;
         initParametersFromProcessor (innerPlugin);
+        getVSTState();
+
     }
     else
     {
+        if(parameterHaveChanged()){
+        getVSTState();
+//        updateParametersToProcessor(innerPlugin);
         updateParametersFromProcessor(innerPlugin);
+        }
+
 //        const OwnedArray<juce::AudioProcessorParameter>& vstParams (innerPlugin->getParameters());
 //
 //        for (int i = 0 ; i < VSTParameters.size() ; i++)
@@ -340,6 +526,8 @@ void VSTNode::audioProcessorChanged (juce::AudioProcessor* p )
     }
 
 }
+
+
 void VSTNode::numChannelsChanged (bool /*isInput*/) {}
 
 inline void VSTNode::processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer& )
@@ -363,21 +551,32 @@ void VSTNode::audioProcessorParameterChanged (AudioProcessor* p,
         jassert (parameterIndex < VSTParameters.size());
         blockFeedback = true;
         const OwnedArray<AudioProcessorParameter>& innerPL ( innerPlugin->getParameters());
-        if (parameterIndex < VSTParameters.size() && parameterIndex<innerPL.size() &&
-            VSTParameters.getUnchecked (parameterIndex)->niceName == innerPL.getUnchecked (parameterIndex)->getName(maxVSTParamNameSize))
-        {
-            VSTParameters.getUnchecked (parameterIndex)->setValue (newValue);
-            blockFeedback = false;
+        if (parameterIndex < VSTParameters.size() && parameterIndex<innerPL.size()){
+
+            auto * localP = VSTParameters.getUnchecked (parameterIndex);
+            if(localP->niceName.startsWith(innerPL.getUnchecked (parameterIndex)->getName(maxVSTParamNameSize)))
+            {
+                localP->setValue (newValue);
+                blockFeedback = false;
+//                loadVSTState();
+            }
+            else
+            {
+                NLOGE("VSTNode", "oldParam update");
+                jassertfalse;
+            }
         }
-        else
-        {
-            NLOGE("VSTNode", "oldParam update");
+        else{
+            NLOGE("VSTNode","wrong param num update");
+            jassertfalse;
         }
     }
     else
     {
         NLOGE("VSTNode", "oldplugin update");
+        jassertfalse;
     }
+
 }
 
 bool VSTNode::parameterHaveChanged(){
@@ -385,7 +584,8 @@ bool VSTNode::parameterHaveChanged(){
         int i = 0;
         for(auto & p:VSTParameters){
             const auto & p2 = innerPlugin->getParameters().getUnchecked(i);
-            if(p2->getName(maxVSTParamNameSize)!=p->niceName){
+            auto p2Name  = p2->getName(maxVSTParamNameSize);
+            if(p2Name!=p->niceName && !p->niceName.startsWith(p2Name+" ")){
                 return true;
             }
             else if(p2->isBoolean() && !dynamic_cast<BoolParameter*>(p)){
@@ -416,78 +616,9 @@ void VSTNode::handleIncomingMidiMessage (MidiInput*,
     midiActivityTrigger->trigger();
 };
 
-void VSTNode::getStateInformation (MemoryBlock& destData)
-{
-    if (innerPlugin)
-    {
-        innerPlugin->getStateInformation (destData);
-    };
-}
-
-void VSTNode::setStateInformation (const void* data, int sizeInBytes)
-{
-
-    MemoryBlock  nb(data,sizeInBytes);
-    const ScopedLock lk(pluginStateMutex);
-    if ( nb!=stateInfo)
-
-    {
-        stateInfo.replaceWith (data,sizeInBytes);
-        triggerAsyncUpdate();
-
-    };
-};
-
-void VSTNode::loadPresetInternal (PresetManager::Preset* preset)
-{
-
-    presetToLoad = preset;
-
-    var v = presetToLoad->getPresetValue ("/rawData");
-    jassert (v.isUndefined() || v.isString());
-    MemoryBlock m;
-    m.fromBase64Encoding (v.toString());
-    setStateInformation (m.getData(), (int)m.getSize());
-
-};
-
-
-void VSTNode::savePresetInternal (PresetManager::Preset* preset)
-{
-
-    MemoryBlock m;
-    getStateInformation (m);
-    preset->addPresetValue ("/rawData", var (m.toBase64Encoding()));
-
-};
 
 void VSTNode::handleAsyncUpdate()
 {
-    bool inOutChanged = true;
-    bool numParamChanged = true;
-
-    if(innerPlugin && stateInfo.getSize() ){
-        inOutChanged = false;
-        const ScopedLock lk(pluginStateMutex);
-        int oldNumInput = innerPlugin->getTotalNumInputChannels();
-        int oldNumOutput = innerPlugin->getTotalNumOutputChannels();
-
-        DBG ("loading state for vst " + getNiceName() + (parentContainer ? "in : " + parentContainer->getNiceName() : ""));
-        innerPlugin->setStateInformation (stateInfo.getData() ,(int) stateInfo.getSize());
-
-        inOutChanged |= oldNumInput!=innerPlugin->getTotalNumInputChannels();
-        inOutChanged |= oldNumOutput!=innerPlugin->getTotalNumOutputChannels();
-        numParamChanged = innerPlugin->getParameters().size() !=VSTParameters.size();
-        stateInfo.reset();
-
-
-    }
-
-    if (inOutChanged && parentNodeContainer)  parentNodeContainer->updateAudioGraph();
-
-    if (numParamChanged && innerPlugin)   initParametersFromProcessor (innerPlugin);
-    else updateParametersFromProcessor(innerPlugin);
-    
-    needParamReload = false;
-    suspendProcessing (false);
 }
+
+
