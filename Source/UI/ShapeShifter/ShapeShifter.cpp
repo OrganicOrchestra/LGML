@@ -108,11 +108,26 @@ void ShapeShifter::mouseUp(const MouseEvent & me){
     }
 
 }
-class MiniTimer : public Timer{
+class MiniTimer : private MultiTimer{
 public:
     MiniTimer(ShapeShifter * _s):s(_s){
+        startTimer(1,200);
+    }
+    void requestEnd(){
+        stopTimer(1);
+        startTimer(2,300);
+    }
+    bool isRunning(){
+        return isTimerRunning(1) || isTimerRunning(2);
+    }
+
+    void stopTimers(){
+        stopTimer(1) ;
+        stopTimer(2);
+    }
+    void setMini(){
         for(auto o:s->parentShifterContainer->shifters){
-            if(o->miniTimer){
+            if(o->miniTimer && o->miniTimer!=this){
                 o->setMini(true,false);
                 o->miniTimer = nullptr;
             }
@@ -120,13 +135,22 @@ public:
         s->setMini(false,false);
         s->parentShifterContainer->resized();
     }
-    void requestEnd(){
-        startTimer(800);
-    }
-    void timerCallback() override{
-        stopTimer();
-        s->setMini(true);
-        s->miniTimer = nullptr;
+    void timerCallback(int id) override{
+        if(s.get()){
+            if(id==1){
+                setMini();
+                stopTimer(1);
+            }
+            if(id==2){
+                stopTimer(2);
+                s->setMini(true);
+                s->miniTimer = nullptr;
+            }
+        }
+        else{
+            stopTimer(1);
+            stopTimer(2);
+        }
     }
 
     WeakReference<ShapeShifter> s;
@@ -136,7 +160,7 @@ void ShapeShifter::setMini(bool s,bool resizeNow){
 //    DBG(String(s?"":"not")+" mini : "+ getName());
 
     if(miniTimer){
-        if(!s && !miniTimer->isTimerRunning()){miniTimer=nullptr;} // be sure to delete it if stopped
+        if(!s && !miniTimer->isRunning()){miniTimer=nullptr;} // be sure to delete it if stopped
     }
     isMini = s;
     ShapeShifterContainer * parent = parentShifterContainer;
@@ -162,7 +186,7 @@ void ShapeShifter::setMini(bool s,bool resizeNow){
 }
 
 void ShapeShifter::mouseEnter(const juce::MouseEvent &me){
-    if(miniTimer){miniTimer->stopTimer();}
+    if(miniTimer){miniTimer->stopTimers();}
     if(isMini){
 
         miniTimer = new MiniTimer(this);
