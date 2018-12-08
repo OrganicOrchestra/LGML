@@ -66,7 +66,7 @@ public:
     PresetManager();
     virtual ~PresetManager();
 
-    Preset* addPresetFromControllableContainer (const String& name, const String& filter, ParameterContainer* container, bool recursive = false, bool includeNotExposed = false);
+    Preset* addPresetFromControllableContainer (const String& name, const String& filter, ParameterContainer* container, bool recursive = false, bool includeNotExposed = true);
     Preset* getPreset (String filter, const String& name) const;
 
     void removePresetForIdx (int idx);

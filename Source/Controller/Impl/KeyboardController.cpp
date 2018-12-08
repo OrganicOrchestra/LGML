@@ -42,7 +42,7 @@ void KeyboardController::onContainerParameterChanged ( ParameterBase* p){
 
 String getPNameFromKey(const KeyPress & key){
     const char c = key.getTextCharacter();
-    return String( "key ")+(char)c;
+    return String("key ")+(char)c;
 }
 bool KeyboardController::keyPressed (const KeyPress& key, Component* /*originatingComponent*/)
 {
@@ -55,7 +55,7 @@ bool KeyboardController::keyPressed (const KeyPress& key, Component* /*originati
 
     if(logIncoming->boolValue()){LOG(juce::translate("keyPress : 123").replace("123" ,String(ch)));}
 
-    const String paramName=getPNameFromKey(key);
+    const String paramName =getPNameFromKey(key);
     if (Controllable* c = userContainer.getControllableByName(paramName))
     {
         (( ParameterBase*)c)->setValue(key.isCurrentlyDown());

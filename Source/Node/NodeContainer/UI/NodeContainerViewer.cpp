@@ -138,7 +138,7 @@ void NodeContainerViewer::addNodeUI (ConnectableNode* node)
 
         ConnectableNodeUI* nui =
         NodeUIFactory::createDefaultUI (node,
-                                        dynamic_cast<ConnectableNodeUIParams*>(uiParams->getControllableContainerByName(node->shortName)));
+                                        dynamic_cast<ConnectableNodeUIParams*>(uiParams->getControllableContainerByShortName(node->shortName)));
 
         if(nui){
             nodesUI.add (nui);
@@ -701,7 +701,7 @@ void NodeContainerViewer::addOrRemoveNodeUndoable(const String & tid,const Point
 
     var  savedUiParamsObject;
     if(originNodeToRemove  && isRemove){
-        auto * savedUiParamsInstance = dynamic_cast<ConnectableNodeUIParams*>(uiParams->getControllableContainerByName(originNodeToRemove->shortName));
+        auto * savedUiParamsInstance = dynamic_cast<ConnectableNodeUIParams*>(uiParams->getControllableContainerByShortName(originNodeToRemove->shortName));
         if(savedUiParamsInstance){
             savedUiParamsObject = var(savedUiParamsInstance->createObject());
         }
@@ -719,7 +719,7 @@ void NodeContainerViewer::addOrRemoveNodeUndoable(const String & tid,const Point
                                          if(auto m = getUIForNode(n)){
                                              if(originNodeToRemove){
                                                  if(auto * sO = savedUiParamsObject.getDynamicObject()){
-                                                     auto nodeUIParams = dynamic_cast<ParameterContainer*>(uiParams->getControllableContainerByName(n->shortName));
+                                                     auto nodeUIParams = dynamic_cast<ParameterContainer*>(uiParams->getControllableContainerByShortName(n->shortName));
                                                      nodeUIParams->configureFromObject(sO);
                                                  }
                                              }

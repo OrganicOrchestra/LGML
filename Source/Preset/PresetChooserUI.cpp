@@ -40,7 +40,7 @@ PresetChooserUI::PresetChooserUI (ParameterContainer* _container) :
     ComboBox::addListener (this);
     container->addControllableContainerListener (this);
     setTextWhenNothingSelected ("Preset");
-    setTooltip (juce::translate("Set the current preset at")+" :\n" + container->currentPresetName->getControlAddress() + " <presetName>");
+    setTooltip (juce::translate("Set the current preset at")+" :\n" + container->currentPresetName->getControlAddress().toString() + " <presetName>");
 }
 
 PresetChooserUI::~PresetChooserUI()

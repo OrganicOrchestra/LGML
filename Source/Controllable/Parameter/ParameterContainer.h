@@ -89,7 +89,7 @@ public:
     void cleanUpPresets();
 
     virtual String getPresetFilter();
-    virtual var getPresetValueFor ( ParameterBase* p);//Any parameter that is part of a this preset can use this function
+    
 
 
     void setUserDefined (bool v) override;

@@ -37,14 +37,10 @@ ParameterContainer * ParameterContainerSync::getSlaveRelatedContainer(ParameterC
     if(c==root){
         return slave;
     }
- StringArray arr (c->getControlAddressArray(root));
-    ParameterContainer * inner = dynamic_cast<ParameterContainer*>(slave->getControllableContainerForAddress(arr));;
-    if( tryLastName && !inner &&  arr.size()){
-        StringArray lastArr (arr);
-        lastArr.getReference(arr.size()-1) = Controllable::toShortName(c->nameParam->lastValue.toString());
-        if(auto lastIn =  dynamic_cast<ParameterContainer*>(slave->getControllableContainerForAddress(lastArr))){
-            inner = lastIn;
-        }
+    ParameterContainer * inner = dynamic_cast<ParameterContainer*>(slave->getMirroredContainer(c,root));
+    if( tryLastName && !inner){
+
+        jassertfalse;
     }
     
 
@@ -52,10 +48,7 @@ ParameterContainer * ParameterContainerSync::getSlaveRelatedContainer(ParameterC
 }
 
 ParameterContainer * ParameterContainerSync::getRootRelatedContainer(ParameterContainer *c){
-    const StringArray arr (c->getControlAddressArray(slave));
-    auto inner = dynamic_cast<ParameterContainer*>(root->getControllableContainerForAddress(arr));
-
-    return inner;
+    return dynamic_cast<ParameterContainer*>(root->getMirroredContainer(c,slave));;
 }
 
 void ParameterContainerSync::clear () {
@@ -83,9 +76,9 @@ void ParameterContainerSync::checkContExists(ParameterContainer * fromRoot){
         if(!testTarget){
             return;
         }
-        auto arr =fromRoot->getControlAddressArray(root);
+        auto arr =fromRoot->getControlAddressRelative(root);
 
-        StringArray added;
+        ControlAddressType added;
         ParameterContainer * parent = slave;
         // create object path if not exists
         for(auto& a:arr){

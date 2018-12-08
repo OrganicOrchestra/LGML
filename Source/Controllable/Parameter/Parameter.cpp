@@ -109,7 +109,7 @@ bool ParameterBase::waitOrDeffer (const var& _value, bool silentSet, bool force 
 
             if (_isSettingValue.get() && overflow <= 0)
             {
-                LOGE("param " << controlAddress << " locked for : " << Time::currentTimeMillis() - startWait);
+                LOGE("param " << controlAddress.toString() << " locked for : " << Time::currentTimeMillis() - startWait);
             }
         }
 

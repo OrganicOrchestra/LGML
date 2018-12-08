@@ -258,8 +258,8 @@ DynamicObject* NodeConnection::createObject()
 
     if (auto s = dynamic_cast<ContainerInNode*> (destNode.get())) tDest = (s)->getParentNodeContainer();
 
-    data->setProperty ("srcNode", tSource->shortName);
-    data->setProperty ("dstNode", tDest->shortName);
+    data->setProperty ("srcNode", tSource->shortName.toString());
+    data->setProperty ("dstNode", tDest->shortName.toString());
     data->setProperty ("connectionType", (int)connectionType);
 
     var links;

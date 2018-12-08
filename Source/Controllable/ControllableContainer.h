@@ -39,7 +39,7 @@ public:
 
 
     // variables
-    String shortName;
+    ShortNameType shortName;
     bool isUserDefined;
     
     
@@ -62,8 +62,9 @@ public:
     void addControllable(Controllable *c);
     void removeControllable (Controllable* c);
 
-    Controllable* getControllableByName (const String& name, bool searchNiceName=false);
-
+    Controllable* getControllableByName (const String& name);
+    Controllable* getControllableByShortName(const ShortNameType & n);
+    Controllable* getControllableByShortName(const String & n);
     ControllableContainer* addChildControllableContainer (ControllableContainer* container, bool notify = true);
     ControllableContainer* getRoot(bool getGlobal);
     void removeChildControllableContainer (ControllableContainer* container);
@@ -141,10 +142,12 @@ public:
     }
 
 
-    bool containsContainer (ControllableContainer* );
+    bool containsContainer (ControllableContainer* )const;
 
-    ControllableContainer* getControllableContainerByName (const String& name, bool searchNiceName = false);
-    ControllableContainer* getControllableContainerForAddress ( StringArray  address);
+    ControllableContainer* getControllableContainerByName (const String& name) const;
+    ControllableContainer* getControllableContainerByShortName (const String & name) const;
+    ControllableContainer* getControllableContainerByShortName (const ShortNameType & name) const;
+    
 
     void setParentContainer (ControllableContainer* container);
     void updateChildrenControlAddress();
@@ -153,13 +156,16 @@ public:
     virtual Array<WeakReference<Controllable>> getAllControllables (bool recursive = false, bool getNotExposed = false);
     virtual Array<WeakReference<ControllableContainer>> getAllControllableContainers (bool recursive = false);
 
-     Controllable* getControllableForAddress (String addressSplit, bool recursive = true, bool getNotExposed = false);
-     Controllable* getControllableForAddress (StringArray addressSplit, bool recursive = true, bool getNotExposed = false);
-    Array<Controllable*> getControllablesForExtendedAddress (StringArray addressSplit, bool recursive=true, bool getNotExposed=false);
+     Controllable* getControllableForAddress (String addressSplit, bool getNotExposed = false) const;
+     Controllable* getControllableForAddress (ControlAddressType & a, bool getNotExposed = false)const;
+    ControllableContainer* getControllableContainerForAddress (ControlAddressType & a, bool getNotExposed = false)const;
+    Array<Controllable*> getControllablesForExtendedAddress (StringArray addressSplit, bool recursive=true, bool getNotExposed=false)const;
     ControllableContainer * getMirroredContainer(ControllableContainer * other,ControllableContainer * root = nullptr);
-    bool containsControllable (const Controllable* c, int maxSearchLevels = -1);
-    String getControlAddress (const ControllableContainer* relativeTo = nullptr) const;
-    StringArray getControlAddressArray (const ControllableContainer* relativeTo = nullptr) const;
+    bool containsControllable (const Controllable* c, int maxSearchLevels = -1)const;
+    ControlAddressType getControlAddressRelative (const ControllableContainer* relativeTo ) const;
+    const ControlAddressType & getControlAddress() const;
+    ControlAddressType controlAddress;
+    
 
 
     String getUniqueNameInContainer (const String& sourceName, int suffix = 0, void* me = nullptr); // relates to nice names for efficiency

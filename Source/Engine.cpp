@@ -414,7 +414,7 @@ String Engine::MultipleAudioSettingsHandler::getConfigName()
     AudioDeviceManager::AudioDeviceSetup setup ;
     getAudioDeviceManager().getAudioDeviceSetup (setup);
     String idealName = setup.inputDeviceName + "_" + setup.outputDeviceName;
-    String escaped = Controllable::toShortName (idealName);
+    String escaped = Controllable::toShortName (idealName).toString();
     return escaped;
 
 
@@ -584,7 +584,7 @@ template<>
 void Engine::EngineStats::GlobalListener::controllableFeedbackUpdate(ControllableContainer * notif,Controllable * c ){
     if(c&& c->parentContainer!=owner){
         const int  t = getEngine()->getElapsedMillis();
-        owner->modCounts.getReference(c->controlAddress).add(t);
+        owner->modCounts.getReference(c->controlAddress.toString()).add(t);
     }
 }
 

@@ -256,7 +256,7 @@ void ParameterContainer::configureFromObject (DynamicObject* dyn)
                             if ( ParameterBase* par = ParameterBase::fromControllable (c))
                             {
                                 // we don't load preset when already loading a state
-                                if (par->shortName != presetIdentifier.toString() )
+                                if (par->shortName != presetIdentifier )
                                 {
                                     if(par->isSavableAsObject){
                                         if(auto d = p.value.getDynamicObject()){
@@ -406,7 +406,7 @@ bool ParameterContainer::loadPreset (PresetManager::Preset* preset)
     for (auto& pv : preset->presetValues)
     {
 
-        ParameterBase* p = dynamic_cast <ParameterBase*> (getControllableForAddress (pv->paramControlAddress,true,true));
+        ParameterBase* p = dynamic_cast <ParameterBase*> (getControllableForAddress (pv->paramControlAddress,true));
 
         //DBG("Load preset, param set container : " << niceName << ", niceName : " << p->niceName << ",pv controlAddress : " << p->controlAddress << "" << pv->presetValue.toString());
         if (p != nullptr && p != currentPresetName) p->setValue (pv->presetValue);
@@ -469,12 +469,7 @@ bool ParameterContainer::resetFromPreset()
     return true;
 }
 
-var ParameterContainer::getPresetValueFor ( ParameterBase* p)
-{
-    if (currentPreset == nullptr) return var();
-    
-    return currentPreset->getPresetValue (p->getControlAddress (this));
-}
+
 
 
 void ParameterContainer::cleanUpPresets()
@@ -487,7 +482,7 @@ void ParameterContainer::cleanUpPresets()
 
 String ParameterContainer::getPresetFilter()
 {
-    return shortName;
+    return shortName.toString();
 }
 
 

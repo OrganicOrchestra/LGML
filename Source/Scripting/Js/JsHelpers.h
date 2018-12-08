@@ -196,6 +196,13 @@ inline String getJsFunctionNameFromAddress (const String& n)
 
 }
 
+inline String getJsFunctionNameFromControlAddress (const ControlAddressType& n)
+{
+    StringArray arr=n.toStringArray();
+    return    arr.joinIntoString ("_");
+
+}
+
 inline StringArray splitFunctionName (const Identifier& i)
 {
     StringArray res;

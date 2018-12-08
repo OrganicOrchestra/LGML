@@ -521,9 +521,9 @@ Result JsEnvironment::checkUserControllableEventFunction()
         {
             for (auto& candidate : candidates)
             {
-                if ((candidate->shortName == f->splitedName[1]))
+                if ((candidate->shortName.toString() == f->splitedName[1]))
                 {
-                    StringArray localName;
+                    ControlAddressType localName;
 
                     // remove on and candidate Name
                     for (int i = 2; i < f->splitedName.size(); i++)
@@ -607,7 +607,7 @@ void JsEnvironment::parameterValueChanged ( ParameterBase* p, ParameterBase::Lis
         // ensure short name is updated...
         // not sure it's needed though
         linkedContainer->setNiceName (linkedContainer->nameParam->stringValue());
-        auto ns = linkedContainer->getControlAddressArray();
+        auto ns = linkedContainer->getControlAddress().toStringArray();
         if(ns.size()>=2){
 
             String namespaceName = ns.joinIntoString(".");
@@ -643,21 +643,16 @@ void JsEnvironment::controllableFeedbackUpdate (ControllableContainer* originCon
     if ( ParameterBase* p = dynamic_cast <ParameterBase*> (c))
         v = p->value;
 
-    String address = c->getControlAddress (originContainer);
-    StringArray sArr;
-    sArr.addTokens (address, "/", "");
-    jassert (sArr.size() > 0);
-    sArr.remove (0);
+    auto sArr = c->getControlAddress (originContainer);
     Array<var> add;
-
-    for (auto& s : sArr) { add.add (s); }
+    for (auto& s : sArr) { add.add (s.toString()); }
 
     Array<var> argList = { var (add), v };
 
 #if NON_BLOCKING
     auto f=[this,originContainer,argList](){
 #endif
-        callFunction ("on_" + JsHelpers::getJsFunctionNameFromAddress (originContainer->getControlAddress()), argList, false);
+        callFunction ("on_" + JsHelpers::getJsFunctionNameFromControlAddress (originContainer->getControlAddress()), argList, false);
 #if NON_BLOCKING
     };
 

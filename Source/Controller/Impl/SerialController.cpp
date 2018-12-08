@@ -281,7 +281,7 @@ void SerialController::checkAndAddParameterIfNeeded (const StringArray& split)
 
         for ( int i = 0 ; i < sa.size() - 1 ; i++)
         {
-            auto* c = dynamic_cast<ParameterContainer*> (tC->getControllableContainerByName (sa[i], true));
+            auto* c = dynamic_cast<ParameterContainer*> (tC->getControllableContainerByName (sa[i]));
 
             if (!c)
             {

@@ -857,15 +857,15 @@ void LooperTrack::setTrackState (TrackState newState)
 
         hadOnset = false;
         // TODO : clarify behaviour , maybe insert a reset function instead
-        if (parentLooper->currentPreset != nullptr)
+//        if (parentLooper->currentPreset != nullptr)
         {
-            volume->setValue (parentLooper->getPresetValueFor (volume));
-            mute->setValue (parentLooper->getPresetValueFor (mute));
-            solo->setValue (parentLooper->getPresetValueFor (solo));
-            sampleChoice->setValue (parentLooper->getPresetValueFor (sampleChoice));
-        }
-        else
-        {
+//            volume->setValue (parentLooper->getPresetValueFor (volume));
+//            mute->setValue (parentLooper->getPresetValueFor (mute));
+//            solo->setValue (parentLooper->getPresetValueFor (solo));
+//            sampleChoice->setValue (parentLooper->getPresetValueFor (sampleChoice));
+//        }
+//        else
+//        {
             volume->resetValue();
             mute->resetValue();
             solo->resetValue();

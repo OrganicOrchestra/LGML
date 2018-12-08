@@ -20,7 +20,107 @@
 #include "ControllableContainer.h"
 #include "../Scripting/Js/JsHelpers.h"
 
+String ControlAddressType::toString()const {
+    if(size()==0){return "/none";}
+    String res;
+    for(auto & i:*this){
+        res+="/";
+        res+=i.toString();
+    }
+    return res;
+}
 
+ControlAddressType ControlAddressType::buildFromControllable(const Controllable * c,const ControllableContainer * maxParent){
+    ControlAddressType res;
+    static Identifier noParentId("noParent");
+    res.add(c->shortName);
+    ControllableContainer * insp = c->parentContainer;
+    if(!insp){
+        res.add(noParentId);
+    }
+    else{
+        while(insp!=maxParent){
+            res.add(insp->shortName);
+            insp = insp->parentContainer;
+        }
+    }
+    std::reverse(res.begin(), res.end());
+    return res;
+}
+
+ControlAddressType ControlAddressType::buildFromControllableContainer(const ControllableContainer * c,const ControllableContainer * maxParent){
+    ControlAddressType res;
+    ControllableContainer * insp = c->parentContainer;
+    if(!insp){
+        return res;
+    }
+    else{
+        res.add(c->shortName);
+        while(insp!=maxParent){
+            res.add(insp->shortName);
+            insp = insp->parentContainer;
+        }
+    }
+    std::reverse(res.begin(), res.end());
+    return res;
+}
+
+ControllableContainer * ControlAddressType::resolveContainerFromContainer(const ControllableContainer *  c)const{
+
+    if(size()==0){
+        jassertfalse;
+        return nullptr;
+    }
+    ControllableContainer * insp = c->getControllableContainerByShortName(this->getUnchecked(0));;
+    int idx = 1;
+    while(insp!=nullptr && idx<size()){
+        insp = insp->getControllableContainerByShortName(this->getUnchecked(idx));
+        idx++;
+    }
+    return insp;
+}
+
+Controllable * ControlAddressType::resolveControllableFromContainer(const ControllableContainer *  c)const{
+    
+    if(size()==0){
+        jassertfalse;
+        return nullptr;
+    }
+    auto parentAddress = *this;
+    parentAddress.resize(size()-1);
+    ControllableContainer  * insp =parentAddress.resolveContainerFromContainer(c);
+    return insp->getControllableByShortName(this->getUnchecked(size()-1));
+
+}
+
+ControlAddressType ControlAddressType::getRelativeTo(ControlAddressType & other)const{
+    int comonIdx = 0;
+    while(comonIdx<size() && comonIdx<other.size() && getUnchecked(comonIdx)==other.getUnchecked(comonIdx)){
+        comonIdx++;
+    }
+    return subAddr(comonIdx);
+}
+
+ControlAddressType ControlAddressType::subAddr(int start, int end)const{
+    if(end == -1) end=size();
+    jassert(start<size());
+    ControlAddressType res;
+    for(int i = start ; i < end ; i++){
+        res.add(getUnchecked(i));
+    }
+    return res;
+}
+
+StringArray ControlAddressType::toStringArray()const{
+    StringArray sa;
+    for(auto & s:*this){
+        sa.add(s.toString());
+    }
+    return sa;
+}
+
+////////////////////
+//
 
 Controllable::Controllable ( const String& niceName, const String& description, bool enabled) :
     description (description),
@@ -87,14 +187,17 @@ void Controllable::setParentContainer (ControllableContainer* container)
 
 void Controllable::updateControlAddress()
 {
-    controlAddress = getControlAddress();
+    controlAddress = ControlAddressType::buildFromControllable(this);
     listeners.call (&Listener::controllableControlAddressChanged, this);
 }
 
 
-String Controllable::getControlAddress (const ControllableContainer* relativeTo) const
+const ControlAddressType & Controllable::getControlAddress (const ControllableContainer* relativeTo) const
 {
-    return (parentContainer.get()?parentContainer->getControlAddress (relativeTo):"/noParent") + "/" + shortName;
+#if JUCE_DEBUG
+    jassert(controlAddress==ControlAddressType::buildFromControllable(this,relativeTo));
+#endif
+    return controlAddress;
 }
 
 

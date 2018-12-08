@@ -48,13 +48,13 @@ PresetManager::Preset* PresetManager::addPresetFromControllableContainer (const 
 
     for (auto& p : container->getAllParameters (recursive, includeNotExposed))
     {
-        if (!p->isPresettable || !p->isEditable) continue;
+        if (!p->isPresettable ) continue;
 
         if (p == ( ParameterBase*)container->currentPresetName) { continue; }
 
         if (!p->isControllableExposed && !includeNotExposed) continue;
 
-        pre->addPresetValue (p->getControlAddress (container), var (p->value));
+        pre->addPresetValue (p->getControlAddress (container).toString(), var (p->value));
     }
 
     if (!recursive)
@@ -63,7 +63,7 @@ PresetManager::Preset* PresetManager::addPresetFromControllableContainer (const 
         {
             if (cc->currentPresetName->stringValue().isNotEmpty())
             {
-                pre->addPresetValue (cc->currentPresetName->getControlAddress (container), cc->currentPresetName->value);
+                pre->addPresetValue (cc->currentPresetName->getControlAddress (container).toString(), cc->currentPresetName->value);
             }
         }
     }

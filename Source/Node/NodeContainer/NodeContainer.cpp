@@ -256,17 +256,6 @@ bool NodeContainer::removeNode (ConnectableNode* n,bool doDelete)
     return true;
 }
 
-ConnectableNode* NodeContainer::getNodeForName (const String& _name)
-{
-    const String name = _name.toLowerCase();
-    for (auto& n : nodes)
-    {
-        if (n->shortName == name) return n;
-    }
-
-    return nullptr;
-}
-
 void NodeContainer::updateAudioGraph (bool force)
 {
 
@@ -381,8 +370,8 @@ void NodeContainer::setConnectionFromObject(const Array<var> & connectionsData){
         for (var& cData : connectionsData)
         {
 
-            ConnectableNode* srcNode = (ConnectableNode*) (getNodeForName (cData.getDynamicObject()->getProperty ("srcNode").toString())) ;
-            ConnectableNode* dstNode = (ConnectableNode*) (getNodeForName (cData.getDynamicObject()->getProperty ("dstNode").toString()));
+            ConnectableNode* srcNode = (ConnectableNode*) (getControllableContainerByShortName(cData.getDynamicObject()->getProperty ("srcNode").toString())) ;
+            ConnectableNode* dstNode = (ConnectableNode*) (getControllableContainerByShortName (cData.getDynamicObject()->getProperty ("dstNode").toString()));
 
             int cType = cData.getProperty ("connectionType", var());
 

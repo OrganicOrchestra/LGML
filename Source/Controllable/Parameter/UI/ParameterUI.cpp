@@ -117,7 +117,7 @@ void ParameterUI::mouseDown (const MouseEvent& e)
                 break;
 
             case 2:
-                SystemClipboard::copyTextToClipboard (parameter->controlAddress);
+                SystemClipboard::copyTextToClipboard (parameter->controlAddress.toString());
                 break;
 
             case 3:
@@ -177,7 +177,7 @@ void ParameterUI::controllableControlAddressChanged (Controllable*)
 
 String ParameterUI::getTooltip(){
     if(parameter.get())
-        return juce::translate(parameter->description) + "\n"+juce::translate("Control Address")+" : " + parameter->controlAddress;//"\nValue : "+parameter->value.toString();
+        return juce::translate(parameter->description) + "\n"+juce::translate("Control Address")+" : " + parameter->controlAddress.toString();//"\nValue : "+parameter->value.toString();
     return "parameter is now deleted";
 }
 

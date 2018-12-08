@@ -365,7 +365,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                             NodeContainerViewer *  ncv = dynamic_cast<NodeContainerViewer*>(relatedComponent);
                             if(!ncv)ncv=relatedComponent->findParentComponentOfClass<NodeContainerViewer>();
                             if(ncv && ncv->uiParams){
-                                auto nodeUIParams = ncv->uiParams->getControllableContainerByName(cc->shortName);
+                                auto nodeUIParams = ncv->uiParams->getControllableContainerByShortName(cc->shortName);
                                 data.getDynamicObject()->setProperty ("uiData",nodeUIParams->createObject());
 
                             }
@@ -470,16 +470,16 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                                     {
                                         n->uid = Uuid();// ensure to have different uuid than the one from JSON
 
-                                        String oldName = n->shortName;
+                                        String oldName = n->shortName.toString();
                                         ncv->addNodeUndoable(n, Point<int>());
-                                        String newName =n->shortName;
+                                        String newName =n->shortName.toString();
                                         newNames.set(oldName,newName);
                                         auto nodeUI = ncv->getUIForNode(n);
                                         if(nodeUI){
 
 
                                             if(auto o = d->getProperty ("uiData").getDynamicObject()){
-                                                auto nodeUIParams = dynamic_cast<ParameterContainer*>(ncv->uiParams->getControllableContainerByName(n->shortName));
+                                                auto nodeUIParams = dynamic_cast<ParameterContainer*>(ncv->uiParams->getControllableContainerByShortName(n->shortName));
                                                 nodeUIParams->configureFromObject(o);
                                             }
                                             nodeUI->uid=Uuid();

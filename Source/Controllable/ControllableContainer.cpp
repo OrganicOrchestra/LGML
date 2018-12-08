@@ -165,30 +165,31 @@ void ControllableContainer::setAutoShortName()
 
 
 
-Controllable* ControllableContainer::getControllableByName (const String& _name,  bool searchNiceName)
+Controllable* ControllableContainer::getControllableByName (const String& _name)
 {
-
-
     ScopedLock lk (controllables.getLock());
-
-    if( searchNiceName){
-        for (auto * c : controllables)
-        {
-            if(c->niceName == _name) {return c;}
-        }
-
+    for (auto * c : controllables)
+    {
+        if(c->niceName == _name) {return c;}
     }
-    else{
-        const String name = Controllable::toShortName(_name);
 
-        for (auto * c : controllables)
-        {
-            if (c->shortName.compareIgnoreCase(name)==0) return c;
-        }
+
+    return nullptr;
+}
+
+Controllable* ControllableContainer::getControllableByShortName(const ShortNameType & n){
+    ScopedLock lk (controllables.getLock());
+    for (auto * c : controllables)
+    {
+        if (c->shortName==n) return c;
     }
     return nullptr;
 }
 
+Controllable* ControllableContainer::getControllableByShortName(const String & _name){
+    const ShortNameType sname = Controllable::toShortName(_name);
+    return getControllableByShortName(sname);
+}
 
 ControllableContainer* ControllableContainer::addChildControllableContainer (ControllableContainer* container, bool notify)
 {
@@ -281,113 +282,69 @@ bool ControllableContainer::isIndexedContainer() {return localIndexedPosition >=
 
 void ControllableContainer::localIndexChanged() {};
 
-ControllableContainer* ControllableContainer::getControllableContainerByName (const String& _name, bool searchNiceName)
+ControllableContainer* ControllableContainer::getControllableContainerByName (const String& _name) const
 {
 
     ScopedLock lk (controllableContainers.getLock());
-    if( searchNiceName){
-        for (auto & c : controllableContainers)
-        {
-            if(c->getNiceName() == _name) {return c;}
-        }
 
-    }
-    else{
-        const String name = Controllable::toShortName(_name);
-
-        for (auto& cc : controllableContainers)
-        {
-            if (cc.get() && (cc->shortName.compareIgnoreCase(name)==0) ) return cc;
-        }
-
+    for (auto & c : controllableContainers)
+    {
+        if(c->getNiceName() == _name) {return c;}
     }
     return nullptr;
 
 }
 
+
+ControllableContainer* ControllableContainer::getControllableContainerByShortName (const String & _name) const{
+const auto name = Controllable::toShortName(_name);
+    return getControllableContainerByShortName(name);
+}
+ControllableContainer* ControllableContainer::getControllableContainerByShortName (const ShortNameType & name) const{
+    ScopedLock lk (controllableContainers.getLock());
+    for (auto& cc : controllableContainers)
+    {
+        if (cc.get() && (cc->shortName==name )) return cc;
+    }
+    return nullptr;
+}
 
 ControllableContainer * ControllableContainer::getMirroredContainer(ControllableContainer * other,ControllableContainer * root ){
-
-    StringArray arr = other->getControlAddressArray(root);
-    if(arr.size()==0){
-        return this;
+    if(other==root){return this;}
+    ControlAddressType relAddr = other->controlAddress.getRelativeTo(root->controlAddress);
+    if(relAddr.size()==0){
+        jassertfalse;
+        return nullptr;
     }
-    return getControllableContainerForAddress(arr);
+    return relAddr.resolveContainerFromContainer(this);
 
 }
 
-ControllableContainer* ControllableContainer::getControllableContainerForAddress (StringArray   addressSplit)
+
+
+ControlAddressType  ControllableContainer::getControlAddressRelative (const ControllableContainer* relativeTo) const
 {
-
-    if (addressSplit.size() == 0) jassertfalse; // SHOULD NEVER BE THERE !
-
-    bool isTarget = addressSplit.size() == 1;
-
-    if (isTarget)
-    {
-
-        if (ControllableContainer* res = getControllableContainerByName (addressSplit[0]))
-            return res;
-
-    }
-    else
-    {
-        ScopedLock lk (controllableContainers.getLock());
-
-        for (auto& cc : controllableContainers)
-        {
-            bool validName = cc->shortName.compareIgnoreCase(addressSplit[0])==0;
-
-
-            if( validName){
-                addressSplit.remove (0);
-                return cc->getControllableContainerForAddress (addressSplit);
-            }
-            else
-            {
-                ControllableContainer* tc = cc->getControllableContainerByName (addressSplit[0]);
-
-                if (tc != nullptr)
-                {
-                    addressSplit.remove (0);
-                    return tc->getControllableContainerForAddress (addressSplit);
-                }
-
-            }
-        }
-    }
-
-    return nullptr;
-
+    return ControlAddressType::buildFromControllableContainer(this,relativeTo);
 }
 
-
-String ControllableContainer::getControlAddress (const ControllableContainer* relativeTo) const
+const ControlAddressType & ControllableContainer::getControlAddress () const
 {
-    StringArray addressArray(getControlAddressArray(relativeTo));
-    if (addressArray.size() == 0)return "";
-    else return "/" + addressArray.joinIntoString ("/");
+#if JUCE_DEBUG
+
+
+    auto curAddr = ControlAddressType::buildFromControllableContainer(this);
+    jassert(controlAddress==curAddr);
+
+#endif
+    return controlAddress;
 }
 
-StringArray ControllableContainer::getControlAddressArray (const ControllableContainer* relativeTo) const{
-    StringArray addressArray;
-    const ControllableContainer* pc = this;
 
-    while (pc != relativeTo && pc->parentContainer != nullptr)
-    {
-        addressArray.insert (0, pc->shortName);
-
-        pc = pc->parentContainer;
-    }
-    if(relativeTo){
-        jassert(pc == relativeTo);
-    }
-    return addressArray;
-}
 
 void ControllableContainer::setParentContainer (ControllableContainer* container)
 {
     this->parentContainer = container;
+    controlAddress = ControlAddressType::buildFromControllableContainer(this);
     if(container!=nullptr)updateChildrenControlAddress();
 
 }
@@ -457,7 +414,7 @@ Array<WeakReference<ControllableContainer > > ControllableContainer::getAllContr
 
 
 
-Controllable* ControllableContainer::getControllableForAddress (String address, bool recursive, bool getNotExposed)
+Controllable* ControllableContainer::getControllableForAddress (String address, bool getNotExposed)const
 {
     StringArray addrArray;
     addrArray.addTokens (address.toLowerCase(), juce::StringRef ("/"), juce::StringRef ("\""));
@@ -466,57 +423,27 @@ Controllable* ControllableContainer::getControllableForAddress (String address, 
     if(addrArray.size() && addrArray.getReference(0).isEmpty())
         addrArray.remove (0);
 
-    return getControllableForAddress (addrArray, recursive, getNotExposed);
+    ControlAddressType addr;
+    for(auto & s:addrArray){
+        addr.add(s);
+    }
+
+    return getControllableForAddress (addr, getNotExposed);
 }
 
 
-Controllable* ControllableContainer::getControllableForAddress (StringArray addressSplit, bool recursive, bool getNotExposed)
+Controllable* ControllableContainer::getControllableForAddress (ControlAddressType & addressSplit, bool getNotExposed)const
 {
     if (addressSplit.size() == 0) jassertfalse; // SHOULD NEVER BE THERE !
-
-    bool isTargetAControllable = addressSplit.size() == 1;
-
-    if (isTargetAControllable)
-    {
-
-        //DBG("Check controllable Address : " + shortName);
-        const ScopedLock lk (controllables.getLock());
-
-        for (const auto& c : controllables)
-        {
-            if (c->shortName.compareIgnoreCase( addressSplit[0])==0)
-            {
-                //DBG(c->shortName);
-                if (c->isControllableExposed || getNotExposed) return c;
-                else return nullptr;
-            }
-        }
-    }
-
-    else
-    {
-        ScopedLock lk (controllableContainers.getLock());
-
-        for (auto& cc : controllableContainers)
-        {
-            if (cc.get())
-            {
-
-                if (cc->shortName.compareIgnoreCase(addressSplit[0])==0)
-                {
-                    addressSplit.remove (0);
-                    return cc->getControllableForAddress (addressSplit, recursive, getNotExposed);
-                }
-
-
-            }
-        }
-    }
-
-    return nullptr;
+    return addressSplit.resolveControllableFromContainer(this);
 }
 
-Array<Controllable*> ControllableContainer::getControllablesForExtendedAddress (StringArray addressSplit, bool recursive, bool getNotExposed)
+ControllableContainer* ControllableContainer::getControllableContainerForAddress (ControlAddressType & a, bool getNotExposed )const{
+    if (a.size() == 0) jassertfalse; // SHOULD NEVER BE THERE !
+    return a.resolveContainerFromContainer(this);
+}
+
+Array<Controllable*> ControllableContainer::getControllablesForExtendedAddress (StringArray addressSplit, bool recursive, bool getNotExposed)const
 {
     if (addressSplit.size() == 0) jassertfalse; // SHOULD NEVER BE THERE !
     Array<Controllable *> res;
@@ -574,7 +501,7 @@ Array<Controllable*> ControllableContainer::getControllablesForExtendedAddress (
 }
 
 
-bool ControllableContainer::containsControllable (const Controllable* c, int maxSearchLevels)
+bool ControllableContainer::containsControllable (const Controllable* c, int maxSearchLevels)const
 {
     if (c == nullptr) return false;
 
@@ -634,14 +561,14 @@ String ControllableContainer::getUniqueNameInContainer (const String& sourceName
         }
     }
 
-    void* elem = getControllableByName (resultName, true);
+    void* elem = getControllableByName (resultName);
 
     if ( elem != nullptr && elem != me)
     {
         return getUniqueNameInContainer (sourceName, suffix + 1, me);
     }
     
-    elem = getControllableContainerByName (resultName, true) ;
+    elem = getControllableContainerByName (resultName) ;
     
     if (elem != nullptr && elem != me)
     {
@@ -653,7 +580,7 @@ String ControllableContainer::getUniqueNameInContainer (const String& sourceName
 
 
 
-bool ControllableContainer::containsContainer (ControllableContainer* c)
+bool ControllableContainer::containsContainer (ControllableContainer* c) const
 {
     if (c == this)return true;
     

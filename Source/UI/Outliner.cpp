@@ -432,8 +432,8 @@ void OutlinerItem::childControllableRemoved (ControllableContainer* notif, Contr
 String OutlinerItem::getUniqueName() const
 {
     // avoid empty names
-    if (isContainer) {return "/it/" + (container.get()?container.get()->getControlAddress():"old");}
-    else            {return "/it/" + (parameter.get()?parameter.get()->getControlAddress():"old");}
+    if (isContainer) {return "/it" + (container.get()?container.get()->getControlAddress().toString():"old");}
+    else            {return "/it" + (parameter.get()?parameter.get()->getControlAddress().toString():"old");}
 
 };
 
@@ -477,7 +477,7 @@ paramUI (nullptr)
         InspectableComponent::setRelatedParameter(_item->parameter);
 
     }
-    setTooltip (item->isContainer ? item->container->getControlAddress() : juce::translate(item->parameter->description) + "\n"+juce::translate("Control Address")+" : "  + item->parameter->controlAddress);
+    setTooltip (item->isContainer ? item->container->getControlAddress().toString() : juce::translate(item->parameter->description) + "\n"+juce::translate("Control Address")+" : "  + item->parameter->controlAddress.toString());
     bool isNameEditable = !item->isContainer && item->parameter->isUserDefined;
     if(item->isContainer)
         isNameEditable|=item->container->nameParam->isEditable;

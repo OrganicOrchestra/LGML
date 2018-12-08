@@ -27,6 +27,22 @@
 class ControllableContainer;
 class ParameterBase;
 
+typedef Identifier ShortNameType;
+
+
+class Controllable;
+class ControlAddressType : public Array<Identifier>{
+public:
+    String toString()const;
+    static ControlAddressType buildFromControllable(const Controllable * ,const ControllableContainer * maxParent=nullptr);
+    static ControlAddressType buildFromControllableContainer(const ControllableContainer * ,const ControllableContainer * maxParent=nullptr);
+
+    Controllable * resolveControllableFromContainer(const ControllableContainer *  c)const;
+    ControllableContainer * resolveContainerFromContainer(const ControllableContainer *  c)const;
+    ControlAddressType getRelativeTo(ControlAddressType & other)const;
+    ControlAddressType subAddr(int start,int end = -1)const;
+    StringArray toStringArray()const;
+};
 
 class Controllable : public FactoryObject
 {
@@ -38,18 +54,19 @@ public:
 
 
     String niceName;
-    String shortName;
+    ShortNameType shortName;
     String description;
 
 
-    static String toShortName (const String& s)
+    static ShortNameType toShortName (const String& s)
     {
-        if (s.isEmpty()) return "";
-        
+//        if (s.isEmpty()) return "";
+
+        return ShortNameType(s.retainCharacters("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-."));
         //   #*,?[]{}/ based on OSC escaping
         // http://opensoundcontrol.org/spec-1_0
         // other for xml or generic escaping
-        return s.removeCharacters (" #*,?[]{}/:;%$<>()").toLowerCase();
+//        return ShortNameType(s.removeCharacters (" #*,?[]{}/:;%$<>()").toLowerCase());
     }
     
     bool enabled;
@@ -59,7 +76,7 @@ public:
     bool isUserDefined;
     bool isSavableAsObject;
     bool isSavable;
-    String controlAddress;
+    ControlAddressType controlAddress;
 
 
     WeakReference<ControllableContainer> parentContainer;
@@ -74,7 +91,7 @@ public:
     bool isChildOf (const ControllableContainer* p) const;
     void updateControlAddress();
 
-    String getControlAddress (const ControllableContainer* relativeTo = nullptr) const;
+    const ControlAddressType & getControlAddress (const ControllableContainer* relativeTo = nullptr) const;
 
 
     virtual bool isMappable();
