@@ -84,9 +84,7 @@ public:
     static const Identifier uidIdentifier;
 
 
-    //    to be overriden
-    virtual void loadPresetInternal (PresetManager::Preset*) {};
-    virtual void savePresetInternal (PresetManager::Preset*) {};
+    
 
     void cleanUpPresets();
 
@@ -105,6 +103,8 @@ public:
 
     bool canHavePresets;
     bool presetSavingIsRecursive;
+    bool isUserDefined;
+    BoolParameter* containSavableObjects;
     StringParameter* currentPresetName;
     Trigger* savePresetTrigger;
     PresetManager::Preset* currentPreset;

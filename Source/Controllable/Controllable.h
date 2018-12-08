@@ -57,6 +57,7 @@ public:
     bool isHidenInEditor;
     bool shouldSaveObject;
     bool isUserDefined;
+    bool isSavableAsObject;
     bool isSavable;
     String controlAddress;
 

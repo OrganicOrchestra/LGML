@@ -42,12 +42,16 @@ public:
 
     virtual bool isMappable() override;
 
+    void setInternalOnlyFlags(bool isVisible=true,bool _isSavable=false);// shortcut for internalParameters
+    void setSavable(bool savable);
     bool isEditable;
     bool alwaysNotify; // force notifying even if not changed
 
     bool isPresettable;
     bool isOverriden;
     bool mappingDisabled;
+    bool isUserDefined ;
+    
     // if true each set value doesn't do nothing until som reader call pushValue
     // useful for thread syncronization
     bool isCommitableParameter;
@@ -180,6 +184,7 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ParameterBase)
     
 };
+
 
 
 

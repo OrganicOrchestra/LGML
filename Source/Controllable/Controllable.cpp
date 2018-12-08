@@ -30,7 +30,8 @@ Controllable::Controllable ( const String& niceName, const String& description, 
     shouldSaveObject (false),
     isSavable (true),
     enabled (enabled),
-    isUserDefined (false)
+    isUserDefined (false),
+    isSavableAsObject(false)
 {
     setEnabled (enabled);
     setNiceName (niceName);

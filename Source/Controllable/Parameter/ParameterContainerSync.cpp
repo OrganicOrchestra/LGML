@@ -14,7 +14,7 @@
 
 ParameterContainerSync::ParameterContainerSync(const String& name,ParameterContainer *_slave=nullptr):root(nullptr),slave(_slave){
     if(!slave)slave = new ParameterContainer(name);
-    slave->nameParam->isEditable = false;
+    slave->nameParam->setInternalOnlyFlags(true,false);
 
 }
 ParameterContainerSync::~ParameterContainerSync(){
@@ -105,7 +105,7 @@ void ParameterContainerSync::checkContExists(ParameterContainer * fromRoot){
                 else{
                     target->setNiceName(fromRoot->getNiceName());
                 }
-                target->nameParam->isEditable = false;
+                target->nameParam->setInternalOnlyFlags(true,false);
 
 
                 parent->addChildControllableContainer(target);

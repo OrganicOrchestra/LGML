@@ -34,7 +34,8 @@ ParameterBase::ParameterBase ( const String& niceName, const String& description
     defaultValue (initialValue),
     value (initialValue),
     mappingDisabled (false),
-    alwaysNotify(false)
+    alwaysNotify(false),
+    isUserDefined (false)
 {
 
 
@@ -66,6 +67,19 @@ void ParameterBase::setValue (const var & _value, bool silentSet, bool force)
         tryToSetValue (_value, silentSet, alwaysNotify || force);
     }
 
+}
+
+void ParameterBase::setInternalOnlyFlags(bool isVisible,bool _isSavable){
+    isEditable=false;
+    isControllableExposed=false;
+    isHidenInEditor=!isVisible;
+    isSavable=_isSavable;
+    isPresettable=_isSavable;
+}
+
+void ParameterBase::setSavable(bool s){
+    isSavable=s;
+    isPresettable = s;
 }
 void ParameterBase::setValueFrom(Listener * notifier,const var & _value, bool silentSet , bool force ){
     jassert(!isCommitableParameter);
