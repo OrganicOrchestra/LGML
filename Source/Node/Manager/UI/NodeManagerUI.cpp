@@ -42,7 +42,7 @@ public:
 
 class NodeManagerUIFactory : public ParameterContainer{
 public:
-    NodeManagerUIFactory():ParameterContainer("NodesUI"){nameParam->isEditable=false;}
+    NodeManagerUIFactory():ParameterContainer("NodesUI"){nameParam->setInternalOnlyFlags(true,false);}
 
     ParameterContainer* addContainerFromObject (const String& name, DynamicObject*   data) override{
         ParameterContainer * res;
@@ -72,7 +72,6 @@ ParameterContainer("NodeManagerUI"),isMiniMode(false)
     auto p =getRoot(true)->getControllableContainerByName("NodesUI");
     if(!p){
         NodeManagerUIFactory * np = new NodeManagerUIFactory();
-        np->nameParam->isEditable = false;
         p = getRoot(true)->addChildControllableContainer(np);
     }
     p->addChildControllableContainer(this);

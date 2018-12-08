@@ -74,7 +74,7 @@ hadOnset(false)
     stateParameterString = addNewParameter<StringParameter> ("state", "track state", "cleared");
     stateParameterStringSynchronizer = new AsyncTrackStateStringSynchronizer (stateParameterString);
     addTrackListener (stateParameterStringSynchronizer);
-    stateParameterString->isEditable = false;
+    stateParameterString->setInternalOnlyFlags(true,false);
     stateParameterString->isSavable = false;
 
 

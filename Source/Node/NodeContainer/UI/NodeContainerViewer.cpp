@@ -434,7 +434,7 @@ void NodeContainerViewer::mouseDown (const MouseEvent& event)
     {
         hasDraggedDuringClick = false;
 
-        if(auto nui=getRelatedConnectableNodeUIForDrag(event.eventComponent,true)){
+        if(auto nui=getRelatedConnectableNodeUIForDrag(event.eventComponent,false)){
             if(!event.mods.isAltDown()){
                 resultOfMouseDownSelectMethod = getLassoSelection().addToSelectionOnMouseDown(nui, event.mods);
                 selectedInitBounds.clear();

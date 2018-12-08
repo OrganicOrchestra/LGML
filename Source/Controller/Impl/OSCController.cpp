@@ -20,7 +20,7 @@
 #include "../../Node/Manager/NodeManager.h"
 
 #include "../../Utils/NetworkUtils.h"
-
+#include "../../Controllable/Parameter/ParameterProxy.h"
 
 
 

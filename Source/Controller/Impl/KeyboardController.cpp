@@ -25,8 +25,7 @@ JsEnvironment ("controllers.Keyboard", this)
 {
 
     logIncoming = addNewParameter<BoolParameter> ("logIncoming", "log Incoming keyboard event", false);
-    logIncoming->isSavable = false;
-    logIncoming->isPresettable =false;
+    logIncoming->setSavable(false);
     GlobalKeyListener::addTraversingListener(this);
 
         isConnected->setValue(true);

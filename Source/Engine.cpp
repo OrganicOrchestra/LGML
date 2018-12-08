@@ -72,7 +72,7 @@ engineStartTime(Time::currentTimeMillis()),
 hasDefaultOSCControl(false)
 
 {
-    nameParam->isEditable = false;
+    nameParam->setInternalOnlyFlags(true,false);
     ControllableContainer::globalRoot = this;
     ParameterFactory::registerExtraTypes();
     ParameterFactory::logAllTypes();
@@ -501,13 +501,12 @@ engine(e),
 ParameterContainer("stats"),
 isListeningGlobal(false),
 timerTicks(0){
-    nameParam->isEditable=false;
+    nameParam->setInternalOnlyFlags(true,false);
     setUserDefined(false);
     audioCpu = addNewParameter<Point2DParameter<floatParamType>>("audioCpu",
                                                         "cpu percentage used by Audio",
                                                         0,0);
-    audioCpu->isEditable = false;
-    audioCpu->isSavable = false;
+    audioCpu->setInternalOnlyFlags(true,false);
 
     //startTimer(300);
 

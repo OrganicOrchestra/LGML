@@ -171,21 +171,7 @@ void SerialController::serialDataReceived (const var& data)
 
 }
 
-void SerialController::childControllableAdded (ControllableContainer*, Controllable* c)
-{
-//    if (c->isUserDefined)
-//    {
-//        getJsFileParameter()->triggerFileChange();
-//    }
-}
-void SerialController::childControllableRemoved (ControllableContainer*, Controllable* c)
-{
-//    if (c->isUserDefined)
-//    {
-//        getJsFileParameter()->triggerFileChange();
-//    }
 
-}
 var SerialController::sendMessageFromScript (const var::NativeFunctionArgs&)
 {
     //    SerialController * c = getObjectPtrFromJS<SerialController>(a);

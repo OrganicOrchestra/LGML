@@ -26,16 +26,11 @@ NodeManager::NodeManager (StringRef name) :
     ThreadPool (4),
     NodeContainer ("node",true)
 {
-    nameParam->isEditable = false;
+    nameParam->setInternalOnlyFlags(true,false);
     isLoading = false;
 
+    enabledParam->setInternalOnlyFlags(false,false);
 
-    
-
-    enabledParam->isControllableExposed = false;
-    enabledParam->isHidenInEditor = true;
-    nameParam->isControllableExposed = false;
-    nameParam->isEditable = false;
 }
 
 NodeManager::~NodeManager()

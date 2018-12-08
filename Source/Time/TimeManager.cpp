@@ -63,18 +63,16 @@ TimeManager::TimeManager():
     samplePerBeatGranularity (8),
     audioClock (0)
 {
-    nameParam->isEditable = false;
+    nameParam->setInternalOnlyFlags(true,false);
 
     BPM = addNewParameter<FloatParameter> ("BPM", "current BPM", 120.f, (float)BPMRange.getStart(), (float)BPMRange.getEnd());
     BPM->isCommitableParameter = true;
     playState = addNewParameter<BoolParameter> ("Play Stop", "play or stop global transport", false);
     playState->isSavable=false;
     BPMLocked = addNewParameter<BoolParameter> ("BPM Locked", "bpm is locked by somebody", false);
-    BPMLocked->isSavable = false;
-    BPMLocked->isEditable = false;
+    BPMLocked->setInternalOnlyFlags(true,false);
     isSettingTempo = addNewParameter<BoolParameter> ("Is Setting Tempo", "is someone setting tempo (recording first loop)", false);
-    isSettingTempo->isEditable = false;
-    isSettingTempo->isSavable = false;
+    isSettingTempo->setInternalOnlyFlags(true,false);
     currentBar  = addNewParameter<IntParameter> ("Current Bar", "currentBar in transport", 0, 0, 9999999);
     currentBeat  = addNewParameter<IntParameter> ("Current Beat", "currentBeat in transport", 0, 0, 999999);
     beatPerBar = addNewParameter<IntParameter> ("Beat Per Bar", "beat Per Bar", 4, 1, 8);
@@ -92,7 +90,7 @@ TimeManager::TimeManager():
     linkNumPeers = addNewParameter<IntParameter> ("Link Peers", "number of connected Link devices", 0, 0, 32);
     linkNumPeers->isSavable = false;
     linkNumPeers->enabled = LINK_SUPPORT;
-    linkNumPeers->isEditable = false;
+    linkNumPeers->setInternalOnlyFlags(true,false);
 
 
 #if LINK_SUPPORT
@@ -101,7 +99,7 @@ TimeManager::TimeManager():
 
 #endif
     linkLatencyParam = addNewParameter<FloatParameter> ("Link Latency", "Link latency to add for lgml (ms)", 10.f, 0.f, 1000.f);
-    linkLatencyParam->isSavable = false;
+    linkLatencyParam->setInternalOnlyFlags(true,false);
 
     clickFader = new FadeInOut (10000, 10000, true, 1.0 / 3.0);
 

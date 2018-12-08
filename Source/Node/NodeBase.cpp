@@ -137,17 +137,17 @@ DynamicObject* NodeBase::createObject()
 {
     auto data = ConnectableNode::createObject();
 
-    MemoryBlock m;
-
-    // TODO we could implement that for all node objects to be able to save any kind of custom data
-    getStateInformation (m);
-
-    if (m.getSize())
-    {
-        var audioProcessorData (new DynamicObject());
-        audioProcessorData.getDynamicObject()->setProperty ("state", m.toBase64Encoding());
-        data->setProperty ("audioProcessor", audioProcessorData);
-    }
+//    MemoryBlock m;
+//
+//    // TODO we could implement that for all node objects to be able to save any kind of custom data
+//    getStateInformation (m);
+//
+//    if (m.getSize())
+//    {
+//        var audioProcessorData (new DynamicObject());
+//        audioProcessorData.getDynamicObject()->setProperty ("state", m.toBase64Encoding());
+//        data->setProperty ("audioProcessor", audioProcessorData);
+//    }
 
     return data;
 }
@@ -156,12 +156,12 @@ void NodeBase::configureFromObject (DynamicObject* data)
 {
     ConnectableNode::configureFromObject (data);
 
-    var audioProcessorData = data->getProperty ("audioProcessor");
-    String audioProcessorStateData = audioProcessorData.getProperty ("state", var());
-
-    MemoryBlock m;
-    m.fromBase64Encoding (audioProcessorStateData);
-    setStateInformation (m.getData(), (int)m.getSize());
+//    var audioProcessorData = data->getProperty ("audioProcessor");
+//    String audioProcessorStateData = audioProcessorData.getProperty ("state", var());
+//
+//    MemoryBlock m;
+//    m.fromBase64Encoding (audioProcessorStateData);
+//    setStateInformation (m.getData(), (int)m.getSize());
 }
 
 

@@ -103,8 +103,8 @@ public:
 
 
     // save procedures from host
-    virtual void getStateInformation (juce::MemoryBlock&) override {};
-    virtual void setStateInformation (const void*, int) override {};
+    void getStateInformation (juce::MemoryBlock&) final {};
+    void setStateInformation (const void*, int) final {};
 
     virtual void processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages) override;
     virtual void processBlockInternal (AudioBuffer<float>& /*buffer*/, MidiBuffer& /*midiMessage*/ ) {};

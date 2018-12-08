@@ -292,7 +292,7 @@ void NodeContainer::updateAudioGraph (bool force)
     }
     else{
         {
-            MessageManagerLock mm;
+//            MessageManagerLock mm;
             gWatcher = new GraphBuildWatcher(this);
         }
         cancelPendingUpdate();
@@ -343,7 +343,7 @@ DynamicObject* NodeContainer::createObject()
 }
 
 
-ParameterContainer*   NodeContainer::addContainerFromObject (const String& /*name*/, DynamicObject*   data)
+ParameterContainer*   NodeContainer::addContainerFromObject (const String& name, DynamicObject*   data)
 {
     //  ConnectableNode * node = addNodeFromJSONData(data);
 
@@ -352,7 +352,7 @@ ParameterContainer*   NodeContainer::addContainerFromObject (const String& /*nam
     if (auto n = dynamic_cast<ContainerInNode*> (node)) containerInNode = n;
     else if (auto n = dynamic_cast<ContainerOutNode*> (node)) containerOutNode = n;
 
-    addNode (node);
+    addNode (node,name,data);
     return node;
 }
 

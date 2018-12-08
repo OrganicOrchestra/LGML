@@ -23,7 +23,7 @@
 
 #include "../Impl/ContainerInNode.h"
 #include "../Impl/ContainerOutNode.h"
-#include "../../Controllable/Parameter/ParameterProxy.h"
+
 
 
 // WIP, will need to go deep if we want to take avantage of a multi Threaded environnement
@@ -62,8 +62,7 @@ public:
     virtual void connectionAdded (NodeConnection*) {};
     virtual void connectionRemoved (NodeConnection*) {};
 
-    virtual void paramProxyAdded (ParameterProxy*) {};
-    virtual void paramProxyRemoved (ParameterProxy*) {};
+
 
     void newMessage (const NodeChangeMessage& msg )override
     {
@@ -86,7 +85,6 @@ public:
 class NodeContainer :
     public NodeBase,
     public NodeConnection::Listener,
-    public ParameterProxy::ParameterProxyListener,
     public AsyncUpdater
 
 {

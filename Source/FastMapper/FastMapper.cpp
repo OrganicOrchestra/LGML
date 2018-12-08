@@ -27,7 +27,7 @@ juce_ImplementSingleton (FastMapper)
 IMPL_OBJ_TYPE (FastMapper);
 
 template<>
-void ControllableContainer::OwnedFeedbackListener<FastMapper>::controllableFeedbackUpdate (ControllableContainer* notif, Controllable*ori) {
+void ControllableContainer::OwnedFeedbackListener<FastMapper>::controllableFeedbackUpdate (ControllableContainer* notif, Controllable* ori) {
 
     if (auto p = ParameterBase::fromControllable (ori))
     {
@@ -36,7 +36,7 @@ void ControllableContainer::OwnedFeedbackListener<FastMapper>::controllableFeedb
                 auto now=Time::getMillisecondCounter();
                 jassert(now>=owner->lastFMAddedTime);
                 // debounce control changes, to avoid setting potentialOutput back
-                if (ori->isUserDefined && now-owner->lastFMAddedTime>500){
+                if (p->isUserDefined && now-owner->lastFMAddedTime>500){
                     owner->setPotentialInput (p);
                 }
             }
@@ -55,7 +55,7 @@ lastFMAddedTime(0),
 pSync(this)
 {
 
-    nameParam->isEditable = false;
+    nameParam->setInternalOnlyFlags(true,false);
     potentialIn = addNewParameter<ParameterProxy> ("Input", "potential input for new fastMap,\nto assing :\n- move a controller in mapping mode\n- alt click on other LGML parameter\n- use this popup");
     potentialOut = addNewParameter<ParameterProxy> ("Output", "potential output for new fastMap\nto assign :\n- click on parameter in mapping mode\n- navigate through this popup");
 
@@ -65,10 +65,9 @@ pSync(this)
     LGMLDragger::getInstance()->addSelectionListener (this);
     #endif
 
-    potentialIn->isSavable = false;
-    potentialOut->isSavable = false;
-    potentialIn->isPresettable = false;
-    potentialOut->isPresettable = false;
+    potentialIn->setSavable(false);
+    potentialOut->setSavable(false);
+    
 
 
 }
