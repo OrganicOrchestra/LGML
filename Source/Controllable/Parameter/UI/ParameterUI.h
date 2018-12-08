@@ -52,8 +52,8 @@ public:
     bool isSelected;
     void updateOverlayEffect();
 
-    void visibilityChanged() override;
-    void parentHierarchyChanged()override;
+    void visibilityChanged() final;
+    void parentHierarchyChanged()final;
 
 protected:
 
@@ -97,6 +97,8 @@ private:
 
     bool isMappingDest;
 
+    var lastValuePainted;
+
 protected:
     typedef HashMap<int, String> UICommandType;
     virtual void processUICommand(int cmd){};
@@ -112,6 +114,42 @@ private:
 };
 
 
+
+class LabelLinkedTooltip : public Component,public TooltipClient{
+public:
+    LabelLinkedTooltip(TooltipClient * p):t(p){
+        label.setJustificationType (Justification::centredLeft);
+        addAndMakeVisible(label);
+        label.setVisible(false);
+        label.setBorderSize(BorderSize<int>(0));
+    }
+        void paint(Graphics & g) override{
+            getLookAndFeel().drawLabel (g, label);
+        }
+    void resized()override{
+        label.setBounds(getLocalBounds());
+    }
+    String getTooltip() override{
+        return t->getTooltip();
+    }
+    void addListener(Label::Listener *l){
+        label.addListener(l);
+    }
+    void setEditable(bool editOnSingleClick,
+                     bool editOnDoubleClick=false,
+                     bool lossOfFocusDiscards=false){
+        label.setEditable(editOnSingleClick,editOnDoubleClick,lossOfFocusDiscards);
+    }
+
+    void setFont(const Font & f){label.setFont(f);}
+    Font getFont(){return label.getFont();}
+    String getText(){return label.getText();}
+    void setText(const String & s,juce::NotificationType notif){label.setText(s,notif);}
+
+private:
+    Label label;
+    TooltipClient * t;
+};
 //    this class allow to automaticly generate label / ui element for parameter listing in editor
 //    it owns the created component
 class NamedParameterUI : public ParameterUI, public Label::Listener
@@ -121,7 +159,7 @@ public:
     void resized()override;
     bool labelAbove;
     void labelTextChanged (Label* labelThatHasChanged) override;
-    Label controllableLabel;
+    ScopedPointer<LabelLinkedTooltip> controllableLabel;
     int labelWidth;
     ScopedPointer <ParameterUI > ownedParameterUI;
     void controllableControlAddressChanged (Controllable*)override;

@@ -85,11 +85,11 @@ void ParameterProxyUI::setLinkedParamUI ( ParameterBase* p)
 
 
     //  linkedParamUI = p?new NamedParameterUI(ParameterUIFactory::createDefaultUI(p),100,true):nullptr;
-    if (dynamic_cast<ParameterProxy*> (p))
+    if (auto prox = dynamic_cast<ParameterProxy*> (p))
     {
         //encapsulate ui if proxy of proxy to show it explicitly
-        auto* eUI =  new NamedParameterUI (ParameterUIFactory::createDefaultUI (p), 20);
-        eUI->controllableLabel.setText ("proxy : " + p->niceName, dontSendNotification);
+        auto* eUI =  new NamedParameterUI (ParameterUIFactory::createDefaultUI (prox->linkedParam), 20);
+//        eUI->controllableLabel.setText ("proxy : " + p->niceName, dontSendNotification);
         linkedParamUI = eUI;
     }
     else

@@ -39,18 +39,18 @@ String varToString(const var &v){
 }
 
 StringParameterUI::StringParameterUI ( ParameterBase* p) :
-    ParameterUI (p), autoSize (false), maxFontHeight (12),trimStart(false)
+ParameterUI (p), autoSize (false), maxFontHeight (12),trimStart(false)//,valueLabel(this)
 {
 
     addChildComponent (nameLabel);
     setNameLabelVisible (false);
-    addAndMakeVisible (valueLabel);
+    addAndMakeVisible(valueLabel);
 
     addMouseListener(this, true);
     nameLabel.setJustificationType (Justification::centredLeft);
     nameLabel.setText (prefix + parameter->niceName + suffix, NotificationType::dontSendNotification);
 
-    valueLabel.setJustificationType (Justification::centredLeft);
+    
     valueChanged(parameter->value);
 
     bool stringEditable = parameter->isEditable ;
@@ -59,13 +59,14 @@ StringParameterUI::StringParameterUI ( ParameterBase* p) :
 
     valueLabel.addListener (this);
 
-    valueLabel.setBorderSize(BorderSize<int>(0));
+
     setBackGroundIsTransparent (!stringEditable);
     nameLabel.setTooltip (p->description);
+    valueLabel.setTooltip(getTooltip());
 
     arraySize = p->value.isArray()?p->value.getArray()->size():-1;
 
-    setSize (200, 20); //default size
+//    setSize (200, 20); //default size
 }
 
 void StringParameterUI::setAutoSize (bool value)
@@ -98,7 +99,7 @@ void StringParameterUI::setNameLabelVisible (bool visible)
 }
 void StringParameterUI::setBackGroundIsTransparent (bool t)
 {
-    valueLabel.setColour (valueLabel.backgroundColourId, Colours::transparentWhite.withAlpha (t ? 0 : 0.1f));
+    valueLabel.setColour (Label::backgroundColourId, Colours::transparentWhite.withAlpha (t ? 0 : 0.1f));
 }
 
 
@@ -155,30 +156,29 @@ void StringParameterUI::setValueTextTrimmed(String s){
     else{
         valueLabel.setColour(Label::textColourId,findColour(Label::textColourId));
     }
-    static String ellipse("...");
-    int desiredWidth = valueLabel.getFont().getStringWidth(s);
-    int availableWidth =getWidth();
-    int overflow = desiredWidth - availableWidth;
-    bool _trimStart = !noValue && trimStart; //
-    if(overflow>0 && availableWidth>0){
-        if(_trimStart){
-            s = s.substring(ellipse.length());
-            while(overflow>0){
-                s = s.substring(1);
-                overflow = valueLabel.getFont().getStringWidth(s) - availableWidth;
-            }
-            s = ellipse+s;
-        }
-        else{
-            s = s.substring(0,s.length()-ellipse.length());
-            while(overflow>0){
-                s = s.substring(0,s.length()-1);
-                overflow = valueLabel.getFont().getStringWidth(s) - availableWidth;
-            }
-            s = s+ellipse;
-        }
+    if(!trimStart){
+        //    const Font font = valueLabel.getFont();
+        //
+        //    int desiredWidth = font.getStringWidth(s);
+        //    int availableWidth =getWidth();
+        //    int overflow = desiredWidth - availableWidth;
+        //    bool _trimStart = !noValue && trimStart; //
+        //
+        ////    if(overflow>0 && availableWidth>0){
+        //        static String ellipse("...");
+        //        float ellipseWidth =font.getStringWidth(ellipse);
+        //        float pctValid = (availableWidth-ellipseWidth)*1.0/desiredWidth;
+        //        int numChars = (1-pctValid)*s.length();
+        //        if(_trimStart){
+        //            s =ellipse+ s.substring(numChars);
+        //        }
+        //        else{
+        //            s =  s.substring(0,s.length()-numChars)+ellipse;
+        //        }
+        //    }
     }
-
+    
+    
      valueLabel.setText (s, NotificationType::dontSendNotification);
 
 }
