@@ -28,39 +28,52 @@
 InspectableComponent::InspectableComponent (const String& _inspectableType ):
 inspectableType (_inspectableType),
 relatedParameterContainer (nullptr),
-relatedParameter(nullptr),
-recursiveInspectionLevel (0),
-canInspectChildContainersBeyondRecursion (true),
-isSelected (false),
-paintBordersWhenSelected (true),
-bringToFrontOnSelect (true){
-setWantsKeyboardFocus(true);
+relatedParameter(nullptr)
+{
+    init();
+    
 }
 InspectableComponent::InspectableComponent (ParameterContainer* _relatedContainer, const String& _inspectableType) :
 inspectableType (_inspectableType),
 relatedParameterContainer (_relatedContainer),
-relatedParameter(nullptr),
-recursiveInspectionLevel (0),
-canInspectChildContainersBeyondRecursion (true),
-isSelected (false),
-paintBordersWhenSelected (true),
-bringToFrontOnSelect (true)
+relatedParameter(nullptr)
 {
-    setWantsKeyboardFocus(true);
+    visibleName = juce::translate(_relatedContainer->getNiceName());
+    init();
 
 }
 
 InspectableComponent::InspectableComponent ( ParameterBase* _relatedParameter, const String& _inspectableType) :
 inspectableType (_inspectableType),
 relatedParameterContainer (nullptr),
-relatedParameter(_relatedParameter),
-recursiveInspectionLevel (0),
-canInspectChildContainersBeyondRecursion (true),
-isSelected (false),
-paintBordersWhenSelected (true),
-bringToFrontOnSelect (true)
+relatedParameter(_relatedParameter)
 {
+    visibleName = juce::translate(_relatedParameter->niceName);
+    init();
+}
+
+void InspectableComponent::init(){
+    recursiveInspectionLevel  = 0;
+    canInspectChildContainersBeyondRecursion =true;
+    isSelected =false;
+    paintBordersWhenSelected =true;
+    bringToFrontOnSelect =true;
     setWantsKeyboardFocus(true);
+
+}
+
+void InspectableComponent::setRelatedContainer(ParameterContainer* pc){
+    jassert(relatedParameter==nullptr);
+    jassert(relatedParameterContainer==nullptr);
+    relatedParameterContainer = pc;
+    visibleName = juce::translate(relatedParameterContainer->getNiceName());
+}
+void InspectableComponent::setRelatedParameter(ParameterBase* p ){
+    jassert(relatedParameter==nullptr);
+    jassert(relatedParameterContainer==nullptr);
+    relatedParameter = p;
+    visibleName = juce::translate(relatedParameter->niceName);
+
 }
 InspectableComponent::~InspectableComponent()
 {

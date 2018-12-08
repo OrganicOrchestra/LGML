@@ -464,15 +464,18 @@ void OutlinerItem::itemSelectionChanged (bool isNowSelected){
 
 
 OutlinerItemComponent::OutlinerItemComponent (OutlinerItem* _item) :
-InspectableComponent (_item->container),
+InspectableComponent ("OutlinerItem"),
 item (_item),
 label ("label", _item->isContainer ? item->container->getNiceName() : item->parameter->niceName),
 paramUI (nullptr)
 
 {
-    if(!_item->isContainer){
-        InspectableComponent::relatedParameter = _item->parameter;
-        InspectableComponent::relatedParameterContainer = nullptr;
+    if(_item->isContainer){
+        InspectableComponent::setRelatedContainer(_item->container);
+    }
+    else{
+        InspectableComponent::setRelatedParameter(_item->parameter);
+
     }
     setTooltip (item->isContainer ? item->container->getControlAddress() : juce::translate(item->parameter->description) + "\n"+juce::translate("Control Address")+" : "  + item->parameter->controlAddress);
     bool isNameEditable = !item->isContainer && item->parameter->isUserDefined;
