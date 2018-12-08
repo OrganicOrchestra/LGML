@@ -89,7 +89,8 @@ void GenericParameterContainerEditor::setCurrentInspectedContainer (ParameterCon
 
 int GenericParameterContainerEditor::getContentHeight() const
 {
-    if (innerContainer == nullptr) return 0;
+    if (innerContainer == nullptr || innerContainer->container.get()==nullptr) return 0;
+
     else return  innerContainer->getContentHeight() + parentBT.getHeight() + 5;
 }
 
@@ -370,6 +371,7 @@ int CCInnerContainerUI::getContentHeight() const
 
     for (auto& ccui : innerContainers)
     {
+        if(ccui->container.get()==nullptr) continue;
         if (auto icUI = dynamic_cast<CCInnerContainerUI*> (ccui)) {h += icUI->getContentHeight();}
         else {h += controllableHeight * 2;}
 
@@ -466,6 +468,7 @@ void CCInnerContainerUI::resized()
 
         for (auto& ccui : innerContainers)
         {
+            if(ccui->container.get()==nullptr) continue;
             int h = controllableHeight * 2;
 
             if (auto icUI = dynamic_cast<CCInnerContainerUI*> (ccui)) {h = icUI->getContentHeight();}
@@ -491,13 +494,31 @@ void CCInnerContainerUI::childControllableAdded (ControllableContainer*, Control
     if (c->isHidenInEditor) return;
 
     auto pc = static_cast <ParameterBase*> (c);
-    addParameterUI (pc);
+    WeakReference<Component> thisRef(this);
+    WeakReference<ParameterBase> pcRef(pc);
+    MessageManager::callAsync(
+                              [thisRef,pcRef](){
+                                  if(thisRef && pcRef){
+                                      auto *thisR = reinterpret_cast<CCInnerContainerUI*>(thisRef.get());
+                                      thisR->addParameterUI (pcRef);
+                                  }
+                              });
 }
 
 void CCInnerContainerUI::childControllableRemoved (ControllableContainer*, Controllable* c)
 {
     auto pc = static_cast <ParameterBase*> (c);
-    removeParameterUI (pc);
+    jassert (pc);
+    WeakReference<Component> thisRef(this);
+    WeakReference<ParameterBase> pcRef(pc);
+    MessageManager::callAsync(
+                              [thisRef,pcRef](){
+                                  if(thisRef && pcRef){
+                                      auto *thisR = reinterpret_cast<CCInnerContainerUI*>(thisRef.get());
+                                      thisR->removeParameterUI (pcRef);
+                                  }
+                              });
+
 }
 
 void CCInnerContainerUI::controllableContainerAdded (ControllableContainer*, ControllableContainer* cc)
@@ -507,15 +528,34 @@ void CCInnerContainerUI::controllableContainerAdded (ControllableContainer*, Con
     auto pc = static_cast<ParameterContainer*> (cc);
     jassert (pc);
     if (pc->isHidenInEditor) return;
-    if (level < maxLevel) addCCInnerUI (pc);
-    else if (canAccessLowerContainers) addCCLink (pc);
+
+    WeakReference<Component> thisRef(this);
+    WeakReference<ParameterContainer> pcRef(pc);
+    MessageManager::callAsync(
+                              [thisRef,pcRef](){
+                                  if(thisRef && pcRef){
+                                      auto *thisR = reinterpret_cast<CCInnerContainerUI*>(thisRef.get());
+
+                                      if (thisR->level < thisR->maxLevel) thisR->addCCInnerUI (pcRef);
+                                      else if (thisR->canAccessLowerContainers) thisR->addCCLink (pcRef);
+                                  }
+                              });
 }
 
 void CCInnerContainerUI::controllableContainerRemoved (ControllableContainer*, ControllableContainer* cc)
 {
     auto pc = static_cast<ParameterContainer*> (cc);
-    removeCCInnerUI (pc);
-    removeCCLink (pc);
+    WeakReference<Component> thisRef(this);
+    WeakReference<ParameterContainer> pcRef(pc);
+    MessageManager::callAsync(
+                              [thisRef,pcRef](){
+                                  if(thisRef && pcRef){
+                                      auto *thisR = reinterpret_cast<CCInnerContainerUI*>(thisRef.get());
+                                      thisR->removeCCInnerUI (pcRef);
+                                      thisR->removeCCLink (pcRef);
+                                  }
+                              });
+
 }
 
 
