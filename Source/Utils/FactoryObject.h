@@ -59,5 +59,6 @@ explicit T(StringRef name=DEFAULTNAME); \
 
 #define DECLARE_OBJ_TYPE(T,INFO) DECLARE_OBJ_TYPE_DEFAULTNAME(T,#T,INFO)
 // use that for static objects that dont need factories
-#define IMPL_OBJ_TYPE(T)  const Identifier T::_factoryType = Identifier( "t_" #T);
+#define IMPL_OBJ_TYPE_NAMED(T,TN)  const Identifier T::_factoryType = Identifier( "t_" TN);
+#define IMPL_OBJ_TYPE(T)  IMPL_OBJ_TYPE_NAMED(T,#T)
 
