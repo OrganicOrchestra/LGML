@@ -23,6 +23,28 @@
 #include "../../UI/ConnectableNodeHeaderUI.h"
 
 UndoManager & getAppUndoManager();
+#if JUCE_DEBUG
+#define DBGCONN(x) // DBG(x)
+class MouseDbg : public MouseListener{
+public:
+    MouseDbg(){
+        Desktop::getInstance().addGlobalMouseListener(this);
+    }
+    String niceName(Component * c){
+        if(c){return typeid(*c).name();}//c->getName();}
+        else return "null";
+    }
+    void mouseEnter(const MouseEvent & me) final{DBG(String("enter ")+niceName(me.originalComponent));}
+    void mouseExit(const MouseEvent & me) final{DBG(String("exit ")+niceName(me.originalComponent));}
+    void mouseDrag(const MouseEvent & me) final{DBG(String("drag ")+niceName(me.originalComponent));}
+    void mouseMove(const MouseEvent & me) final{DBG(String("move ")+niceName(me.originalComponent));}
+};
+MouseDbg * globalMouse(nullptr);
+#define INITGLOBALMOUSE() if(!globalMouse) globalMouse = new MouseDbg();
+#else
+#define DBGCONN(x)
+#define INITGLOBALMOUSE()
+#endif
 
 class NodeLayerComponent : public Component{
 public:
@@ -43,8 +65,7 @@ ParameterContainer(container->getNiceName()),
 nodesLayer(new NodeLayerComponent())
 {
 
-    setInterceptsMouseClicks (true, true);
-    nodesLayer->addMouseListener(this, true);
+    INITGLOBALMOUSE();
     nodeContainer->addNodeContainerListener (this);
 
     canInspectChildContainersBeyondRecursion = false;
@@ -65,7 +86,8 @@ nodesLayer(new NodeLayerComponent())
 
 
     addAndMakeVisible(lassoSelectionComponent);
-
+    setInterceptsMouseClicks (true, true);
+//    nodesLayer->addMouseListener(this, true);
 
     resizeToFitNodes();
 
