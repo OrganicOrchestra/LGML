@@ -53,7 +53,7 @@ public:
 
     // name functions to override
     virtual String const getNiceName() = 0;
-    virtual String setNiceName (const String& _niceName);
+    virtual String setNiceName (const String& _niceName)=0;
 
     void removeFromParent();
 
@@ -62,9 +62,9 @@ public:
     void addControllable(Controllable *c);
     void removeControllable (Controllable* c);
 
-    Controllable* getControllableByName (const String& name);
-    Controllable* getControllableByShortName(const ShortNameType & n);
-    Controllable* getControllableByShortName(const String & n);
+    Controllable* getControllableByName (const String& name) const;
+    Controllable* getControllableByShortName(const ShortNameType & n) const;
+    Controllable* getControllableByShortName(const String & n) const;
     ControllableContainer* addChildControllableContainer (ControllableContainer* container, bool notify = true);
     ControllableContainer* getRoot(bool getGlobal);
     void removeChildControllableContainer (ControllableContainer* container);
@@ -147,7 +147,7 @@ public:
     ControllableContainer* getControllableContainerByName (const String& name) const;
     ControllableContainer* getControllableContainerByShortName (const String & name) const;
     ControllableContainer* getControllableContainerByShortName (const ShortNameType & name) const;
-    
+    ControllableContainer* findFirstControllableContainer (const std::function<bool(ControllableContainer*)> fun) const;
 
     void setParentContainer (ControllableContainer* container);
     void updateChildrenControlAddress();
@@ -193,7 +193,6 @@ public:
         virtual void controllableContainerRemoved (ControllableContainer*, ControllableContainer*) {}
         virtual void childStructureChanged (ControllableContainer* /*notifier*/, ControllableContainer* /*origin*/,bool /*isAdded*/) {}
         virtual void childAddressChanged (ControllableContainer* /*notifier*/,ControllableContainer* ) {};
-        virtual void controllableContainerPresetLoaded (ControllableContainer*) {}
         virtual void containerWillClear (ControllableContainer* /*origin*/) {}
     private:
         friend class ControllableContainer;
@@ -254,20 +253,23 @@ public:
 
     WeakReference<ControllableContainer >::SharedPointer* getMasterRefPtr(){return ControllableContainer::masterReference.getSharedPointer (this);}
 
-
-protected :
-
-    void dispatchFeedback (Controllable* c);
-
-    //  container with custom controllable can override this
-    virtual void addControllableInternal (Controllable*) {};
+    const DynamicObject*  getMetaData() const{return metaData.getDynamicObject();};
 
     /// identifiers
     static const Identifier controlAddressIdentifier;
     static const Identifier childContainerId;
     static const Identifier controllablesId;
-    friend class PresetManager;
 
+
+protected :
+    var metaData;
+
+    
+    
+    void dispatchFeedback (Controllable* c);
+
+
+    void updateControlAddress(bool isParentResolved = false);
     void notifyStructureChanged (ControllableContainer* origin,bool isAdded,bool controllableUpdated, bool containerUpdated);
     void notifyChildAddressChanged (ControllableContainer* origin);
 

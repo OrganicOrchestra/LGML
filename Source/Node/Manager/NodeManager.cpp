@@ -24,10 +24,11 @@ juce_ImplementSingleton (NodeManager);
 
 NodeManager::NodeManager (StringRef name) :
     ThreadPool (4),
-    NodeContainer ("node",true)
+    NodeContainer ("node",true),
+isLoading(false)
 {
     nameParam->setInternalOnlyFlags(true,false);
-    isLoading = false;
+    
 
     enabledParam->setInternalOnlyFlags(false,false);
 
@@ -54,9 +55,9 @@ void NodeManager::configureFromObject (DynamicObject* data)
     jassert (isLoading == false);
     jobsWatcher = new JobsWatcher (this);
     isLoading = true;
-    clear();
+//    clear();
     NodeContainer::configureFromObject (data);
-
+    isLoading = false;
     //  mainContainer->loadJSONData(data.getDynamicObject()->getProperty("mainContainer"));
 
 }

@@ -32,7 +32,7 @@ public:
         set(Js,{StringArray {"js"},"Javascript"});
         set(Audio, {StringArray {"wav","aif","aiff","mp3"},"Audio"});
         set(PdPatch, {StringArray {"pd"},"Pure-data"});
-        set(Preset,{StringArray {"json"},"Preset"});
+        set(PresetFile,{StringArray {"json"},"Preset"});
     }
 };
 

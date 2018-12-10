@@ -139,7 +139,7 @@ void LGMLDragger::setMainComponent (Component* c)
     selected = nullptr;
     mainComp = c;
 
-    mainComp->addMouseListener (this, true);
+//    mainComp->addMouseListener (this, true);
 
     setMappingActive (false);
 }
@@ -294,6 +294,12 @@ void LGMLDragger::setMappingActive (bool b)
     listeners.call (&Listener::mappingModeChanged, b);
     for(auto c: getEngine()->getContainersOfType<Controller>(true)){
         c->setMappingMode(b);
+    }
+    if(!isMappingActive){
+        mainComp->removeMouseListener(this);
+    }
+    else{
+        mainComp->addMouseListener(this,true);
     }
 
 }

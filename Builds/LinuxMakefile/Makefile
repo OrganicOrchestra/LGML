@@ -170,6 +170,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/ConnectorComponent_6241d4e7.o \
   $(JUCE_OBJDIR)/ConnectableNode_839a1f42.o \
   $(JUCE_OBJDIR)/NodeBase_407fb0e1.o \
+  $(JUCE_OBJDIR)/Preset_bc005410.o \
   $(JUCE_OBJDIR)/PresetChooserUI_a00dd29.o \
   $(JUCE_OBJDIR)/PresetManager_886e07.o \
   $(JUCE_OBJDIR)/JsContainerSync_8918f0e.o \
@@ -764,6 +765,11 @@ $(JUCE_OBJDIR)/ConnectableNode_839a1f42.o: ../../Source/Node/ConnectableNode.cpp
 $(JUCE_OBJDIR)/NodeBase_407fb0e1.o: ../../Source/Node/NodeBase.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling NodeBase.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/Preset_bc005410.o: ../../Source/Preset/Preset.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling Preset.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/PresetChooserUI_a00dd29.o: ../../Source/Preset/PresetChooserUI.cpp

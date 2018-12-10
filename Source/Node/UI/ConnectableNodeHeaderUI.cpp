@@ -17,7 +17,7 @@
 #include "ConnectableNodeHeaderUI.h"
 #include "ConnectableNodeUI.h"
 
-#include "../../Preset/PresetManager.h"
+#include "../../Preset/PresetChooserUI.h"
 #include "../../Controllable/Parameter/UI/SliderUI.h"
 
 #include "../../UI/VuMeter.h"
@@ -59,8 +59,8 @@ ConnectableNodeHeaderUI::~ConnectableNodeHeaderUI()
 
 void ConnectableNodeHeaderUI::setNodeAndNodeUI (ConnectableNode* _node, ConnectableNodeUI* _nodeUI)
 {
-    this->node = _node;
-    this->nodeUI = _nodeUI;
+    node = _node;
+    nodeUI = _nodeUI;
 
 
     node->addConnectableNodeListener (this);
@@ -84,7 +84,7 @@ void ConnectableNodeHeaderUI::setNodeAndNodeUI (ConnectableNode* _node, Connecta
     addAndMakeVisible (miniModeBT);
 
 
-    if (node->canHavePresets)
+    if (node->canHavePresets())
     {
         presetChooser = new PresetChooserUI (node);
         addAndMakeVisible (presetChooser);
@@ -177,7 +177,7 @@ void ConnectableNodeHeaderUI::resized()
     }
 
 
-    if (node->canHavePresets && !bMiniMode )
+    if (node->canHavePresets() && !bMiniMode )
     {
         int presetCBWidth = jmin (r.getWidth() / 3, 80);
 
@@ -207,13 +207,13 @@ void ConnectableNodeHeaderUI::setMiniMode (bool value)
 
     if (bMiniMode)
     {
-        if (node->canHavePresets) removeChildComponent (presetChooser);
+        if (node->canHavePresets()) removeChildComponent (presetChooser);
 
         miniModeBT.setButtonText ("+");
     }
     else
     {
-        if (node->canHavePresets) addChildComponent (presetChooser);
+        if (node->canHavePresets()) addChildComponent (presetChooser);
 
         miniModeBT.setButtonText ("-");
     }
@@ -252,26 +252,11 @@ void ConnectableNodeHeaderUI::buttonClicked (Button* b)
     }
 }
 
-void ConnectableNodeHeaderUI::controllableContainerPresetLoaded (ControllableContainer*)
-{
-
-    if (!node->canHavePresets) return;
-
-    //  int numOptions = PresetManager::getNumOption();
-    if (node->currentPreset != nullptr) postCommandMessage (updatePresetCBID);
-}
 
 void ConnectableNodeHeaderUI::handleCommandMessage (int id)
 {
     switch (id)
     {
-        case updatePresetCBID:
-            if (!node->canHavePresets) return;
-
-            //  int numOptions = PresetManager::getNumOption();
-            if (node->canHavePresets && node->currentPreset != nullptr) presetChooser->setSelectedId (node->currentPreset->presetId, NotificationType::dontSendNotification);
-
-            break;
 
         case repaintId:
             repaint();

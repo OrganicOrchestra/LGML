@@ -34,14 +34,16 @@ const Identifier ControllableContainer::childContainerId ("/");
 const Identifier ControllableContainer::controllablesId ("parameters");
 
 
-// TODO fix use of niceName
-ControllableContainer::ControllableContainer (StringRef /*niceName*/) :
+
+ControllableContainer::ControllableContainer (StringRef niceName) :
 parentContainer (nullptr),
 numContainerIndexed (0),
 localIndexedPosition (-1),
 isUserDefined (false)
 {
 
+    shortName = Controllable::toShortName (niceName);
+    controlAddress = ControlAddressType::buildFromControllableContainer(this);
 
 }
 
@@ -58,8 +60,6 @@ ControllableContainer::~ControllableContainer()
     {
         if (a.get())delete a.get();
     }
-
-
     clearContainer();
     ControllableContainer::masterReference.clear();
 }
@@ -159,25 +159,26 @@ String ControllableContainer::setNiceName (const String& _niceName)
 void ControllableContainer::setAutoShortName()
 {
     shortName = Controllable::toShortName (getNiceName());
-    updateChildrenControlAddress();
+    updateControlAddress(true);
     notifyChildAddressChanged(this);
 }
 
 
 
-Controllable* ControllableContainer::getControllableByName (const String& _name)
+Controllable* ControllableContainer::getControllableByName (const String& _name) const
 {
     ScopedLock lk (controllables.getLock());
+
     for (auto * c : controllables)
     {
         if(c->niceName == _name) {return c;}
     }
-
+    
 
     return nullptr;
 }
 
-Controllable* ControllableContainer::getControllableByShortName(const ShortNameType & n){
+Controllable* ControllableContainer::getControllableByShortName(const ShortNameType & n) const{
     ScopedLock lk (controllables.getLock());
     for (auto * c : controllables)
     {
@@ -186,7 +187,7 @@ Controllable* ControllableContainer::getControllableByShortName(const ShortNameT
     return nullptr;
 }
 
-Controllable* ControllableContainer::getControllableByShortName(const String & _name){
+Controllable* ControllableContainer::getControllableByShortName(const String & _name) const{
     const ShortNameType sname = Controllable::toShortName(_name);
     return getControllableByShortName(sname);
 }
@@ -320,6 +321,21 @@ ControllableContainer * ControllableContainer::getMirroredContainer(Controllable
 
 }
 
+ControllableContainer* ControllableContainer::findFirstControllableContainer (const std::function<bool(ControllableContainer*)> fun) const{
+
+    for(auto & c : controllableContainers){
+        if(c.get()){
+        if(fun(c))return c;
+        if(auto ch = c->findFirstControllableContainer(fun)){
+            return ch;
+        }
+        }
+    }
+
+
+    return nullptr;
+
+}
 
 
 ControlAddressType  ControllableContainer::getControlAddressRelative (const ControllableContainer* relativeTo) const
@@ -333,7 +349,12 @@ const ControlAddressType & ControllableContainer::getControlAddress () const
 
 
     auto curAddr = ControlAddressType::buildFromControllableContainer(this);
-    jassert(controlAddress==curAddr);
+    if(controlAddress!=curAddr){
+        auto curS = curAddr.toString();
+        auto localS = controlAddress.toString();
+        DBG(String("address mismatch ") + localS + " // " + curS );
+        jassertfalse;
+    }
 
 #endif
     return controlAddress;
@@ -343,24 +364,31 @@ const ControlAddressType & ControllableContainer::getControlAddress () const
 
 void ControllableContainer::setParentContainer (ControllableContainer* container)
 {
-    this->parentContainer = container;
-    controlAddress = ControlAddressType::buildFromControllableContainer(this);
-    if(container!=nullptr)updateChildrenControlAddress();
+    parentContainer = container;
+    if(container)updateControlAddress(true);
 
 }
-
+void ControllableContainer::updateControlAddress(bool isParentResolved){
+    if(isParentResolved && parentContainer){
+        controlAddress = parentContainer->controlAddress.getChild(shortName);
+    }
+    else{
+        controlAddress = ControlAddressType::buildFromControllableContainer(this);
+    }
+    if(parentContainer!=nullptr)updateChildrenControlAddress();
+}
 
 void ControllableContainer::updateChildrenControlAddress()
 {
     {
         ScopedLock lk (controllables.getLock());
 
-        for (auto& c : controllables) c->updateControlAddress();
+        for (auto& c : controllables) c->updateControlAddress(true);
     }
     {
         ScopedLock lk (controllableContainers.getLock());
 
-        for (auto& cc : controllableContainers) if (cc.get())cc->updateChildrenControlAddress();
+        for (auto& cc : controllableContainers) if (cc.get())cc->updateControlAddress(true);
     }
 
 
@@ -561,14 +589,16 @@ String ControllableContainer::getUniqueNameInContainer (const String& sourceName
         }
     }
 
-    void* elem = getControllableByName (resultName);
+    ShortNameType tShort = Controllable::toShortName(resultName);
+    
+    void* elem = getControllableByShortName (tShort);
 
     if ( elem != nullptr && elem != me)
     {
         return getUniqueNameInContainer (sourceName, suffix + 1, me);
     }
     
-    elem = getControllableContainerByName (resultName) ;
+    elem = getControllableContainerByShortName (tShort) ;
     
     if (elem != nullptr && elem != me)
     {

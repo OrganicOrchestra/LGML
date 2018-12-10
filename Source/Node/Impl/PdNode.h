@@ -43,7 +43,7 @@ public:
 
     void onContainerTriggerTriggered(Trigger *t)override;
 
-
+    String getSubTypeName() final;
 private:
 
 

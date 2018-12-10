@@ -60,12 +60,21 @@ void initDefaultUserSettings(){
     settings->saveIfNeeded();
 }
 
+
+
+Engine::EngineFileSaver::EngineFileSaver(const String & n):name(n){
+    getEngine()->fileSavers.add(this);
+}
+Engine::EngineFileSaver::~EngineFileSaver(){
+    getEngine()->fileSavers.removeAllInstancesOf(this);
+}
+
 Engine::Engine():
 FileBasedDocument (filenameSuffix,
                                      filenameWildcard,
                                      "Load a filter graph",
                                      "Save a filter graph"),
-ParameterContainer ("root"),
+ParameterContainer (ControlAddressType::rootIdentifier),
 threadPool (4),
 isLoadingFile(false),
 engineStartTime(Time::currentTimeMillis()),

@@ -30,6 +30,7 @@ class ParameterBase;
 typedef Identifier ShortNameType;
 
 
+
 class Controllable;
 class ControlAddressType : public Array<Identifier>{
 public:
@@ -42,6 +43,9 @@ public:
     ControlAddressType getRelativeTo(ControlAddressType & other)const;
     ControlAddressType subAddr(int start,int end = -1)const;
     StringArray toStringArray()const;
+    ControlAddressType getChild(const ShortNameType & c) const;
+
+    static const Identifier rootIdentifier;
 };
 
 class Controllable : public FactoryObject
@@ -58,16 +62,7 @@ public:
     String description;
 
 
-    static ShortNameType toShortName (const String& s)
-    {
-//        if (s.isEmpty()) return "";
-
-        return ShortNameType(s.retainCharacters("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-."));
-        //   #*,?[]{}/ based on OSC escaping
-        // http://opensoundcontrol.org/spec-1_0
-        // other for xml or generic escaping
-//        return ShortNameType(s.removeCharacters (" #*,?[]{}/:;%$<>()").toLowerCase());
-    }
+    static ShortNameType toShortName (const String& s);
     
     bool enabled;
     bool isControllableExposed;
@@ -89,12 +84,14 @@ public:
 
     void setParentContainer (ControllableContainer* container);
     bool isChildOf (const ControllableContainer* p) const;
-    void updateControlAddress();
+    void updateControlAddress(bool isParentResolved);
 
-    const ControlAddressType & getControlAddress (const ControllableContainer* relativeTo = nullptr) const;
+    ControlAddressType getControlAddressRelative (const ControllableContainer* relativeTo = nullptr) const;
+    const ControlAddressType & getControlAddress () const;
 
 
     virtual bool isMappable();
+    bool isPresettable;
 
 
     //used for script variables

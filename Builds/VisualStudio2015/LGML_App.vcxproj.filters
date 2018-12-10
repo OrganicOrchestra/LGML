@@ -853,6 +853,9 @@
     <ClCompile Include="..\..\Source\Node\NodeBase.cpp">
       <Filter>LGML\Source\Node</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Preset\Preset.cpp">
+      <Filter>LGML\Source\Preset</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Preset\PresetChooserUI.cpp">
       <Filter>LGML\Source\Preset</Filter>
     </ClCompile>
@@ -3323,6 +3326,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Node\NodeBase.h">
       <Filter>LGML\Source\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Preset\Preset.h">
+      <Filter>LGML\Source\Preset</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Preset\PresetChooserUI.h">
       <Filter>LGML\Source\Preset</Filter>

@@ -207,7 +207,7 @@ void CCInnerContainerUI::rebuild()
 {
     clear();
 
-    if (container->canHavePresets)
+    if (container->canHavePresets())
     {
         presetChooser = new PresetChooserUI (container);
         addAndMakeVisible (presetChooser);
@@ -378,7 +378,7 @@ int CCInnerContainerUI::getContentHeight() const
         h += ccGap;
     }
 
-    if (container->canHavePresets) h += presetChooserHeight + gap;
+    if (container->canHavePresets()) h += presetChooserHeight + gap;
 
     h += containerLabel.getHeight();
     h += margin * 2;
@@ -417,7 +417,7 @@ void CCInnerContainerUI::resized()
     }
     else
     {
-        if (container->canHavePresets  )
+        if (container->canHavePresets()  )
         {
             presetChooser->setBounds (r.removeFromTop (presetChooserHeight));
             r.removeFromTop (gap);

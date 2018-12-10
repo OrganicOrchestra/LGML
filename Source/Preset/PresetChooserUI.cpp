@@ -21,14 +21,16 @@
 #include "PresetChooserUI.h"
 #include "../Utils/DebugHelpers.h"
 #include "../Controllable/Parameter/ParameterContainer.h"
-
+#include "PresetManager.h"
+#include "Preset.h"
 
 enum PresetChoice
 {
     SaveCurrent = -3,
     SaveToNew = -2,
     ResetToDefault = -1,
-    deleteStartId = 1000
+    deleteStartId = 1000,
+    otherStartId = 2000
 };
 
 
@@ -36,84 +38,129 @@ PresetChooserUI::PresetChooserUI (ParameterContainer* _container) :
     container (_container),
     ComboBox ("Preset")
 {
+    PresetManager::getInstance()->presetListeners.add(this);
     updatePresetComboBox();
     ComboBox::addListener (this);
     container->addControllableContainerListener (this);
     setTextWhenNothingSelected ("Preset");
-    setTooltip (juce::translate("Set the current preset at")+" :\n" + container->currentPresetName->getControlAddress().toString() + " <presetName>");
+    setTooltip (juce::translate("Set the current preset at")+" :\n" + getPresetable()->currentPresetName->getControlAddress().toString() + " <presetName>");
+    getPresetable()->presetableListeners.add(this);
 }
 
 PresetChooserUI::~PresetChooserUI()
 {
+    PresetManager::getInstance()->presetListeners.remove(this);
+    if(auto * pre = getPresetable())
+        pre->presetableListeners.remove(this);
     ComboBox::removeListener (this);
 
     if (auto c = container.get())c->removeControllableContainerListener (this);
 }
 
-void PresetChooserUI::fillWithPresets (ComboBox* cb, const  String& filter, bool _showSaveCurrent)
-{
-    cb->clear();
+void PresetChooserUI::rebuildAvailable(){
+    if(!container){
+        return;
+    }
+    int pIndex = 1;
+    String filter = container->presetable->getPresetFilter();
+    PresetManager* pm = PresetManager::getInstance();
+    availablePresets = pm->getPresetsForFilter(filter);
+    otherPresets = pm->getPresetsForType(container->presetable->getType(),container);
+    auto * p = getPresetable()->currentPreset;
+    selectedPresetId = 0;
+    for (auto& pre : availablePresets)
+    {
+        if(pre && pre==p){
+            selectedPresetId = pIndex;
+        }
+        pIndex++;
 
-    if (_showSaveCurrent) cb->addItem (juce::translate("Save current preset"), SaveCurrent);
+    }
+    if(selectedPresetId==0){
+        pIndex = PresetChoice::otherStartId+1;
+        for (auto& pre : otherPresets)
+        {
+            if(pre && pre==p){
+                selectedPresetId = pIndex;
+            }
+            pIndex++;
+            
+        }
+    }
+
+}
+void PresetChooserUI::fillWithPresets (ComboBox* cb)
+{
+
+    cb->clear();
+    if(!container) return;
+
+    if (getPresetable()->hasPresetLoaded()) cb->addItem (juce::translate("Save current preset"), SaveCurrent);
 
     cb->addItem (juce::translate("Save to new preset"), SaveToNew);
     cb->addItem (juce::translate("Reset to default"), ResetToDefault);
 
     int pIndex = 1;
-    PresetManager* pm = PresetManager::getInstance();
 
-    for (auto& pre : pm->presets)
+    rebuildAvailable();
+
+    for (auto& pre : availablePresets)
     {
-
-        if (pre->filter == filter)
-        {
-            pre->presetId = pIndex;
-            cb->addItem (pre->name, pre->presetId);
+            cb->addItem (pre->getPresetName(), pIndex);
             pIndex++;
-        }
     }
-
-    for (auto& pre : pm->presets)
+    pIndex = 1;
+    for (auto& pre : availablePresets)
     {
-
-        if (pre->filter == filter)
-        {
-            cb->addItem (juce::translate("delete")+" " + pre->name, PresetChoice::deleteStartId + pre->presetId);
-        }
+            cb->addItem (juce::translate("delete")+" " + pre->getPresetName(), PresetChoice::deleteStartId +pIndex);
+            pIndex++;
     }
 
+    auto menu = cb->getRootMenu();
+    PopupMenu sameTypePresets;
+    pIndex = 1;
+    for(auto & p : otherPresets){
+        sameTypePresets.addItem(otherStartId+pIndex, p->getPresetName() + String("(123)").replace("123",p->getOriginContainer()->getNiceName()));
+        pIndex++;
+    }
+
+    if(sameTypePresets.getNumItems())
+        menu->addSubMenu(juce::translate("Other Presets In Patch"),sameTypePresets,true);
 }
 
 void PresetChooserUI::updatePresetComboBox (bool forceUpdate)
 {
 
-    bool emptyFilter = container->getPresetFilter().isEmpty();
+    bool emptyFilter = getPresetable()->getPresetFilter().isEmpty();
     setEnabled (!emptyFilter);
 
     if (!emptyFilter)
     {
-        fillWithPresets (this, container->getPresetFilter(), container->currentPreset != nullptr);
-
-        if (container->currentPreset != nullptr) this->setSelectedId (container->currentPreset->presetId, forceUpdate ? sendNotification : dontSendNotification);
+        fillWithPresets (this);
+        selectedPresetId = findSelectedId();
+        setSelectedId (selectedPresetId, forceUpdate ? sendNotification : dontSendNotification);
     }
 }
 
 void PresetChooserUI::comboBoxChanged (ComboBox* cb)
 {
+    if(!container) return;
 
-    int presetID = cb->getSelectedId();
+    int presetIDCmd = cb->getSelectedId();
 
-    if (container->currentPreset != nullptr && presetID == container->currentPreset->presetId) return;
+    if (presetIDCmd == selectedPresetId) return;
 
-    if (presetID == PresetChoice::SaveCurrent)
+
+
+    if (presetIDCmd == PresetChoice::SaveCurrent)
     {
-        bool result = container->saveCurrentPreset();
+        getPresetable()->saveCurrentPreset(this);
+//        rebuildAvailable(container->getPresetFilter());
+        cb->setSelectedId (selectedPresetId, NotificationType::dontSendNotification);
 
-        if (result) cb->setSelectedId (container->currentPreset->presetId, NotificationType::dontSendNotification);
-        else cb->setSelectedItemIndex (-1, NotificationType::dontSendNotification);
 
     }
-    else if (presetID == PresetChoice::SaveToNew)
+    else if (presetIDCmd == PresetChoice::SaveToNew)
     {
         AlertWindow nameWindow ("Save a new Preset", "Choose a name for the new preset", AlertWindow::AlertIconType::QuestionIcon, this);
         nameWindow.addTextEditor ("newPresetName", "New Preset");
@@ -125,32 +172,33 @@ void PresetChooserUI::comboBoxChanged (ComboBox* cb)
         if (nameResult)
         {
             String presetName = nameWindow.getTextEditorContents ("newPresetName");
-            PresetManager::Preset* p = container->saveNewPreset (presetName);
-            cb->clear (NotificationType::dontSendNotification);
-            updatePresetComboBox();
-            cb->setSelectedId (p->presetId, dontSendNotification);
+            getPresetable()->saveNewPreset (presetName,this);
+
         }
-        else
-        {
-            cb->setSelectedItemIndex (-1, dontSendNotification);
+
+        else{
+        cb->setSelectedId (selectedPresetId, dontSendNotification);
         }
 
 
     }
-    else if (presetID == PresetChoice::ResetToDefault)   //Reset to default
+    else if (presetIDCmd == PresetChoice::ResetToDefault)   //Reset to default
     {
-        container->resetFromPreset();
+        getPresetable()->resetToPreset();
         updatePresetComboBox (true);
-        cb->setSelectedItemIndex (-1, NotificationType::dontSendNotification);
+        
+
     }
-    else if (presetID >= 0 && presetID < PresetChoice::deleteStartId)
+    else if (presetIDCmd >= 0 && presetIDCmd < PresetChoice::deleteStartId)
     {
+//        selectedPresetId = presetIDCmd;
         String nameOfPreset = cb->getItemText (cb->getSelectedItemIndex());
 
-        container->currentPresetName->setValue (nameOfPreset);
+        getPresetable()->currentPresetName->setValue (nameOfPreset);
+
 
     }
-    else if (presetID >= PresetChoice::deleteStartId)
+    else if (presetIDCmd >= PresetChoice::deleteStartId && presetIDCmd < PresetChoice::otherStartId)
     {
         bool ok = AlertWindow::showOkCancelBox (AlertWindow::AlertIconType::QuestionIcon, juce::translate("Oh man, d'ya know watcha doin' ?"), juce::translate("Do you REALLY want to delete this preset ?\nLike, really really ?\nJust think about it man."), juce::translate("Oh yeah"), juce::translate("F* No"));
 
@@ -158,19 +206,19 @@ void PresetChooserUI::comboBoxChanged (ComboBox* cb)
         {
             PresetManager* pm = PresetManager::getInstance();
             int originId = cb->getSelectedId() - PresetChoice::deleteStartId - 1;
-            String originText = cb->getItemText (cb->getNumItems() - container->getNumPresets() * 2 + originId);
-            PresetManager::Preset* pre = pm->getPreset (container->getPresetFilter(), originText);
-            pm->presets.removeObject (pre);
-
-            container->currentPreset = nullptr;
-            updatePresetComboBox (true);
+            String originText = cb->getItemText (cb->getNumItems() - getPresetable()->getNumPresets() * 2 + originId);
+            Preset* pre = pm->getPreset (getPresetable()->getPresetFilter(), originText);
+            if(pre){
+                getPresetable()->deletePreset(pre);
+            }
+            
         }
         else
         {
             //reselect last Id
-            if (container->currentPreset != nullptr)
+            if (getPresetable()->hasPresetLoaded())
             {
-                cb->setSelectedId (container->currentPreset->presetId, juce::dontSendNotification);
+                cb->setSelectedId (selectedPresetId, juce::dontSendNotification);
             }
             else
             {
@@ -180,6 +228,18 @@ void PresetChooserUI::comboBoxChanged (ComboBox* cb)
         }
 
     }
+    else if (presetIDCmd > PresetChoice::otherStartId){
+        int originId = cb->getSelectedId() - PresetChoice::otherStartId - 1;
+        int i = 0;
+        Preset * pre=nullptr;
+        for(auto & p : otherPresets){if(i==originId){pre = p;break;}i++;}
+        if(pre){
+            getPresetable()->currentPresetName->setValue (pre->getPresetName() + "(" + pre->getOriginUID()+")");
+
+        }else{
+            jassertfalse;
+        }
+    }
     else
     {
         jassertfalse;
@@ -187,9 +247,40 @@ void PresetChooserUI::comboBoxChanged (ComboBox* cb)
 
 }
 
-void PresetChooserUI::controllableContainerPresetLoaded (ControllableContainer*)
+void PresetChooserUI::controllableContainerPresetLoaded (ControllableContainer*,Preset * p)
 {
+
     updatePresetComboBox (false);
+}
+void PresetChooserUI::presetRemoved(Preset *p) {
+
+    updatePresetComboBox (false);
+
+
+};
+void PresetChooserUI::presetAdded(Preset *p) {
+    updatePresetComboBox (false);
+
+};
+
+
+int PresetChooserUI::findSelectedId(){
+    int i = 0;
+    for(auto & p:availablePresets){
+        i++;
+        if(p==container->presetable->currentPreset){
+            return i;
+        }
+    }
+    i = PresetChoice::otherStartId;
+    for(auto & p:otherPresets){
+        i++;
+        if(p==container->presetable->currentPreset){
+            return i;
+        }
+    }
+    return 0;
+
 }
 
 #endif

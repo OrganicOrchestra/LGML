@@ -22,7 +22,6 @@
 
 
 class ParameterUI : public InspectableComponent,
-    protected ParameterBase::AsyncListener,
     protected ParameterBase::Listener,
     public Controllable::Listener
 

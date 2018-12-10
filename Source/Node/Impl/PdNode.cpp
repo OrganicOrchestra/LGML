@@ -358,3 +358,9 @@ void PdNode::handleIncomingMidiMessage (MidiInput*,
     midiActivityTrigger->trigger();
 };
 
+String PdNode::getSubTypeName() {
+    if(pdPath->getFile().exists()){
+        return pdPath->getFile().getFileNameWithoutExtension();
+    }
+    return "";
+}

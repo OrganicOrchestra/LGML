@@ -18,34 +18,35 @@
 //#include "../Parameter/RangeParameter.h"
 //#include "../Parameter/ParameterList.h"
 //#include "../Parameter/Trigger.h"
-const Identifier ParameterContainer::presetIdentifier ("preset");
+
+//#include "../../Preset/PresetManager.h"
+#include "../../Preset/Preset.h"
+
+
 const Identifier ParameterContainer::uidIdentifier ("uid");
 
 IMPL_OBJ_TYPE (ParameterContainer)
 
 ParameterContainer::ParameterContainer (StringRef niceName):
 ControllableContainer (niceName),
-currentPreset (nullptr),
 isHidenInEditor(false),
-isUserDefined (false)
+_canHavePresets(true),
+_presetSavingIsRecursive(true)
 {
 
+    
 
-
-    nameParam = addNewParameter<StringParameter> ("Name", "Set the visible name", "");
+    nameParam = addNewParameter<StringParameter> ("Name", "Set the visible name", niceName);
     nameParam->isPresettable = false;
 
     containSavableObjects = addNewParameter<BoolParameter>("Contains Savable Objects", "this container is allowed to add customObjects", false);
     containSavableObjects->setInternalOnlyFlags(false,true);
-
-    currentPresetName = addNewParameter<StringParameter> (presetIdentifier.toString(), "Current Preset", "");
-    currentPresetName->isHidenInEditor = true;
-    savePresetTrigger = addNewParameter<Trigger> ("Save Preset", "Save current preset");
-    savePresetTrigger->isHidenInEditor = true;
+    containSavableObjects->isPresettable = false;
+    presetable = new Presetable(this);
 
 
     // init once all are created to avoid uninitialized values
-    nameParam->setValue (String (niceName));
+//    setNiceName(niceName);
 
 }
 
@@ -95,8 +96,24 @@ Array<WeakReference<ParameterBase>> ParameterContainer::getAllParameters (bool r
     return result;
 }
 
+int ParameterContainer::getDepthDistance(ParameterContainer * from){
+    ControllableContainer * insp =from;
+    int d = 0;
+    while(insp){
+        if(insp==this){
+            return d;
+        }
+        insp = insp->parentContainer;
+        d++;
+    }
+    return -1;
+}
 
-DynamicObject* ParameterContainer::createObject()
+DynamicObject* ParameterContainer::createObject(){
+    return createObjectMaxDepth(-1);
+}
+
+DynamicObject* ParameterContainer::createObjectMaxDepth(int maxDepth)
 {
 
     DynamicObject* data = new DynamicObject();
@@ -118,22 +135,24 @@ DynamicObject* ParameterContainer::createObject()
             }
         }
 
-
-        data->setProperty (controllablesId, paramsData);
+        if(paramsData.getDynamicObject()->getProperties().size())
+            data->setProperty (controllablesId, paramsData);
 
     }
 
 
-    if (controllableContainers.size())
+    if (controllableContainers.size() && maxDepth!=0)
     {
         DynamicObject*   childData = new DynamicObject();
 
-        for (auto controllableCont : controllableContainers)
+        for (auto controllableCont : getContainersOfType<ParameterContainer>(false))
         {
-            childData->setProperty (controllableCont->getNiceName(), controllableCont.get()->createObject());
+            DynamicObject * obj =controllableCont->createObjectMaxDepth(maxDepth-1);
+            if(obj && obj->getProperties().size())
+                childData->setProperty (controllableCont->getNiceName(), obj);
         }
-
-        data->setProperty (childContainerId, childData);
+        if(childData->getProperties().size())
+            data->setProperty (childContainerId, childData);
     }
 
 
@@ -141,10 +160,56 @@ DynamicObject* ParameterContainer::createObject()
     return data;
 }
 
-void ParameterContainer::containerWillClear (ControllableContainer* c)
+DynamicObject* ParameterContainer::createObjectFiltered(std::function<bool(ParameterBase*)> controllableFilter,std::function<bool(ParameterContainer*)> containerFilter,int maxDepth,bool includeUID)
 {
-    if (c == this)cleanUpPresets();
+
+    DynamicObject* data = new DynamicObject();
+    data->setProperty (factoryTypeIdentifier, getFactoryTypeName());
+    if(includeUID)data->setProperty (uidIdentifier, uid.toString());
+    {
+        var paramsData (new DynamicObject);
+
+        for (auto& c : getAllParameters())
+        {
+
+            if(controllableFilter(c)){
+                if (c->isUserDefined || c->isSavableAsObject)
+                {
+
+                    paramsData.getDynamicObject()->setProperty (c->niceName, ParameterFactory::createTypedObjectFromInstance ( ParameterBase::fromControllable (c)));
+                }
+                else if (c->isSavable)
+                {
+                    paramsData.getDynamicObject()->setProperty (c->niceName, c->getVarState());
+                }
+            }
+        }
+
+
+        data->setProperty (controllablesId, paramsData);
+
+    }
+
+
+    if (controllableContainers.size()&& maxDepth!=0)
+    {
+        DynamicObject*   childData = new DynamicObject();
+
+        for (auto controllableCont : getContainersOfType<ParameterContainer>(false))
+        {
+            if(containerFilter(controllableCont))
+                childData->setProperty (controllableCont->getNiceName(), controllableCont->createObjectFiltered(controllableFilter,containerFilter,maxDepth-1,includeUID));
+        }
+        if(childData->getProperties().size())
+            data->setProperty (childContainerId, childData);
+    }
+    
+    
+    
+    return data;
 }
+
+
 
 void ParameterContainer::childControllableRemoved (ControllableContainer*, Controllable* c)
 {
@@ -156,7 +221,7 @@ void ParameterContainer::childControllableRemoved (ControllableContainer*, Contr
     }
 }
 
-ParameterBase*   ParameterContainer::addParameter ( ParameterBase* p,int idxToInsert)
+ParameterBase*   ParameterContainer::addParameter ( ParameterBase* p,int idxToInsert,bool doListen)
 {
 
     p->setParentContainer (this);
@@ -166,10 +231,11 @@ ParameterBase*   ParameterContainer::addParameter ( ParameterBase* p,int idxToIn
 
     controllableContainerListeners.call (&ControllableContainerListener::childControllableAdded, this, p);
     notifyStructureChanged (this,true,true,false);
-    addControllableInternal (p);
-    p->addParameterListener (this);
-    p->addAsyncParameterListener (this);
-    p->isUserDefined = p->isUserDefined| isUserDefined;
+    if(doListen){
+        p->addParameterListener (this);
+        p->addAsyncParameterListener (this);
+    }
+    p->isUserDefined = p->isUserDefined || isUserDefined;
     if(p->isSavableAsObject){
         containSavableObjects->setValue(true,true);
     }
@@ -182,12 +248,6 @@ ParameterBase*   ParameterContainer::addParameter ( ParameterBase* p,int idxToIn
 
 void ParameterContainer::newMessage (const ParameterBase::ParamWithValue& pv)
 {
-    
-    if (pv.parameter == currentPresetName)
-    {
-        loadPresetWithName (pv.parameter->stringValue());
-    }
-
     if (!pv.isRange())
     {
         onContainerParameterChangedAsync (pv.parameter, pv.value);
@@ -212,11 +272,7 @@ void ParameterContainer::parameterValueChanged ( ParameterBase* p, ParameterBase
 
             setAutoShortName();
         }
-        else   if (p == savePresetTrigger)
-        {
-            saveCurrentPreset();
-
-        }
+        
 
 
         if (p && p->getFactoryTypeId() == Trigger::_factoryType)
@@ -256,7 +312,7 @@ void ParameterContainer::configureFromObject (DynamicObject* dyn)
                             if ( ParameterBase* par = ParameterBase::fromControllable (c))
                             {
                                 // we don't load preset when already loading a state
-                                if (par->shortName != presetIdentifier )
+                                if (par->shortName != Presetable::presetIdentifier )
                                 {
                                     if(par->isSavableAsObject){
                                         if(auto d = p.value.getDynamicObject()){
@@ -311,7 +367,7 @@ void ParameterContainer::configureFromObject (DynamicObject* dyn)
 
                         if (c)
                         {
-//                            c->configureFromObject (o.value.getDynamicObject());
+                            c->configureFromObject (o.value.getDynamicObject());
                         }
                         else
                         {
@@ -366,125 +422,13 @@ ParameterBase* ParameterContainer::addParameterFromVar (const String& name, cons
     }
 };
 
-////////////
-// Preset
-
-
-
-bool ParameterContainer::loadPresetWithName (const String& name)
-{
-    // TODO weird feedback when loading preset on parameter presetName
-    if (isLoadingPreset) {return false;}
-
-    if (name == "") return false;
-
-    isLoadingPreset = true;
-
-    PresetManager::Preset* preset = PresetManager::getInstance()->getPreset (getPresetFilter(), name);
-
-    if (preset == nullptr) {
-        isLoadingPreset = false;
-        currentPresetName->setValue ("", true, true);
-        return false;}
-
-    bool hasLoaded = loadPreset (preset);
-    isLoadingPreset = false;
-    return hasLoaded;
+ParameterContainer * ParameterContainer::getForUid(const Uuid &ui){
+    return dynamic_cast<ParameterContainer*>(ControllableContainer::globalRoot->findFirstControllableContainer(
+                                                                                                        [ui](ControllableContainer* c){
+                                                                                                            return c->uid==ui;
+                                                                                                        }));
 
 }
-
-bool ParameterContainer::loadPreset (PresetManager::Preset* preset)
-{
-    if (preset == nullptr)
-    {
-        currentPresetName->setValue ("", true);
-        return false;
-    }
-
-    
-
-    for (auto& pv : preset->presetValues)
-    {
-
-        ParameterBase* p = dynamic_cast <ParameterBase*> (getControllableForAddress (pv->paramControlAddress,true));
-
-        //DBG("Load preset, param set container : " << niceName << ", niceName : " << p->niceName << ",pv controlAddress : " << p->controlAddress << "" << pv->presetValue.toString());
-        if (p != nullptr && p != currentPresetName) p->setValue (pv->presetValue);
-    }
-
-    currentPreset = preset;
-    currentPresetName->setValue (currentPreset->name, false);
-
-    controllableContainerListeners.call (&ControllableContainerListener::controllableContainerPresetLoaded, this);
-    return true;
-}
-
-PresetManager::Preset* ParameterContainer::saveNewPreset (const String& _name)
-{
-    PresetManager::Preset* pre = PresetManager::getInstance()->addPresetFromControllableContainer (_name, getPresetFilter(), this, presetSavingIsRecursive);
-    NLOG (getNiceName(), juce::translate("New preset saved : ") + pre->name);
-    loadPreset (pre);
-    return pre;
-}
-
-
-bool ParameterContainer::saveCurrentPreset()
-{
-    //Same as saveNewPreset because PresetManager now replaces if name is the same
-    if (currentPreset == nullptr)
-    {
-//        jassertfalse;
-        return false;
-    }
-
-    PresetManager::Preset* pre = PresetManager::getInstance()->addPresetFromControllableContainer (currentPreset->name, getPresetFilter(), this, presetSavingIsRecursive);
-
-    NLOG (getNiceName(), juce::translate("Current preset saved : ") + pre->name);
-    return loadPreset (pre);
-
-
-}
-
-int ParameterContainer::getNumPresets()
-{
-    return PresetManager::getInstance()->getNumPresetForFilter (getPresetFilter());
-}
-
-bool ParameterContainer::resetFromPreset()
-{
-    if (currentPreset == nullptr) return false;
-
-
-    for (auto& pv : currentPreset->presetValues)
-    {
-        ParameterBase* p = ( ParameterBase*)getControllableForAddress (pv->paramControlAddress);
-
-        if (p != nullptr && p != currentPresetName) p->resetValue();
-    }
-
-
-    currentPreset = nullptr;
-    currentPresetName->setValue ("", true);
-
-    return true;
-}
-
-
-
-
-void ParameterContainer::cleanUpPresets()
-{
-    PresetManager* pm = PresetManager::getInstanceWithoutCreating();
-    
-    if (pm != nullptr) pm->deletePresetsForContainer (this, true);
-    
-}
-
-String ParameterContainer::getPresetFilter()
-{
-    return shortName.toString();
-}
-
 
 void ParameterContainer::setUserDefined (bool v)
 {

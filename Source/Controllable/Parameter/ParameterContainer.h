@@ -23,18 +23,17 @@
 #include "../Parameter/Trigger.h"
 //#include "../Parameter/FileParameter.h" // used sparsely so require explicit include
 
-#include "../../Preset/PresetManager.h"
+
 #include "../../Utils/FactoryObject.h"
 
 
-
+class Presetable;
 
 class StringParameter;
 class Trigger;
 
 class ParameterContainer: public ControllableContainer,
     public ParameterBase::Listener,
-    public ParameterBase::AsyncListener,
     public ControllableContainer::Listener,
     protected FactoryObject
 {
@@ -49,7 +48,7 @@ public:
     T* addNewUniqueParameter (const String& _niceName, const String& desc, Args...args);
 
     StringParameter* nameParam;
-    String info;
+    virtual String getSubTypeName(){return "";} // can be used to distinguish different VSTs Nodes / Js Patches (used in preset)
     String const getNiceName() override;
     String setNiceName (const String& _niceName) override;
     
@@ -61,68 +60,59 @@ public:
 
     virtual void configureFromObject (DynamicObject* data) override;
     virtual DynamicObject* createObject() override;
+    DynamicObject* createObjectMaxDepth(int maxDepth) ;
+    DynamicObject* createObjectFiltered(std::function<bool(ParameterBase*)> controllableFilter,std::function<bool(ParameterContainer*)> containerFilter,int maxDepth=-1,bool includeUID=false);
     
 
     //  controllableContainer::Listener
     virtual void childControllableRemoved (ControllableContainer*, Controllable*) override;
-    virtual void containerWillClear (ControllableContainer* ) override;
+    
 
 
 
-    //////////////////
-    //// preset
-
-    virtual bool loadPresetWithName (const String& name);
-    virtual bool loadPreset (PresetManager::Preset* preset);
-    virtual PresetManager::Preset* saveNewPreset (const String& name);
-    virtual bool saveCurrentPreset();
-    virtual int getNumPresets();
-
-
-    virtual bool resetFromPreset();
-    static const Identifier presetIdentifier;
+  
     static const Identifier uidIdentifier;
 
 
-    
+    int getDepthDistance(ParameterContainer * from);
 
-    void cleanUpPresets();
 
-    virtual String getPresetFilter();
     
 
 
     void setUserDefined (bool v) override;
 
-    ParameterBase* addParameter ( ParameterBase* ,int idxToSwap=-1);
+    ParameterBase* addParameter ( ParameterBase* ,int idxToSwap=-1,bool doListen=true);
     Array<WeakReference<ParameterBase>> getAllParameters (bool recursive = false, bool getNotExposed = false);
 
     // Inherited via ParameterBase::Listener
     virtual void parameterValueChanged ( ParameterBase* p, ParameterBase::Listener * notifier=nullptr) override;
     void newMessage (const  ParameterBase::ParamWithValue&)override;
 
-    bool canHavePresets;
-    bool presetSavingIsRecursive;
-    bool isUserDefined;
+    
+    
     BoolParameter* containSavableObjects;
-    StringParameter* currentPresetName;
-    Trigger* savePresetTrigger;
-    PresetManager::Preset* currentPreset;
 
 
+    static ParameterContainer * getForUid(const Uuid &ui);
 
-    // anti feedback when loading preset ( see loadPresetWithName)
-    bool isLoadingPreset = false;
+    bool canHavePresets() const{return _canHavePresets;}
+    bool presetSavingIsRecursive() const{return _presetSavingIsRecursive;}
+
     friend class PresetManager;
-
+    ScopedPointer<Presetable> presetable;
 
     WeakReference<ParameterContainer >::SharedPointer* getMasterRefPtr(){return masterReference.getSharedPointer (this);}
 private:
     WeakReference< ParameterContainer >::Master masterReference;
     friend class WeakReference<ParameterContainer>;
+    
 
 
 protected:
+    bool _canHavePresets;
+    bool _presetSavingIsRecursive;
+
     // internal callback that a controllableContainer can override to react to any of it's parameter change
     // this is to avoid either:
     //      adding controllableContainerListener for each implementation

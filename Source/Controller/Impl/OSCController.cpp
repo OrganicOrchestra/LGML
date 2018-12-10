@@ -585,7 +585,7 @@ void OSCController::sendAllControllableStates (ControllableContainer* c, int& se
 void OSCController::sendOSCFromParam(const Controllable *c){
     if (c->isChildOf (&userContainer))
     {
-        sendOSCForAddress (c, c->getControlAddress (&userContainer).toString());
+        sendOSCForAddress (c, c->getControlAddressRelative (&userContainer).toString());
     }
     else
     {

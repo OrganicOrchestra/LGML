@@ -131,7 +131,7 @@ void ParameterUI::mouseDown (const MouseEvent& e)
                 SystemClipboard::copyTextToClipboard (parameter->value.toString());
             default:
                 if(result>=100){
-                    this->processUICommand(result-100);
+                    processUICommand(result-100);
                 }
                 break;
 

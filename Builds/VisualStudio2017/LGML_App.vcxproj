@@ -383,6 +383,7 @@
     <ClCompile Include="..\..\Source\Node\UI\ConnectorComponent.cpp"/>
     <ClCompile Include="..\..\Source\Node\ConnectableNode.cpp"/>
     <ClCompile Include="..\..\Source\Node\NodeBase.cpp"/>
+    <ClCompile Include="..\..\Source\Preset\Preset.cpp"/>
     <ClCompile Include="..\..\Source\Preset\PresetChooserUI.cpp"/>
     <ClCompile Include="..\..\Source\Preset\PresetManager.cpp"/>
     <ClCompile Include="..\..\Source\Scripting\Js\JsContainerSync.cpp"/>
@@ -2376,6 +2377,7 @@
     <ClInclude Include="..\..\Source\Node\UI\ConnectorComponent.h"/>
     <ClInclude Include="..\..\Source\Node\ConnectableNode.h"/>
     <ClInclude Include="..\..\Source\Node\NodeBase.h"/>
+    <ClInclude Include="..\..\Source\Preset\Preset.h"/>
     <ClInclude Include="..\..\Source\Preset\PresetChooserUI.h"/>
     <ClInclude Include="..\..\Source\Preset\PresetManager.h"/>
     <ClInclude Include="..\..\Source\Scripting\Js\JsContainerSync.h"/>

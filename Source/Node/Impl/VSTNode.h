@@ -52,7 +52,8 @@ public:
             isDisplayed = addNewParameter<BoolParameter> ("isDisplayed", "is the plugin window displayed", false);
 
             isHidenInEditor = true;
-            currentPresetName->isPresettable = false;
+            _canHavePresets = false;
+//            currentPresetName->isPresettable = false;
             x->setInternalOnlyFlags(false,true);
             y->setInternalOnlyFlags(false,true);
             isDisplayed->setInternalOnlyFlags(false,true);
@@ -76,11 +77,6 @@ public:
 
     void audioProcessorChanged (AudioProcessor*) override;
 
-
-
-    // load state on message thread (some plugin crash if not)
-
-    PresetManager::Preset* presetToLoad;
 
 
 
@@ -137,7 +133,7 @@ public:
     Trigger* midiActivityTrigger;
 
     ParameterBase * addParameterFromVar(const String & name,const var & data)override;
-
+    String getSubTypeName() final;
 private:
 
     void setVSTState();

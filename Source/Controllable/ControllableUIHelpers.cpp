@@ -104,7 +104,7 @@ void ControllableReferenceUI::setCurrentControllable (Controllable* c)
 
 
 
-    currentControllable = c;
+
 
     if (c != nullptr)
     {
@@ -117,8 +117,11 @@ void ControllableReferenceUI::setCurrentControllable (Controllable* c)
         setButtonText (juce::translate("Target"));
     }
 
-    if (currentControllable.get() != c)
+    if (currentControllable.get() != c){
+        currentControllable = c;
         listeners.call (&Listener::choosedControllableChanged, this, c);
+    }
+
 }
 
 void ControllableReferenceUI::buttonClicked (Button*)

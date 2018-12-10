@@ -172,9 +172,7 @@ void ParameterContainerSync::childAddressChanged (ControllableContainer* /*notif
 
 
 };
-void ParameterContainerSync::controllableContainerPresetLoaded (ControllableContainer*) {
 
-};
 void ParameterContainerSync::containerWillClear (ControllableContainer* c) {
     auto pc=dynamic_cast<ParameterContainer*>(c);
     if(c==root){

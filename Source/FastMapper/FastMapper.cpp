@@ -271,7 +271,8 @@ void  FastMapper::linkedParamChanged (ParameterProxy* p ) {
 }
 
 bool  FastMapper::isParameterMapped (ParameterBase * p){
-    jassert(p);
+    if(!p)return false;
+//    jassert(p);
     for (const auto * f : maps){
         if(f->getProxyForParameter(p)){
             return true;

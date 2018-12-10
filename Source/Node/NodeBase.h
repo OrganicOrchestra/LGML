@@ -58,10 +58,6 @@ public:
     /** can be oerriden to react to clear */
     virtual void clearInternal() {};
 
-    String getPresetFilter() override;
-    DynamicObject* createObject() override;
-    void configureFromObject (DynamicObject* data) override;
-
 
 
 

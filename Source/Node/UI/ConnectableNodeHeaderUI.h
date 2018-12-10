@@ -20,7 +20,7 @@
 #include "../../Controllable/Parameter/UI/StringParameterUI.h"
 #include "../../Controllable/Parameter/UI/BoolToggleUI.h"
 #include "../ConnectableNode.h"
-#include "../../Preset/PresetChooserUI.h"
+class PresetChooserUI;
 
 
 class VuMeter;
@@ -68,7 +68,7 @@ public:
     virtual void nodeParameterChanged (ConnectableNode*, ParameterBase*) override;
 
     virtual void buttonClicked (Button*) override;
-    virtual void controllableContainerPresetLoaded (ControllableContainer*) override;
+    
 
 
     void numAudioInputChanged (ConnectableNode*, int /*newNumInput*/) override;
@@ -78,7 +78,6 @@ public:
     void handleCommandMessage (int id) override;
     enum
     {
-        updatePresetCBID,
         repaintId,
         audioInputChangedId,
         audioOutputChangedId

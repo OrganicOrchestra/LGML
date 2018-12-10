@@ -35,7 +35,7 @@ NodeBase::NodeBase (const String& name, bool _hasMainAudioControl) :
     rmsTimer (this)
 
 {
-    canHavePresets = true;
+    
 
 
     lastVolume = 0;//hasMainAudioControl ? outputVolume->floatValue() : 0;
@@ -123,46 +123,6 @@ void NodeBase::clear()
     //removeFromAudioGraph();
 }
 
-
-
-
-//Save / Load
-
-String NodeBase::getPresetFilter()
-{
-    return getFactoryTypeName() + String ("_") + uid.toString();
-}
-
-DynamicObject* NodeBase::createObject()
-{
-    auto data = ConnectableNode::createObject();
-
-//    MemoryBlock m;
-//
-//    // TODO we could implement that for all node objects to be able to save any kind of custom data
-//    getStateInformation (m);
-//
-//    if (m.getSize())
-//    {
-//        var audioProcessorData (new DynamicObject());
-//        audioProcessorData.getDynamicObject()->setProperty ("state", m.toBase64Encoding());
-//        data->setProperty ("audioProcessor", audioProcessorData);
-//    }
-
-    return data;
-}
-
-void NodeBase::configureFromObject (DynamicObject* data)
-{
-    ConnectableNode::configureFromObject (data);
-
-//    var audioProcessorData = data->getProperty ("audioProcessor");
-//    String audioProcessorStateData = audioProcessorData.getProperty ("state", var());
-//
-//    MemoryBlock m;
-//    m.fromBase64Encoding (audioProcessorStateData);
-//    setStateInformation (m.getData(), (int)m.getSize());
-}
 
 
 

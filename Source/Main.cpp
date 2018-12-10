@@ -30,6 +30,7 @@
 #include "UI/MainWindow.h"
 #endif
 
+#define COUT(x) std::cout << x << std::endl
 
 
 class CrashHandler{
@@ -41,7 +42,7 @@ public:
             if(in){
                 String bt = in->readString();
                 LOG(bt);
-                #if !ENGINE_HEADLESS
+#if !ENGINE_HEADLESS
                 AlertWindow aw("lgml crashed last time","error message : ",AlertWindow::AlertIconType::WarningIcon);
                 aw.addTextBlock(bt);
                 aw.addButton("Ok", 1);
@@ -50,7 +51,7 @@ public:
                 if(res==2){
                     SystemClipboard::copyTextToClipboard(bt);
                 }
-                #endif
+#endif
             }
             getCrashFile().deleteFile();
         }
@@ -72,11 +73,11 @@ public:
 
         auto bt = SystemStats::getStackBacktrace();
         if(saveToFile){
-        ScopedPointer<OutputStream> out ( getCrashFile().createOutputStream());
-        if(out){
-            if(!out->writeString(bt))
-                LOGE(juce::translate("Crash Reporter can't write to file"));
-        }
+            ScopedPointer<OutputStream> out ( getCrashFile().createOutputStream());
+            if(out){
+                if(!out->writeString(bt))
+                    LOGE(juce::translate("Crash Reporter can't write to file"));
+            }
         }
         LOG(bt);
 
@@ -114,147 +115,146 @@ public:
         // This method is where you should put your application's initialisation code..
         auto commandLinesElements = CommandLineElements::parseCommandLine (commandLine);
 
-        if (commandLinesElements.containsCommand ("v"))
-        {
-            std::cout << Engine::versionString << std::endl;
+        if ( commandLinesElements.containsCommand ("v") ){
+            COUT(Engine::versionString );
             quit();
             return;
-            }
+        }
 
-            PropertiesFile::Options options;
-            options.applicationName     = "LGML";
-            options.filenameSuffix      = "settings";
-            options.osxLibrarySubFolder = "Preferences";
+        PropertiesFile::Options options;
+        options.applicationName     = "LGML";
+        options.filenameSuffix      = "settings";
+        options.osxLibrarySubFolder = "Preferences";
 
-            appProperties = new ApplicationProperties();
-            appProperties->setStorageParameters (options);
-
-
+        appProperties = new ApplicationProperties();
+        appProperties->setStorageParameters (options);
 
 
-            Process::setPriority (Process::HighPriority);
 
-            engine = new Engine();
+
+        Process::setPriority (Process::HighPriority);
+
+        engine = new Engine();
 #if LGML_UNIT_TESTS
 
-            UnitTestRunner tstRunner;
-            CommandLineElements commandLineElements = CommandLineElements::parseCommandLine (commandLine);
+        UnitTestRunner tstRunner;
+        CommandLineElements commandLineElements = CommandLineElements::parseCommandLine (commandLine);
 
-            if (CommandLineElement elem = commandLineElements.getCommandLineElement ("t", ""))
+        if (CommandLineElement elem = commandLineElements.getCommandLineElement ("t", ""))
+        {
+            Array<UnitTest*> allTests = UnitTest::getAllTests();
+            Array<UnitTest*> testsToRun ;
+
+            for (auto& tName : elem.args)
             {
-                Array<UnitTest*> allTests = UnitTest::getAllTests();
-                Array<UnitTest*> testsToRun ;
+                bool found = false;
 
-                for (auto& tName : elem.args)
+                for (auto& t : allTests)
                 {
-                    bool found = false;
-
-                    for (auto& t : allTests)
+                    if (tName == t->getName())
                     {
-                        if (tName == t->getName())
-                        {
-                            testsToRun.add (t);
-                            found = true;
-                            break;
-                        }
-                    }
-
-                    if (!found)
-                    {
-                        DBG ("no tests found for : " + tName);
+                        testsToRun.add (t);
+                        found = true;
+                        break;
                     }
                 }
 
-                tstRunner.runTests (testsToRun);
-            }
-            else
-            {
-                tstRunner.runAllTests();
+                if (!found)
+                {
+                    DBG ("no tests found for : " + tName);
+                }
             }
 
-            quit();
+            tstRunner.runTests (testsToRun);
+        }
+        else
+        {
+            tstRunner.runAllTests();
+        }
+
+        quit();
 #else
 
 #if !ENGINE_HEADLESS
-            LookAndFeel::setDefaultLookAndFeel (lookAndFeelOO = new LookAndFeelOO);
-            mainWindow = new MainWindow (getApplicationName(), engine);
-            
-#endif
-            engine->parseCommandline (commandLinesElements);
-
-            if (!engine->getFile().existsAsFile())
-            {
-                engine->createNewGraph();
-                engine->setChangedFlag (false);
-            }
+        LookAndFeel::setDefaultLookAndFeel (lookAndFeelOO = new LookAndFeelOO);
+        mainWindow = new MainWindow (getApplicationName(), engine);
 
 #endif
+        engine->parseCommandline (commandLinesElements);
 
-            }
+        if (!engine->getFile().existsAsFile())
+        {
+            engine->createNewGraph();
+            engine->setChangedFlag (false);
+        }
 
-            void shutdown() override
-            {
-                // Add your application's shutdown code here..
-                CrashHandler::saveToFile = false;
+#endif
+
+    }
+
+    void shutdown() override
+    {
+        // Add your application's shutdown code here..
+        CrashHandler::saveToFile = false;
 #if !ENGINE_HEADLESS
-                mainWindow = nullptr; // (deletes our window)
-                if(LGMLDragger::getInstanceWithoutCreating()){LGMLDragger::deleteInstance();}
+        mainWindow = nullptr; // (deletes our window)
+        if(LGMLDragger::getInstanceWithoutCreating()){LGMLDragger::deleteInstance();}
 #endif
-                engine = nullptr;
-            }
+        engine = nullptr;
+    }
 
-            //==============================================================================
-            void systemRequestedQuit() override
-            {
-                // This is called when the app is being asked to quit: you can ignore this
-                // request and let the app carry on running, or call quit() to allow the app to close.
-                CrashHandler::saveToFile = false;
-                quit();
-            }
+    //==============================================================================
+    void systemRequestedQuit() override
+    {
+        // This is called when the app is being asked to quit: you can ignore this
+        // request and let the app carry on running, or call quit() to allow the app to close.
+        CrashHandler::saveToFile = false;
+        quit();
+    }
 
-            void anotherInstanceStarted (const String& commandLine) override
-            {
-                // When another instance of the app is launched while this one is running,
-                // this method is invoked, and the commandLine parameter tells you what
-                // the other instance's command-line arguments were.
+    void anotherInstanceStarted (const String& commandLine) override
+    {
+        // When another instance of the app is launched while this one is running,
+        // this method is invoked, and the commandLine parameter tells you what
+        // the other instance's command-line arguments were.
 
-                bool isMacFileCallback =
-                        commandLine.startsWithChar (File::getSeparatorChar())
-                        && File(commandLine).existsAsFile();
-                
-                
-                if(!isMacFileCallback){
-                    DBG ("Log recieved command args : "<<commandLine);
-                }
-                    engine->parseCommandline (CommandLineElements::parseCommandLine (commandLine));
-//                }
-//                else{
-
-#if !ENGINE_HEADLESS
-//                    AlertWindow::showMessageBox(AlertWindow::AlertIconType::WarningIcon,"other instance started", commandLine);
-#endif
-//                }
+        bool isMacFileCallback =
+        commandLine.startsWithChar (File::getSeparatorChar())
+        && File(commandLine).existsAsFile();
 
 
-            }
+        if(!isMacFileCallback){
+            DBG ("Log recieved command args : "<<commandLine);
+        }
+        engine->parseCommandline (CommandLineElements::parseCommandLine (commandLine));
+        //                }
+        //                else{
 
 #if !ENGINE_HEADLESS
-            ScopedPointer<MainWindow> mainWindow;
-            ScopedPointer<LookAndFeel> lookAndFeelOO;
+        //                    AlertWindow::showMessageBox(AlertWindow::AlertIconType::WarningIcon,"other instance started", commandLine);
+#endif
+        //                }
+
+
+    }
+
+#if !ENGINE_HEADLESS
+    ScopedPointer<MainWindow> mainWindow;
+    ScopedPointer<LookAndFeel> lookAndFeelOO;
 #endif
 
-            };
+};
 
 
-            static LGMLApplication* getApp()                 { return dynamic_cast<LGMLApplication*> (JUCEApplication::getInstance()); }
-            ApplicationCommandManager& getCommandManager()      { return getApp()->commandManager; }
-            ApplicationProperties * getAppProperties()           { return getApp()->appProperties; }
-            AudioDeviceManager& getAudioDeviceManager()        { return getApp()->deviceManager;}
-            UndoManager& getAppUndoManager()                      { return getApp()->undoManager;}
-            Engine* getEngine()                              { return getApp()->engine;}
-            ThreadPool* getEngineThreadPool()                              { return &getEngine()->threadPool;}
-            bool  isEngineLoadingFile()                            {if (getEngine()) {return getEngine()->isLoadingFile;} else {return false;}}
-            //==============================================================================
-            // This macro generates the main() routine that launches the app.
-            START_JUCE_APPLICATION (LGMLApplication)
-            
+static LGMLApplication* getApp()                 { return dynamic_cast<LGMLApplication*> (JUCEApplication::getInstance()); }
+ApplicationCommandManager& getCommandManager()      { return getApp()->commandManager; }
+ApplicationProperties * getAppProperties()           { return getApp()->appProperties; }
+AudioDeviceManager& getAudioDeviceManager()        { return getApp()->deviceManager;}
+UndoManager& getAppUndoManager()                      { return getApp()->undoManager;}
+Engine* getEngine()                              { return getApp()->engine;}
+ThreadPool* getEngineThreadPool()                              { return &getEngine()->threadPool;}
+bool  isEngineLoadingFile()                            {if (getEngine()) {return getEngine()->isLoadingFile;} else {return false;}}
+//==============================================================================
+// This macro generates the main() routine that launches the app.
+START_JUCE_APPLICATION (LGMLApplication)
+

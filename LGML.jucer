@@ -474,6 +474,8 @@
               resource="0"/>
       </GROUP>
       <GROUP id="{8E787ECF-77A1-DE5D-3FC3-DDC21EE0A766}" name="Preset">
+        <FILE id="BjwAMJ" name="Preset.cpp" compile="1" resource="0" file="Source/Preset/Preset.cpp"/>
+        <FILE id="Ae2C3X" name="Preset.h" compile="0" resource="0" file="Source/Preset/Preset.h"/>
         <FILE compile="1" file="Source/Preset/PresetChooserUI.cpp" id="Dq6F4I"
               name="PresetChooserUI.cpp" resource="0"/>
         <FILE compile="0" file="Source/Preset/PresetChooserUI.h" id="hRr3BA"

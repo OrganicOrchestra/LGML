@@ -22,7 +22,7 @@
 #include "LooperNode.h"
 #include "../UI/ConnectableNodeContentUI.h"
 
-class LooperNodeContentUI: public ConnectableNodeContentUI, public LooperNode::LooperListener,ParameterBase::AsyncListener
+class LooperNodeContentUI: public ConnectableNodeContentUI, public LooperNode::LooperListener,ParameterBase::Listener
 {
 public:
 

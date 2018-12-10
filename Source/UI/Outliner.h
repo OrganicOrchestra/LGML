@@ -34,7 +34,7 @@ public SettableTooltipClient,
 private Button::Listener,
 private Label::Listener,
 private Controllable::Listener, // for name of controllables
-private ParameterBase::AsyncListener // for nameParam(container)
+private ParameterBase::Listener // for nameParam(container)
 {
 public:
     explicit OutlinerItemComponent (OutlinerItem* item);

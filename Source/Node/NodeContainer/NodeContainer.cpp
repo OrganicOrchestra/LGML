@@ -18,6 +18,7 @@
 #include "../Connection/NodeConnection.h"
 
 #include "../../Utils/DebugHelpers.h"
+ 
 
 
 REGISTER_NODE_TYPE (NodeContainer)
@@ -34,7 +35,7 @@ REGISTER_NODE_TYPE (NodeContainer)
 extern AudioDeviceManager& getAudioDeviceManager();
 extern bool isEngineLoadingFile();
 
-class GraphBuildWatcher : private AsyncUpdater{
+class GraphBuildWatcher : public AsyncUpdater{
     public :
     GraphBuildWatcher(NodeContainer* _nc):nc(_nc){
         startBuild();
@@ -46,6 +47,7 @@ class GraphBuildWatcher : private AsyncUpdater{
     }
     void handleAsyncUpdate() override{
         nc->getAudioGraph()->suspendProcessing(false);
+        nc->gWatcher=nullptr;
     };
     NodeContainer* nc;
 };
@@ -74,7 +76,7 @@ isRoot(_isRoot)
 #endif
 
     //Force non recursive saving of preset as container has only is level to take care, nested containers are other nodes
-    presetSavingIsRecursive = false;
+    _presetSavingIsRecursive = false;
 
 
     //maybe keep it ?
@@ -282,7 +284,13 @@ void NodeContainer::updateAudioGraph (bool force)
     else{
         {
 //            MessageManagerLock mm;
+            if(gWatcher){
+                gWatcher->cancelPendingUpdate();
+                gWatcher->startBuild();
+            }
+            else{
             gWatcher = new GraphBuildWatcher(this);
+            }
         }
         cancelPendingUpdate();
         setBuildSessionGraph(false);
@@ -337,7 +345,7 @@ ParameterContainer*   NodeContainer::addContainerFromObject (const String& name,
     //  ConnectableNode * node = addNodeFromJSONData(data);
 
     ConnectableNode* node = NodeFactory::createBaseFromObject ( "", data);
-
+    if(!node){jassertfalse; return nullptr;}
     if (auto n = dynamic_cast<ContainerInNode*> (node)) containerInNode = n;
     else if (auto n = dynamic_cast<ContainerOutNode*> (node)) containerOutNode = n;
 

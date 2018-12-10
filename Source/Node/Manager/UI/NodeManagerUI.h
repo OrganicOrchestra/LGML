@@ -72,9 +72,6 @@ public:
     void removeNodeManagerUIListener (NodeManagerUIListener* listener) { nodeManagerUIListeners.remove (listener); }
     bool keyPressed (const KeyPress& key)override;
 
-//    DynamicObject* createObject();
-//    void setFromObject(const DynamicObject * obj);
-
 
 
     ScopedPointer<UISync> uiSync;

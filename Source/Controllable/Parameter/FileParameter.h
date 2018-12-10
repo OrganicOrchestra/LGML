@@ -16,7 +16,7 @@ typedef enum{
     Js,
     Audio,
     PdPatch,
-    Preset
+    PresetFile
 
 } FileType;
 

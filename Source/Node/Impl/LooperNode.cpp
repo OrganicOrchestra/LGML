@@ -35,11 +35,13 @@ LooperNode::LooperNode (StringRef name) :
     exportAudio =  addNewParameter<Trigger> ("Export audio", "export audio of all recorded Tracks");
     selectAllTrig =  addNewParameter<Trigger> ("Select all", "Select All tracks, for all clear or main volume for instance");
     selectTrack = addNewParameter<IntParameter> ("Select track", "set track selected", 0, -1, 0);
+    selectTrack->setSavable(false);
     recPlaySelectedTrig =  addNewParameter<Trigger> ("Rec or play", "Tells the selected track to wait for the next bar and then start record or play");
     playSelectedTrig =  addNewParameter<Trigger> ("Play", "Tells the selected track to wait for the next bar and then stop recording and start playing");
     stopSelectedTrig =  addNewParameter<Trigger> ("Stop", "Tells the selected track to stop ");
     clearSelectedTrig =  addNewParameter<Trigger> ("Clear", "Tells the selected track to clear it's content if got any");
     volumeSelected = addNewParameter<FloatParameter> ("Volume", "Set the volume of the selected track", 1.f, 0.f, 1.f);
+    volumeSelected->setSavable(false);
     clearAllTrig =  addNewParameter<Trigger> ("Clear all", "Tells all tracks to clear it's content if got any");
     stopAllTrig =  addNewParameter<Trigger> ("Stop all", "Tells all tracks to stop it's content if got any");
     playAllTrig =  addNewParameter<Trigger> ("Play all", "Tells all tracks to play it's content if got any");

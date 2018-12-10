@@ -137,7 +137,7 @@ void Engine::loadDocumentAsync (const File& file)
 
 
     parseTask->start();
-    jsonData = JSON::parse (*is);
+    var jsonData = JSON::parse (*is);
     parseTask->end();
     loadTask->start();
     loadJSONData (jsonData, loadTask);
@@ -178,7 +178,9 @@ void Engine::handleAsyncUpdate()
 
 
     isLoadingFile = false;
-
+    for(auto & f:fileSavers){
+        f->loadFiles(getCurrentProjectFolder());
+    }
 
     //  graphPlayer.setProcessor(NodeManager::getInstance()->getAudioGraph());
     //  suspendAudio(false);
@@ -207,17 +209,29 @@ Result Engine::saveDocument (const File& file)
 {
 
     var data = createObject();
+    String errMsg;
+    if (file.exists())
+        file.deleteFile();
 
-    if (file.exists()) file.deleteFile();
     {
         ScopedPointer<OutputStream> os ( file.createOutputStream());
         JSON::writeToStream (*os, data);
         os->flush();
     }
-
+    for(auto saver : fileSavers){
+        if(saver->isDirty()){
+            auto r = saver->saveFiles(getCurrentProjectFolder());
+            if(!r){
+                errMsg+=r.getErrorMessage() + "\n";
+            }
+        }
+    }
     setLastDocumentOpened (file);
     saveSession->setValueFrom(this, getFile().getFullPathName());
-    return Result::ok();
+    if(errMsg.isEmpty())
+        return Result::ok();
+    else
+        return Result::fail(errMsg);
 }
 
 
@@ -261,7 +275,7 @@ DynamicObject* Engine::createObject()
 
     data->setProperty ("metaData", metaData);
 
-    data->setProperty ("presetManager", PresetManager::getInstance()->createObject());
+//    data->setProperty ("presetManager", PresetManager::getInstance()->createObject());
 
 
     if( auto p = getControllableContainerByName("NodesUI")){
@@ -306,7 +320,7 @@ void Engine::loadJSONData (const var& data, ProgressTask* loadingTask)
 
     presetTask->start();
 
-    if (d->hasProperty ("presetManager")) PresetManager::getInstance()->configureFromObject (d->getProperty ("presetManager").getDynamicObject());
+//    if (d->hasProperty ("presetManager")) PresetManager::getInstance()->configureFromObject (d->getProperty ("presetManager").getDynamicObject());
 
     presetTask->end();
 

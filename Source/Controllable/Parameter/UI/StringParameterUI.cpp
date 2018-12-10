@@ -147,7 +147,7 @@ void StringParameterUI::setValueTextTrimmed(String s){
 
     bool noValue = s.isEmpty() ;
     if(noValue){
-        s = descriptionPrefix +parameter->description ;
+        s = descriptionPrefix +juce::translate(parameter->description) ;
         Colour bgColor =valueLabel.findColour(Label::backgroundColourId);
         Colour txtColor = findColour(Label::textColourId);
 

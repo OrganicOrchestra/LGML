@@ -17,70 +17,145 @@
  */
 
 #include "PresetManager.h"
+#include "Preset.h"
 #include "../Controllable/Parameter/ParameterContainer.h"
+
 
 juce_ImplementSingleton (PresetManager)
 
+#include "../Engine.h"
 
-PresetManager::PresetManager()
+static String presetFolderName("presets");
+static String presetExtension(".lgml.preset");
+
+class EngineSync : public Engine::EngineFileSaver{
+public:
+
+    EngineSync(PresetManager * _pm):EngineFileSaver("PresetManager"),pm(_pm){
+        
+
+    };
+
+    Result saveFiles(const File & baseFolder) final{
+
+        auto pFolder = baseFolder.getChildFile(presetFolderName);
+        pFolder.deleteRecursively();
+
+        auto r= pFolder.createDirectory();
+        if(!r)return r;
+
+
+        for(auto &p:pm->presets){
+
+            auto tf =pFolder.getChildFile(p->getType());
+            if(!tf.exists()){
+                auto r = tf.createDirectory();
+                if(!r)return r;
+            }
+            tf = tf.getChildFile(p->getPresetName()+"_"+p->getFilter()+presetExtension);
+            if(tf.exists()){
+                tf.deleteFile();
+                jassertfalse;
+            }
+            tf.create();
+            var data = p->createObject();
+            ScopedPointer<OutputStream> os ( tf.createOutputStream());
+            JSON::writeToStream (*os, data);
+            os->flush();
+        }
+
+
+        return Result::ok();
+    }
+
+    Result loadFiles(const File & baseFolder) final{
+        pm->clear();
+        String errMsg;
+        auto pFolder = baseFolder.getChildFile(presetFolderName);
+        if(!pFolder.exists()){
+            return Result::ok();
+        }
+
+        for(auto &pf:pFolder.findChildFiles(File::TypesOfFileToFind::findFiles,true,"*"+presetExtension)){
+            var pvar = JSON::parse(pf);
+            DynamicObject * pobj = pvar.getDynamicObject();
+            auto * pre = new Preset("unloaded Preset",nullptr);
+            pre->configureFromObject(pobj);
+            pm->addPreset(pre);
+
+
+        }
+
+        if(errMsg.isEmpty())
+            return Result::ok();
+        else
+            return Result::fail(errMsg);
+
+    }
+
+    bool isDirty() final{
+        // TODO implement preset watch
+        return true;
+    }
+
+    File rootFolder;
+    PresetManager * pm;
+};
+
+PresetManager::PresetManager():
+engineSync (new EngineSync(this))
 {
+
+
 }
 
 PresetManager::~PresetManager()
 {
-    presets.clear();
+    clear();
+
+
+
 }
 
-PresetManager::Preset* PresetManager::addPresetFromControllableContainer (const String& name, const String& filter, ParameterContainer* container, bool recursive, bool includeNotExposed)
-{
-    //Array<PresetValue *> vPresets;
-    Preset* pre = getPreset (filter, name);
-    bool presetExists = pre != nullptr;
 
-    if (!presetExists)
-    {
-        pre = new Preset (name, filter);
-    }
-    else
-    {
-        pre->clear();
-    }
+PresetManager::Listener::Listener(){
+//    PresetManager::getInstance()->add(this);    
+}
 
-    for (auto& p : container->getAllParameters (recursive, includeNotExposed))
-    {
-        if (!p->isPresettable ) continue;
-
-        if (p == ( ParameterBase*)container->currentPresetName) { continue; }
-
-        if (!p->isControllableExposed && !includeNotExposed) continue;
-
-        pre->addPresetValue (p->getControlAddress (container).toString(), var (p->value));
-    }
-
-    if (!recursive)
-    {
-        for (auto& cc : container->getContainersOfType<ParameterContainer> (false))
-        {
-            if (cc->currentPresetName->stringValue().isNotEmpty())
-            {
-                pre->addPresetValue (cc->currentPresetName->getControlAddress (container).toString(), cc->currentPresetName->value);
-            }
-        }
-    }
+PresetManager::Listener::~Listener(){
+//    PresetManager::getInstance()->presetListeners.remove(this);
+}
 
 
-    if (!presetExists) presets.add (pre);
 
+
+Preset* PresetManager::addPreset(Preset * pre){
+    presets.add (pre);
+    presetListeners.call(&PresetManager::Listener::presetAdded,pre);
     return pre;
+
+}
+void PresetManager::removePreset(Preset * pre){
+
+     presets.removeObject(pre,false);
+presetListeners.call(&PresetManager::Listener::presetRemoved,pre);
+    delete pre;
+
 }
 
-PresetManager::Preset* PresetManager::getPreset (String filter, const String& name) const
+Preset* PresetManager::getPreset (const String & filter, const String& name) const
 {
     for (auto& pre : presets)
     {
-        if (pre->filter == filter && pre->name == name) return pre;
+        if (pre->getFilter() == filter && pre->getPresetName() == name) return pre;
     }
 
+//    DBG(String("asked : ")+filter+"::"+name);
+//    for (auto& pre : presets)
+//    {
+//        DBG(pre->getFilter() + "::"+pre->getPresetName()+"\n");
+//    }
+//    jassertfalse;
     return nullptr;
 }
 
@@ -102,7 +177,7 @@ int PresetManager::getNumPresetForFilter (const String& filter) const
     for (auto& pre : presets)
     {
 
-        if (pre->filter == filter)
+        if (pre->getFilter() == filter)
         {
             num++;
         }
@@ -122,7 +197,7 @@ void PresetManager::deleteAllUnusedPresets (ParameterContainer* rootContainer)
 
         for (auto& cc : allContainers)
         {
-            if (cc->getPresetFilter() == p->filter)
+            if (cc->presetable->getPresetFilter() == p->getFilter())
             {
                 isUsed = true;
                 break;
@@ -143,13 +218,13 @@ int PresetManager::deletePresetsForContainer (ParameterContainer* container, boo
 {
     if (container == nullptr) return 0;
 
-    const String filter = container->getPresetFilter();
+    const String filter = container->presetable->getPresetFilter();
 
     Array<Preset*> presetsToRemove;
 
     for (auto& p : presets)
     {
-        if (p->filter == filter) presetsToRemove.add (p);
+        if (p->getFilter() == filter) presetsToRemove.add (p);
     }
 
     int numPresetsDeleted = presetsToRemove.size();
@@ -172,108 +247,37 @@ int PresetManager::deletePresetsForContainer (ParameterContainer* container, boo
 
 void PresetManager::clear()
 {
+    for(auto & p:presets){
+        presetListeners.call(&PresetManager::Listener::presetRemoved,p);
+    }
     presets.clear();
 }
 
-DynamicObject* PresetManager::createObject()
-{
-    auto data = new DynamicObject();
-    var presetDatas;
 
-    for (auto& p : presets)
-    {
-        presetDatas.append (p->createObject());
-    }
-
-    data->setProperty ("presets", presetDatas);
-
-    return data;
-}
-
-void PresetManager::configureFromObject (DynamicObject* data)
-{
-    clear();
-
-    Array<var>* presetDatas = data->getProperty ("presets").getArray();
-
-    if (presetDatas == nullptr)
-    {
-        //DBG("no preset Loaded");
-        return;
-    }
-
-    for (auto& presetData : *presetDatas)
-    {
-        Preset* pre = new Preset (presetData.getDynamicObject()->getProperty ("name"), presetData.getDynamicObject()->getProperty ("filter"));
-        pre->configureFromObject (presetData.getDynamicObject());
-
-        presets.add (pre);
-    }
-
-}
-
-
-
-//////////////////////////////
-// Presets
-
-
-void PresetManager::Preset::addPresetValue (const String& controlAddress, var value)
-{
-    presetValues.add (new PresetValue (controlAddress, value));
-}
-
-void PresetManager::Preset::addPresetValues (Array<PresetValue*> _presetValues)
-{
-    presetValues.addArray (_presetValues);
-}
-
-var PresetManager::Preset::getPresetValue (const String& targetControlAddress)
-{
-    for (auto& pv : presetValues)
-    {
-
-        if (pv->paramControlAddress == targetControlAddress) return pv->presetValue;
-    }
-
-    return var();
-}
-
-void PresetManager::Preset::clear()
-{
-    presetValues.clear();
-}
-
-
-DynamicObject* PresetManager::Preset::createObject()
-{
-    auto data = new DynamicObject();
-    data->setProperty ("name", name);
-    data->setProperty ("filter", filter);
-    var presetValuesData;
-
-    for (auto& pv : presetValues)
-    {
-        var pvData (new DynamicObject());
-        pvData.getDynamicObject()->setProperty (ControllableContainer::controlAddressIdentifier, pv->paramControlAddress);
-        pvData.getDynamicObject()->setProperty ("value", pv->presetValue);
-        presetValuesData.append (pvData);
-    }
-
-    data->setProperty ("values", presetValuesData);
-    return data;
-}
-
-void PresetManager::Preset::configureFromObject (DynamicObject* data)
-{
-
-    Array<var>* pvDatas = data->getProperty ("values").getArray();
-
-    if (pvDatas != nullptr)
-    {
-        for (auto& pvData : *pvDatas)
-        {
-            addPresetValue (pvData.getProperty (ControllableContainer::controlAddressIdentifier, var()), pvData.getProperty ("value", var()));
+Array<WeakReference<Preset> >  PresetManager::getPresetsForFilter(String filter){
+    Array<WeakReference<Preset> > res;
+    for(auto & p:presets){
+        auto fName =p->getFilter();
+        if(fName==filter){
+            res.add(p);
         }
     }
+    return res;
+
 }
+
+Array<WeakReference<Preset> >  PresetManager::getPresetsForType(String type,ParameterContainer *ownerToIgnore){
+    Array<WeakReference<Preset> > res;
+    for(auto & p:presets){
+
+        if(p->getType()==type){
+            if(p->getOriginContainer() && p->getOriginContainer()!=ownerToIgnore)
+                res.add(p);
+        }
+    }
+    return res;
+
+}
+
+
+

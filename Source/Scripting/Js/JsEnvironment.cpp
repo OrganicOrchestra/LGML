@@ -642,8 +642,9 @@ void JsEnvironment::controllableFeedbackUpdate (ControllableContainer* originCon
 
     if ( ParameterBase* p = dynamic_cast <ParameterBase*> (c))
         v = p->value;
+    
 
-    auto sArr = c->getControlAddress (originContainer);
+    auto sArr = c->getControlAddressRelative (originContainer);
     Array<var> add;
     for (auto& s : sArr) { add.add (s.toString()); }
 
@@ -652,7 +653,7 @@ void JsEnvironment::controllableFeedbackUpdate (ControllableContainer* originCon
 #if NON_BLOCKING
     auto f=[this,originContainer,argList](){
 #endif
-        callFunction ("on_" + JsHelpers::getJsFunctionNameFromControlAddress (originContainer->getControlAddress()), argList, false);
+        callFunction ("on_" + JsHelpers::getJsFunctionNameFromStringArray (originContainer->getControlAddress().toStringArray()), argList, false);
 #if NON_BLOCKING
     };
 

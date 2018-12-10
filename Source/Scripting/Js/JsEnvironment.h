@@ -271,7 +271,7 @@ T* castPtrFromJSEnv(const var::NativeFunctionArgs& a){
 
 
 
-class JsParameterListenerObject: public ParameterBase::AsyncListener
+class JsParameterListenerObject: public ParameterBase::Listener
 {
 public :
     JsParameterListenerObject (JsEnvironment* js, ParameterBase* p): jsEnv (js), parameter (p)

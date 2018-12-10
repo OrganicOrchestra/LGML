@@ -24,7 +24,6 @@ const Identifier ParameterBase::valueIdentifier ("value");
 ParameterBase::ParameterBase ( const String& niceName, const String& description, var initialValue, bool enabled) :
     Controllable ( niceName, description, enabled),
     isEditable (true),
-    isPresettable (true),
     isOverriden (false),
     queuedNotifier (100),
     hasCommitedValue (false),
@@ -84,7 +83,7 @@ void ParameterBase::setSavable(bool s){
 void ParameterBase::setValueFrom(Listener * notifier,const var & _value, bool silentSet , bool force ){
     jassert(!isCommitableParameter);
     // reentrancy check
-    if(notifier !=nullptr && (_valueSetter.get()==notifier) ) force=true;
+    if(notifier !=nullptr && (_valueSetter.get()==notifier) ) force=!checkValueIsTheSame(_value, value);
     _valueSetter = notifier;
      tryToSetValue (_value, silentSet, alwaysNotify || force,notifier);
     _valueSetter = nullptr;
@@ -201,7 +200,7 @@ void ParameterBase::notifyValueChanged (bool defferIt,Listener * notifier)
         listeners.call (&Listener::parameterValueChanged, this,notifier);
     }
 
-    queuedNotifier.addMessage (new ParamWithValue (this, value, false,notifier));
+    queuedNotifier.addMessage (new ParamWithValue (this, value, false,notifier),false,notifier);
 }
 
 

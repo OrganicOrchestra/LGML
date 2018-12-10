@@ -59,8 +59,7 @@ ConnectableNode::ConnectableNode (const String& name, bool _hasMainAudioControl)
       setOutputChannelName(1, "Main Right");
       */
 
-    //allow for all nested container to have all parameters save in node's preset (except node container, see nodecontainer's constructor)
-    presetSavingIsRecursive = true;
+    
 }
 
 ConnectableNode::~ConnectableNode()

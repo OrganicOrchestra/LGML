@@ -196,9 +196,8 @@ inline String getJsFunctionNameFromAddress (const String& n)
 
 }
 
-inline String getJsFunctionNameFromControlAddress (const ControlAddressType& n)
+inline String getJsFunctionNameFromStringArray (const StringArray& arr)
 {
-    StringArray arr=n.toStringArray();
     return    arr.joinIntoString ("_");
 
 }

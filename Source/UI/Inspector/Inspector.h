@@ -19,7 +19,10 @@
 #include "../ShapeShifter/ShapeShifterContent.h"
 #include "InspectableComponent.h"
 #include "InspectorEditor.h"
-#include "../../Controllable/Parameter/ParameterContainer.h"
+#include "../../Controllable/ControllableContainer.h"
+
+class ParameterContainer;
+class ParameterBase;
 
 class Inspector : public juce::Component,
     public InspectorEditor::InspectorEditorListener,

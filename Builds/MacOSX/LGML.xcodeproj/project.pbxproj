@@ -482,6 +482,10 @@
 			isa = PBXBuildFile;
 			fileRef = 4B5358963354CEDC5E33A76D;
 		};
+		50B2A391AAA35338BC68BCAD = {
+			isa = PBXBuildFile;
+			fileRef = 166DC3CC6A202A80168E056E;
+		};
 		3D7F4D1725A706B4B376D513 = {
 			isa = PBXBuildFile;
 			fileRef = 30CD8A304189575D0B1EC10D;
@@ -1027,6 +1031,13 @@
 			lastKnownFileType = file.nib;
 			name = RecentFilesMenuTemplate.nib;
 			path = RecentFilesMenuTemplate.nib;
+			sourceTree = "SOURCE_ROOT";
+		};
+		166DC3CC6A202A80168E056E = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Preset.cpp;
+			path = ../../Source/Preset/Preset.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		1724054EF361D5BCC42B9F90 = {
@@ -1755,6 +1766,13 @@
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = MultiNeedle.cpp;
 			path = ../../Source/Audio/MultiNeedle.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
+		5BEDF1059638B439EFCC8092 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = Preset.h;
+			path = ../../Source/Preset/Preset.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		5CA93F2EA0E883E4CCE1D29A = {
@@ -3836,6 +3854,8 @@
 		83B80CAF3E761B9D29D0E285 = {
 			isa = PBXGroup;
 			children = (
+				166DC3CC6A202A80168E056E,
+				5BEDF1059638B439EFCC8092,
 				30CD8A304189575D0B1EC10D,
 				EAB055B518CCDACD29A4056B,
 				C843CB56566E29128EE6E968,
@@ -4659,6 +4679,7 @@
 				113B085801A1B3E7067B851F,
 				1A3355AB4B772446DE630E22,
 				D6FA2B5ADA2C81B5F4FB6236,
+				50B2A391AAA35338BC68BCAD,
 				3D7F4D1725A706B4B376D513,
 				37CC8F2A6A5D558F1DE06707,
 				68941D13B64FE66AF32C9E4B,

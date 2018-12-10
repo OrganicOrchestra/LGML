@@ -20,6 +20,7 @@
 #include "../../Audio/VSTManager.h"
 #include "../../Time/TimeManager.h"
 #include "../../Controllable/Parameter/ParameterFactory.h"
+#include "../../Preset/Preset.h" // to ensure that changed param can be a VST one
 
 constexpr int maxVSTParamNameSize = 100;
 
@@ -193,7 +194,7 @@ void VSTNode::onContainerParameterChanged ( ParameterBase* p)
         setVSTState();
     }
     // a VSTParameter is changed
-    else if(p!=nameParam && innerPlugin &&p!=currentPresetName)
+    else if(p!=nameParam && innerPlugin)
     {
 
         if (blockFeedback)return;
@@ -619,6 +620,13 @@ void VSTNode::handleIncomingMidiMessage (MidiInput*,
 
 void VSTNode::handleAsyncUpdate()
 {
+}
+
+String VSTNode::getSubTypeName() {
+    if(innerPlugin){
+        return innerPlugin->getPluginDescription().createIdentifierString();
+    }
+    return "";
 }
 
 

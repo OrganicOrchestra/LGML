@@ -23,7 +23,7 @@ REGISTER_NODE_TYPE (JsNode)
 
 JsNode::JsNode (StringRef name) : NodeBase (name, false), JsEnvironment ("node.jsNode", this)
 {
-    canHavePresets = false;
+    _canHavePresets = false;
 
     setPreferedNumAudioInput (0);
     setPreferedNumAudioOutput (0);
@@ -151,4 +151,15 @@ var JsNode::addTriggerParameter (const var::NativeFunctionArgs& a)
     jsNode->jsDynamicParameters.add (jsNode->ParameterContainer::addNewParameter<Trigger> (a.arguments[0], a.arguments[1]));
 
     return var::undefined();
+}
+
+
+String JsNode::getSubTypeName(){
+    if(auto * fp = getJsFileParameter()){
+        if(fp->getFile().exists()){
+            return fp->getFile().getFileNameWithoutExtension();
+        }
+    }
+    return "";
+
 }
