@@ -37,7 +37,7 @@ public:
     void mouseEnter(const MouseEvent & me) final{DBG(String("enter ")+niceName(me.originalComponent));}
     void mouseExit(const MouseEvent & me) final{DBG(String("exit ")+niceName(me.originalComponent));}
     void mouseDrag(const MouseEvent & me) final{DBG(String("drag ")+niceName(me.originalComponent));}
-    void mouseMove(const MouseEvent & me) final{DBG(String("move ")+niceName(me.originalComponent));}
+//    void mouseMove(const MouseEvent & me) final{DBG(String("move ")+niceName(me.originalComponent));}
 };
 MouseDbg * globalMouse(nullptr);
 #define INITGLOBALMOUSE() if(!globalMouse) globalMouse = new MouseDbg();
@@ -87,7 +87,7 @@ nodesLayer(new NodeLayerComponent())
 
     addAndMakeVisible(lassoSelectionComponent);
     setInterceptsMouseClicks (true, true);
-//    nodesLayer->addMouseListener(this, true);
+    nodesLayer->addMouseListener(this, true);
 
     resizeToFitNodes();
 
@@ -300,6 +300,7 @@ void NodeContainerViewer::createAudioConnectionFromConnector (Connector* baseCon
     baseConnector->addMouseListener (this, false);
 
     nodesLayer->addAndMakeVisible (editingConnection);
+    editingConnection->startEditing(!isOutputConnector);
 }
 
 void NodeContainerViewer::updateEditingConnection()
@@ -483,10 +484,11 @@ void NodeContainerViewer::mouseDown (const MouseEvent& event)
 
 void NodeContainerViewer::mouseMove (const MouseEvent& e)
 {
-    if (editingConnection != nullptr)
+    if (editingConnection != nullptr )
     {
         //DBG("NMUI mouse mouve while editing connection");
-        updateEditingConnection();
+//        updateEditingConnection();
+        finishEditingConnection();
     }
 
 }
