@@ -151,6 +151,7 @@ void PdNode::processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer& incom
 }
 
 void PdNode::onContainerTriggerTriggered(Trigger *t){
+    libpd_bang(t->niceName.toRawUTF8());
     NodeBase::onContainerTriggerTriggered(t);
 }
 
@@ -158,8 +159,8 @@ void PdNode::onContainerParameterChanged ( ParameterBase* p) {
 
         auto idx = pdParameters.indexOf(p);
         if(idx!=-1){
-            if(auto fp = p->getAs<FloatParameter>()){
-                libpd_float(p->niceName.toRawUTF8(), fp->floatValue());
+            if(p->getAs<FloatParameter>() || p->getAs<BoolParameter>() || p->getAs<IntParameter>()){
+                libpd_float(p->niceName.toRawUTF8(), (float)p->value);
             }
             else if(auto sp = p->getAs<StringParameter>()){
                 libpd_symbol(p->niceName.toRawUTF8(), sp->stringValue().toRawUTF8());
