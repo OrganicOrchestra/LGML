@@ -21,7 +21,7 @@
 #include "MainComponent.h"
 #include "AppPropertiesUI.h"
 
-//#include "../Node/Manager/UI/NodeManagerUI.h"
+#include "../Node/Manager/UI/NodeManagerUI.h"
 //#include "../Controller/UI/ControllerManagerUI.h"
 
 
@@ -98,6 +98,7 @@ MainContentComponent::~MainContentComponent()
     engine->removeEngineListener (this);
     ShapeShifterManager::deleteInstance();
     Inspector::deleteInstance();
+    NodeManagerUI::deleteInstance();
 
 }
 
