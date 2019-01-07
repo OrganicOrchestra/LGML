@@ -654,10 +654,10 @@ void NodeContainerViewer::onContainerParameterChanged( ParameterBase* p) {
 
 Rectangle<int> NodeContainerViewer::getNodesBoundingBox(){
     Rectangle<int> _bounds(0, 0, 0,0);
-    for (auto &n : nodesUI) {
+    for (auto &n : nodesLayer->getChildren()) {
         _bounds = _bounds.getUnion(getLocalArea(nodesLayer,n->getBoundsInParent()));
     }
-
+    
     return _bounds;
 }
 void NodeContainerViewer::resizeToFitNodes(Point<int> maxStartP)

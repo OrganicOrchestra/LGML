@@ -61,9 +61,9 @@ public:
             setFill (Colours::white.withAlpha (0.1f));
         }
         void mouseDown(const MouseEvent & me)final{
-            if(auto ncv = findParentComponentOfClass<NodeContainerViewer>()){
-
-            }
+//            if(auto ncv = findParentComponentOfClass<NodeContainerViewer>()){
+//
+//            }
         }
 
         
