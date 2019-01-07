@@ -154,9 +154,13 @@ public:
         
     }
     void handleAsyncUpdate()override{
-        if(fp.get())
-            fp.get()->fileListeners.call(&FileParameter::Listener::loadingEnded,fp.get());
-//        delete this;
+        if(auto pfp = fp.get()){
+            pfp->fileListeners.call(&FileParameter::Listener::loadingEnded,fp.get());
+        if(!pfp->isAsync){ // clear job from here if not called in engine pool (auto deleted)
+            pfp->fileLoaderJob = nullptr;
+            delete this;
+        }
+        }
     }
     
     WeakReference<FileParameter> fp;
@@ -182,8 +186,8 @@ void FileParameter::startLoading(){
     }
     loadingState = LOADING;
     fileListeners.call(&Listener::loadingStarted,this);
-    if(isAsync && fileLoaderJob){
-
+    if(!isAsync && fileLoaderJob){
+        fileLoaderJob->signalJobShouldExit();
     }
     fileLoaderJob=new FileLoaderJob(this);
     if(isAsync){
@@ -191,7 +195,7 @@ void FileParameter::startLoading(){
     }
     else{
         fileLoaderJob->runJob();
-        fileLoaderJob = nullptr;
+//        fileLoaderJob = nullptr;
     }
 
 }
