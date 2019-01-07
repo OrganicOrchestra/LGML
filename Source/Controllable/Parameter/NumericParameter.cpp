@@ -21,7 +21,8 @@ REGISTER_PARAM_TYPE_TEMPLATED (NumericParameter, floatParamType,"doubleParameter
 
 
 
-
+template<class T>
+T NumericParameter<T>::UNBOUNDEDVALUE = std::numeric_limits<T>::max();
 
 template<class T>
 NumericParameter<T>::NumericParameter (const String& niceName, const String& description,
@@ -42,6 +43,8 @@ MinMaxParameter ( niceName, description, var (initialValue), var (minValue), var
         // another Numeric parameter type?
         jassertfalse;
     }
+    if(minValue==UNBOUNDEDVALUE){setUnboundedMin();}
+    if(maxValue==UNBOUNDEDVALUE){setUnboundedMax();}
 
 }
 
@@ -51,10 +54,10 @@ void  NumericParameter<T>::setValueInternal (const var& _value)
     value = jlimit<T> ((T)minimumValue, (T) maximumValue, (T)_value);
 }
 else if(!minimumValue.isUndefined() && maximumValue.isUndefined()){
-    value = jmin<T>((T)maximumValue,(T)_value);
+    value = jmax<T>((T)minimumValue,(T)_value);
 }
 else if(minimumValue.isUndefined() && !maximumValue.isUndefined()){
-    value = jmax<T>((T)minimumValue,(T)_value);
+    value = jmin<T>((T)maximumValue,(T)_value);
 }
 else{
     value = (T)_value;

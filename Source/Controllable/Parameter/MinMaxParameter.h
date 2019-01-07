@@ -75,4 +75,17 @@ public:
         queuedNotifier.addMessage (new ParamWithValue (this, arr, true));
     }
 
+    void setUnboundedMax(ParameterBase::Listener * notifier = nullptr){
+        setMinMax(minimumValue, var::undefined(),notifier);
+    }
+    void setUnboundedMin(ParameterBase::Listener * notifier = nullptr){
+        setMinMax(var::undefined(), maximumValue,notifier);
+    }
+    void setUnbounded(ParameterBase::Listener * notifier = nullptr){
+        setMinMax(var::undefined(), var::undefined(),notifier);
+    }
+    bool hasFiniteBounds(){
+        return !minimumValue.isUndefined() && !maximumValue.isUndefined();
+    }
+
 };
