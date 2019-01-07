@@ -90,12 +90,14 @@ NodeManagerUI::~NodeManagerUI()
     clear();
     setCurrentViewedContainer (nullptr);
 
-    auto p =getRoot(true)->getControllableContainerByName("NodesUI");
+    if(auto root = getRoot(true)){
+
+    auto p = root->getControllableContainerByName("NodesUI");
     if(p){
         p->removeChildControllableContainer(this);
     }
     else jassertfalse;
-
+    }
 
     clearSingletonInstance();
 }
