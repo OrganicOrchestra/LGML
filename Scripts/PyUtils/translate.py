@@ -265,7 +265,7 @@ def getDefaultStrings():
 
 def getAnglicisms(translator,dest):
   #these are not translated but we try to spot them in full sentences
-  anglicisms = ["Node","Logger","x","y","X","Y","onset"]
+  anglicisms = ["Node","Logger","x","y","X","Y","onset","solo"]
   trs = translator.translate(anglicisms,src='en',dest=dest)
   # print (trs)
   assert(len(trs)==len(anglicisms))
@@ -309,8 +309,25 @@ def checkUntranslatable(strs):
     del strs[k]
 
 
-if __name__ == "__main__":
+def fromRawTranslation(locale):
+  d = {}
+  with open(baseTranslationPath+'raw.txt','r') as rawfp:
+    with open(baseTranslationPath+'raw.'+locale+'.txt','r') as localefp:
+      r = rawfp.readline()
+      while( r):
+        t = localefp.readline()
+        r = r.strip()
+        t = t.strip()
+        print (r,t)
+        assert(t!="")
+        d[r] = t
+        r = rawfp.readline()
+  return d;
 
+
+if __name__ == "__main__":
+  print(fromRawTranslation('fr'))
+  exit()
 
   fl = getFileList()
   tel = {}
