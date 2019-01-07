@@ -66,7 +66,9 @@ Engine::EngineFileSaver::EngineFileSaver(const String & n):name(n){
     getEngine()->fileSavers.add(this);
 }
 Engine::EngineFileSaver::~EngineFileSaver(){
-    getEngine()->fileSavers.removeAllInstancesOf(this);
+
+    if(auto * engine= getEngine())
+        engine->fileSavers.removeAllInstancesOf(this);
 }
 
 Engine::Engine():
@@ -123,6 +125,7 @@ hasDefaultOSCControl(false)
 
 Engine::~Engine()
 {
+    ControllableContainer::globalRoot = nullptr;
     engineListeners.call (&EngineListener::stopEngine);
     engineListeners.clear();
     controllableContainerListeners.clear();
