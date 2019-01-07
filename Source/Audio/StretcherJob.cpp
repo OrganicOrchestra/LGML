@@ -30,13 +30,13 @@ extern ThreadPool* getEngineThreadPool();
 
 //short block size to avoid stalling if pitch varies fast
 constexpr int process_blocksize = 64; //44100;//4096;
-
+constexpr int alloc_blocksize  = 44100;
 int count = 0;
 StretcherJob::StretcherJob (PlayableBuffer* pb, double _ratio):
 ThreadPoolJob (String(count)),
 owner (pb),
 ratio (_ratio),
-tmpStretchBuf (1, 44100, process_blocksize)
+tmpStretchBuf (1, 44100, alloc_blocksize)
 
 {
 
@@ -99,7 +99,7 @@ ThreadPoolJob::JobStatus StretcherJob::runJob()
         return jobHasFinished;
     owner->isStretchReady = false;
     int processed = 0;
-    int block = tmpStretchBuf.bufferBlockSize;
+    int block = process_blocksize;
 
     originNumSamples = owner->originAudioBuffer.getNumSamples();
 
@@ -108,11 +108,18 @@ ThreadPoolJob::JobStatus StretcherJob::runJob()
         processed += studyStretch (ratio, processed, block);
     }
 
+    if(shouldExit())
+        return jobHasFinished;
+
     processed = 0;
     int read = 0;
     int produced = 0;
     tmpStretchBuf.setNumChannels (owner->getNumChannels());
+//    tmpStretchBuf.allocateSamples(owner->getNumChannels(), originNumSamples*ratio);
     owner->multiNeedle.fadeAllOut();
+
+    if(shouldExit())
+        return jobHasFinished;
 
     while (!shouldExit() && processed < originNumSamples)
     {
@@ -242,7 +249,7 @@ void StretcherJob::processStretch (int start, int block, int* read, int* produce
     AudioSampleBuffer tmpOutBuf (owner->getNumChannels(), available);
     float* const* tmpOut = tmpOutBuf.getArrayOfWritePointers();
     int retrievedSamples = (int)stretcher->retrieve (tmpOut, available);
-    tmpStretchBuf.setNumSample (*produced + retrievedSamples);
+    tmpStretchBuf.allocateSamples(owner->getNumChannels(),*produced + retrievedSamples,true);
     tmpStretchBuf.copyFrom (tmpOutBuf, *produced, 0, retrievedSamples);
     jassert (retrievedSamples == available);
     
