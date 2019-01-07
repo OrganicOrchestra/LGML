@@ -59,8 +59,9 @@ hadOnset(false)
     volume = addNewParameter<FloatParameter> ("Volume", "Set the volume of the track", DB0_FOR_01, 0.f, 1.f);
     mute = addNewParameter<BoolParameter> ("Mute", "Sets the track muted (or not.)", false);
     solo = addNewParameter<BoolParameter> ("Solo", "Sets the track solo (or not.)", false);
-    beatLength = addNewParameter<FloatParameter> ("Length", "length in bar", 0.f, 0.f, 200.f);
+    beatLength = addNewParameter<FloatParameter> ("Length", "length in bar", 0.f, 0.f, FloatParameter::UNBOUNDEDVALUE);
     beatLength->isEditable = false;
+
     togglePlayStopTrig =  addNewParameter<Trigger> ("Toggle Play Stop", "Toggle Play / Stop");
     originBPM = addNewParameter<FloatParameter> ("originBPM", "bpm of origin audio loop", 0.f, 0.f, 999.f);
     originBPM->isEditable = false;
