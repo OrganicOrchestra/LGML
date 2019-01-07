@@ -95,7 +95,17 @@ void PdNodeContentUI::updatePdParameters()
     resized();
 }
 
-void PdNodeContentUI::childControllableAdded (ControllableContainer*, Controllable*) {};
+void PdNodeContentUI::childControllableAdded (ControllableContainer*, Controllable* c) {
+    for (auto& p : paramSliders)
+    {
+        if (p->parameter == c)removeChildComponent (p);
+    }
+
+    if (isDirty) return;
+
+    postCommandMessage (0);
+    isDirty = true;
+};
 void PdNodeContentUI::childControllableRemoved (ControllableContainer*, Controllable* c)
 {
     for (auto& p : paramSliders)

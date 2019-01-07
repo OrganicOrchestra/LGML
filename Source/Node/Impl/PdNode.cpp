@@ -192,9 +192,9 @@ Result PdNode::loadPdFile(const File & f){
     libpd_set_instance(pdinstance);
 
     unloadFile();
-
-    auto fileName = File(pdPath->stringValue()).getFileName();
-    auto dirName = File(pdPath->stringValue()).getParentDirectory().getFullPathName();
+    auto pdFile = pdPath->getFile();
+    auto fileName = pdFile.getFileName();
+    auto dirName = pdFile.getParentDirectory().getFullPathName();
     patchHandle = libpd_openfile(fileName.toRawUTF8(), dirName.toRawUTF8());
     if(patchHandle==NULL){
         return Result::fail(juce::translate(String("can't open patch at  123").replace("123", pdPath->stringValue())));
@@ -221,7 +221,7 @@ void PdNode::parseParameters(){
     if(!isLoaded()){return;}
     StringArray lines;
 
-    FileInputStream file(File(pdPath->stringValue()));
+    FileInputStream file(pdPath->getFile());
     char c = file.readByte();
     String l;
     StringArray sp;
