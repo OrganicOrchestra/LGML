@@ -290,7 +290,7 @@ ControllableContainer* ControllableContainer::getControllableContainerByName (co
 
     for (auto & c : controllableContainers)
     {
-        if(c->getNiceName() == _name) {return c;}
+        if(c && c->getNiceName() == _name) {return c;}
     }
     return nullptr;
 
