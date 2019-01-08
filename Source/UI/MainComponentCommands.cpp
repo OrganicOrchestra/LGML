@@ -117,7 +117,7 @@ void MainContentComponent::getCommandInfo (CommandID commandID, ApplicationComma
             break;
 
         case CommandIDs::allWindowsForward:
-            result.setInfo (juce::translate("All Windows Forward"), juce::translate("Bring all plug-in windows forward"), category, 0);
+            result.setInfo (juce::translate("All Windows to front"), juce::translate("Bring all plug-in windows forward"), category, 0);
             result.addDefaultKeypress ('w', ModifierKeys::commandModifier);
             break;
 

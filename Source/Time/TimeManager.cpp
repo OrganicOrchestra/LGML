@@ -84,7 +84,7 @@ TimeManager::TimeManager():
     clickVolume = addNewParameter<FloatParameter> ("Metronome Volume", "Click's volume if metronome is active", .5f, 0.f, 1.f);
     setBPMInternal (BPM->doubleValue(), false);
 
-    linkEnabled = addNewParameter<BoolParameter> ("Link", "activate link", false);
+    linkEnabled = addNewParameter<BoolParameter> ("Link", "activate Link", false);
     linkEnabled->enabled = LINK_SUPPORT;
 
     linkNumPeers = addNewParameter<IntParameter> ("Link Peers", "number of connected Link devices", 0, 0, 32);

@@ -7,8 +7,8 @@ import re
 import json
 
 sourcePath = os.path.abspath(os.path.join(__file__,os.path.pardir,os.path.pardir,os.path.pardir,'Source'))
-jucePath =  "/tmp/la/"#os.path.abspath(os.path.join(__file__,os.path.pardir,os.path.pardir,os.path.pardir,os.path.pardir,'JUCE','modules'))
-print (sourcePath,jucePath)
+jucePath =  'lal'#os.path.abspath(os.path.join(__file__,os.path.pardir,os.path.pardir,os.path.pardir,os.path.pardir,'JUCE','modules'))
+
 baseTranslationPath = os.path.expanduser('~/Documents/LGML/translations/')
 # baseTranslationPath = os.path.expanduser('~/owncloud/DEVSPECTACLES/Tools/LGML/translations')
 
@@ -36,7 +36,7 @@ def buildRegFunction(fname,valid_mask,strict = True):
   s = s[:-len(anys)-1]
   if(strict) :
     s+=anys+"\)"
-  print(s)
+  # print(s)
   return re.compile(s,re.MULTILINE)
 
 def getRegExs(fl):
@@ -61,7 +61,7 @@ def getRegExs(fl):
   # regL+=[buildRegFunction("NLOGW",[1,1])]
   # regL+=[buildRegFunction("NLOGE",[1,1])]
   for f in fl:
-    print('reading %s'%f)
+    # print('reading %s'%f)
     with open(f,'r',errors='replace',encoding='utf-8') as fp:
       # for l in fp.readlines():
       text = fp.read()
@@ -85,51 +85,12 @@ def getRegExs(fl):
   return res
 
 
-# class YTranslator():
-#   baseAddr = "https://translate.yandex.net/api/v1.5/tr.json/translate"
-#   def translate(self,text,src,dest):
-#     import requests  
-#     r = requests.get(self.baseAddr,params={'key':os.environ["YTRANS_TOKEN"],'text':text,'lang':'%s-%s'%(src,dest)})
-#     print (r.json())
-#     return r.json()['text']
-
-# class GTranslator():
-#   baseAddr = 'https://translate.google.com/'
-
-#   def translate(self,text,src,dest):
-#     import requests
-#     r = requests.get(self.baseAddr,params={'um':1,'ie':'UTF-8','hl':dest,'client':'tw-ob','view':'home','op':'translate',
-#                                       'sl':src,'tl':dest,'text':text},
-#                                       headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
-# )
-#     print (r.text)
-#     print (r.json())
-#     return r.json()['text']
-
-class MTranslator():
-  import uuid
-  base_url = 'https://api.cognitive.microsofttranslator.com'
-  path = '/translate?api-version=3.0'
-  headers = {
-    'Ocp-Apim-Subscription-Key': os.environ['AZURE_TRANS_TOKEN'],
-    'Content-type': 'application/json',
-    'X-ClientTraceId': str(uuid.uuid4())
-  }
-  maxNumChar = 2000
-  allowList = True
-  def translate(self,text,src,dest):
-    import requests
-    params = '&from'+src+'&to='+dest
-    constructed_url = self.base_url + self.path + params
-    jsonR = [{'Text' : ' \n '.join(k.split('\n'))} for k in text]
-    request = requests.post(constructed_url, headers=self.headers, json=jsonR)
-    return [k["translations"][0]['text'] for k in request.json()]
-
 
 def buildLocalMT(strs,locale='fr'):
   mtfile = os.path.join(baseTranslationPath,'mt.'+locale+'.json')
-  from googletrans import Translator
-  translator = MTranslator()
+  
+  from Translators import ManualTranslator
+  translator = ManualTranslator()
   anglicisms = getAnglicisms(translator,locale)
   i = 0
   if os.path.exists(mtfile):
@@ -156,6 +117,7 @@ def buildLocalMT(strs,locale='fr'):
         flattenedL += flat
         itemsIdx+=[len(flat)]
       # print(itemsIdx,flattenedL)
+      flattenedL = list(map(anglicisms.encode,flattenedL))
       trs = translator.translate(flattenedL,src='en',dest=locale)
 
 
@@ -172,7 +134,7 @@ def buildLocalMT(strs,locale='fr'):
           idx+=toJoin
           idxOr+=1
       trsL = list(map(unifyLanguage,trsL))
-      trsL = list(map(anglicisms,trsL))
+      trsL = list(map(anglicisms.decode,trsL))
       print('trsL',trsL)
       # print('textL',txtL)
 
@@ -185,7 +147,7 @@ def buildLocalMT(strs,locale='fr'):
         mt[kk]=trsL[i]
         res[kk] = {'trans':mt[kk],'meta':strs[kk]}
       with open(mtfile,'w',encoding='utf-8') as fp:
-        json.dump(mt,fp,ensure_ascii=False)
+        json.dump(mt,fp,ensure_ascii=False,sort_keys=True)
 
   txt=""
   maxNumChars = translator.maxNumChar
@@ -262,28 +224,6 @@ def getDefaultStrings():
       res[a] = ("No File",0)
   return res
 
-
-def getAnglicisms(translator,dest):
-  #these are not translated but we try to spot them in full sentences
-  anglicisms = ["Node","Logger","x","y","X","Y","onset","solo"]
-  trs = translator.translate(anglicisms,src='en',dest=dest)
-  # print (trs)
-  assert(len(trs)==len(anglicisms))
-  trs = list(map(unifyLanguage,trs))
-  def replace(line):
-    for i in range(len(trs)):
-      # print('checking',trs[i],anglicisms[i],line)
-      line = re.sub("%s"%trs[i],anglicisms[i],line,flags=re.IGNORECASE)
-    return line
-  return replace
-
-
-
-def makeRawFile(tel):
-  with open(baseTranslationPath+ 'raw.txt','w') as fp:
-    fp.write('\n'.join(list(tel.keys())))
-
-
 def unifyLanguage(line):
   # try to have a consistenet ortograph (french : 'nœud' is sometimes spelled 'noeud' )
   subs = [("œ","oe")]
@@ -291,11 +231,60 @@ def unifyLanguage(line):
     line = re.sub(s[0],s[1],line)
   return line
 
+def getAnglicisms(translator,dest):
+  #these are not translated but we try to spot them in full sentences
+  class Anglicism(object):
+
+    def __init__(self,anglicisms):
+        from collections import OrderedDict
+        self.encodeAngl = OrderedDict()
+        cn = 65
+        def getValidC(cn):
+          while chr(cn) in 'AEIOUaeiou':
+            cn+=1
+          return cn,"#"+chr(cn)
+        for i in range(len(anglicisms)):
+          a = anglicisms[i]
+          (cn,e) = getValidC(cn)
+          self.encodeAngl[a] = e
+          c = a[0]
+          cn+=1
+          (cn,e) = getValidC(cn)
+          if c.lower()!=a[0]:
+            self.encodeAngl[c.lower()+a[1:]] = e
+          else:
+            self.encodeAngl[a+'s'] = e
+
+
+    def encode(self,s):
+      for a,e in self.encodeAngl.items():
+        # print('checking',trs[i],anglicisms[i],line)
+        s = re.sub(a,e,s)
+      return s
+    def decode(self,s):
+      for a,e in self.encodeAngl.items():
+        # print('checking',trs[i],anglicisms[i],line)
+        s = re.sub(e,a,s)
+      return s
+  return Anglicism(["node","logger","onset","solo","Link"]) #"x","y","X","Y",
+
+
+
+def makeRawFile(tel):
+  with open(baseTranslationPath+ 'raw.json','w') as fp:
+    json.dump(tel,fp,sort_keys=True)
+
+def getRawFile():
+  with open(baseTranslationPath+ 'raw.json','r') as fp:
+    return json.load(fp)
+
+
+
 def checkUntranslatable(strs):
   #these are not translated if they fully match regEx (usually exact match)
   regs = []
   untranslated = []
-  regs+=list(map(re.compile,["^"+s+"$" for x in ["Link","Link Peers","Link Latency","x","y","X","Y"]]))
+  regs+=list(map(re.compile,["^"+x+"$" for x in ["Link","Link Peers","Link Latency","x","y","X","Y"]]))
   for k in strs:
     found = False
     for r in regs:
@@ -326,18 +315,24 @@ def fromRawTranslation(locale):
 
 
 if __name__ == "__main__":
-  print(fromRawTranslation('fr'))
-  exit()
+  
+  skip_parse = True;
+  force_rebuild = False;
+  if not skip_parse:
+    print ('parsing folders %s'%([sourcePath,jucePath]))
+    fl = getFileList()
+    tel = {}
+    autoEl = getRegExs(fl)
+    tel.update(autoEl)
 
-  fl = getFileList()
-  tel = {}
-  autoEl = getRegExs(fl)
-  tel.update(autoEl)
+    ds = getDefaultStrings()
+    tel.update(ds)
+    makeRawFile(tel)
+  else:
+    tel = getRawFile()
 
-  ds = getDefaultStrings()
-  tel.update(ds)
+ 
 
-  makeRawFile(tel)
   # print (autoEl)
   langs  = [
   {'code':'fr','name':'french'},
@@ -348,6 +343,7 @@ if __name__ == "__main__":
   # tel.update({k['name']:('None',0) for k in langs})
   for lang in langs:
     mt = buildLocalMT(tel,lang['code'])
+    print('localMT built')
     toJUCEfmt(mt,lang)
   
     buildPO(mt,lang)

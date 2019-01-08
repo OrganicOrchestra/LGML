@@ -223,7 +223,7 @@ void FastMapperUI::mouseDown (const MouseEvent& e)
     if (e.mods.isRightButtonDown())
     {
         PopupMenu m;
-        m.addItem (1, juce::translate("Add Fast Map"));
+        m.addItem (1, juce::translate("Add FastMap"));
         int result = m.show();
 
         switch (result)

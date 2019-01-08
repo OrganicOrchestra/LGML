@@ -26,7 +26,7 @@ public:
         /// user description
         auto labelColor = findColour(Label::ColourIds::backgroundColourId).withAlpha(1.0f).darker();
          descriptionLabel.setColour(Label::ColourIds::backgroundColourId, labelColor);
-        descriptionLabel.setText(juce::translate("User Description : "), dontSendNotification);
+        descriptionLabel.setText(juce::translate("User Description")+" : ", dontSendNotification);
         addChildComponent(descriptionLabel);
 
         userDescription.setReadOnly(false);
