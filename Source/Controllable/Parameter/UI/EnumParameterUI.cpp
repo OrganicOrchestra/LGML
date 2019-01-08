@@ -17,6 +17,7 @@
 
 #include "../UndoableHelper.h"
 
+#include "../../../Engine.h"
 
 #if JUCE_DEBUG && 0
 #define DBGENUM(x) DBG(x)
@@ -28,7 +29,8 @@ EnumParameterUI::EnumParameterUI ( ParameterBase* parameter) :
     ParameterUI (parameter),
     ep ((EnumParameter*)parameter),
     lastId (NoneId),
-    isSorted(true)
+    isSorted(true),
+    hoveredByFile(false)
 {
     addMouseListener(this, true);
     cb.addListener (this);
@@ -287,6 +289,48 @@ void EnumParameterUI::selectString (const juce::String& s)
         lastId = NoneId;
     }
 }
+
+bool EnumParameterUI::isInterestedInFileDrag (const StringArray& files) {
+    return ep->getModel()->isFileBased;
+};
+void EnumParameterUI::fileDragEnter (const StringArray& files, int x, int y) {
+    hoveredByFile = true;
+    repaint();
+};
+void EnumParameterUI::fileDragMove (const StringArray& files, int x, int y) {
+
+};
+void EnumParameterUI::fileDragExit (const StringArray& files) {
+    hoveredByFile = false;
+    repaint();
+};
+void EnumParameterUI::filesDropped (const StringArray& files, int x, int y) {
+    String fname;
+    for(auto & fp :files){
+        File f(fp);
+        fname = f.getFileNameWithoutExtension();
+        String fpath = getEngine()->getNormalizedFilePath(f.getFullPathName());
+        ep->addOption (fname, fpath);
+
+    }
+    if(fname.isNotEmpty()){
+                ep->selectId (fname, true, false);
+    }
+    hoveredByFile = false;
+    repaint();
+
+};
+
+void EnumParameterUI::paintOverChildren(Graphics & g) {
+    if(hoveredByFile){
+        auto r = getLocalBounds();
+        g.setColour(findColour(TextButton::buttonOnColourId));
+        g.drawRect(r);
+    }
+
+
+}
+
 
 
 #endif

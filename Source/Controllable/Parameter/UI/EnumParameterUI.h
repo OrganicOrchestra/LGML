@@ -20,7 +20,9 @@
 #include "ParameterUI.h"
 #include "../EnumParameter.h"
 
-class EnumParameterUI : public ParameterUI, public EnumParameter::EnumListener, public ComboBox::Listener
+
+
+class EnumParameterUI : public ParameterUI, public EnumParameter::EnumListener, public ComboBox::Listener, public FileDragAndDropTarget
 {
 public:
     EnumParameterUI ( ParameterBase* parameter = nullptr);
@@ -62,6 +64,14 @@ private:
     void selectString (const String& );
 
 protected:
+
+    bool isInterestedInFileDrag (const StringArray& files) override;
+    void fileDragEnter (const StringArray& files, int x, int y) override;
+    void fileDragMove (const StringArray& files, int x, int y) override;
+    void fileDragExit (const StringArray& files) override;
+    void filesDropped (const StringArray& files, int x, int y) override;
+    void paintOverChildren(Graphics & g) override;
+    bool hoveredByFile;
     void valueChanged (const var&) override ;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EnumParameterUI)
 

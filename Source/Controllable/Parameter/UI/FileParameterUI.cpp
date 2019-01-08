@@ -245,6 +245,8 @@ void FileParameterUI::fileDragExit (const StringArray& files){
 void FileParameterUI::filesDropped (const StringArray& files, int x, int y) {
     jassert(isInterestedInFileDrag(files));
     getFileParameter()->setFile(files[0]);
+    hoveredByFile=false;
+    repaint();
 };
 
 void FileParameterUI::paintOverChildren(Graphics & g) {

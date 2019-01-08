@@ -62,6 +62,8 @@ public:
     typedef std::function<std::tuple<bool, Identifier, var> (EnumParameter*)> AddFunctionType;
     AddFunctionType addFunction;
 
+    bool isFileBased;
+
 private:
 
     DynamicObject::Ptr userGenerated;
