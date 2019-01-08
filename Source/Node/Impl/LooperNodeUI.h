@@ -60,7 +60,7 @@ public:
         void mouseUp (const MouseEvent&) override ;
         void trackSelectedAsync (bool _isSelected)override ;
 
-        void trackStateChangedAsync (const LooperTrack::TrackState& /*state*/)override {};
+        void trackStateChangedAsync (const LooperTrack::TrackState& /*state*/)override ;
 
         LooperTrack* track;
 
@@ -74,7 +74,7 @@ public:
         ScopedPointer<EnumParameterUI> sampleChoiceDDL;
 
 
-        class TimeStateUI : public juce::Component, public LooperTrack::Listener
+        class TimeStateUI : public juce::Component, public LooperTrack::TrackTimeListener
         {
         public:
             TimeStateUI (LooperTrack* _track);

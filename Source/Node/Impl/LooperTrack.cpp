@@ -163,7 +163,7 @@ void LooperTrack::processBlock (AudioBuffer<float>& buffer, MidiBuffer&)
     {
         if (playableBuffer.getRecordedLength() > 0)
         {
-            trackStateListeners.call (&LooperTrack::Listener::internalTrackTimeChanged, playableBuffer.getPlayPos() * 1.0 / playableBuffer.getRecordedLength());
+            trackTimeListeners.call (&LooperTrack::TrackTimeListener::internalTrackTimeChanged, playableBuffer.getPlayPos() * 1.0 / playableBuffer.getRecordedLength());
         }
     }
 

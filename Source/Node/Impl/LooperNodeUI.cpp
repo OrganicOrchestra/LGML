@@ -274,6 +274,9 @@ isSelected (track->isSelected), timeStateUI (track)
     addAndMakeVisible(selectMeButton);
     selectMeButton->toBack();
 
+    // manual triggering of listeners on creation
+    trackStateChangedAsync(track->trackState);
+
 }
 
 LooperNodeContentUI::TrackUI::~TrackUI()
@@ -343,6 +346,10 @@ void LooperNodeContentUI::TrackUI::trackSelectedAsync (bool _isSelected) {
         selectThis();
 }
 
+
+void LooperNodeContentUI::TrackUI::trackStateChangedAsync (const LooperTrack::TrackState& state){
+    recPlayButton->setCustomText(state==LooperTrack::TrackState::CLEARED?"o":">");
+}
 
 
 
