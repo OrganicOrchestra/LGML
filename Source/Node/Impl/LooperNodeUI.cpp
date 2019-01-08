@@ -19,7 +19,7 @@
 #include "../../Controllable/ControllableUIHelpers.h"
 
 
-
+#include "../../Engine.h"
 
 LooperNodeContentUI::LooperNodeContentUI()
 {
@@ -192,6 +192,49 @@ void LooperNodeContentUI::checkSoloState(){
 
 
 }
+
+
+
+bool LooperNodeContentUI::isInterestedInFileDrag (const StringArray& files) {
+    return true;
+};
+void LooperNodeContentUI::fileDragEnter (const StringArray& files, int x, int y) {
+    int numFilesToDrop  = jmin(files.size(),tracksUI.size());
+    for(int i = 0 ; i < numFilesToDrop ; i++){
+        EnumParameterUI* ddl = tracksUI.getUnchecked(i)->sampleChoiceDDL.get();
+        StringArray af{files[i]};
+        ddl->fileDragEnter(af,x,y);
+    }
+};
+void LooperNodeContentUI::fileDragMove (const StringArray& files, int x, int y) {
+//    int numFilesToDrop  = jmin(files.size(),tracksUI.size());
+//    for(int i = 0 ; i < numFilesToDrop ; i++){
+//        auto ddl = tracksUI.getUnchecked(i)->sampleChoiceDDL;
+//        StringArray af{files[i]};
+//        ddl->fileDragMove(af,x,y);
+//    }
+};
+void LooperNodeContentUI::fileDragExit (const StringArray& files) {
+
+    int numFilesToDrop  = jmin(files.size(),tracksUI.size());
+    for(int i = 0 ; i < numFilesToDrop ; i++){
+        EnumParameterUI* ddl = tracksUI.getUnchecked(i)->sampleChoiceDDL.get();
+        StringArray af{files[i]};
+        ddl->fileDragExit(af);
+    }
+};
+void LooperNodeContentUI::filesDropped (const StringArray& files, int x, int y) {
+    int numFilesToDrop  = jmin(files.size(),tracksUI.size());
+    for(int i = 0 ; i < numFilesToDrop ; i++){
+        EnumParameterUI*  ddl = tracksUI.getUnchecked(i)->sampleChoiceDDL.get();
+        StringArray af{files[i]};
+        ddl->filesDropped(af,x,y);
+    }
+
+};
+
+
+
 
 
 //////////////
