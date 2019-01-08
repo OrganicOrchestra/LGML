@@ -165,7 +165,7 @@ public :
         if(nmui->currentViewer && nmui->currentViewer->isParentOf(c)){
             Rectangle<int> r = vp.getLocalArea(c->getParentComponent(),c->getBoundsInParent());
             Point<int> mouse = vp.getLocalPoint(e.originalComponent,e.position).toInt();
-            DBG(String(r.getRight()) +"::::" +String(mouse.x));
+//            DBG(String(r.getRight()) +"::::" +String(mouse.x));
             vp.autoScroll(jmax(r.getRight(),mouse.x),jmax(r.getBottom(),mouse.y),140,10);
         }
     }

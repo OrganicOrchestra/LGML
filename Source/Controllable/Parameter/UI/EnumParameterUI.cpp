@@ -306,14 +306,16 @@ void EnumParameterUI::fileDragExit (const StringArray& files) {
 };
 void EnumParameterUI::filesDropped (const StringArray& files, int x, int y) {
     String fname;
+    bool needRemove = ep->getFirstSelectedId()!=Identifier::null;
     for(auto & fp :files){
         File f(fp);
         fname = f.getFileNameWithoutExtension();
+        needRemove &= (fname!=ep->getFirstSelectedId().toString());
         String fpath = getEngine()->getNormalizedFilePath(f.getFullPathName());
         ep->addOrSetOption(fname, fpath);
     }
     if(fname.isNotEmpty()){
-        if(ep->getFirstSelectedId()!=Identifier::null){
+        if( needRemove){
             ep->removeOption(ep->getFirstSelectedId());
         }
         ep->selectId (fname, true, false);
