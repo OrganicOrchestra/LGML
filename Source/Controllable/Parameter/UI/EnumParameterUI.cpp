@@ -1,16 +1,16 @@
 /* Copyright © Organic Orchestra, 2017
-*
-* This file is part of LGML.  LGML is a software to manipulate sound in realtime
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation (version 3 of the License).
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*/
+ *
+ * This file is part of LGML.  LGML is a software to manipulate sound in realtime
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation (version 3 of the License).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
 #if !ENGINE_HEADLESS
 
 #include "EnumParameterUI.h"
@@ -26,11 +26,11 @@
 #endif
 
 EnumParameterUI::EnumParameterUI ( ParameterBase* parameter) :
-    ParameterUI (parameter),
-    ep ((EnumParameter*)parameter),
-    lastId (NoneId),
-    isSorted(true),
-    hoveredByFile(false)
+ParameterUI (parameter),
+ep ((EnumParameter*)parameter),
+lastId (NoneId),
+isSorted(true),
+hoveredByFile(false)
 {
     addMouseListener(this, true);
     cb.addListener (this);
@@ -80,20 +80,20 @@ void EnumParameterUI::updateComboBox()
 
         for (auto& key : keys)
         {
-            
-//            String key = kv.name.toString();
+
+            //            String key = kv.name.toString();
             String displayed = juce::translate(key);//+" ["+kv.value.toString()+"]";
             cb.addItem (displayed, id);
             idKeyMap.set (id, key);
             keyIdMap.set (key, id);
             id++;
         }
-        
+
     }
 
-    
+
     String sel = ep->getFirstSelectedId().toString();
-//    DBGENUMENUM("enum CB Select " << sel << " ; " << ep->shortName);
+    //    DBGENUMENUM("enum CB Select " << sel << " ; " << ep->shortName);
     selectString (sel);
 
     if (ep->isEditable)
@@ -252,10 +252,10 @@ void EnumParameterUI::comboBoxChanged (ComboBox* c)
                 cb.setSelectedId (lastId, dontSendNotification);
             }
             else{
-                
+
                 cb.setTextWhenNothingSelected (ep->niceName);
                 cb.setSelectedId(NoneId);
-                
+
             }
         }
         else if ( id == NoneId)
@@ -310,11 +310,13 @@ void EnumParameterUI::filesDropped (const StringArray& files, int x, int y) {
         File f(fp);
         fname = f.getFileNameWithoutExtension();
         String fpath = getEngine()->getNormalizedFilePath(f.getFullPathName());
-        ep->addOption (fname, fpath);
-
+        ep->addOrSetOption(fname, fpath);
     }
     if(fname.isNotEmpty()){
-                ep->selectId (fname, true, false);
+        if(ep->getFirstSelectedId()!=Identifier::null){
+            ep->removeOption(ep->getFirstSelectedId());
+        }
+        ep->selectId (fname, true, false);
     }
     hoveredByFile = false;
     repaint();
@@ -324,11 +326,12 @@ void EnumParameterUI::filesDropped (const StringArray& files, int x, int y) {
 void EnumParameterUI::paintOverChildren(Graphics & g) {
     if(hoveredByFile){
         auto r = getLocalBounds();
-        g.setColour(findColour(TextButton::buttonOnColourId));
+        bool willReplace = ep->getFirstSelectedId()!=Identifier::null;
+        g.setColour(willReplace?Colours::red:findColour(TextButton::buttonOnColourId));
         g.drawRect(r);
     }
-
-
+    
+    
 }
 
 
