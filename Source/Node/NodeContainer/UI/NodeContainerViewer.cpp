@@ -23,7 +23,7 @@
 #include "../../UI/ConnectableNodeHeaderUI.h"
 
 UndoManager & getAppUndoManager();
-#if JUCE_DEBUG
+#if 0 && JUCE_DEBUG
 #define DBGCONN(x) // DBG(x)
 class MouseDbg : public MouseListener{
 public:
