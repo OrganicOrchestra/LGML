@@ -60,7 +60,6 @@ jobs:
           command: |
             pip3 install -U pip
             sh Scripts/linux/installExportDeps.sh
-            python3 Scripts/buildScript.py --packagesuffix=ubuntu16 --configure --exportpath="$DST_LGML_PATH" --os=linux --configuration=Debug --build --package --export
             python3 Scripts/buildScript.py --packagesuffix=ubuntu16 --configure --exportpath="$DST_LGML_PATH" --os=linux --configuration=Release --build --package --export
             ldd /root/LGML/Builds/LinuxMakefile/build/LGML > "$DST_LGML_PATH/dependencies.txt"
       - store_artifacts:
