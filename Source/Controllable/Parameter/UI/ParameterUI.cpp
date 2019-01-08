@@ -80,9 +80,11 @@ const Array<WeakReference<ParameterUI>> & ParameterUI::getAllParameterUIs(){
 
 void ParameterUI::setCustomText (const String text)
 {
-
-    customTextDisplayed = juce::translate(text);
-    repaint();
+    String newText =juce::translate(text);
+    if(newText!=customTextDisplayed){
+        customTextDisplayed =newText;
+        repaint();
+    }
 }
 
 const ParameterUI::UICommandType & ParameterUI::getUICommands() const{
