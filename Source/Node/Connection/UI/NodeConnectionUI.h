@@ -42,7 +42,7 @@ public:
     class Anchor : public DrawableRectangle
     {
     public:
-        Anchor()
+        Anchor():isHovered(false)
         {
             setInterceptsMouseClicks(true, false);
             const int anchorSize = 10;

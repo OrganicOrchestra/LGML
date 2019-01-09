@@ -371,6 +371,7 @@ void NodeConnectionUI::mouseDrag (const MouseEvent& e)
         findParentComponentOfClass<NodeContainerViewer>()->mouseDrag(e);
     }
     else if(e.getDistanceFromDragStart()>0){
+        jassert(!anchorSource.isHovered || (anchorSource.isHovered != anchorDest.isHovered));
         if (anchorSource.isHovered || anchorDest.isHovered)
         {
 
