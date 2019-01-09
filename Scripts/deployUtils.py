@@ -6,8 +6,8 @@ import zipfile
 import gzip
 
 
-
-raiseErrorOnDifferentSha = True;
+desiredVersion = "1.2.10"
+raiseErrorOnDifferentSha = False;
 dry_run = False;
 distPath = os.path.expanduser("~/owncloud/DEVSPECTACLES/Tools/LGML/App-Dev/dist/")
 if not os.path.exists(distPath):
@@ -15,7 +15,7 @@ if not os.path.exists(distPath):
 if not os.path.exists(distPath):
   raise NameError("dist path not found")
 
-desiredVersion = "1.2.9"
+
 lastVPath = os.path.join(distPath,"bleedingEdge",desiredVersion)
 publicFolder = '/Volumes/sshfs/owncloud/tools/LGML/'
 if not os.path.exists(publicFolder):
@@ -24,6 +24,14 @@ if not os.path.exists(publicFolder):
   raise NameError("public folder path not found") 
 # publicFolder = '/tmp/LGML/dist'
 changeLogPath  = os.path.join(lastVPath,"CHANGELOG.md")
+
+def copy_dry(s,d):
+  global dry_run
+  print("copy %s to %s"%(s,d))
+  if(dry_run) : 
+    input()
+  else :
+    copy2(s,d)
 
 
 allCfgs={}
@@ -89,7 +97,7 @@ with open(changeLogPath,'r') as fp:
   notes = ''.join(fp.readlines())
 
 def createJSON(destFolder):
-  global allCfgs
+  global allCfgs,dry_run
   destFolder = destFolder
   v = {"git_sha":currentSha,
       "notes":notes,
@@ -98,8 +106,11 @@ def createJSON(destFolder):
       "zip_link" : {v["build_version_uid"]:v["published_basename"]+'.zip' for v in allCfgs.values()}
       }
   vf = os.path.join(destFolder,"version.json")
-  with open(vf,'w') as fp:
-    json.dump(v,fp,indent=4)
+  if dry_run:
+    print('will create json %s : \n %s'%(vf,v))
+  else:
+    with open(vf,'w') as fp:
+      json.dump(v,fp,indent=4)
   return vf
 
 
@@ -125,20 +136,24 @@ def printReleaseMessage():
 
 
 def deployBinsToOwncloud():
-  global allCfgs
+  global allCfgs,dry_run
   vpublicFolder = os.path.join(publicFolder,desiredVersion)
   if not os.path.exists(vpublicFolder):
     os.makedirs(vpublicFolder)
 
+  
   jsonF = createJSON(vpublicFolder);
-  copy2(jsonF,publicFolder+'/');
-  copy2(changeLogPath,vpublicFolder);
+  
+  copy_dry(jsonF,publicFolder);
+  copy_dry(changeLogPath,vpublicFolder);
   
 
   for k,c in allCfgs.items():
     print("copying : %s"%k)
-  #   #copy2(c["local_bin"],os.path.join(vpublicFolder,os.path.basename(c["local_bin"])))
-    copy2(c["local_zip"],os.path.join(vpublicFolder,c["published_basename"]+'.zip'))
+    #   #copy_dry(c["local_bin"],os.path.join(vpublicFolder,os.path.basename(c["local_bin"])))
+    local = c["local_zip"]
+    dest = os.path.join(vpublicFolder,c["published_basename"]+'.zip')
+    copy_dry(local,dest)
 
 def deployBinsToGithub():
   global allCfgs,dry_run
@@ -160,7 +175,7 @@ def deployBinsToGithub():
       if v["local_bin"].endswith(".tar.gz"):
         ext = ".tar.gz";
       tmpRenamed = tempD+'/'+v["published_basename"]+ext
-      copy2(v["local_bin"],tmpRenamed)
+      copy_dry(v["local_bin"],tmpRenamed)
       allAssets+= [tmpRenamed]
   print (allAssets)
   gh.gh_release_create(repo_name,desiredVersion,publish=True,asset_pattern =allAssets, name=desiredVersion,body=notes,dry_run=dry_run)
@@ -176,8 +191,7 @@ if __name__ == '__main__':
   
   print(json.dumps(allCfgs,indent=1))
   printReleaseMessage()
-  print ('doyouwantToProceed (y/N)')
-  nn = input()
+  nn = input('doyouwantToProceed %s (y/N)' % ("dry run" if dry_run else ""))
   if nn=='y':
     deployBinsToOwncloud()
     deployBinsToGithub()
