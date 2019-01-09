@@ -40,7 +40,17 @@ ParameterContainer * ParameterContainerSync::getSlaveRelatedContainer(ParameterC
     ParameterContainer * inner = dynamic_cast<ParameterContainer*>(slave->getMirroredContainer(c,root));
     if( tryLastName && !inner){
 
-        jassertfalse;
+        ControlAddressType relAddr = c->controlAddress.getRelativeTo(root->controlAddress);
+        if(relAddr.size()==0){
+            jassertfalse;
+            return nullptr;
+        }
+        relAddr.set(relAddr.size()-1,Controllable::toShortName(c->nameParam->lastValue.toString()));
+        inner =  dynamic_cast<ParameterContainer*>(relAddr.resolveContainerFromContainer(slave));
+
+        if(!inner){
+            jassertfalse;
+        }
     }
     
 
