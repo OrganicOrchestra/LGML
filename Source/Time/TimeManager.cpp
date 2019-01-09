@@ -345,7 +345,7 @@ void TimeManager::releaseIfMasterCandidate (TimeMasterCandidate* n)
     if (n == timeMasterCandidate)
     {
         isSettingTempo->setValue (false);
-        n = nullptr;
+        timeMasterCandidate = nullptr;
     }
 }
 

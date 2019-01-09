@@ -733,8 +733,8 @@
   </MAINGROUP>
   <EXPORTFORMATS>
     <XCODE_MAC bigIcon="jsU7Hw" documentExtensions="lgml" externalLibraries=""
-               extraCompilerFlags="-Wno-reorder&#10;&#10;&#10;" extraDefs="LINK_PLATFORM_MACOSX=1&#10;"
-               extraLinkerFlags="../../third_party/rubberband/lib/librubberband.a"
+               extraCompilerFlags="-Wall&#10;-Wno-unknown-pragmas&#10;-Wno-reorder&#10;"
+               extraDefs="LINK_PLATFORM_MACOSX=1&#10;" extraLinkerFlags="../../third_party/rubberband/lib/librubberband.a"
                keepCustomXcodeSchemes="1" postbuildCommand="" prebuildCommand=""
                smallIcon="jsU7Hw" targetFolder="Builds/MacOSX" vst3Folder="third_party/VST3_SDK"
                vstFolder="" microphonePermissionNeeded="1" xcodeSubprojects="third_party/libpd/libpd.xcodeproj:libpd-osx-multi">

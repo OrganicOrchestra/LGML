@@ -72,15 +72,7 @@ void LGMLLoggerUI::timerCallback()
         
         
     }
-    //DBG("Handle Async Update");
-//    auto cTime = Time::getMillisecondCounter();
-//    if(cTime - lastUpdateTime < 500 ){
-//        triggerAsyncUpdate();
-//    }
-//    else{
-//        lastUpdateTime = cTime;
-
-        logListComponent->updateContent();
+    logListComponent->updateContent();
         logListComponent->scrollToEnsureRowIsOnscreen (totalLogRow.get() - 1);
 #if USE_CACHED_GLYPH
         logList.cleanUnusedGlyphs();
@@ -97,8 +89,7 @@ ShapeShifterContentComponent (contentName,
                               "See events occuring in LGML"),
 logList (this),
 maxNumElement (100),
-totalLogRow (0),
-lastUpdateTime(0)
+totalLogRow (0)
 {
 
     logger->addLogListener (this);
@@ -342,7 +333,7 @@ MouseCursor  LGMLLoggerUI::getMouseCursor(){
 //////////////
 // logList
 
-LGMLLoggerUI::LogList::LogList (LGMLLoggerUI* o) : owner (o),minRow(0),maxRow(0)
+LGMLLoggerUI::LogList::LogList (LGMLLoggerUI* o) : owner (o)
 {
 }
 

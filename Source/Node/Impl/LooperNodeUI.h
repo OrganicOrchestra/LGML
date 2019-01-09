@@ -91,7 +91,7 @@ public:
         float headerHackHeight = .2f;
         float volumeWidth = .2f;
         ScopedPointer<FloatSliderUI> volumeSlider;
-        bool isSelected;
+        bool isTrackSelected;
     };
 
 

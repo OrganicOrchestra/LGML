@@ -243,7 +243,7 @@ void LooperNodeContentUI::filesDropped (const StringArray& files, int x, int y) 
 
 
 LooperNodeContentUI::TrackUI::TrackUI (LooperTrack* track) :InspectableComponent(track), track (track),
-isSelected (track->isSelected), timeStateUI (track)
+isTrackSelected (track->isSelected), timeStateUI (track)
 {
     recPlayButton = ParameterUIFactory::createDefaultUI (track->recPlayTrig);
     recPlayButton->setCustomText (">");
@@ -298,7 +298,7 @@ void LooperNodeContentUI::TrackUI::paintOverChildren (Graphics& g)
     g.setFont (12);
     g.drawText ( String (track->trackIdx), timeStateUI.getBounds(), Justification::centred);
 
-    if (isSelected)
+    if (isTrackSelected)
     {
         g.setColour (Colours::yellow);
         g.drawRoundedRectangle (getLocalBounds().reduced (1).toFloat(), 2.f, 1.f);
@@ -340,9 +340,9 @@ void LooperNodeContentUI::TrackUI::mouseUp (const MouseEvent&)  {
 }
 
 void LooperNodeContentUI::TrackUI::trackSelectedAsync (bool _isSelected) {
-    isSelected = _isSelected;
+    isTrackSelected = _isSelected;
     repaint();
-    if(_isSelected)
+    if(isTrackSelected)
         selectThis();
 }
 

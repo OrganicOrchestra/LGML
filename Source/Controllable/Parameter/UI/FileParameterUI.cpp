@@ -90,6 +90,9 @@ void FileParameterUI::buttonClicked (Button*) {
         case 4:
             if (getCurrentFile().existsAsFile())
                 getCurrentFile().startAsProcess();
+            if(auto * fp =getFileParameter())
+                fp->setIsWatching(true);
+            break;
         case 5:
             if(auto * fp =getFileParameter())
                 fp->setIsWatching(!getFileParameter()->isWatching);

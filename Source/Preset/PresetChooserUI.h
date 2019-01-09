@@ -39,10 +39,10 @@ public:
     int selectedPresetId;
 
 
-    virtual void updatePresetComboBox (bool forceUpdate = false);
-    virtual void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
+    void updatePresetComboBox (bool forceUpdate = false);
+    void comboBoxChanged (ComboBox* comboBoxThatHasChanged) final;
 
-    virtual void controllableContainerPresetLoaded (ControllableContainer*,Preset *) override;
+    virtual void controllableContainerPresetLoaded (ControllableContainer*,Preset *) final;
 
 
     void fillWithPresets (ComboBox* cb) ;
