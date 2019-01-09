@@ -50,8 +50,7 @@ public:
     
     bool isOverriden;
     bool mappingDisabled;
-    bool isUserDefined ;
-    
+
     // if true each set value doesn't do nothing until som reader call pushValue
     // useful for thread syncronization
     bool isCommitableParameter;

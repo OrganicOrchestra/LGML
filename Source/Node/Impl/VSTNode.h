@@ -143,7 +143,7 @@ private:
 
     void initParametersFromProcessor (AudioPluginInstance* p);
     void updateParametersFromProcessor (AudioPluginInstance* p);
-    bool needParamReload;
+    
     
     void handleIncomingMidiMessage (MidiInput* source,
                                     const MidiMessage& message) override;

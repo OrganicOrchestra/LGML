@@ -106,7 +106,7 @@ void MIDIClock::addClockIfNeeded(){
     JUCE_CONSTEXPR int maxClockMsg = MIDI_SYNC_QUEUE_SIZE - 4;
     int numClocksToAdd  = (newT - state.ppqn);
     if(numClocksToAdd<0){
-        DBG("waiting clk:" <<numClocksToAdd);
+        DBG(String("waiting clk : ")+ String(numClocksToAdd));
         return;
     }
     if(numClocksToAdd>=0 && !state.isPlaying){

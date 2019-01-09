@@ -136,7 +136,6 @@ void VSTNode::onContainerParameterChanged ( ParameterBase* p)
                 suspendProcessing (true);
                 generatePluginFromDescription (pd);
                 DBG ("VST generated");
-                needParamReload = true;
                 if(stateInfoPluginID==pd->createIdentifierString())
                     setVSTState();
                 else{
@@ -267,7 +266,7 @@ void VSTNode::setVSTState(){
         if (numParamChanged)   initParametersFromProcessor (innerPlugin);
         else updateParametersFromProcessor(innerPlugin);
         
-        needParamReload = false;
+        
         suspendProcessing (false);
 
 

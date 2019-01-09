@@ -153,8 +153,8 @@ public:
     void updateChildrenControlAddress();
 
 
-    virtual Array<WeakReference<Controllable>> getAllControllables (bool recursive = false, bool getNotExposed = false);
-    virtual Array<WeakReference<ControllableContainer>> getAllControllableContainers (bool recursive = false);
+    Array<WeakReference<Controllable>> getAllControllables (bool recursive = false, bool getNotExposed = false);
+    Array<WeakReference<ControllableContainer>> getAllControllableContainers (bool recursive = false);
 
      Controllable* getControllableForAddress (String addressSplit, bool getNotExposed = false) const;
      Controllable* getControllableForAddress (ControlAddressType & a, bool getNotExposed = false)const;

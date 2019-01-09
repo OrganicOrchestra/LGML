@@ -171,7 +171,7 @@ Controllable::Controllable ( const String& niceName, const String& description, 
 Controllable::~Controllable()
 {
     Controllable::masterReference.clear();
-    listeners.call (&Controllable::Listener::controllableRemoved, this);
+    controllableListeners.call (&Controllable::Listener::controllableRemoved, this);
 
 }
 
@@ -193,7 +193,7 @@ void Controllable::setAutoShortName()
 {
     shortName = toShortName (niceName);
     updateControlAddress(false);
-    listeners.call (&Listener::controllableNameChanged, this);
+    controllableListeners.call (&Listener::controllableNameChanged, this);
 }
 
 
@@ -203,7 +203,7 @@ void Controllable::setEnabled (bool value, bool silentSet, bool force)
 
     enabled = value;
 
-    if (!silentSet) listeners.call (&Listener::controllableStateChanged, this);
+    if (!silentSet) controllableListeners.call (&Listener::controllableStateChanged, this);
 }
 
 
@@ -227,7 +227,7 @@ void Controllable::updateControlAddress(bool isParentResolved)
     else{
         controlAddress = ControlAddressType::buildFromControllable(this);
     }
-    listeners.call (&Listener::controllableControlAddressChanged, this);
+    controllableListeners.call (&Listener::controllableControlAddressChanged, this);
 }
 
 

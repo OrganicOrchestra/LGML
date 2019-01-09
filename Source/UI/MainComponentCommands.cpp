@@ -507,7 +507,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                                             jassertfalse;
                                         }
                                     }
-                                    else{
+                                    else if (n){
 
                                         jassertfalse;
                                         n->remove();

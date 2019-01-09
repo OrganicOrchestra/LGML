@@ -18,6 +18,7 @@ void openFile(FileParameter* fp);
 
 FileParameterUI::FileParameterUI (FileParameter* p): ParameterUI (p)
 ,options("options",DrawableButton::ButtonStyle::ImageFitted)
+,hoveredByFile(false)
 {
     options.addListener(this);
     options.setImages(AddElementButton::createDrawable());

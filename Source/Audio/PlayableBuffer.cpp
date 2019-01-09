@@ -59,7 +59,6 @@ stateChanged (false),
 numTimePlayed (0),
 sampleOffsetBeforeNewState (0),
 multiNeedle (512, 512)
-//tailRecordNeedle(0),
 
 #if BUFFER_CAN_STRETCH
 , stretchJob (nullptr)
@@ -474,15 +473,14 @@ bool PlayableBuffer::isPlaying() const {return state == BUFFER_PLAYING;}
 bool PlayableBuffer::isFirstRecordedFrame() const {return state == BUFFER_RECORDING && (lastState != BUFFER_RECORDING);}
 bool PlayableBuffer::isOrWasPlaying() const {return (state == BUFFER_PLAYING || lastState == BUFFER_PLAYING) &&  recordNeedle > 0 && getAllocatedNumSample() > 0;}
 bool PlayableBuffer::isOrWasRecording() const {return (state == BUFFER_RECORDING || lastState == BUFFER_RECORDING) && getAllocatedNumSample() > 0;}
-//bool PlayableBuffer::isRecordingTail() const{return  recordNeedle>0 && !isRecording() && tailRecordNeedle<2*getNumSampleFadeOut();}
-//void PlayableBuffer::stopRecordingTail() {tailRecordNeedle = 2*getNumSampleFadeOut();}
+
 
 void PlayableBuffer::startRecord() {
     if(isStretchJobPending()){
         jassertfalse;
         cancelStretchJob(true);
     }
-    recordNeedle = 0; tailRecordNeedle = 0; multiNeedle.setLoopSize (0); playNeedle = 0; globalPlayNeedle = 0;
+    recordNeedle = 0; multiNeedle.setLoopSize (0); playNeedle = 0; globalPlayNeedle = 0;
     originAudioBuffer.setSize (0, 0, false, false, true);
 
 

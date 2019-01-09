@@ -30,7 +30,6 @@ ParameterUI::ParameterUI ( ParameterBase* _parameter) :
     customTextDisplayed (""),
     isMappingDest (false),
     isDraggable (true),
-    isSelected (false),
     wasShowing(true)
 {
     allParameterUIs.add(this);

@@ -401,7 +401,6 @@ var JsEnvironment::callFunctionFromIdentifier (const Identifier& function, const
     if (resOwned)
     {
         delete result;
-        result = nullptr;
     }
 
     return res;

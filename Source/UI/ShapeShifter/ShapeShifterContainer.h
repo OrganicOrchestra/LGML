@@ -69,7 +69,7 @@ public:
 
     ShapeShifterContainer* insertContainerAt (ShapeShifterContainer* container, int index = -1, bool resizeAfter = true);
 
-    void movePanelsInContainer (ShapeShifterPanel* containedPanel, ShapeShifterPanel* newPanel, Direction _newDir, bool secondBeforeFirst);
+    void movePanelsInContainer (ShapeShifterPanel* newPanel, ShapeShifterPanel* containedPanel, Direction _newDir, bool secondBeforeFirst);
 
     bool isFlexible() override;
 

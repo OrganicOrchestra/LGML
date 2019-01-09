@@ -33,8 +33,7 @@ ParameterBase::ParameterBase ( const String& niceName, const String& description
     defaultValue (initialValue),
     value (initialValue),
     mappingDisabled (false),
-    alwaysNotify(false),
-    isUserDefined (false)
+    alwaysNotify(false)
 {
 
 

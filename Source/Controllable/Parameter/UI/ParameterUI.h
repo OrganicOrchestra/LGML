@@ -48,7 +48,7 @@ public:
     void setMappingDest (bool _isMappingDest);
     
     bool isDraggable;
-    bool isSelected;
+
     void updateOverlayEffect();
 
     void visibilityChanged() final;

@@ -19,6 +19,8 @@
 BetterStepper::BetterStepper (TooltipClient* tooltip) : Slider (SliderStyle::IncDecButtons, TextEntryBoxPosition::TextBoxLeft)
 ,tooltipClient(tooltip)
 ,timeEntered(0)
+,isMini(false)
+,isEditable(true)
 {
 
     setIncDecButtonsMode (IncDecButtonMode::incDecButtonsDraggable_AutoDirection);
