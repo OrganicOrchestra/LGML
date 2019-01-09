@@ -4,7 +4,7 @@
               companyWebsite="http://www.organic-orchestra.com" cppLanguageStandard="14"
               displaySplashScreen="1" id="a1hJPO" includeBinaryInAppConfig="1"
               jucerVersion="5.4.1" name="LGML" projectType="guiapp" reportAppUsage="1"
-              splashScreenColour="Dark" version="1.3.1" companyCopyright="Organic Orchestra"
+              splashScreenColour="Dark" version="1.3.2" companyCopyright="Organic Orchestra"
               headerPath="../../../JUCE/modules/juce_audio_processors/format_types/VST3_SDK/&#10;../../third_party/VST2_SDK/&#10;../../third_party/libpd/pure-data/src&#10;../../third_party/serial/include&#10;../../third_party/rubberband/&#10;../../third_party/link/include/&#10;../../third_party/link/modules/asio-standalone/asio/include">
   <MAINGROUP id="RYpQgZ" name="LGML">
     <GROUP id="{C4A5CA13-B090-453E-F1E3-DE9F74C715E2}" name="Assets">

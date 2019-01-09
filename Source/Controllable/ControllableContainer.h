@@ -253,8 +253,6 @@ public:
 
     WeakReference<ControllableContainer >::SharedPointer* getMasterRefPtr(){return ControllableContainer::masterReference.getSharedPointer (this);}
 
-    const DynamicObject*  getMetaData() const{return metaData.getDynamicObject();};
-
     /// identifiers
     static const Identifier controlAddressIdentifier;
     static const Identifier childContainerId;
@@ -262,7 +260,7 @@ public:
 
 
 protected :
-    var metaData;
+
 
     
     
