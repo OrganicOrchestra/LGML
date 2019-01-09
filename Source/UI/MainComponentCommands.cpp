@@ -365,8 +365,12 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                             NodeContainerViewer *  ncv = dynamic_cast<NodeContainerViewer*>(relatedComponent);
                             if(!ncv)ncv=relatedComponent->findParentComponentOfClass<NodeContainerViewer>();
                             if(ncv && ncv->uiParams){
-                                auto nodeUIParams = ncv->uiParams->getControllableContainerByShortName(cc->shortName);
-                                data.getDynamicObject()->setProperty ("uiData",nodeUIParams->createObject());
+                                if(auto nodeUIParams = ncv->uiParams->getControllableContainerByShortName(cc->shortName)){
+                                    data.getDynamicObject()->setProperty ("uiData",nodeUIParams->createObject());
+                                }
+                                else{
+                                    jassertfalse;
+                                }
 
                             }
 
@@ -479,8 +483,13 @@ bool MainContentComponent::perform (const InvocationInfo& info)
 
 
                                             if(auto o = d->getProperty ("uiData").getDynamicObject()){
-                                                auto nodeUIParams = dynamic_cast<ParameterContainer*>(ncv->uiParams->getControllableContainerByShortName(n->shortName));
-                                                nodeUIParams->configureFromObject(o);
+                                                if(auto nodeUIParams = dynamic_cast<ParameterContainer*>(ncv->uiParams->getControllableContainerByShortName(n->shortName))){
+                                                    nodeUIParams->configureFromObject(o);
+                                                }
+                                                else{
+                                                    jassertfalse;
+                                                }
+
                                             }
                                             nodeUI->uid=Uuid();
                                             Point<int> offset(0,0);

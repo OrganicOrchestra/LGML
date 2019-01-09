@@ -743,8 +743,12 @@ void NodeContainerViewer::addOrRemoveNodeUndoable(const String & tid,const Point
                                          if(auto m = getUIForNode(n)){
                                              if(originNodeToRemove){
                                                  if(auto * sO = savedUiParamsObject.getDynamicObject()){
-                                                     auto nodeUIParams = dynamic_cast<ParameterContainer*>(uiParams->getControllableContainerByShortName(n->shortName));
+                                                     if(auto nodeUIParams = dynamic_cast<ParameterContainer*>(uiParams->getControllableContainerByShortName(n->shortName))){
                                                      nodeUIParams->configureFromObject(sO);
+                                                     }
+                                                     else{
+                                                         jassertfalse;
+                                                     }
                                                  }
                                              }
                                              if(!originNodeToRemove){
