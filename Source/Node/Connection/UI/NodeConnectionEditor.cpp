@@ -349,38 +349,21 @@ void NodeConnectionEditor::finishEditingLink()
 
     if (success)
     {
-        bool doCreateNewLink = true;
 
-        bool inputAlreadyConnected = editingLink->inSlot->isConnected();
-
-        if (inputAlreadyConnected)
+        if (editingLink->inSlot->isConnected())
         {
-            int alertResult = AlertWindow::showNativeDialogBox ("Already connected", "This slot is already connected, choose Yes to replace the existing connection with this one", true);
-            //DBG("Alert result " + String(alertResult));
-
-            if (alertResult == 1)
-            {
                 NodeConnectionEditorLink* l = getLinkForSlots ( editingLink->inSlot->getFirstConnectedSlot(), editingLink->inSlot);
-
                 if (l != nullptr) l->remove();
-            }
-            else
-            {
-                doCreateNewLink = false;
-            }
+        }
+        if (currentConnection->isAudio())
+        {
+            currentConnection->addAudioGraphConnection (editingLink->outSlot->channel, editingLink->inSlot->channel);
+        }
+        else
+        {
+            //currentConnection->addDataGraphConnection (editingLink->outSlot->data, editingLink->inSlot->data);
         }
 
-        if (doCreateNewLink)
-        {
-            if (currentConnection->isAudio())
-            {
-                currentConnection->addAudioGraphConnection (editingLink->outSlot->channel, editingLink->inSlot->channel);
-            }
-            else
-            {
-                //currentConnection->addDataGraphConnection (editingLink->outSlot->data, editingLink->inSlot->data);
-            }
-        }
     }
 
     removeChildComponent (editingLink);
