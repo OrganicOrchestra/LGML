@@ -52,7 +52,7 @@ void PdNodeContentUI::init()
 
     fileChooser = ParameterUIFactory::createDefaultUI(pdNode->pdPath);
     addAndMakeVisible(fileChooser);
-    
+
 
 
     updatePdParameters();
@@ -134,12 +134,21 @@ void PdNodeContentUI::handleCommandMessage (int /*cId*/)
 void PdNodeContentUI::resized()
 {
     Rectangle<int> area = getLocalBounds().reduced (2);
-    Rectangle<int> midiR = area.removeFromTop (25);
-    fileChooser->setBounds(midiR.removeFromLeft(midiR.getWidth()/2));
-    activityBlink->setBounds (midiR.removeFromRight (midiR.getHeight()/4).reduced (2));
-    midiDeviceChooser->setBounds (midiR);
+    int headerHeight = 20;
+    int estimatedParamH = jmin(4,paramSliders.size())*20;
+    bool displayHeader = area.getHeight()> headerHeight+estimatedParamH;
 
-    area.removeFromTop (2);
+    fileChooser->setVisible(displayHeader);
+    activityBlink->setVisible(displayHeader);
+    midiDeviceChooser->setVisible(displayHeader);
+
+    if(displayHeader){
+        Rectangle<int> midiR = area.removeFromTop (headerHeight);
+        fileChooser->setBounds(midiR.removeFromLeft(midiR.getWidth()/2));
+        activityBlink->setBounds (midiR.removeFromRight (midiR.getHeight()/4).reduced (2));
+        midiDeviceChooser->setBounds (midiR);
+        area.removeFromTop (2);
+    }
 
     layoutSliderParameters (area.reduced (2));
 
