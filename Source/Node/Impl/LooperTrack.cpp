@@ -1017,7 +1017,7 @@ void LooperTrack::loadAudioSample (const String& path)
                 }
 
                 // playableBuffer.stopRecordingTail();
-                bool wasPlaying = trackState==PLAYING;
+                bool wasPlaying = tm->isPlaying();
                 playableBuffer.setState (PlayableBuffer::BUFFER_STOPPED);
                 setTrackState (STOPPED);
 
