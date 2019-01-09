@@ -26,7 +26,7 @@ public:
         /// user description
         auto labelColor = findColour(Label::ColourIds::backgroundColourId).withAlpha(1.0f).darker();
          descriptionLabel.setColour(Label::ColourIds::backgroundColourId, labelColor);
-        descriptionLabel.setText("User Description : ", dontSendNotification);
+        descriptionLabel.setText(juce::translate("User Description")+" : ", dontSendNotification);
         addChildComponent(descriptionLabel);
 
         userDescription.setReadOnly(false);
@@ -144,9 +144,9 @@ public:
          }
     }
 
-    void currentComponentChanged (Inspector* ) override{
+    void selectionChanged (Inspector* ) override{
         if(auto i = Inspector::getInstanceWithoutCreating()){
-            if(auto * curNode = dynamic_cast<ConnectableNode*>(i->getCurrentContainerSelected())){
+            if(auto * curNode = dynamic_cast<ConnectableNode*>(i->getFirstCurrentContainerSelected())){
                 descriptionParameter = curNode->descriptionParam;
             }
         }

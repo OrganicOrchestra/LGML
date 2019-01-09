@@ -31,8 +31,8 @@ ConnectableNodeContentUI::~ConnectableNodeContentUI()
 
 void ConnectableNodeContentUI::setNodeAndNodeUI (ConnectableNode* _node, ConnectableNodeUI* _nodeUI)
 {
-    this->node = _node;
-    this->nodeUI = _nodeUI;
+    node = _node;
+    nodeUI = _nodeUI;
 
     init();
 

@@ -34,14 +34,16 @@ const Identifier ControllableContainer::childContainerId ("/");
 const Identifier ControllableContainer::controllablesId ("parameters");
 
 
-// TODO fix use of niceName
-ControllableContainer::ControllableContainer (StringRef /*niceName*/) :
+
+ControllableContainer::ControllableContainer (StringRef niceName) :
 parentContainer (nullptr),
 numContainerIndexed (0),
 localIndexedPosition (-1),
 isUserDefined (false)
 {
 
+    shortName = Controllable::toShortName (niceName);
+    controlAddress = ControlAddressType::buildFromControllableContainer(this);
 
 }
 
@@ -58,8 +60,6 @@ ControllableContainer::~ControllableContainer()
     {
         if (a.get())delete a.get();
     }
-
-
     clearContainer();
     ControllableContainer::masterReference.clear();
 }
@@ -87,7 +87,7 @@ void ControllableContainer::clearContainer()
     }
 
     controllableContainers.clear();
-    
+
 }
 
 
@@ -109,18 +109,22 @@ void ControllableContainer::removeControllable (Controllable* c)
 
 
     controllables.removeObject (c);
-    notifyStructureChanged (this,false);
+    notifyStructureChanged (this,false,true,false);
 }
 
+void ControllableContainer::addControllable(Controllable *c){
+    controllables.add(c);
+    notifyStructureChanged (this,true,true,false);
+}
 
-void ControllableContainer::notifyStructureChanged (ControllableContainer* origin,bool isAdded)
+void ControllableContainer::notifyStructureChanged (ControllableContainer* origin,bool isAdded,bool controllableUpdated, bool containerUpdated)
 {
 
     controllableContainerListeners.call (&Listener::childStructureChanged, this, origin,isAdded);
 
     if (parentContainer)
     {
-        parentContainer->notifyStructureChanged (origin,isAdded);
+        parentContainer->notifyStructureChanged (origin,isAdded,controllableUpdated,containerUpdated);
     }
 }
 
@@ -155,25 +159,38 @@ String ControllableContainer::setNiceName (const String& _niceName)
 void ControllableContainer::setAutoShortName()
 {
     shortName = Controllable::toShortName (getNiceName());
-    updateChildrenControlAddress();
+    updateControlAddress(true);
     notifyChildAddressChanged(this);
 }
 
 
 
-Controllable* ControllableContainer::getControllableByName (const String& _name, bool searchNiceNameToo)
+Controllable* ControllableContainer::getControllableByName (const String& _name) const
 {
-    
-    const String name = Controllable::toShortName(_name);
     ScopedLock lk (controllables.getLock());
-    for (auto& c : controllables)
+
+    for (auto * c : controllables)
     {
-        if ((c->shortName.compareIgnoreCase(name)==0) || (searchNiceNameToo && c->niceName == _name)) return c;
+        if(c->niceName == _name) {return c;}
     }
+    
 
     return nullptr;
 }
 
+Controllable* ControllableContainer::getControllableByShortName(const ShortNameType & n) const{
+    ScopedLock lk (controllables.getLock());
+    for (auto * c : controllables)
+    {
+        if (c->shortName==n) return c;
+    }
+    return nullptr;
+}
+
+Controllable* ControllableContainer::getControllableByShortName(const String & _name) const{
+    const ShortNameType sname = Controllable::toShortName(_name);
+    return getControllableByShortName(sname);
+}
 
 ControllableContainer* ControllableContainer::addChildControllableContainer (ControllableContainer* container, bool notify)
 {
@@ -193,7 +210,7 @@ ControllableContainer* ControllableContainer::addChildControllableContainer (Con
     if (notify)
     {
         controllableContainerListeners.call (&Listener::controllableContainerAdded, this, container);
-        notifyStructureChanged (this,true);
+        notifyStructureChanged (this,true,false,true);
     }
 
     return container;
@@ -214,8 +231,8 @@ void ControllableContainer::removeChildControllableContainer (ControllableContai
     controllableContainerListeners.call (&Listener::controllableContainerRemoved, this, container);
     controllableContainers.removeAllInstancesOf (container);
 
-      
-    notifyStructureChanged (this,false);
+
+    notifyStructureChanged (this,false,false,true);
     container->setParentContainer (nullptr);
 }
 
@@ -233,7 +250,7 @@ void ControllableContainer::addChildIndexedControllableContainer (ControllableCo
     //  container->addControllableContainerListener(this);
     container->setParentContainer (this);
     controllableContainerListeners.call (&Listener::controllableContainerAdded, this, container);
-    notifyStructureChanged (this,true);
+    notifyStructureChanged (this,true,false,true);
 }
 
 
@@ -266,132 +283,112 @@ bool ControllableContainer::isIndexedContainer() {return localIndexedPosition >=
 
 void ControllableContainer::localIndexChanged() {};
 
-ControllableContainer* ControllableContainer::getControllableContainerByName (const String& _name, bool searchNiceNameToo)
+ControllableContainer* ControllableContainer::getControllableContainerByName (const String& _name) const
 {
-    const String name = Controllable::toShortName(_name);
+
     ScopedLock lk (controllableContainers.getLock());
 
-    for (auto& cc : controllableContainers)
+    for (auto & c : controllableContainers)
     {
-        if (cc.get() && ((cc->shortName.compareIgnoreCase(name)==0) || (searchNiceNameToo && cc->getNiceName() == _name))) return cc;
+        if(c && c->getNiceName() == _name) {return c;}
     }
-
     return nullptr;
 
 }
 
 
-//ControllableContainer* ControllableContainer::getControllableContainerByName (const String& name, bool searchNiceNameToo)
-//{
-//    
-//    ScopedLock lk (controllableContainers.getLock());
-//    
-//    for (auto& cc : controllableContainers)
-//    {
-//        if (cc.get() && (cc->shortName.compareIgnoreCase(name)==0 || (searchNiceNameToo && cc->getNiceName().compareIgnoreCase(name)==0))) return cc;
-//    }
-//    
-//    return nullptr;
-//    
-//}
-ControllableContainer * ControllableContainer::getMirroredContainer(ControllableContainer * other,ControllableContainer * root ){
-
-    StringArray arr = other->getControlAddressArray(root);
-    if(arr.size()==0){
-        return this;
+ControllableContainer* ControllableContainer::getControllableContainerByShortName (const String & _name) const{
+const auto name = Controllable::toShortName(_name);
+    return getControllableContainerByShortName(name);
+}
+ControllableContainer* ControllableContainer::getControllableContainerByShortName (const ShortNameType & name) const{
+    ScopedLock lk (controllableContainers.getLock());
+    for (auto& cc : controllableContainers)
+    {
+        if (cc.get() && (cc->shortName==name )) return cc;
     }
-    return getControllableContainerForAddress(arr);
+    return nullptr;
+}
+
+ControllableContainer * ControllableContainer::getMirroredContainer(ControllableContainer * other,ControllableContainer * root ){
+    if(other==root){return this;}
+    ControlAddressType relAddr = other->controlAddress.getRelativeTo(root->controlAddress);
+    if(relAddr.size()==0){
+        jassertfalse;
+        return nullptr;
+    }
+    return relAddr.resolveContainerFromContainer(this);
 
 }
 
-ControllableContainer* ControllableContainer::getControllableContainerForAddress (StringArray   addressSplit)
-{
+ControllableContainer* ControllableContainer::findFirstControllableContainer (const std::function<bool(ControllableContainer*)> fun) const{
 
-    if (addressSplit.size() == 0) jassertfalse; // SHOULD NEVER BE THERE !
-
-    bool isTarget = addressSplit.size() == 1;
-
-    if (isTarget)
-    {
-
-        if (ControllableContainer* res = getControllableContainerByName (addressSplit[0]))
-            return res;
-
-    }
-    else
-    {
-        ScopedLock lk (controllableContainers.getLock());
-
-        for (auto& cc : controllableContainers)
-        {
-            bool validName = cc->shortName.compareIgnoreCase(addressSplit[0])==0;
-
-
-            if( validName){
-                addressSplit.remove (0);
-                return cc->getControllableContainerForAddress (addressSplit);
-            }
-            else
-            {
-                ControllableContainer* tc = cc->getControllableContainerByName (addressSplit[0]);
-
-                if (tc != nullptr)
-                {
-                    addressSplit.remove (0);
-                    return tc->getControllableContainerForAddress (addressSplit);
-                }
-
-            }
+    for(auto & c : controllableContainers){
+        if(c.get()){
+        if(fun(c))return c;
+        if(auto ch = c->findFirstControllableContainer(fun)){
+            return ch;
+        }
         }
     }
 
+
     return nullptr;
 
 }
 
 
-String ControllableContainer::getControlAddress (const ControllableContainer* relativeTo) const
+ControlAddressType  ControllableContainer::getControlAddressRelative (const ControllableContainer* relativeTo) const
 {
-    StringArray addressArray(getControlAddressArray(relativeTo));
-    if (addressArray.size() == 0)return "";
-    else return "/" + addressArray.joinIntoString ("/");
+    return ControlAddressType::buildFromControllableContainer(this,relativeTo);
 }
 
-StringArray ControllableContainer::getControlAddressArray (const ControllableContainer* relativeTo) const{
-    StringArray addressArray;
-   const ControllableContainer* pc = this;
+const ControlAddressType & ControllableContainer::getControlAddress () const
+{
+#if JUCE_DEBUG
 
-    while (pc != relativeTo && pc->parentContainer != nullptr)
-    {
-        addressArray.insert (0, pc->shortName);
 
-        pc = pc->parentContainer;
+    auto curAddr = ControlAddressType::buildFromControllableContainer(this);
+    if(controlAddress!=curAddr){
+        auto curS = curAddr.toString();
+        auto localS = controlAddress.toString();
+        DBG(String("address mismatch ") + localS + " // " + curS );
+        jassertfalse;
     }
-    if(relativeTo){
-        jassert(pc == relativeTo);
-    }
-    return addressArray;
+
+#endif
+    return controlAddress;
 }
+
+
 
 void ControllableContainer::setParentContainer (ControllableContainer* container)
 {
-    this->parentContainer = container;
-    if(container!=nullptr)updateChildrenControlAddress();
+    parentContainer = container;
+    if(container)updateControlAddress(true);
 
 }
-
+void ControllableContainer::updateControlAddress(bool isParentResolved){
+    if(isParentResolved && parentContainer){
+        controlAddress = parentContainer->controlAddress.getChild(shortName);
+    }
+    else{
+        controlAddress = ControlAddressType::buildFromControllableContainer(this);
+    }
+    if(parentContainer!=nullptr)updateChildrenControlAddress();
+}
 
 void ControllableContainer::updateChildrenControlAddress()
 {
     {
         ScopedLock lk (controllables.getLock());
 
-        for (auto& c : controllables) c->updateControlAddress();
+        for (auto& c : controllables) c->updateControlAddress(true);
     }
     {
         ScopedLock lk (controllableContainers.getLock());
 
-        for (auto& cc : controllableContainers) if (cc.get())cc->updateChildrenControlAddress();
+        for (auto& cc : controllableContainers) if (cc.get())cc->updateControlAddress(true);
     }
 
 
@@ -405,7 +402,7 @@ Array<WeakReference<Controllable> > ControllableContainer::getAllControllables (
     {
         ScopedLock lk (controllables.getLock());
 
-        for (auto& c : controllables)
+        for (const auto& c : controllables)
         {
             if (getNotExposed || c->isControllableExposed) result.add (c);
         }
@@ -445,66 +442,36 @@ Array<WeakReference<ControllableContainer > > ControllableContainer::getAllContr
 
 
 
-Controllable* ControllableContainer::getControllableForAddress (String address, bool recursive, bool getNotExposed)
+Controllable* ControllableContainer::getControllableForAddress (String address, bool getNotExposed)const
 {
     StringArray addrArray;
     addrArray.addTokens (address.toLowerCase(), juce::StringRef ("/"), juce::StringRef ("\""));
-    
+
     // remove first when address starts with " / "
     if(addrArray.size() && addrArray.getReference(0).isEmpty())
         addrArray.remove (0);
 
-    return getControllableForAddress (addrArray, recursive, getNotExposed);
+    ControlAddressType addr;
+    for(auto & s:addrArray){
+        addr.add(s);
+    }
+
+    return getControllableForAddress (addr, getNotExposed);
 }
 
 
-Controllable* ControllableContainer::getControllableForAddress (StringArray addressSplit, bool recursive, bool getNotExposed)
+Controllable* ControllableContainer::getControllableForAddress (ControlAddressType & addressSplit, bool getNotExposed)const
 {
     if (addressSplit.size() == 0) jassertfalse; // SHOULD NEVER BE THERE !
-
-    bool isTargetAControllable = addressSplit.size() == 1;
-
-    if (isTargetAControllable)
-    {
-
-        //DBG("Check controllable Address : " + shortName);
-        const ScopedLock lk (controllables.getLock());
-
-        for (auto& c : controllables)
-        {
-            if (c->shortName.compareIgnoreCase( addressSplit[0])==0)
-            {
-                //DBG(c->shortName);
-                if (c->isControllableExposed || getNotExposed) return c;
-                else return nullptr;
-            }
-        }
-    }
-
-    else
-    {
-        ScopedLock lk (controllableContainers.getLock());
-
-        for (auto& cc : controllableContainers)
-        {
-            if (cc.get())
-            {
-
-                if (cc->shortName.compareIgnoreCase(addressSplit[0])==0)
-                {
-                    addressSplit.remove (0);
-                    return cc->getControllableForAddress (addressSplit, recursive, getNotExposed);
-                }
-
-
-            }
-        }
-    }
-
-    return nullptr;
+    return addressSplit.resolveControllableFromContainer(this);
 }
 
-Array<Controllable*> ControllableContainer::getControllablesForExtendedAddress (StringArray addressSplit, bool recursive, bool getNotExposed)
+ControllableContainer* ControllableContainer::getControllableContainerForAddress (ControlAddressType & a, bool getNotExposed )const{
+    if (a.size() == 0) jassertfalse; // SHOULD NEVER BE THERE !
+    return a.resolveContainerFromContainer(this);
+}
+
+Array<Controllable*> ControllableContainer::getControllablesForExtendedAddress (StringArray addressSplit, bool recursive, bool getNotExposed)const
 {
     if (addressSplit.size() == 0) jassertfalse; // SHOULD NEVER BE THERE !
     Array<Controllable *> res;
@@ -516,7 +483,7 @@ Array<Controllable*> ControllableContainer::getControllablesForExtendedAddress (
             //DBG("Check controllable Address : " + shortName);
             const ScopedLock lk (controllables.getLock());
 
-            for (auto& c : controllables)
+            for (const auto& c : controllables)
             {
                 if (c->isControllableExposed || getNotExposed){
                     OSCAddress ad("/"+c->shortName);
@@ -562,7 +529,7 @@ Array<Controllable*> ControllableContainer::getControllablesForExtendedAddress (
 }
 
 
-bool ControllableContainer::containsControllable (const Controllable* c, int maxSearchLevels)
+bool ControllableContainer::containsControllable (const Controllable* c, int maxSearchLevels)const
 {
     if (c == nullptr) return false;
 
@@ -622,14 +589,16 @@ String ControllableContainer::getUniqueNameInContainer (const String& sourceName
         }
     }
 
-    void* elem = getControllableByName (resultName, true);
+    ShortNameType tShort = Controllable::toShortName(resultName);
+    
+    void* elem = getControllableByShortName (tShort);
 
     if ( elem != nullptr && elem != me)
     {
         return getUniqueNameInContainer (sourceName, suffix + 1, me);
     }
-
-    elem = getControllableContainerByName (resultName, true) ;
+    
+    elem = getControllableContainerByShortName (tShort) ;
     
     if (elem != nullptr && elem != me)
     {
@@ -641,7 +610,7 @@ String ControllableContainer::getUniqueNameInContainer (const String& sourceName
 
 
 
-bool ControllableContainer::containsContainer (ControllableContainer* c)
+bool ControllableContainer::containsContainer (ControllableContainer* c) const
 {
     if (c == this)return true;
     

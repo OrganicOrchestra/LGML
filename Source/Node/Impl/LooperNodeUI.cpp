@@ -19,7 +19,7 @@
 #include "../../Controllable/ControllableUIHelpers.h"
 
 
-
+#include "../../Engine.h"
 
 LooperNodeContentUI::LooperNodeContentUI()
 {
@@ -194,13 +194,56 @@ void LooperNodeContentUI::checkSoloState(){
 }
 
 
+
+bool LooperNodeContentUI::isInterestedInFileDrag (const StringArray& files) {
+    return true;
+};
+void LooperNodeContentUI::fileDragEnter (const StringArray& files, int x, int y) {
+    int numFilesToDrop  = jmin(files.size(),tracksUI.size());
+    for(int i = 0 ; i < numFilesToDrop ; i++){
+        EnumParameterUI* ddl = tracksUI.getUnchecked(i)->sampleChoiceDDL.get();
+        StringArray af{files[i]};
+        ddl->fileDragEnter(af,x,y);
+    }
+};
+void LooperNodeContentUI::fileDragMove (const StringArray& files, int x, int y) {
+//    int numFilesToDrop  = jmin(files.size(),tracksUI.size());
+//    for(int i = 0 ; i < numFilesToDrop ; i++){
+//        auto ddl = tracksUI.getUnchecked(i)->sampleChoiceDDL;
+//        StringArray af{files[i]};
+//        ddl->fileDragMove(af,x,y);
+//    }
+};
+void LooperNodeContentUI::fileDragExit (const StringArray& files) {
+
+    int numFilesToDrop  = jmin(files.size(),tracksUI.size());
+    for(int i = 0 ; i < numFilesToDrop ; i++){
+        EnumParameterUI* ddl = tracksUI.getUnchecked(i)->sampleChoiceDDL.get();
+        StringArray af{files[i]};
+        ddl->fileDragExit(af);
+    }
+};
+void LooperNodeContentUI::filesDropped (const StringArray& files, int x, int y) {
+    int numFilesToDrop  = jmin(files.size(),tracksUI.size());
+    for(int i = 0 ; i < numFilesToDrop ; i++){
+        EnumParameterUI*  ddl = tracksUI.getUnchecked(i)->sampleChoiceDDL.get();
+        StringArray af{files[i]};
+        ddl->filesDropped(af,x,y);
+    }
+
+};
+
+
+
+
+
 //////////////
 // Track UI
 ////////////////
 
 
 LooperNodeContentUI::TrackUI::TrackUI (LooperTrack* track) :InspectableComponent(track), track (track),
-isSelected (track->isSelected), timeStateUI (track)
+isTrackSelected (track->isSelected), timeStateUI (track)
 {
     recPlayButton = ParameterUIFactory::createDefaultUI (track->recPlayTrig);
     recPlayButton->setCustomText (">");
@@ -231,6 +274,9 @@ isSelected (track->isSelected), timeStateUI (track)
     addAndMakeVisible(selectMeButton);
     selectMeButton->toBack();
 
+    // manual triggering of listeners on creation
+    trackStateChangedAsync(track->trackState);
+
 }
 
 LooperNodeContentUI::TrackUI::~TrackUI()
@@ -252,7 +298,7 @@ void LooperNodeContentUI::TrackUI::paintOverChildren (Graphics& g)
     g.setFont (12);
     g.drawText ( String (track->trackIdx), timeStateUI.getBounds(), Justification::centred);
 
-    if (isSelected)
+    if (isTrackSelected)
     {
         g.setColour (Colours::yellow);
         g.drawRoundedRectangle (getLocalBounds().reduced (1).toFloat(), 2.f, 1.f);
@@ -294,12 +340,16 @@ void LooperNodeContentUI::TrackUI::mouseUp (const MouseEvent&)  {
 }
 
 void LooperNodeContentUI::TrackUI::trackSelectedAsync (bool _isSelected) {
-    isSelected = _isSelected;
+    isTrackSelected = _isSelected;
     repaint();
-    if(_isSelected)
+    if(isTrackSelected)
         selectThis();
 }
 
+
+void LooperNodeContentUI::TrackUI::trackStateChangedAsync (const LooperTrack::TrackState& state){
+    recPlayButton->setCustomText(state==LooperTrack::TrackState::CLEARED?"o":">");
+}
 
 
 
@@ -348,11 +398,17 @@ void LooperNodeContentUI::TrackUI::TimeStateUI::paint (Graphics& g)
     g.drawLine (r.getCentreX(), r.getCentreY(), r.getCentreX() + cosf (angle)*r.getWidth() / 2, r.getCentreX() + sinf (angle)*r.getHeight() / 2, 2);
 
     g.setColour(Colours::white.withAlpha(0.5f));
-    for(auto  o:track->getNormalizedOnsets()){
-        float oAngle = o*2*float_Pi - float_Pi/2;
-        g.drawLine (r.getCentreX(), r.getCentreY(),
-                    r.getCentreX() + cosf (oAngle)*r.getWidth() / 2, r.getCentreX() + sinf (oAngle)*r.getHeight() / 2,
-                    .5);
+
+    if(track->beatLength->intValue() <= 32){
+        const auto nonsets  =track->getNormalizedOnsets();
+        if(nonsets.size()<30){
+            for(auto  o:track->getNormalizedOnsets()){
+                float oAngle = o*2*float_Pi - float_Pi/2;
+                g.drawLine (r.getCentreX(), r.getCentreY(),
+                            r.getCentreX() + cosf (oAngle)*r.getWidth() / 2, r.getCentreX() + sinf (oAngle)*r.getHeight() / 2,
+                            .5);
+            }
+        }
     }
 
 

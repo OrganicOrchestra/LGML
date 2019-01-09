@@ -44,6 +44,8 @@ public:
     ParameterProxy* referenceIn;
     ParameterProxy*   referenceOut;
 
+    ParameterProxy * getProxyForParameter(ParameterBase*,bool recursive=false) const;
+
 
 private:
     void onContainerParameterChanged ( ParameterBase*)override;

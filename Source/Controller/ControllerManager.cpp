@@ -26,7 +26,7 @@ juce_ImplementSingleton (ControllerManager);
 ControllerManager::ControllerManager() :
     ParameterContainer ("Controllers")
 {
-    nameParam->isEditable = false;
+    nameParam->setInternalOnlyFlags(true,false);
     
 }
 

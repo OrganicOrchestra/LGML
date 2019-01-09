@@ -18,11 +18,39 @@
 #include "../Connection/NodeConnection.h"
 
 #include "../../Utils/DebugHelpers.h"
+ 
+
 
 REGISTER_NODE_TYPE (NodeContainer)
 
+#if JUCE_DEBUG && 1
+#define DBGGRAPH(x) {int d = 0; auto * cpa = parentContainer;while(cpa){d++;cpa=cpa->parentContainer;};DBG(String::repeatedString(">",d+1)+" "+x);}
+#else
+#define DBGGRAPH(x)
+#endif
+
+#define REBUILD_WAIT 10 // the time  in ms to wait before updating the graph if not ready
+
+
 extern AudioDeviceManager& getAudioDeviceManager();
 extern bool isEngineLoadingFile();
+
+class GraphBuildWatcher : public AsyncUpdater{
+    public :
+    GraphBuildWatcher(NodeContainer* _nc):nc(_nc){
+        startBuild();
+    }
+    void startBuild(){
+        nc->getAudioGraph()->suspendProcessing(true);
+        nc->getAudioGraph()->prepareToPlay(nc->NodeBase::getSampleRate(), nc->NodeBase::getBlockSize());
+        triggerAsyncUpdate(); // this update should occure just after the one triggered by reparetoplay
+    }
+    void handleAsyncUpdate() override{
+        nc->getAudioGraph()->suspendProcessing(false);
+        nc->gWatcher=nullptr;
+    };
+    NodeContainer* nc;
+};
 
 
 NodeContainer::NodeContainer (StringRef name):NodeContainer(name,false){
@@ -39,6 +67,7 @@ isRoot(_isRoot)
 
     innerGraph = new AudioProcessorGraph();
     innerGraph->releaseResources();
+    setBuildSessionGraph(false);
     setPreferedNumAudioOutput (2);
     setPreferedNumAudioInput (2);
 #ifdef MULTITHREADED_AUDIO
@@ -47,7 +76,7 @@ isRoot(_isRoot)
 #endif
 
     //Force non recursive saving of preset as container has only is level to take care, nested containers are other nodes
-    presetSavingIsRecursive = false;
+    _presetSavingIsRecursive = false;
 
 
     //maybe keep it ?
@@ -57,32 +86,49 @@ isRoot(_isRoot)
 
 NodeContainer::~NodeContainer()
 {
+    masterReference.clear();
     //connections.clear();
     rebuildTimer.stopTimer();
     clear ();
-    
+
     innerGraph->releaseResources();
-    
+
 }
 
 
 
 void NodeContainer::clear ()
 {
+    DBGGRAPH(getNiceName()+" clear Container");
 
-    while (connections.size() > 0)
-    {
-        connections[0]->remove();
+    if(connections.size() || nodeContainers.size() || nodes.size()){
+        if(auto * g = getAudioGraph())g->suspendProcessing(true);
+        setBuildSessionGraph(true);
+
+        while (connections.size() > 0)
+        {
+            connections[0]->remove();
+        }
+
+        while(nodeContainers.size()){
+            auto * n = nodeContainers[0];
+            removeNode(n);
+        }
+
+
+
+        nodes.clear();
+        setBuildSessionGraph(false);
+        //        updateAudioGraph(true);
+
+
+        if(auto * g = getAudioGraph())g->clear();
     }
 
-    while(nodeContainers.size()){
-        auto * n = nodeContainers[0];
-        removeNode(n);
-    }
 
-    nodes.clear();
 
-    if(auto * g = getAudioGraph())g->clear();
+
+
 
 
 
@@ -107,6 +153,7 @@ ConnectableNode* NodeContainer::addNodeFromJSONData (DynamicObject* data)
 
 ConnectableNode* NodeContainer::addNode (ConnectableNode* n, const String& nodeName, DynamicObject* nodeData)
 {
+    DBGGRAPH(getNiceName()+" : adding Node"+n->getNiceName() + ": " + nodeName);
     nodes.add ((NodeBase*)n);
 
 
@@ -122,24 +169,61 @@ ConnectableNode* NodeContainer::addNode (ConnectableNode* n, const String& nodeN
     n->nameParam->setValue (targetName);
 
     addChildControllableContainer (n); //ControllableContainer
-
-
     n->setParentNodeContainer (this);
 
     if (nodeData) n->configureFromObject (nodeData);
 
-    
+
     nodeChangeNotifier.addMessage (new NodeChangeMessage (n, true));
     //  nodeContainerListeners.call(&NodeContainerListener::nodeAdded, n);
     return n;
 }
 
 
+void NodeContainer::addToAudioGraph (NodeBase* n)
+{
+    DBGGRAPH(getNiceName()+" : adding "+(dynamic_cast<NodeContainer*>(n)?"Container":"Node")+" to graph "+n->getNiceName()+(isBuildingSession.get()?"(building)":""));
+    if(auto * g = getAudioGraph()){
+        n->audioNode = g->addNode (n->getAudioProcessor());
+        updateAudioGraph();
+    }
+    //    jassert(g->getSampleRate()!=0 && g->getBlockSize()!=0);
+    //    getAudioProcessor()->setRateAndBufferSizeDetails (g->getSampleRate(), g->getBlockSize());
+
+}
+
+bool NodeContainer::isParentBuildingSession(){
+    if(parentNodeContainer && !parentNodeContainer->isBuildingSession.get()){
+        return parentNodeContainer->isParentBuildingSession();
+    }
+    return true;
+
+}
+void NodeContainer::removeFromAudioGraph(NodeBase * n)
+{
+    jassert(getAudioGraph());
+    DBGGRAPH(getNiceName()+" : removing Node from graph "+n->getNiceName());
+    if (auto pG = getAudioGraph())
+    {
+        const ScopedLock lk (pG->getCallbackLock());
+        pG->removeNode(n->audioNode);
+    }
+
+    updateAudioGraph (true); // we need to force rebuild on deletion to avoid memory leaks
 
 
+}
 
+
+void NodeContainer::setBuildSessionGraph(bool state){
+    jassert(!state || (state!=(bool)isBuildingSession.get()));
+    DBGGRAPH(String(":::::::::::") +getNiceName()+" : "+(state?"start":"stop")+" building graph");
+    isBuildingSession = state?1:0;
+
+}
 bool NodeContainer::removeNode (ConnectableNode* n,bool doDelete)
 {
+    DBGGRAPH(getNiceName()+" : removing Node"+n->getNiceName() + (doDelete?" deleting":""));
     Array<NodeConnection*> relatedConnections = getAllConnectionsForNode (n);
 
     for (auto& connection : relatedConnections) removeConnection (connection);
@@ -148,7 +232,7 @@ bool NodeContainer::removeNode (ConnectableNode* n,bool doDelete)
 
     nodeChangeNotifier.addMessage (new NodeChangeMessage (n, false));
     nodeContainerListeners.call(&NodeContainerListener::nodeRemoved, n);
-    
+
     if(!doDelete)removeChildControllableContainer (n);
 
 
@@ -174,83 +258,61 @@ bool NodeContainer::removeNode (ConnectableNode* n,bool doDelete)
     return true;
 }
 
-ConnectableNode* NodeContainer::getNodeForName (const String& _name)
-{
-    const String name = _name.toLowerCase();
-    for (auto& n : nodes)
-    {
-        if (n->shortName == name) return n;
-    }
-
-    return nullptr;
-}
-
-void NodeContainer::updateAudioGraph (bool lock)
+void NodeContainer::updateAudioGraph (bool force)
 {
 
+    DBGGRAPH(getNiceName()+(isBuildingSession.get()?"(in session)":"")+" : updating Graph "+(force?"forced":""));
 
-    if (!MessageManager::getInstance()->isThisTheMessageThread())
-    {
-
-        {
-            ScopedPointer<ScopedLock> lk;
-            if(lock){lk = new ScopedLock(getAudioGraph()->getCallbackLock());}
-
-            getAudioGraph()->suspendProcessing (true);
-        }
-
-
-        triggerAsyncUpdate();
-
+    if(!force && isBuildingSession.get()){
+        rebuildTimer.startTimer (REBUILD_WAIT);
         return;
     }
 
-    {
-        ScopedPointer<ScopedLock> lk;
-        if(lock){lk = new ScopedLock(getAudioGraph()->getCallbackLock());}
-
-
-        if(NodeBase::getBlockSize()==0 || NodeBase::getSampleRate()==0){
-            //            jassertfalse;
-            // node is not ready , postponing setup
-            if( !isEngineLoadingFile()) {
-                LOGW(juce::translate("node 123 is not ready , postponing setup").replace("123",getNiceName()));
-//                jassertfalse;
-            }
-            else{
-                rebuildTimer.startTimer (100);
-            }
-            
-
+    if(NodeBase::getBlockSize()==0 || NodeBase::getSampleRate()==0){
+        //            jassertfalse;
+        // node is not ready , postponing setup
+        if( !isEngineLoadingFile()) {
+            LOGW(juce::translate("node 123 is not ready , postponing setup").replace("123",getNiceName()));
+            //                jassertfalse;
         }
         else{
-//            LOG("! node 123 is ready"+getNiceName()+" is ready");
-            getAudioGraph()->setRateAndBufferSizeDetails (NodeBase::getSampleRate(), NodeBase::getBlockSize());
-            getAudioGraph()->prepareToPlay (NodeBase::getSampleRate(), NodeBase::getBlockSize());
-            getAudioGraph()->suspendProcessing (false);
+            rebuildTimer.startTimer (REBUILD_WAIT);
         }
+
+
     }
+    else{
+        {
+//            MessageManagerLock mm;
+            if(gWatcher){
+                gWatcher->cancelPendingUpdate();
+                gWatcher->startBuild();
+            }
+            else{
+            gWatcher = new GraphBuildWatcher(this);
+            }
+        }
+        cancelPendingUpdate();
+        setBuildSessionGraph(false);
 
-
-
+    }
 
 }
 
 
 void NodeContainer::handleAsyncUpdate()
 {
-    if (!isEngineLoadingFile())
-    {
-        rebuildTimer.stopTimer();
-        updateAudioGraph();
 
+    if ( isBuildingSession.get()){
+        DBGGRAPH("postponing :" + getNiceName());
+        rebuildTimer.startTimer (REBUILD_WAIT);
     }
     else
     {
-        rebuildTimer.startTimer (100);
-
-
+        rebuildTimer.stopTimer();
+        updateAudioGraph(true);
     }
+
 }
 
 int NodeContainer::getNumConnections()
@@ -260,114 +322,113 @@ int NodeContainer::getNumConnections()
 
 
 
-DynamicObject* NodeContainer::getObject()
+DynamicObject* NodeContainer::createObject()
 {
-    auto data = ConnectableNode::getObject();
+    auto data = ConnectableNode::createObject();
 
     var connectionsData;
 
     for (auto& c : connections)
     {
-        connectionsData.append (c->getObject());
+        connectionsData.append (c->createObject());
     }
 
-    
+
     data->setProperty ("connections", connectionsData);
 
     return data;
 }
 
 
-ParameterContainer*   NodeContainer::addContainerFromObject (const String& /*name*/, DynamicObject*   data)
+ParameterContainer*   NodeContainer::addContainerFromObject (const String& name, DynamicObject*   data)
 {
     //  ConnectableNode * node = addNodeFromJSONData(data);
 
     ConnectableNode* node = NodeFactory::createBaseFromObject ( "", data);
-
+    if(!node){jassertfalse; return nullptr;}
     if (auto n = dynamic_cast<ContainerInNode*> (node)) containerInNode = n;
     else if (auto n = dynamic_cast<ContainerOutNode*> (node)) containerOutNode = n;
 
-    addNode (node);
+    addNode (node,name,data);
     return node;
 }
 
 void NodeContainer::configureFromObject (DynamicObject* data)
 {
     // do we really need that ???
-//        clear ();
+    //        clear ();
 
 
-
+    setBuildSessionGraph(true);
 
 
     NodeBase::configureFromObject (data);
 
-
-
-    // save connection and remove them from object to pass valid object to NodeBaseParsing
-    Array<var>* _connectionsData = data->getProperty ("connections").getArray();
-    Array<var> connectionsData;
-    if(_connectionsData){
-        for (auto &v:*_connectionsData){
-            connectionsData.add(v);
-        }
+    setBuildSessionGraph(false);
+    //    updateAudioGraph(true);
+    if( auto *  connectionsData = data->getProperty ("connections").getArray()){
+        setConnectionFromObject(*connectionsData);
     }
 
-    for (var& cData : connectionsData)
-    {
+}
 
-        ConnectableNode* srcNode = (ConnectableNode*) (getNodeForName (cData.getDynamicObject()->getProperty ("srcNode").toString())) ;
-        ConnectableNode* dstNode = (ConnectableNode*) (getNodeForName (cData.getDynamicObject()->getProperty ("dstNode").toString()));
+void NodeContainer::setConnectionFromObject(const Array<var> & connectionsData){
+    // save connection and remove them from object to pass valid object to NodeBaseParsing
 
-        int cType = cData.getProperty ("connectionType", var());
-
-        if (srcNode && dstNode && isPositiveAndBelow (cType, (int)NodeConnection::ConnectionType::UNDEFINED))
+        for (var& cData : connectionsData)
         {
-            NodeConnection* c = addConnection (srcNode, dstNode, NodeConnection::ConnectionType (cType));
 
-            // if c == null connection already exist, should never happen loading JSON but safer to check
-            if (c)
+            ConnectableNode* srcNode = (ConnectableNode*) (getControllableContainerByShortName(cData.getDynamicObject()->getProperty ("srcNode").toString())) ;
+            ConnectableNode* dstNode = (ConnectableNode*) (getControllableContainerByShortName (cData.getDynamicObject()->getProperty ("dstNode").toString()));
+
+            int cType = cData.getProperty ("connectionType", var());
+
+            if (srcNode && dstNode && isPositiveAndBelow (cType, (int)NodeConnection::ConnectionType::UNDEFINED))
             {
-                c->configureFromObject (cData.getDynamicObject());
+                NodeConnection* c = addConnection (srcNode, dstNode, NodeConnection::ConnectionType (cType));
+
+                // if c == null connection already exist, should never happen loading JSON but safer to check
+                if (c)
+                {
+                    c->configureFromObject (cData.getDynamicObject());
+                }
+
+
             }
-
-
-        }
-        else
-        {
-            // TODO nicely handle file format errors?
-
-            if (srcNode == nullptr)
+            else
             {
-                NLOGE ("loadJSON", juce::translate("no srcnode for shortName : ") + cData.getDynamicObject()->getProperty ("srcNode").toString());
-            }
+                // TODO nicely handle file format errors?
 
-            if (dstNode == nullptr)
-            {
-                NLOGE ("loadJSON", juce::translate("no dstnode for shortName : ") + cData.getDynamicObject()->getProperty ("dstNode").toString());
-            }
+                if (srcNode == nullptr)
+                {
+                    NLOGE ("loadJSON", juce::translate("no srcnode for shortName : ") + cData.getDynamicObject()->getProperty ("srcNode").toString());
+                }
+
+                if (dstNode == nullptr)
+                {
+                    NLOGE ("loadJSON", juce::translate("no dstnode for shortName : ") + cData.getDynamicObject()->getProperty ("dstNode").toString());
+                }
 
 
 #if defined DEBUG
-            LOGE(juce::translate("Available Nodes in " )+ shortName + " : ");
+                LOGE(juce::translate("Available Nodes in " )+ shortName + " : ");
 
-            for (auto& node : nodes)
-            {
-                LOGE("> " + node->getNiceName() + "//" + node->shortName);
-            }
+                for (auto& node : nodes)
+                {
+                    LOGE("> " + node->getNiceName() + "//" + node->shortName);
+                }
 
 #endif
 
-            jassertfalse;
+                jassertfalse;
+            }
         }
-    }
 
-
-
-
+    
+    
+    
     removeIllegalConnections();
 }
-
 
 NodeConnection* NodeContainer::getConnectionBetweenNodes (ConnectableNode* sourceNode, ConnectableNode* destNode, NodeConnection::ConnectionType connectionType)
 {
@@ -454,9 +515,7 @@ bool NodeContainer::removeConnection (NodeConnection* c)
 
 void NodeContainer::onContainerParameterChanged ( ParameterBase* p)
 {
-
     NodeBase::onContainerParameterChanged (p);
-
 }
 
 
@@ -481,7 +540,7 @@ void NodeContainer::bypassNode (bool /*bypass*/) {}
 
 void NodeContainer::numChannelsChanged (bool isInput)
 {
-
+    DBGGRAPH(getNiceName()+" : numChannels Changed :"+(isInput?"i":"o"));
     const ScopedLock lk (getCallbackLock());
     removeIllegalConnections();
     getAudioGraph()->setPlayConfigDetails (getTotalNumInputChannels(), getTotalNumOutputChannels(), getSampleRate(), getBlockSize());
@@ -489,32 +548,24 @@ void NodeContainer::numChannelsChanged (bool isInput)
     if (isInput && containerInNode)containerInNode->numChannels->setValue (getTotalNumInputChannels()); //containerInNode->setPreferedNumAudioOutput(getTotalNumInputChannels());
     else if (!isInput && containerOutNode)containerOutNode->numChannels->setValue (getTotalNumOutputChannels());
 }
+
+
 void NodeContainer::prepareToPlay (double d, int i)
 {
+    DBGGRAPH(getNiceName()+" : prepare to play");
     NodeBase::prepareToPlay (d, i);
-    updateAudioGraph(true);
+    updateAudioGraph();
     if(!isRoot ){
 
         if(!getContainersOfType<ContainerInNode>(false).size()){
-
             containerInNode = (ContainerInNode*)addNode (new ContainerInNode());
         }
 
         if( !getContainersOfType<ContainerOutNode>(false).size()){
             containerOutNode = (ContainerOutNode*)addNode (new ContainerOutNode());
         }
-
-
-
     }
-
-
-
-
-
 };
-
-
 
 
 void NodeContainer::processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer& midiMessage )

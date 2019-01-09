@@ -60,19 +60,30 @@ void initDefaultUserSettings(){
     settings->saveIfNeeded();
 }
 
+
+
+Engine::EngineFileSaver::EngineFileSaver(const String & n):name(n){
+    getEngine()->fileSavers.add(this);
+}
+Engine::EngineFileSaver::~EngineFileSaver(){
+
+    if(auto * engine= getEngine())
+        engine->fileSavers.removeAllInstancesOf(this);
+}
+
 Engine::Engine():
 FileBasedDocument (filenameSuffix,
                                      filenameWildcard,
                                      "Load a filter graph",
                                      "Save a filter graph"),
-ParameterContainer ("root"),
+ParameterContainer (ControlAddressType::rootIdentifier),
 threadPool (4),
 isLoadingFile(false),
 engineStartTime(Time::currentTimeMillis()),
 hasDefaultOSCControl(false)
 
 {
-    nameParam->isEditable = false;
+    nameParam->setInternalOnlyFlags(true,false);
     ControllableContainer::globalRoot = this;
     ParameterFactory::registerExtraTypes();
     ParameterFactory::logAllTypes();
@@ -105,7 +116,7 @@ hasDefaultOSCControl(false)
     addChildControllableContainer (ControllerManager::getInstance());
     addChildControllableContainer (FastMapper::getInstance());
 
-    DBG ("max recording time : " << std::numeric_limits<sample_clk_t>().max() / (44100.0 * 60.0 * 60.0) << "hours @ 44.1kHz");
+//    DBG ("max recording time : " << std::numeric_limits<sample_clk_t>().max() / (44100.0 * 60.0 * 60.0) << "hours @ 44.1kHz");
     initDefaultUserSettings();
     setLanguage(getAppProperties()->getUserSettings()->getValue("language"));
 
@@ -114,6 +125,7 @@ hasDefaultOSCControl(false)
 
 Engine::~Engine()
 {
+    ControllableContainer::globalRoot = nullptr;
     engineListeners.call (&EngineListener::stopEngine);
     engineListeners.clear();
     controllableContainerListeners.clear();
@@ -285,7 +297,7 @@ void Engine::suspendAudio (bool shouldBeSuspended)
 
 
         if (shouldBeSuspended){
-            ap->releaseResources();
+//            ap->releaseResources();
         }
         else
         {
@@ -324,9 +336,7 @@ void Engine::closeAudio()
 
 void Engine::clear()
 {
-    //    do we need to stop audio?
-    // TODO check larsen on reload
-    //  suspendAudio(true);
+
     
 
     TimeManager::getInstance()->playState->setValue (false);
@@ -342,12 +352,6 @@ void Engine::clear()
     NodeManager::getInstance()->clear();
 
     JsGlobalEnvironment::getInstance()->clear();
-    //graphPlayer.setProcessor(NodeManager::getInstance()->getAudioGraph());
-
-
-
-
-    //  suspendAudio(false);
 
     changed();    //fileDocument
 }
@@ -422,7 +426,7 @@ String Engine::MultipleAudioSettingsHandler::getConfigName()
     AudioDeviceManager::AudioDeviceSetup setup ;
     getAudioDeviceManager().getAudioDeviceSetup (setup);
     String idealName = setup.inputDeviceName + "_" + setup.outputDeviceName;
-    String escaped = Controllable::toShortName (idealName);
+    String escaped = Controllable::toShortName (idealName).toString();
     return escaped;
 
 
@@ -509,12 +513,12 @@ engine(e),
 ParameterContainer("stats"),
 isListeningGlobal(false),
 timerTicks(0){
+    nameParam->setInternalOnlyFlags(true,false);
     setUserDefined(false);
     audioCpu = addNewParameter<Point2DParameter<floatParamType>>("audioCpu",
                                                         "cpu percentage used by Audio",
                                                         0,0);
-    audioCpu->isEditable = false;
-    audioCpu->isSavable = false;
+    audioCpu->setInternalOnlyFlags(true,false);
 
     //startTimer(300);
 
@@ -592,7 +596,7 @@ template<>
 void Engine::EngineStats::GlobalListener::controllableFeedbackUpdate(ControllableContainer * notif,Controllable * c ){
     if(c&& c->parentContainer!=owner){
         const int  t = getEngine()->getElapsedMillis();
-        owner->modCounts.getReference(c->controlAddress).add(t);
+        owner->modCounts.getReference(c->controlAddress.toString()).add(t);
     }
 }
 

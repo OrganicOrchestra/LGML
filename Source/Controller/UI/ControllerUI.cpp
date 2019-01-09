@@ -69,6 +69,7 @@ ControllerUI::ControllerUI (Controller* controller) :
         addMouseListener (this, true);
     }
     nameTF = new StringParameterUI (controller->nameParam);
+    nameTF->valueLabel.setEditable(false,true);
     nameTF->setBackGroundIsTransparent (true);
     addAndMakeVisible (nameTF);
 
@@ -124,8 +125,8 @@ void ControllerUI::paint (Graphics& g)
 
 }
 
-const int headerHeight = 20;
-const int maxUsrParamHeight = 200;
+constexpr int headerHeight = 20;
+constexpr int maxUsrParamHeight = 200;
 
 void ControllerUI::componentMovedOrResized (Component& component,
                               bool wasMoved,
@@ -189,7 +190,7 @@ bool ControllerUI::keyPressed (const KeyPress& key)
         return true;
     }
 
-    return false;
+    return InspectableComponent::keyPressed(key);
 }
 
 

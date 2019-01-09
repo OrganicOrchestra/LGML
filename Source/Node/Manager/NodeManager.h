@@ -22,7 +22,7 @@ Node Manager Contain all Node and synchronize building of audioGraph (AudioProce
 */
 
 
-#include "../../Controllable/Parameter/ParameterContainer.h"
+
 #include "../NodeContainer/NodeContainer.h"
 
 
@@ -37,10 +37,6 @@ public:
 
     juce_DeclareSingleton (NodeManager, true);
 
-
-
-
-    void rebuildAudioGraph();
 
     void clear()override;
 
@@ -67,7 +63,7 @@ public:
 
 
 private:
-    // @ben no listener here for now, only because it's overkilling (and Im lazy..)
+    
     friend class Engine;
     void notifiedJobsEnded();
     void notifiedJobsProgressed (float progress);

@@ -58,19 +58,20 @@ enum ColorsIds
 }
 
 
-class AddElementButton : public Button
+class AddElementButton : public DrawableButton
 {
 public:
     AddElementButton();
     ~AddElementButton();
-
+    static Drawable * createDrawable(bool isHovered=false);
     void paintButton (Graphics& g,
                       bool isMouseOverButton,
                       bool isButtonDown)override;
     // utility function to share common positioning
     void setFromParentBounds (const Rectangle<int>& area);
 
-
+private:
+    JUCE_LEAK_DETECTOR(AddElementButton);
 };
 
 
@@ -84,8 +85,8 @@ public:
                       bool isMouseOverButton,
                       bool isButtonDown)override;
 
-    
-    
+private:
+    JUCE_LEAK_DETECTOR(RemoveElementButton);
 };
 
 

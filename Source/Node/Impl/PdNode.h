@@ -16,15 +16,16 @@
 #include "../../MIDI/MIDIListener.h"
 #include "../../MIDI/MIDIHelpers.h"
 
+#include "../../Controllable/Parameter/FileParameter.h"
+
 class PdNode:public NodeBase,public MIDIListener{
 public:
     DECLARE_OBJ_TYPE (PdNode,"load Pd Patch");
 
     ~PdNode();
 
-    StringParameter* pdPath;
-    BoolParameter *isLoadedParam;
-    Trigger *reloadPatch;
+    FileParameter* pdPath;
+    
     Array<ParameterBase*> pdParameters;
 
     MIDIHelpers::MIDIIOChooser midiChooser;
@@ -42,7 +43,7 @@ public:
 
     void onContainerTriggerTriggered(Trigger *t)override;
 
-
+    String getSubTypeName() final;
 private:
 
 
@@ -51,7 +52,7 @@ private:
     void unloadFile();
     HeapBlock<float> tempInBuf,tempOutBuf;
 
-    void loadValidPdFile();
+    Result loadPdFile(const File & f);
     t_pdinstance * pdinstance;
     void * patchHandle;
     int numTicks;

@@ -20,26 +20,40 @@
 #define PRESETCHOOSER_H_INCLUDED
 
 #include "../Controllable/Parameter/ParameterContainer.h"
+#include "PresetManager.h"
 #include "../JuceHeaderUI.h"
 
 class PresetChooserUI : public ComboBox,
     public ComboBox::Listener,
-    private ControllableContainer::Listener
+    private ControllableContainer::Listener,
+    private PresetManager::Listener,
+    private Presetable::Listener
 {
 public:
     PresetChooserUI (ParameterContainer* _container);
     ~PresetChooserUI();
 
     WeakReference<ParameterContainer> container;
+    Array<WeakReference<Preset>> availablePresets,otherPresets;
+
+    int selectedPresetId;
 
 
-    virtual void updatePresetComboBox (bool forceUpdate = false);
-    virtual void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
+    void updatePresetComboBox (bool forceUpdate = false);
+    void comboBoxChanged (ComboBox* comboBoxThatHasChanged) final;
 
-    virtual void controllableContainerPresetLoaded (ControllableContainer*) override;
+    virtual void controllableContainerPresetLoaded (ControllableContainer*,Preset *) final;
 
 
-    static void fillWithPresets (ComboBox* cb, const String& filter, bool showSaveCurrent = true) ;
+    void fillWithPresets (ComboBox* cb) ;
+
+private:
+    int findSelectedId();
+    Presetable * getPresetable(){return container?container->presetable.get():nullptr;}
+    void presetRemoved(Preset *p) final;
+    void presetAdded(Preset *p) final;
+    
+    void rebuildAvailable();
 
 };
 

@@ -1,11 +1,15 @@
 import fnmatch
 import os
 import re
+
+import sys
+sys.path.append('..')
+
 from PyUtils import *
 
 
 sourcePath = os.path.dirname(os.path.abspath(__file__));
-sourcePath = os.path.join(sourcePath,"../Source");
+sourcePath = os.path.join(sourcePath,"../../Source");
 sourcePath = os.path.abspath(sourcePath);
 
 
@@ -30,6 +34,7 @@ blankRe = re.compile("^\s*$");
 
 TODOs = {}
 for file in matches:
+	# print(file)
 	with open(file,'r') as f:
 		TODOCommentLine = -1;
 		curTODO = [];
@@ -56,6 +61,7 @@ TODOFilePath = os.path.dirname(os.path.abspath(__file__));
 TODOFilePath = os.path.join(sourcePath,"../GeneratedTODOs.txt");
 TODOFilePath = os.path.abspath(TODOFilePath)
 
+print(TODOFilePath)
 with open(TODOFilePath,'w') as f:
 	f.write("//////////////////////////////////////\n \
 Auto - Generated TODO list from source code with Scripts/generateTODOList.py\n \
@@ -76,7 +82,7 @@ Of course this list can also be used to remove unnecessary TODOs...\n \
 
 
 
-sh("git add "+TODOFilePath)
+# sh("git add "+TODOFilePath)
 exit(1)
 
 

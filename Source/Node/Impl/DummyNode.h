@@ -50,7 +50,7 @@ public:
 
     void processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer&)override;
 
-    
+    void prepareToPlay(double sr,int bs) override;
 
 
 

@@ -28,12 +28,12 @@ public :
 
     
 
-    void clearNamespace() override;
+    void clearNamespace() final;
 
-    void buildLocalEnv() override;
+    void buildLocalEnv() final;
 
 
-    void onContainerParameterChanged ( ParameterBase* p) override;
+    void onContainerParameterChanged ( ParameterBase* p) final;
 
 
     static var addIntParameter (const var::NativeFunctionArgs& a);
@@ -46,6 +46,7 @@ public :
 
     Array<Controllable* > jsDynamicParameters;
 
+    String getSubTypeName()final;
 
 };
 

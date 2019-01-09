@@ -34,8 +34,7 @@ midiClock(false)
     setNamespaceName ("controllers." + shortName);
 
     logIncoming = addNewParameter<BoolParameter> ("logIncoming", "log Incoming midi message", false);
-    logIncoming->isSavable = false;
-    logIncoming->isPresettable =false;
+    logIncoming->setSavable(false);
 
     sendMIDIClock = addNewParameter<BoolParameter> ("send MIDI Clock", "send MIDI Clock",false);
     sendMIDIPosition = addNewParameter<BoolParameter> ("send MIDI Position", "send MIDI Position information",false);
@@ -275,11 +274,7 @@ void MIDIController::buildLocalEnv()
 };
 
 
-void MIDIController::newJsFileLoaded()
-{
 
-
-};
 
 // @ben do we do the same as OSC MIDI IN/OUt controllers
 

@@ -61,7 +61,10 @@
 
 ConnectableNodeUI* NodeUIFactory::createDefaultUI (ConnectableNode* t,ConnectableNodeUIParams *uip)
 {
-
+    if(uip==nullptr){
+        jassertfalse;
+        return nullptr;
+    }
 
     CHKNRETURN (t, AudioDeviceInNode, new AudioDeviceInNodeContentUI());
     CHKNRETURN (t, AudioDeviceOutNode, new AudioDeviceOutNodeContentUI());

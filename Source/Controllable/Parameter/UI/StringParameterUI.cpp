@@ -18,6 +18,10 @@
 #include "../../../UI/Style.h"
 #include "../UndoableHelper.h"
 
+
+String descriptionPrefix("--- "); //used to display info when empty string params
+
+
 String varToString(const var &v){
     String stringValue;
     if(v.isArray()){
@@ -35,31 +39,34 @@ String varToString(const var &v){
 }
 
 StringParameterUI::StringParameterUI ( ParameterBase* p) :
-    ParameterUI (p), autoSize (false), maxFontHeight (12)
+ParameterUI (p), autoSize (false), maxFontHeight (12),trimStart(false)//,valueLabel(this)
 {
 
     addChildComponent (nameLabel);
     setNameLabelVisible (false);
-    addAndMakeVisible (valueLabel);
+    addAndMakeVisible(valueLabel);
+
     addMouseListener(this, true);
-    nameLabel.setJustificationType (Justification::topLeft);
+    nameLabel.setJustificationType (Justification::centredLeft);
     nameLabel.setText (prefix + parameter->niceName + suffix, NotificationType::dontSendNotification);
 
-    valueLabel.setJustificationType (Justification::topLeft);
-    valueLabel.setText (varToString(parameter->value), NotificationType::dontSendNotification);
+    
+    valueChanged(parameter->value);
 
     bool stringEditable = parameter->isEditable ;
-    valueLabel.setEditable (false, stringEditable);
+    valueLabel.setEditable ( stringEditable,stringEditable);
+
 
     valueLabel.addListener (this);
 
-    valueLabel.setBorderSize(BorderSize<int>(0));
+
     setBackGroundIsTransparent (!stringEditable);
     nameLabel.setTooltip (p->description);
+    valueLabel.setTooltip(getTooltip());
 
     arraySize = p->value.isArray()?p->value.getArray()->size():-1;
 
-    setSize (200, 20); //default size
+//    setSize (200, 20); //default size
 }
 
 void StringParameterUI::setAutoSize (bool value)
@@ -92,7 +99,7 @@ void StringParameterUI::setNameLabelVisible (bool visible)
 }
 void StringParameterUI::setBackGroundIsTransparent (bool t)
 {
-    valueLabel.setColour (valueLabel.backgroundColourId, Colours::transparentWhite.withAlpha (t ? 0 : 0.1f));
+    valueLabel.setColour (Label::backgroundColourId, Colours::transparentWhite.withAlpha (t ? 0 : 0.1f));
 }
 
 
@@ -110,6 +117,7 @@ void StringParameterUI::resized()
     }
 
     valueLabel.setBounds (r);
+    valueChanged(parameter->value);
     valueLabel.setFont (valueLabel.getFont().withHeight (jmin<float> ((float)r.getHeight(), maxFontHeight)));
 
 }
@@ -117,9 +125,11 @@ void StringParameterUI::resized()
 
 void StringParameterUI::valueChanged (const var& v)
 {
+
     String stringValue = varToString(v);
 
-valueLabel.setText (prefix + stringValue+ suffix, NotificationType::dontSendNotification);
+    setValueTextTrimmed( prefix + stringValue+ suffix);
+
     if (autoSize)
     {
         int nameLabelWidth = nameLabel.getFont().getStringWidth (nameLabel.getText());
@@ -133,8 +143,51 @@ valueLabel.setText (prefix + stringValue+ suffix, NotificationType::dontSendNoti
 
 }
 
+void StringParameterUI::setValueTextTrimmed(String s){
+
+    bool noValue = s.isEmpty() ;
+    if(noValue){
+        s = descriptionPrefix +juce::translate(parameter->description) ;
+        Colour bgColor =valueLabel.findColour(Label::backgroundColourId);
+        Colour txtColor = findColour(Label::textColourId);
+
+        valueLabel.setColour(Label::textColourId,bgColor.interpolatedWith(txtColor, 0.5));
+    }
+    else{
+        valueLabel.setColour(Label::textColourId,findColour(Label::textColourId));
+    }
+    if(!trimStart){
+        //    const Font font = valueLabel.getFont();
+        //
+        //    int desiredWidth = font.getStringWidth(s);
+        //    int availableWidth =getWidth();
+        //    int overflow = desiredWidth - availableWidth;
+        //    bool _trimStart = !noValue && trimStart; //
+        //
+        ////    if(overflow>0 && availableWidth>0){
+        //        static String ellipse("...");
+        //        float ellipseWidth =font.getStringWidth(ellipse);
+        //        float pctValid = (availableWidth-ellipseWidth)*1.0/desiredWidth;
+        //        int numChars = (1-pctValid)*s.length();
+        //        if(_trimStart){
+        //            s =ellipse+ s.substring(numChars);
+        //        }
+        //        else{
+        //            s =  s.substring(0,s.length()-numChars)+ellipse;
+        //        }
+        //    }
+    }
+    
+    
+     valueLabel.setText (s, NotificationType::dontSendNotification);
+
+}
+
 void StringParameterUI::labelTextChanged (Label*)
 {
+    if(valueLabel.getText().startsWith(descriptionPrefix)){ // ignore description
+        return;
+    }
     if(arraySize!=-1){
         StringArray arr;
         String sv = valueLabel.getText();

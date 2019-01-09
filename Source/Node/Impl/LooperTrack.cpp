@@ -49,7 +49,7 @@ startRecBeat (0),
 logVolume (float01ToGain (DB0_FOR_01), 0.5),
 hadOnset(false)
 {
-
+    
 
     selectTrig =  addNewParameter<Trigger> ("Select", "Select this track");
     recPlayTrig =  addNewParameter<Trigger> ("Rec Or Play", "Tells the track to wait for the next bar and then start record or play");
@@ -59,8 +59,9 @@ hadOnset(false)
     volume = addNewParameter<FloatParameter> ("Volume", "Set the volume of the track", DB0_FOR_01, 0.f, 1.f);
     mute = addNewParameter<BoolParameter> ("Mute", "Sets the track muted (or not.)", false);
     solo = addNewParameter<BoolParameter> ("Solo", "Sets the track solo (or not.)", false);
-    beatLength = addNewParameter<FloatParameter> ("Length", "length in bar", 0.f, 0.f, 200.f);
+    beatLength = addNewParameter<FloatParameter> ("Length", "length in bar", 0.f, 0.f, FloatParameter::UNBOUNDEDVALUE);
     beatLength->isEditable = false;
+
     togglePlayStopTrig =  addNewParameter<Trigger> ("Toggle Play Stop", "Toggle Play / Stop");
     originBPM = addNewParameter<FloatParameter> ("originBPM", "bpm of origin audio loop", 0.f, 0.f, 999.f);
     originBPM->isEditable = false;
@@ -74,7 +75,7 @@ hadOnset(false)
     stateParameterString = addNewParameter<StringParameter> ("state", "track state", "cleared");
     stateParameterStringSynchronizer = new AsyncTrackStateStringSynchronizer (stateParameterString);
     addTrackListener (stateParameterStringSynchronizer);
-    stateParameterString->isEditable = false;
+    stateParameterString->setInternalOnlyFlags(true,false);
     stateParameterString->isSavable = false;
 
 
@@ -162,7 +163,7 @@ void LooperTrack::processBlock (AudioBuffer<float>& buffer, MidiBuffer&)
     {
         if (playableBuffer.getRecordedLength() > 0)
         {
-            trackStateListeners.call (&LooperTrack::Listener::internalTrackTimeChanged, playableBuffer.getPlayPos() * 1.0 / playableBuffer.getRecordedLength());
+            trackTimeListeners.call (&LooperTrack::TrackTimeListener::internalTrackTimeChanged, playableBuffer.getPlayPos() * 1.0 / playableBuffer.getRecordedLength());
         }
     }
 
@@ -857,15 +858,15 @@ void LooperTrack::setTrackState (TrackState newState)
 
         hadOnset = false;
         // TODO : clarify behaviour , maybe insert a reset function instead
-        if (parentLooper->currentPreset != nullptr)
+//        if (parentLooper->currentPreset != nullptr)
         {
-            volume->setValue (parentLooper->getPresetValueFor (volume));
-            mute->setValue (parentLooper->getPresetValueFor (mute));
-            solo->setValue (parentLooper->getPresetValueFor (solo));
-            sampleChoice->setValue (parentLooper->getPresetValueFor (sampleChoice));
-        }
-        else
-        {
+//            volume->setValue (parentLooper->getPresetValueFor (volume));
+//            mute->setValue (parentLooper->getPresetValueFor (mute));
+//            solo->setValue (parentLooper->getPresetValueFor (solo));
+//            sampleChoice->setValue (parentLooper->getPresetValueFor (sampleChoice));
+//        }
+//        else
+//        {
             volume->resetValue();
             mute->resetValue();
             solo->resetValue();
@@ -1016,7 +1017,7 @@ void LooperTrack::loadAudioSample (const String& path)
                 }
 
                 // playableBuffer.stopRecordingTail();
-                bool wasPlaying = trackState==PLAYING;
+                bool wasPlaying = tm->isPlaying();
                 playableBuffer.setState (PlayableBuffer::BUFFER_STOPPED);
                 setTrackState (STOPPED);
 

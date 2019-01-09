@@ -69,10 +69,11 @@ public:
 #if USE_CACHED_GLYPH
         HashMap<String,CachedGlyph > cachedG;
         void cleanUnusedGlyphs();
+        int minRow=0,maxRow=0;
 #endif
 
 
-        int minRow,maxRow;
+
         LGMLLoggerUI* owner;
         friend class LGMLLoggerUI;
     };
@@ -111,7 +112,6 @@ private:
     const String getTimeStringForRow (const int r) const;
     friend class LogList;
 
-    int64 lastUpdateTime;
     void timerCallback()override;
 
 

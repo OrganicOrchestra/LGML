@@ -103,8 +103,9 @@ void MainContentComponent::getCommandInfo (CommandID commandID, ApplicationComma
 
         case CommandIDs::showAudioSettings:
             result.setInfo (juce::translate("Audio settings..."), "", category, 0);
-            result.addDefaultKeypress ('a', ModifierKeys::commandModifier);
+            result.addDefaultKeypress ('a', ModifierKeys::commandModifier | ModifierKeys::shiftModifier );
             break;
+
         case CommandIDs::showAppSettings:
             result.setInfo (juce::translate("Settings..."), "", category, 0);
             result.addDefaultKeypress (',', ModifierKeys::commandModifier);
@@ -116,7 +117,7 @@ void MainContentComponent::getCommandInfo (CommandID commandID, ApplicationComma
             break;
 
         case CommandIDs::allWindowsForward:
-            result.setInfo (juce::translate("All Windows Forward"), juce::translate("Bring all plug-in windows forward"), category, 0);
+            result.setInfo (juce::translate("All Windows to front"), juce::translate("Bring all plug-in windows forward"), category, 0);
             result.addDefaultKeypress ('w', ModifierKeys::commandModifier);
             break;
 
@@ -332,18 +333,24 @@ bool MainContentComponent::perform (const InvocationInfo& info)
         case CommandIDs::copySelection:
         case CommandIDs::cutSelection:
         {
-            Array<InspectableComponent*> icl;
+            Array<WeakReference<InspectableComponent>> icl ( Inspector::getInstance()->getItemArray());
             
             auto nvl = ShapeShifterManager::getInstance()->getAllSPanelsOfType<NodeManagerUIViewport>(true);
-            if(nvl.size()>0){
-                if(auto vw = nvl[0]->nmui->currentViewer.get())
-                    icl.addArray(vw->selectedItems.getItemArray());
-            }
+
             if(icl.size()>0){
 
                 var datal = Array<var>();
-                for(auto * ic : icl){
 
+                Point<int> minSelectionPoint(10e5,10e5);
+                for(auto & ic:icl){
+                    if(ic){
+                        minSelectionPoint.x = jmin(ic->getX(),minSelectionPoint.x);
+                        minSelectionPoint.y = jmin(ic->getY(),minSelectionPoint.y);
+                    }
+                }
+                var connectionsl = Array<var>();
+                for(auto  ic : icl){
+                    if(!ic.get())continue;
                     ParameterContainer* cc = ic->getRelatedParameterContainer();
 
                     if (cc != nullptr)
@@ -351,21 +358,25 @@ bool MainContentComponent::perform (const InvocationInfo& info)
 
                         var data (new DynamicObject());
                         data.getDynamicObject()->setProperty ("type", ic->inspectableType);
-                        data.getDynamicObject()->setProperty ("data", cc->getObject());
-                        auto *relatedComponent = ic;
+                        data.getDynamicObject()->setProperty ("data", cc->createObject());
+                        auto *relatedComponent = ic.get();
 //                        if(auto relatedComponent =Inspector::getInstance()->getCurrentComponent()){
 
                             NodeContainerViewer *  ncv = dynamic_cast<NodeContainerViewer*>(relatedComponent);
                             if(!ncv)ncv=relatedComponent->findParentComponentOfClass<NodeContainerViewer>();
                             if(ncv && ncv->uiParams){
-                                auto nodeUIParams = ncv->uiParams->getControllableContainerByName(cc->shortName);
-                                data.getDynamicObject()->setProperty ("uiData",nodeUIParams->getObject());
+                                if(auto nodeUIParams = ncv->uiParams->getControllableContainerByShortName(cc->shortName)){
+                                    data.getDynamicObject()->setProperty ("uiData",nodeUIParams->createObject());
+                                }
+                                else{
+                                    jassertfalse;
+                                }
 
                             }
 
                             if (info.commandID == CommandIDs::cutSelection)
                             {
-                                if (ic->inspectableType == "node") ((ConnectableNode*)cc)->remove();
+                                if (ncv && ic->inspectableType == "node") ncv->removeNodeUndoable(dynamic_cast<NodeBase*>(cc));
                                 else if (ic->inspectableType == "controller") ((Controller*)cc)->remove();
 
                                 //            else if (ic->inspectableType == "fastMap") ((FastMap *)cc)->remove();
@@ -374,18 +385,22 @@ bool MainContentComponent::perform (const InvocationInfo& info)
 
 //                        }
                     }
+                    else if(ic->inspectableType=="NodeConnectionUI"){
+                        connectionsl.append(ic->createObject());
+                    }
                 }
-                auto jsonObj = new DynamicObject();
+                var jsonVar(new DynamicObject());
+                DynamicObject::Ptr  jsonObj = jsonVar.getDynamicObject();
+
                 jsonObj->setProperty("list", datal);
-                Point<int> minSelectionPoint(10e5,10e5);
-                for(auto & ic:icl){
-                    minSelectionPoint.x = jmin(ic->getX(),minSelectionPoint.x);
-                    minSelectionPoint.y = jmin(ic->getY(),minSelectionPoint.y);
-                }
+
                 jsonObj->setProperty("minSelectionPoint", Array<var>({minSelectionPoint.x,minSelectionPoint.y}));
+                if(connectionsl.size()){
+                    jsonObj->setProperty("connections", connectionsl);
+                }
 
+                SystemClipboard::copyTextToClipboard (JSON::toString (jsonVar));
 
-                SystemClipboard::copyTextToClipboard (JSON::toString (jsonObj));
             }
         }
             break;
@@ -428,7 +443,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
             String clipboard = SystemClipboard::getTextFromClipboard();
             var clipboardOb =JSON::parse (clipboard);
             var datal = clipboardOb.getProperty("list", "");
-
+            HashMap<String,String> newNames;
             if(datal.isArray()){
                 auto arr = datal.getArray();
                 for(auto data:*arr){
@@ -439,58 +454,85 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                     {
 
                         String type = d->getProperty ("type");
-                        auto relatedComponent =Inspector::getInstance()->getCurrentComponent();
+                        auto relatedComponent =Inspector::getInstance()->getFirstCurrentComponent();
 
                         if (relatedComponent != nullptr)
                         {
                             if (type == "node" && relatedComponent->inspectableType == "node")
                             {
                                 ConnectableNode* cn = dynamic_cast<ConnectableNode*> (relatedComponent->getRelatedParameterContainer());
-                                NodeContainer* container = (dynamic_cast<NodeContainer*> (cn)) ? dynamic_cast<NodeContainer*> (cn) : cn->getParentNodeContainer();
+//                                NodeContainer* container = (dynamic_cast<NodeContainer*> (cn)) ? dynamic_cast<NodeContainer*> (cn) : cn->getParentNodeContainer();
 
                                 if (cn != nullptr)
                                 {
-                                    ConnectableNode* n = container->addNodeFromJSONData (d->getProperty ("data").getDynamicObject());
+                                    NodeBase* n = NodeFactory::createBaseFromObject ("", d->getProperty ("data").getDynamicObject());
 
-                                    // ensure to have different uuid than the one from JSON
-                                    if (n)
+                                    NodeContainerViewer *  ncv = dynamic_cast<NodeContainerViewer*>(relatedComponent);
+                                    if(!ncv)ncv=relatedComponent->findParentComponentOfClass<NodeContainerViewer>();
+
+                                    if (n && ncv)
                                     {
-                                        n->uid = Uuid();
-                                        NodeContainerViewer *  ncv = dynamic_cast<NodeContainerViewer*>(relatedComponent);
-                                        if(!ncv)ncv=Inspector::getInstance()->getCurrentComponent()->findParentComponentOfClass<NodeContainerViewer>();
-                                        if(ncv){
-                                            auto nodeUI = ncv->getUIForNode(n);
-                                            if(nodeUI){
+                                        n->uid = Uuid();// ensure to have different uuid than the one from JSON
+
+                                        String oldName = n->shortName.toString();
+                                        ncv->addNodeUndoable(n, Point<int>());
+                                        String newName =n->shortName.toString();
+                                        newNames.set(oldName,newName);
+                                        auto nodeUI = ncv->getUIForNode(n);
+                                        if(nodeUI){
 
 
-                                                if(auto o = d->getProperty ("uiData").getDynamicObject()){
-                                                    auto nodeUIParams = dynamic_cast<ParameterContainer*>(ncv->uiParams->getControllableContainerByName(n->shortName));
+                                            if(auto o = d->getProperty ("uiData").getDynamicObject()){
+                                                if(auto nodeUIParams = dynamic_cast<ParameterContainer*>(ncv->uiParams->getControllableContainerByShortName(n->shortName))){
                                                     nodeUIParams->configureFromObject(o);
                                                 }
-                                                nodeUI->uid=Uuid();
-                                                Point<int> offset(0,0);
-                                                if(auto o = clipboardOb.getProperty("minSelectionPoint",var()).getArray()){
-                                                    if(o->size()==2){
-                                                        offset.x = o->getUnchecked(0);
-                                                        offset.y = o->getUnchecked(1);
-                                                        offset=ncv->getMouseXYRelative()-offset;
-                                                    }
+                                                else{
+                                                    jassertfalse;
                                                 }
-                                                nodeUI->nodePosition->setPoint (nodeUI->nodePosition->getPoint()+offset);
-                                                nodeUI->nodeMinimizedPosition->setPoint (nodeUI->nodeMinimizedPosition->getPoint()+offset);
+
                                             }
-                                            else{
-                                                jassertfalse;
+                                            nodeUI->uid=Uuid();
+                                            Point<int> offset(0,0);
+                                            if(auto o = clipboardOb.getProperty("minSelectionPoint",var()).getArray()){
+                                                if(o->size()==2){
+                                                    offset.x = o->getUnchecked(0);
+                                                    offset.y = o->getUnchecked(1);
+                                                    offset=ncv->getMouseXYRelative()-offset;
+                                                }
                                             }
+                                            nodeUI->nodePosition->setPoint (nodeUI->nodePosition->getPoint()+offset);
+                                            nodeUI->nodeMinimizedPosition->setPoint (nodeUI->nodeMinimizedPosition->getPoint()+offset);
                                         }
                                         else{
                                             jassertfalse;
                                         }
                                     }
+                                    else if (n){
+
+                                        jassertfalse;
+                                        n->remove();
+                                    }
+
                                 }
                             }
                         }
                         
+                    }
+                }
+                auto connections = clipboardOb.getProperty("connections", "");
+                if(auto connL = connections.getArray()){
+                    auto relatedComponent =Inspector::getInstance()->getFirstCurrentComponent();
+                    NodeContainerViewer *  ncv = dynamic_cast<NodeContainerViewer*>(relatedComponent);
+                    if(!ncv)ncv=relatedComponent->findParentComponentOfClass<NodeContainerViewer>();
+                    if(ncv){
+                    NodeContainer * nc = ncv->nodeContainer;
+                        for(auto c:*connL){
+                            if(auto * o = c.getDynamicObject()){
+                                o->setProperty("srcNode",newNames[o->getProperty("srcNode")]);
+                                o->setProperty("dstNode",newNames[o->getProperty("dstNode")]);
+                            }
+                        }
+                    nc->setConnectionFromObject(*connL);
                     }
                 }
             }

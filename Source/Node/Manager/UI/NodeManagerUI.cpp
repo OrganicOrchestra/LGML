@@ -42,7 +42,7 @@ public:
 
 class NodeManagerUIFactory : public ParameterContainer{
 public:
-    NodeManagerUIFactory():ParameterContainer("NodesUI"){}
+    NodeManagerUIFactory():ParameterContainer("NodesUI"){nameParam->setInternalOnlyFlags(true,false);}
 
     ParameterContainer* addContainerFromObject (const String& name, DynamicObject*   data) override{
         ParameterContainer * res;
@@ -72,7 +72,6 @@ ParameterContainer("NodeManagerUI"),isMiniMode(false)
     auto p =getRoot(true)->getControllableContainerByName("NodesUI");
     if(!p){
         NodeManagerUIFactory * np = new NodeManagerUIFactory();
-        np->nameParam->isEditable = false;
         p = getRoot(true)->addChildControllableContainer(np);
     }
     p->addChildControllableContainer(this);
@@ -91,12 +90,14 @@ NodeManagerUI::~NodeManagerUI()
     clear();
     setCurrentViewedContainer (nullptr);
 
-    auto p =getRoot(true)->getControllableContainerByName("NodesUI");
+    if(auto root = getRoot(true)){
+
+    auto p = root->getControllableContainerByName("NodesUI");
     if(p){
         p->removeChildControllableContainer(this);
     }
     else jassertfalse;
-
+    }
 
     clearSingletonInstance();
 }

@@ -65,6 +65,7 @@ ConnectableNodeUIParams::~ConnectableNodeUIParams(){
     }
 }
 ConnectableNodeUIParams::ConnectableNodeUIParams(StringRef n): ParameterContainer(n){
+    nameParam->setInternalOnlyFlags(true,true);
     nodePosition=addNewParameter<Point2DParameter<int>> ("nodePosition", "position on canvas", 0, 0, Array<var> {0, 0});
     nodeMinimizedPosition= addNewParameter<Point2DParameter<int>> ("nodeMinimizedPosition", "position in minimode on canvas", 0, 0, Array<var> {0, 0});
     nodeSize=addNewParameter<Point2DParameter<int>> ("nodeSize", "Node Size", 180, 100, Array<var> {30, 30});
@@ -119,8 +120,8 @@ isDraggingFromUI (false)
         addAndMakeVisible (outputContainer);
     }
 
-    getHeaderContainer()->addMouseListener (this, true); // (true, true);
-    getContentContainer()->addMouseListener (this, false);
+//    getHeaderContainer()->addMouseListener (this, true); // (true, true);
+//    getContentContainer()->addMouseListener (this, false);
 
     initFromParams();
     mainComponentContainer.setNodeAndNodeUI (connectableNode, this);
@@ -374,7 +375,7 @@ bool ConnectableNodeUI::keyPressed (const KeyPress& key)
         }
     }
 
-    return false;
+    return InspectableComponent::keyPressed(key);
 }
 
 ////////////    MAIN CONTAINER

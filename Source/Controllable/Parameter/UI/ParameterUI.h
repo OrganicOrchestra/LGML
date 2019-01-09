@@ -22,9 +22,9 @@
 
 
 class ParameterUI : public InspectableComponent,
-    protected ParameterBase::AsyncListener,
-    private ParameterBase::Listener,
+    protected ParameterBase::Listener,
     public Controllable::Listener
+
 {
 public:
     ParameterUI ( ParameterBase* parameter);
@@ -34,7 +34,7 @@ public:
 
     bool showLabel;
     bool showValue;
-
+    static const Array<WeakReference<ParameterUI>> & getAllParameterUIs();
     void setCustomText (const String text);
 
     enum MappingState
@@ -46,13 +46,13 @@ public:
 
     void setMappingState (const bool  s);
     void setMappingDest (bool _isMappingDest);
-
+    
     bool isDraggable;
-    bool isSelected;
+
     void updateOverlayEffect();
 
-    void visibilityChanged() override;
-    void parentHierarchyChanged()override;
+    void visibilityChanged() final;
+    void parentHierarchyChanged()final;
 
 protected:
 
@@ -80,6 +80,9 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ParameterUI)
     friend class LGMLDragger;
+    friend class FastMapper;
+
+    void setHasMappedParameter(bool s);
     MappingState mappingState;
     bool hasValidControllable;
     ScopedPointer<ImageEffectFilter> mapEffect;
@@ -93,6 +96,8 @@ private:
 
     bool isMappingDest;
 
+    var lastValuePainted;
+
 protected:
     typedef HashMap<int, String> UICommandType;
     virtual void processUICommand(int cmd){};
@@ -102,11 +107,48 @@ private:
     friend class WeakReference<ParameterUI>;
 
     bool wasShowing;
+    bool hasMappedParameter;
 
 
 };
 
 
+
+class LabelLinkedTooltip : public Component,public TooltipClient{
+public:
+    LabelLinkedTooltip(TooltipClient * p):t(p){
+        label.setJustificationType (Justification::centredLeft);
+        addAndMakeVisible(label);
+        label.setVisible(false);
+        label.setBorderSize(BorderSize<int>(0));
+    }
+        void paint(Graphics & g) override{
+            getLookAndFeel().drawLabel (g, label);
+        }
+    void resized()override{
+        label.setBounds(getLocalBounds());
+    }
+    String getTooltip() override{
+        return t->getTooltip();
+    }
+    void addListener(Label::Listener *l){
+        label.addListener(l);
+    }
+    void setEditable(bool editOnSingleClick,
+                     bool editOnDoubleClick=false,
+                     bool lossOfFocusDiscards=false){
+        label.setEditable(editOnSingleClick,editOnDoubleClick,lossOfFocusDiscards);
+    }
+
+    void setFont(const Font & f){label.setFont(f);}
+    Font getFont(){return label.getFont();}
+    String getText(){return label.getText();}
+    void setText(const String & s,juce::NotificationType notif){label.setText(s,notif);}
+
+private:
+    Label label;
+    TooltipClient * t;
+};
 //    this class allow to automaticly generate label / ui element for parameter listing in editor
 //    it owns the created component
 class NamedParameterUI : public ParameterUI, public Label::Listener
@@ -116,7 +158,7 @@ public:
     void resized()override;
     bool labelAbove;
     void labelTextChanged (Label* labelThatHasChanged) override;
-    Label controllableLabel;
+    ScopedPointer<LabelLinkedTooltip> controllableLabel;
     int labelWidth;
     ScopedPointer <ParameterUI > ownedParameterUI;
     void controllableControlAddressChanged (Controllable*)override;

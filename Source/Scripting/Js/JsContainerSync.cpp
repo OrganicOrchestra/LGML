@@ -115,7 +115,9 @@ var getControllableForAddress (const var::NativeFunctionArgs& a)
 
     if (arr.size())
     {
-        Controllable* res = callerCont->getControllableForAddress (arr);
+        ControlAddressType ca;
+        for(auto & s:arr){ca.add(s);}
+        Controllable* res = callerCont->getControllableForAddress (ca);
 
         if (res) {return res->createDynamicObject();}
     }
@@ -136,7 +138,7 @@ JsContainerSync::createDynamicObjectFromContainer (ControllableContainer* contai
     }
     else
     {
-        myObj = container->getObject();
+        myObj = container->createObject();
     }
 
 

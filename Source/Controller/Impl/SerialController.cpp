@@ -38,7 +38,7 @@ class SerialProtocol : public EnumParameterModel{
 
 static SerialProtocol serialProtocolModel;
 */
-
+//#include "../../Controllable/Parameter/FileParameter.h" // TODO check why userDefined parameter needs to trigger changes
 
 SerialController::SerialController (StringRef name) :
 JsEnvironment ("controllers.serial", this),
@@ -92,10 +92,6 @@ void SerialController::setCurrentPort (SerialPort* _port)
 
 }
 
-void SerialController::newJsFileLoaded()
-{
-
-}
 
 void SerialController::onContainerParameterChanged ( ParameterBase* p)
 {
@@ -175,21 +171,7 @@ void SerialController::serialDataReceived (const var& data)
 
 }
 
-void SerialController::childControllableAdded (ControllableContainer*, Controllable* c)
-{
-    if (c->isUserDefined)
-    {
-        reloadFile();
-    }
-}
-void SerialController::childControllableRemoved (ControllableContainer*, Controllable* c)
-{
-    if (c->isUserDefined)
-    {
-        reloadFile();
-    }
 
-}
 var SerialController::sendMessageFromScript (const var::NativeFunctionArgs&)
 {
     //    SerialController * c = getObjectPtrFromJS<SerialController>(a);
@@ -299,7 +281,7 @@ void SerialController::checkAndAddParameterIfNeeded (const StringArray& split)
 
         for ( int i = 0 ; i < sa.size() - 1 ; i++)
         {
-            auto* c = dynamic_cast<ParameterContainer*> (tC->getControllableContainerByName (sa[i], true));
+            auto* c = dynamic_cast<ParameterContainer*> (tC->getControllableContainerByName (sa[i]));
 
             if (!c)
             {

@@ -20,6 +20,7 @@
 #include "../../../FastMapper/FastMapper.h"
 #include "../UndoableHelper.h"
 
+Array<WeakReference<ParameterUI>> allParameterUIs;
 //==============================================================================
 ParameterUI::ParameterUI ( ParameterBase* _parameter) :
     InspectableComponent(_parameter,"ParameterUI"),
@@ -29,9 +30,9 @@ ParameterUI::ParameterUI ( ParameterBase* _parameter) :
     customTextDisplayed (""),
     isMappingDest (false),
     isDraggable (true),
-    isSelected (false),
     wasShowing(true)
 {
+    allParameterUIs.add(this);
     setBufferedToImage(true);
     if (parameter.get())
     {
@@ -50,15 +51,15 @@ ParameterUI::ParameterUI ( ParameterBase* _parameter) :
     setName (parameter->niceName);
     parameter->addControllableListener (this);
     mappingState = NOMAP;
-    setMappingState (LGMLDragger::getInstance()->isMappingActive);
+    LGMLDragger::getInstance()->applyMappingState (this);
 
-    
-    
+
 
 }
 
 ParameterUI::~ParameterUI()
 {
+    allParameterUIs.removeAllInstancesOf(this);
     if(auto * draggerI = LGMLDragger::getInstanceWithoutCreating()){
         draggerI->unRegisterDragCandidate (this);
     }
@@ -72,13 +73,17 @@ ParameterUI::~ParameterUI()
 
     ParameterUI::masterReference.clear();
 }
-
+const Array<WeakReference<ParameterUI>> & ParameterUI::getAllParameterUIs(){
+    return allParameterUIs;
+}
 
 void ParameterUI::setCustomText (const String text)
 {
-
-    customTextDisplayed = juce::translate(text);
-    repaint();
+    String newText =juce::translate(text);
+    if(newText!=customTextDisplayed){
+        customTextDisplayed =newText;
+        repaint();
+    }
 }
 
 const ParameterUI::UICommandType & ParameterUI::getUICommands() const{
@@ -93,6 +98,7 @@ void ParameterUI::mouseDown (const MouseEvent& e)
         PopupMenu p;
         p.addItem (1, juce::translate("Select Parameter (Alt+click)"));
         p.addItem (2, juce::translate("Copy control address"));
+        p.addItem (5, juce::translate("Copy control value"));
         p.addItem (3, juce::translate("Add FastMap To"));
         p.addItem (4, juce::translate("Add FastMap From"));
         const UICommandType & cmds(getUICommands());
@@ -108,11 +114,11 @@ void ParameterUI::mouseDown (const MouseEvent& e)
         switch (result)
         {
             case 1:
-                Inspector::getInstance()->setCurrentComponent(this);
+                Inspector::getInstance()->selectOnly(this);
                 break;
 
             case 2:
-                SystemClipboard::copyTextToClipboard (parameter->controlAddress);
+                SystemClipboard::copyTextToClipboard (parameter->controlAddress.toString());
                 break;
 
             case 3:
@@ -122,17 +128,18 @@ void ParameterUI::mouseDown (const MouseEvent& e)
             case 4:
                 FastMapper::getInstance()->addFastMap()->referenceIn->setParamToReferTo ( ParameterBase::fromControllable (parameter));
                 break;
-
+            case 5:
+                SystemClipboard::copyTextToClipboard (parameter->value.toString());
             default:
                 if(result>=100){
-                    this->processUICommand(result-100);
+                    processUICommand(result-100);
                 }
                 break;
 
         }
     }
     if(e.mods.isAltDown()){
-        Inspector::getInstance()->setCurrentComponent(this);
+        Inspector::getInstance()->selectOnly(this);
     }
 
 }
@@ -170,7 +177,9 @@ void ParameterUI::controllableControlAddressChanged (Controllable*)
 
 
 String ParameterUI::getTooltip(){
-    return juce::translate(parameter->description) + "\n"+juce::translate("Control Address")+" : " + parameter->controlAddress;//"\nValue : "+parameter->value.toString();
+    if(parameter.get())
+        return juce::translate(parameter->description) + "\n"+juce::translate("Control Address")+" : " + parameter->controlAddress.toString();//"\nValue : "+parameter->value.toString();
+    return "parameter is now deleted";
 }
 
 void ParameterUI::visibilityChanged(){
@@ -186,16 +195,18 @@ void ParameterUI::visibilityChanged(){
             parameter->addControllableListener (this);
             // don't trigger
             if(!dynamic_cast<Trigger*>(parameter.get()))
-               valueChanged(parameter->value);
+                if(!parameter->checkValueIsTheSame(lastValuePainted,parameter->value))
+                    valueChanged(parameter->value);
         }
         else{
             parameter->removeAsyncParameterListener (this);
             parameter->removeParameterListener (this);
             parameter->removeControllableListener (this);
+            lastValuePainted = parameter->value;
         }
     }
     if (auto ld = LGMLDragger::getInstanceWithoutCreating())
-        setMappingState (ld->isMappingActive);
+        ld->applyMappingState(this);
     wasShowing =_isShowing;
 
 }
@@ -203,19 +214,27 @@ void ParameterUI::parentHierarchyChanged(){
     visibilityChanged();
 };
 
+void ParameterUI::setHasMappedParameter(bool s){
+
+    hasMappedParameter = s;
+    updateOverlayEffect();
+}
+
 class MapEffect : public ImageEffectFilter
 {
 public:
-    MapEffect (const Colour& colour, uint32 _amount, String _text):
+    MapEffect (const Colour& colour, uint32 _amount, String _text,bool _isMapped):
         amount (_amount),
         pRef (colour.getAlpha(), colour.getRed(), colour.getGreen(), colour.getBlue()),
-        text (_text)
+        text (_text),
+        isMapped(_isMapped)
     {
     }
     PixelARGB pRef;
     uint32 amount;
     String text;
     uint32 trueAmount;
+    bool isMapped;
 
     template<typename T>
     void  applyFunction (Image::BitmapData& data)
@@ -257,6 +276,12 @@ public:
 
 
         g.drawImage (image, image.getBounds().toFloat());
+        if(isMapped){
+            auto r = image.getBounds();
+            g.setColour(Colours::red);
+            int side = 8;
+            g.fillRect(r.removeFromBottom(side).removeFromRight(side));
+        }
 //        g.setColour (Colours::white);
 //        g.drawFittedText (text, 0, 0, image.getWidth(), image.getHeight(), Justification::centred, 2);
 
@@ -295,7 +320,7 @@ void ParameterUI::updateOverlayEffect(){
     {
         Colour c =isMappingDest ? Colours::red : Colours::blue;
         if (isSelected) c = Colours::green;
-        mapEffect  = new MapEffect (c, isSelected? 100:50, getName());
+        mapEffect  = new MapEffect (c, isSelected? 100:50, getName(),FastMapper::getInstance()->isParameterMapped(parameter));
     }
     else
     {
@@ -341,43 +366,43 @@ NamedParameterUI::NamedParameterUI (ParameterUI* ui, int _labelWidth, bool label
     ParameterUI (ui->parameter),
     ownedParameterUI (ui),
     labelWidth (_labelWidth),
-    labelAbove (labelA)
+    labelAbove (labelA),
+    controllableLabel(new LabelLinkedTooltip(ui))
 {
     // prevent mapping state for named parameterUI -> inner will handle it
     setMappingState(false);
+
     addAndMakeVisible (controllableLabel);
 
-    controllableLabel.setJustificationType (Justification::centredLeft);
-    controllableLabel.setText (juce::translate(ui->parameter->niceName), dontSendNotification);
+
+    controllableLabel->setText (ui->visibleName, dontSendNotification);
 
     if (ui->parameter->isUserDefined)
     {
-        controllableLabel.setEditable (true);
-        controllableLabel.addListener (this);
+        controllableLabel->setEditable (true);
+        controllableLabel->addListener (this);
     }
-
-    controllableLabel.setTooltip (ParameterUI::getTooltip());
 
     addAndMakeVisible (ui);
     ui->toFront (false);
-    setBounds (ownedParameterUI->getBounds()
-               .withTrimmedRight (-labelWidth)
-               .withHeight (jmax ((int)controllableLabel.getFont().getHeight() + 4, ownedParameterUI->getHeight())));
+//    setBounds (ownedParameterUI->getBounds()
+//               .withTrimmedRight (-labelWidth)
+//               .withHeight (jmax ((int)controllableLabel.getFont().getHeight() + 4, ownedParameterUI->getHeight())));
 }
 
 void NamedParameterUI::resized()
 {
     Rectangle<int> area  = getLocalBounds();
 
-    if (controllableLabel.getText().isNotEmpty())
+    if (controllableLabel->getText().isNotEmpty())
     {
         if (labelAbove)
         {
-            controllableLabel.setBounds (area.removeFromTop (jmin (18, area.getHeight() / 2)));
+            controllableLabel->setBounds (area.removeFromTop (jmin (18, area.getHeight() / 2)));
         }
         else
         {
-            controllableLabel.setBounds (area.removeFromLeft (labelWidth));
+            controllableLabel->setBounds (area.removeFromLeft (labelWidth));
             area.removeFromLeft (10);
         }
     }
@@ -395,7 +420,7 @@ void NamedParameterUI::labelTextChanged (Label* labelThatHasChanged)
 
 void  NamedParameterUI::controllableControlAddressChanged (Controllable* c){
     if(c && c==parameter){
-    controllableLabel.setText (juce::translate(parameter->niceName), dontSendNotification);
+    controllableLabel->setText (juce::translate(parameter->niceName), dontSendNotification);
     }
 }
 

@@ -40,7 +40,7 @@ public:
 
 
 
-    void newJsFileLoaded()override;
+    
 
 
 
@@ -57,7 +57,6 @@ private:
     DynamicObject*   createOSCJsObject();
 
 
-    StringParameter* jsPath;
 };
 
 

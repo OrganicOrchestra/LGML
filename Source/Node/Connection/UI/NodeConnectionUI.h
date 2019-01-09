@@ -42,15 +42,38 @@ public:
     class Anchor : public DrawableRectangle
     {
     public:
-        Anchor()
+        Anchor():isHovered(false)
         {
-            const int anchorSize = 6;
+            setInterceptsMouseClicks(true, false);
+            const int anchorSize = 10;
             setRectangle (Rectangle<float> (0, 0, anchorSize, anchorSize));
             setFill (Colours::white.withAlpha (0.1f));
             setStrokeFill (Colours::white);
             setStrokeThickness (1);
 
         }
+        void mouseEnter(const MouseEvent & me)final{
+            isHovered = true;
+            setFill (Colours::white.withAlpha (0.5f));
+        }
+        void mouseExit(const MouseEvent & me)final{
+            isHovered = false;
+            setFill (Colours::white.withAlpha (0.1f));
+        }
+        void mouseDown(const MouseEvent & me)final{
+//            if(auto ncv = findParentComponentOfClass<NodeContainerViewer>()){
+//
+//            }
+        }
+
+        
+        void mouseUp(const MouseEvent & me)final{
+            if(auto ncv = findParentComponentOfClass<NodeContainerViewer>()){
+                ncv->finishEditingConnection();
+            }
+        }
+        
+        bool isHovered;
     };
     Anchor anchorSource;
     Anchor anchorDest;
@@ -62,7 +85,7 @@ public:
 
     void setSourceConnector (Connector* c);
     void setDestConnector (Connector* c);
-
+    DynamicObject * createObject() override;
 
     Path path;
     Path hitPath;
@@ -72,12 +95,14 @@ public:
 
     void buildPath();
     void buildHitPath (Array<Point<float>> points);
-
+    void setSelectedInternal( bool v) final;
     void updateBoundsFromNodes();
-    virtual bool hitTest (int x, int y) override { return hitPath.contains ((float)x, (float)y); }
+    bool hitTest (int x, int y) final;
 
     //interaction
     void mouseDown (const MouseEvent& e) override;
+    void mouseUp (const MouseEvent& e) final;
+    void mouseDrag (const MouseEvent& e) override;
     void mouseEnter (const MouseEvent& e) override;
     void mouseExit (const MouseEvent& e) override;
     void mouseMove (const MouseEvent&)override;
@@ -107,7 +132,7 @@ public:
 
     bool setCandidateDropConnector (Connector* connector);
     void cancelCandidateDropConnector();
-
+    void startEditing(bool editDest);
     bool finishEditing();
 
 

@@ -72,9 +72,6 @@ public:
     void removeNodeManagerUIListener (NodeManagerUIListener* listener) { nodeManagerUIListeners.remove (listener); }
     bool keyPressed (const KeyPress& key)override;
 
-//    DynamicObject* getObject();
-//    void setFromObject(const DynamicObject * obj);
-
 
 
     ScopedPointer<UISync> uiSync;
@@ -107,7 +104,7 @@ public :
         addNodeBt.addListener (this);
         addNodeBt.setTooltip (juce::translate("Add Node"));
         //    setOpaque(true);
-        vp.setScrollOnDragEnabled (false);
+
         vp.addMouseListener(this,true);
 
     }
@@ -166,9 +163,10 @@ public :
     void mouseDrag(const MouseEvent & e)override{
         Component *c  = e.originalComponent;
         if(nmui->currentViewer && nmui->currentViewer->isParentOf(c)){
-            auto r = vp.getLocalArea(c->getParentComponent(),c->getBoundsInParent());
-            //auto mouse = vp.getLocalPoint(e.originalComponent,e.position);
-            vp.autoScroll(r.getRight(),r.getBottom(),140,10);
+            Rectangle<int> r = vp.getLocalArea(c->getParentComponent(),c->getBoundsInParent());
+            Point<int> mouse = vp.getLocalPoint(e.originalComponent,e.position).toInt();
+//            DBG(String(r.getRight()) +"::::" +String(mouse.x));
+            vp.autoScroll(jmax(r.getRight(),mouse.x),jmax(r.getBottom(),mouse.y),140,10);
         }
     }
     void mouseUp(const MouseEvent & e)override{
@@ -260,7 +258,7 @@ public :
             if (result > 0)
             {
                 String tid(FactoryUIHelpers::getFactoryTypeNameFromMenuIdx<NodeFactory>(result));
-                nmui->currentViewer->addOrRemoveNodeUndoable(tid, destPos,nullptr);
+                nmui->currentViewer->createNodeUndoable(tid, destPos);
             }
 
         }

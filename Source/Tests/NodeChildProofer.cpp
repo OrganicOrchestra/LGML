@@ -74,7 +74,7 @@ public:
                         !tested->shortName.startsWith ("exportAudio") &&
                         tested != testingNode->nameParam)
                     {
-                        String err = "Action failed for Controllable : " + tested->getControlAddress();
+                        String err = "Action failed for Controllable : " + tested->getControlAddress().toString();
 
                         if (tested.get())
                         {
@@ -137,7 +137,7 @@ public:
 
             double now =  juce::Time::getMillisecondCounterHiRes();
             double timeTaken = now - startTime;
-            Identifier mapKey = c->getControlAddress();
+            Identifier mapKey = c->getControlAddress().toString();
 
             if (!allTimeTaken.contains (mapKey))
             {
@@ -219,7 +219,7 @@ bool buildTests()
         
         for (auto nName : NodeFactory::getRegisteredTypes())
         {
-            if (nName != "t_ContainerIn" && nName != "t_ContainerOut" && !nName.contains ("AudioDevice"))
+            if (nName != "t_ContainerInNode" && nName != "t_ContainerOutNode" && !nName.contains ("AudioDevice"))
                 new NodeChildProofer (nName, 10);
         }
         

@@ -23,7 +23,7 @@
 
 #include "../Impl/ContainerInNode.h"
 #include "../Impl/ContainerOutNode.h"
-#include "../../Controllable/Parameter/ParameterProxy.h"
+
 
 
 // WIP, will need to go deep if we want to take avantage of a multi Threaded environnement
@@ -31,6 +31,7 @@
 
 class NodeManager;
 
+class GraphBuildWatcher;
 
 //Listener
 
@@ -61,8 +62,7 @@ public:
     virtual void connectionAdded (NodeConnection*) {};
     virtual void connectionRemoved (NodeConnection*) {};
 
-    virtual void paramProxyAdded (ParameterProxy*) {};
-    virtual void paramProxyRemoved (ParameterProxy*) {};
+
 
     void newMessage (const NodeChangeMessage& msg )override
     {
@@ -85,7 +85,6 @@ public:
 class NodeContainer :
     public NodeBase,
     public NodeConnection::Listener,
-    public ParameterProxy::ParameterProxyListener,
     public AsyncUpdater
 
 {
@@ -104,6 +103,11 @@ public:
     ContainerOutNode* containerOutNode;
     ScopedPointer<AudioProcessorGraph> innerGraph;
     AudioProcessorGraph* getAudioGraph() {return innerGraph;};
+    void addToAudioGraph(NodeBase * );
+    void removeFromAudioGraph(NodeBase *);
+
+    
+
 
 
     //NODE AND CONNECTION MANAGEMENT
@@ -120,8 +124,8 @@ public:
 
     bool removeNode (ConnectableNode* n,bool doDelete=true);
 
-    ConnectableNode* getNodeForName (const String& name);
-
+    
+    void setConnectionFromObject(const Array<var> & connectionsData);
     NodeConnection* getConnection (const int index) const noexcept { return connections[index]; }
     NodeConnection* getConnectionBetweenNodes (ConnectableNode* sourceNode, ConnectableNode* destNode, NodeConnection::ConnectionType connectionType);
     Array<NodeConnection*> getAllConnectionsForNode (ConnectableNode* node);
@@ -139,7 +143,7 @@ public:
 
 
     //save / load
-    DynamicObject* getObject() override;
+    DynamicObject* createObject() override;
     void configureFromObject (DynamicObject* data) override;
     ParameterContainer*   addContainerFromObject (const String& name, DynamicObject*   v)override;
 
@@ -213,7 +217,7 @@ public:
     class RebuildTimer : public Timer
     {
     public:
-        RebuildTimer (NodeContainer* o): owner (o) ,maxRebuildTime(40000),lastTime(0){
+        RebuildTimer (NodeContainer* o): owner (o) ,maxRebuildTime(20000),lastTime(0){
         curRebuildTime = maxRebuildTime;
         };
         void timerCallback()override
@@ -245,8 +249,20 @@ public:
     RebuildTimer rebuildTimer;
     NodeChangeQueue nodeChangeNotifier;
 
+
+private:
+
+    WeakReference<NodeContainer>::Master masterReference;
+    friend class WeakReference<NodeContainer>;
+    bool isParentBuildingSession();
+    void setBuildSessionGraph(bool stop=false);
+    Atomic<int> isBuildingSession;
+    
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeContainer)
 
+    ScopedPointer<GraphBuildWatcher> gWatcher;
+    friend class GraphBuildWatcher;
 
 
 };

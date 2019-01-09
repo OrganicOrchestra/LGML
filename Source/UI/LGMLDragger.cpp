@@ -139,7 +139,7 @@ void LGMLDragger::setMainComponent (Component* c)
     selected = nullptr;
     mainComp = c;
 
-    mainComp->addMouseListener (this, true);
+//    mainComp->addMouseListener (this, true);
 
     setMappingActive (false);
 }
@@ -237,7 +237,12 @@ void LGMLDragger::mouseExit (const MouseEvent& e)
 
 
 
-
+void LGMLDragger::applyMappingState(ParameterUI* ch){
+    if (!dynamic_cast<NamedParameterUI*> (ch))
+    {
+        ch->setMappingState (isMappingActive);
+    }
+}
 
 void setAllComponentMappingState (Component* c, bool b)
 {
@@ -267,6 +272,7 @@ void setAllComponentMappingState (Component* c, bool b)
 
 void LGMLDragger::setMappingActive (bool b)
 {
+    
     isMappingActive = b;
     setAllComponentMappingState (mainComp, b);
 
@@ -288,6 +294,12 @@ void LGMLDragger::setMappingActive (bool b)
     listeners.call (&Listener::mappingModeChanged, b);
     for(auto c: getEngine()->getContainersOfType<Controller>(true)){
         c->setMappingMode(b);
+    }
+    if(!isMappingActive){
+        mainComp->removeMouseListener(this);
+    }
+    else{
+        mainComp->addMouseListener(this,true);
     }
 
 }
@@ -426,4 +438,7 @@ void LGMLDragger::setSelected (ParameterUI* c,LGMLDragger::Listener * from)
 
     }
 }
+
+
+
 #endif

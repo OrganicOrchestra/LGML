@@ -126,8 +126,8 @@ class UndoableFactoryCreateOrDelete:public UndoableAction{
     public:
         typedef std::function<void(T*)> addFType;
         typedef std::function<void(T*)> rmFType;
-        UndoableFactoryCreateOrDelete(String _typeID,addFType _addF,rmFType _rmF,T * originToRemove):addF(_addF),rmF(_rmF),typeID(_typeID),obj(originToRemove),isRemove(originToRemove!=nullptr){
-            obSettings = originToRemove?originToRemove->getObject()->clone():nullptr;
+        UndoableFactoryCreateOrDelete(String _typeID,addFType _addF,rmFType _rmF,T * originToRemove,bool _isRemove):addF(_addF),rmF(_rmF),typeID(_typeID),obj(originToRemove),isRemove(_isRemove){
+            obSettings = var(originToRemove?originToRemove->createObject():nullptr);
         };
 
         bool perform() override{
@@ -150,11 +150,15 @@ class UndoableFactoryCreateOrDelete:public UndoableAction{
         }
 
     bool createObj(){
-        jassert(!obj);
-        obj = FactoryBase<T>::createFromTypeID(typeID,"",obSettings.getDynamicObject());
+        if(!obj){
+            obj = FactoryBase<T>::createFromTypeID(typeID,"",obSettings.getDynamicObject());
+        }
         if(obj){
             addF(obj);
             return true;
+        }
+        else{
+            jassertfalse;
         }
         return false;
     }

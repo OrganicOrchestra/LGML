@@ -20,7 +20,7 @@
 #include "../../Node/Manager/NodeManager.h"
 
 #include "../../Utils/NetworkUtils.h"
-
+#include "../../Controllable/Parameter/ParameterProxy.h"
 
 
 
@@ -193,7 +193,7 @@ void OSCController::processMessage (const OSCMessage& msg)
 {
     bool isPing =msg.getAddressPattern()=="/ping";
     if(isPing){
-        sendOSC("/pong",getControlAddress());
+        sendOSC("/pong",getControlAddress().toString());
         inActivityTrigger->triggerDebounced(activityTriggerDebounceTime); // only show led activity on pings
         return;
     }
@@ -335,12 +335,12 @@ void OSCController::checkAndAddParameterIfNeeded (const OSCMessage& msg)
     if (!linked)
     {
 
-        StringArray sa = OSCAddressToArray (addr);
+        auto sa = OSCAddressToArray (addr);
         ParameterContainer* tC = &userContainer;
 
         for ( int i = 0 ; i < sa.size() - 1 ; i++)
         {
-            auto* c = dynamic_cast<ParameterContainer*> (tC->getControllableContainerByName (sa[i], true));
+            auto* c = dynamic_cast<ParameterContainer*> (tC->getControllableContainerByShortName (sa[i]));
 
             if (!c)
             {
@@ -585,11 +585,11 @@ void OSCController::sendAllControllableStates (ControllableContainer* c, int& se
 void OSCController::sendOSCFromParam(const Controllable *c){
     if (c->isChildOf (&userContainer))
     {
-        sendOSCForAddress (c, c->getControlAddress (&userContainer));
+        sendOSCForAddress (c, c->getControlAddressRelative (&userContainer).toString());
     }
     else
     {
-        sendOSCForAddress (c, c->controlAddress);
+        sendOSCForAddress (c, c->controlAddress.toString());
     }
 }
 

@@ -31,20 +31,20 @@ Controller::Controller (StringRef _name) :
     userContainer.setUserDefined (true);
     userContainer.addControllableContainerListener (this);
     addChildControllableContainer (&userContainer);
-    userContainer.nameParam->isEditable = false;
+    userContainer.nameParam->setInternalOnlyFlags(true,true);
 
     enabledParam = addNewParameter<BoolParameter> ("Enabled", "Set whether the controller is enabled or disabled", true);
 
     isConnected = addNewParameter<BoolParameter> ("Connected", "status of Controller connection", false);
-    isConnected->isEditable = false;
-    isConnected->isSavable = false;
+    isConnected->setInternalOnlyFlags(true,false);
+
 
     inActivityTrigger =  addNewParameter<Trigger> ("in activity", "In Activity indicator");
     outActivityTrigger =  addNewParameter<Trigger> ("out activity", "Out Activity indicator");
-    inActivityTrigger->isEditable = false;
-    inActivityTrigger->isControllableExposed =false;
-    outActivityTrigger->isEditable = false;
-    outActivityTrigger->isControllableExposed =false;
+    inActivityTrigger->setInternalOnlyFlags(true,false);
+
+    outActivityTrigger->setInternalOnlyFlags(true,false);
+    
     controllerTypeEnum = 0; //init
 }
 

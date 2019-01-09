@@ -116,7 +116,7 @@ ParameterBase* ParameterProxy::get()
 void ParameterProxy::setParamToReferTo ( ParameterBase* p)
 {
 
-    String targetAddress = p ? p->getControlAddress (getRoot()) : "";
+    String targetAddress = p ? p->getControlAddress().toString() : "";
 
     if ( targetAddress != stringValue())
     {
@@ -180,7 +180,7 @@ void ParameterProxy::childControllableAdded (ControllableContainer*, Controllabl
 {
     jassert (linkedParam == nullptr);
 
-    if (c->getControlAddress() == stringValue())
+    if (c->getControlAddress().toString() == stringValue())
     {
         setParamToReferTo ( ParameterBase::fromControllable (c));
     }

@@ -24,7 +24,7 @@ ContainerOutNode::ContainerOutNode (StringRef name) :
     AudioProcessorGraph::AudioGraphIOProcessor (AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioOutputNode)
 {
     canBeRemovedByUser = false;
-    canHavePresets = false;
+    _canHavePresets = false;
     userCanAccessOutputs = false;
 
     numChannels = addNewParameter<IntParameter> ("Num Audio Outputs", "Number of output channels for this container", 2, 0, 100);

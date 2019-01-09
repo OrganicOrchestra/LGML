@@ -81,12 +81,19 @@ public:
     void removeSelectionListener (Listener* l ) {listeners.remove (l);}
 
     void setSelected (ParameterUI*,LGMLDragger::Listener * from = nullptr);
+
+
+    void applyMappingState(ParameterUI*);
+    
 private:
+
+    
 
     Component* selectedSSContent;
     ListenerList<Listener> listeners;
     Point<int> mouseDownWithinTarget;
     bool keyPressed (const KeyPress& key,
                 Component* originatingComponent)override;
+    Array<WeakReference<ParameterBase>> mappedParameters;
 
 };

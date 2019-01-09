@@ -19,6 +19,7 @@
 #include "ShapeShifterFactory.h"
 #include "ShapeShifterPanel.h"
 
+
 ShapeShifterPanelHeader::ShapeShifterPanelHeader()
 {
     addMouseListener (this, true);
@@ -28,6 +29,7 @@ ShapeShifterPanelHeader::ShapeShifterPanelHeader()
     addPannelMenu.setTooltip(juce::translate("add tab to this panel"));
     addPannelMenu.addListener (this);
     setOpaque (true);
+
 }
 
 ShapeShifterPanelHeader::~ShapeShifterPanelHeader()
@@ -123,6 +125,7 @@ void ShapeShifterPanelHeader::resized()
         addPannelMenu.setBounds(r.removeFromLeft(buttonSize).withSizeKeepingCentre(buttonSize, buttonSize));
     }
 
+
 }
 
 void ShapeShifterPanelHeader::askForRemoveTab (ShapeShifterPanelTab* tab)
@@ -156,6 +159,7 @@ void ShapeShifterPanelHeader::buttonClicked (Button* b)
             }
         }
     }
+
 }
 
 #endif

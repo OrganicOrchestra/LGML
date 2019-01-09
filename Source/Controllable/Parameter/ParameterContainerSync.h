@@ -37,7 +37,6 @@ private:
     void controllableContainerRemoved (ControllableContainer*, ControllableContainer*) override;
     void childStructureChanged (ControllableContainer* /*notifier*/, ControllableContainer* /*origin*/,bool isAdded) override;
     void childAddressChanged (ControllableContainer* /*notifier*/, ControllableContainer* ) override;
-    void controllableContainerPresetLoaded (ControllableContainer*) override;
     void containerWillClear (ControllableContainer* /*origin*/) override;
     ParameterContainer *root;
     ParameterContainer * slave;

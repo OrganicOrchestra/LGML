@@ -38,9 +38,9 @@ public:
         return !minimumValue.isUndefined() && !maximumValue.isUndefined();
     }
 
-    DynamicObject* getObject() override
+    DynamicObject* createObject() override
     {
-        auto res = ParameterBase::getObject();
+        auto res = ParameterBase::createObject();
         res->setProperty (minValueIdentifier, minimumValue);
         res->setProperty (maxValueIdentifier, maximumValue);
         return res;
@@ -73,6 +73,19 @@ public:
         arr.append (minimumValue);
         arr.append (maximumValue);
         queuedNotifier.addMessage (new ParamWithValue (this, arr, true));
+    }
+
+    void setUnboundedMax(ParameterBase::Listener * notifier = nullptr){
+        setMinMax(minimumValue, var::undefined(),notifier);
+    }
+    void setUnboundedMin(ParameterBase::Listener * notifier = nullptr){
+        setMinMax(var::undefined(), maximumValue,notifier);
+    }
+    void setUnbounded(ParameterBase::Listener * notifier = nullptr){
+        setMinMax(var::undefined(), var::undefined(),notifier);
+    }
+    bool hasFiniteBounds(){
+        return !minimumValue.isUndefined() && !maximumValue.isUndefined();
     }
 
 };

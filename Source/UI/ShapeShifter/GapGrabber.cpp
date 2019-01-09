@@ -17,6 +17,7 @@
 
 #include "GapGrabber.h"
 #include "../Style.h"
+#include "ShapeShifterContainer.h"
 
 GapGrabber::GapGrabber (Direction _direction) : direction (_direction)
 {
@@ -58,5 +59,45 @@ void GapGrabber::mouseDrag (const MouseEvent& e)
     listeners.call (&Listener::grabberGrabUpdate, this, direction == HORIZONTAL ? e.getPosition().x : e.getPosition().y);
 }
 
+int minPanelSize = 10;
+
+void GapGrabber::mouseUp (const MouseEvent& e) {
+    if(e.getDistanceFromDragStart()>0)return;
+    auto centre = getBoundsInParent().getCentre();
+
+    int directionToCrop = 1;
+    ShapeShifterContainer * parent = (ShapeShifterContainer *)getParentComponent();
+    if(!parent){
+        jassertfalse;
+        return;
+    }
+
+    if(direction==VERTICAL)
+        directionToCrop = centre.y>getParentHeight()/2?1:-1;
+    else
+        directionToCrop = centre.x>getParentHeight()/2?1:-1;
+
+    ShapeShifter * toReduce = parent->shifters[parent->grabbers.indexOf(this)+(directionToCrop>0?1:0)];
+    toReduce->setMini(toReduce->miniTimer ==nullptr  && !toReduce->isMini);
+//    int originSize = (direction==VERTICAL?toReduce->getHeight():toReduce->getWidth());
+//    bool isMini = originSize <=minPanelSize;
+//    int numNonMinimized =0;
+//    for( auto & sh:parent->shifters){
+//        numNonMinimized+= (direction==VERTICAL?sh->getHeight():sh->getWidth())>minPanelSize;
+//    }
+//    if(numNonMinimized>0){
+//        int targetSize =(direction==VERTICAL?parent->getHeight():parent->getWidth())/numNonMinimized;
+//
+//        if(direction==VERTICAL)
+//            toReduce->setPreferredHeight(isMini?targetSize:minPanelSize);
+//        else
+//            toReduce->setPreferredWidth(isMini?targetSize:minPanelSize);
+////        listeners.call (&Listener::grabberGrabUpdate, this, direction == HORIZONTAL ? e.getPosition().x : e.getPosition().y);
+//
+//    }
+
+//    parent->resized();
+
+}
 
 #endif

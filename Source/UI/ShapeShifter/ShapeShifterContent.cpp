@@ -15,6 +15,7 @@
 
 #include "ShapeShifterContent.h"
 
+
 ShapeShifterContent::ShapeShifterContent (Component* _contentComponent, const String& _contentName,const String& _info) :
     contentIsFlexible (false),
     contentName (_contentName),
@@ -28,7 +29,6 @@ ShapeShifterContent::ShapeShifterContent (Component* _contentComponent, const St
 ShapeShifterContent::~ShapeShifterContent()
 {
 }
-
 
 ShapeShifterContentComponent::ShapeShifterContentComponent (const String& contentName,const String & _info) :
     ShapeShifterContent (this, contentName,_info),

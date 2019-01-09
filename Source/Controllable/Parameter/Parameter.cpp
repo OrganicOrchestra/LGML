@@ -24,7 +24,6 @@ const Identifier ParameterBase::valueIdentifier ("value");
 ParameterBase::ParameterBase ( const String& niceName, const String& description, var initialValue, bool enabled) :
     Controllable ( niceName, description, enabled),
     isEditable (true),
-    isPresettable (true),
     isOverriden (false),
     queuedNotifier (100),
     hasCommitedValue (false),
@@ -67,10 +66,23 @@ void ParameterBase::setValue (const var & _value, bool silentSet, bool force)
     }
 
 }
+
+void ParameterBase::setInternalOnlyFlags(bool isVisible,bool _isSavable){
+    isEditable=false;
+    isControllableExposed=false;
+    isHidenInEditor=!isVisible;
+    isSavable=_isSavable;
+    isPresettable=_isSavable;
+}
+
+void ParameterBase::setSavable(bool s){
+    isSavable=s;
+    isPresettable = s;
+}
 void ParameterBase::setValueFrom(Listener * notifier,const var & _value, bool silentSet , bool force ){
     jassert(!isCommitableParameter);
     // reentrancy check
-    if(notifier !=nullptr && (_valueSetter.get()==notifier) ) force=true;
+    if(notifier !=nullptr && (_valueSetter.get()==notifier) ) force=!checkValueIsTheSame(_value, value);
     _valueSetter = notifier;
      tryToSetValue (_value, silentSet, alwaysNotify || force,notifier);
     _valueSetter = nullptr;
@@ -95,7 +107,7 @@ bool ParameterBase::waitOrDeffer (const var& _value, bool silentSet, bool force 
 
             if (_isSettingValue.get() && overflow <= 0)
             {
-                LOGE("param " << controlAddress << " locked for : " << Time::currentTimeMillis() - startWait);
+                LOGE("param " << controlAddress.toString() << " locked for : " << Time::currentTimeMillis() - startWait);
             }
         }
 
@@ -187,7 +199,7 @@ void ParameterBase::notifyValueChanged (bool defferIt,Listener * notifier)
         listeners.call (&Listener::parameterValueChanged, this,notifier);
     }
 
-    queuedNotifier.addMessage (new ParamWithValue (this, value, false,notifier));
+    queuedNotifier.addMessage (new ParamWithValue (this, value, false,notifier),false,notifier);
 }
 
 
@@ -218,7 +230,7 @@ void ParameterBase::configureFromObject (DynamicObject* ob)
     }
 }
 
-DynamicObject* ParameterBase::getObject()
+DynamicObject* ParameterBase::createObject()
 {
     DynamicObject* res = new DynamicObject();
     res->setProperty (valueIdentifier, value);

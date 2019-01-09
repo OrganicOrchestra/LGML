@@ -183,6 +183,20 @@ void FastMap::linkedParamRangeChanged(ParameterProxy* p ) {
 
 };
 
+ParameterProxy * FastMap::getProxyForParameter(ParameterBase* p, bool recursive) const{
+    ParameterBase * r = referenceIn?referenceIn->linkedParam:nullptr;
+    if(recursive)
+        while(auto * prox = dynamic_cast<ParameterProxy*>(r)){r = prox->linkedParam;}
+    if(r==p){return referenceIn;}
+    r = referenceOut?referenceOut->linkedParam:nullptr;;
+    if(recursive)
+        while(auto * prox = dynamic_cast<ParameterProxy*>(r)){r = prox->linkedParam;}
+
+    if(r==p){return referenceOut;}
+
+    return nullptr;
+}
+
 void FastMap::linkedParamChanged (ParameterProxy* p)
 {
 

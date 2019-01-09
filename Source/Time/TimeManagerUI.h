@@ -32,7 +32,7 @@
 class TimeManagerUI :
 public ShapeShifterContent,
 public InspectableComponent,
-public ParameterBase::AsyncListener
+public ParameterBase::Listener
 {
 
 public :

@@ -98,15 +98,16 @@ public:
     float RMSIn;
 
 
+
     //Listener
-    class  Listener : public AsyncUpdater
+    class  Listener : private AsyncUpdater
     {
     public:
         Listener()
         {
             notifyStateChange = false;
             notifySelectChange = false ;
-            notifyTrackTime = false;
+
 
         }
         /** Destructor. */
@@ -118,22 +119,9 @@ public:
             stateToBeNotified = state;
             notifyStateChange = true;
             triggerAsyncUpdate();
-
         }
 
-        void internalTrackTimeChanged (double position)
-        {
-            int64 time = Time::getMillisecondCounter();
-            trackPosition = position;
 
-            if (time - lastTrackTime > trackUpdatePeriodMs)
-            {
-                notifyTrackTime = true;
-                triggerAsyncUpdate();
-                lastTrackTime = time;
-            }
-
-        }
 
         void internalTrackSetSelected (bool t)
         {
@@ -149,19 +137,11 @@ public:
         bool isSelected;
         Atomic<int> notifySelectChange ;
 
-        Atomic<int> notifyTrackTime;
-        double trackPosition = 0;
-        double trackUpdatePeriodMs = 100;
-        int64 lastTrackTime = 0;
 
         // dispatched to listeners
         //    virtual void trackStateChanged(const TrackState &) {};
         virtual void trackStateChangedAsync (const TrackState& state) = 0;
-        virtual void trackTimeChangedAsync (double /*position*/) {};
-        void setTrackTimeUpdateRateHz (float hz)
-        {
-            trackUpdatePeriodMs = 1000.0 / hz;
-        }
+
         void handleAsyncUpdate() override
         {
             if (notifyStateChange.compareAndSetBool (0, 1))
@@ -175,20 +155,51 @@ public:
                 trackSelectedAsync (isSelected);
             }
 
-            if (notifyTrackTime.compareAndSetBool (0, 1))
-            {
-                trackTimeChangedAsync (trackPosition);
-            }
-
         }
         virtual void trackSelected (bool) {};
         virtual void trackSelectedAsync (bool) {};
     };
 
+    class TrackTimeListener: public Listener{
+    public:
+        TrackTimeListener():tsUpdater(this){
+            notifyTrackTime = false;
+        }
+        void internalTrackTimeChanged (double position)
+        {
+            int64 time = Time::getMillisecondCounter();
+            trackPosition = position;
+
+            if (time - lastTrackTime > trackUpdatePeriodMs)
+            {
+                notifyTrackTime = true;
+                tsUpdater.triggerAsyncUpdate();
+                lastTrackTime = time;
+            }
+
+        }
+        virtual void trackTimeChangedAsync (double /*position*/) {};
+        void setTrackTimeUpdateRateHz (float hz){trackUpdatePeriodMs = 1000.0 / hz;}
+
+        struct TimeAsyncUpdater : public juce::AsyncUpdater{
+            TimeAsyncUpdater(TrackTimeListener * tl):owner(tl){}
+            void handleAsyncUpdate() override{owner->trackTimeChangedAsync(owner->trackPosition);}
+            TrackTimeListener * owner;
+        };
+
+        TimeAsyncUpdater tsUpdater;
+        Atomic<int> notifyTrackTime;
+        double trackPosition = 0;
+        double trackUpdatePeriodMs = 100;
+        int64 lastTrackTime = 0;
+
+    };
     ListenerList<Listener> trackStateListeners;
+    ListenerList<TrackTimeListener> trackTimeListeners;
     void addTrackListener (Listener* newListener) { trackStateListeners.add (newListener); }
     void removeTrackListener (Listener* listener) { trackStateListeners.remove (listener); }
-
+    void addTrackListener (TrackTimeListener* newListener) { trackTimeListeners.add(newListener);trackStateListeners.add (newListener); }
+    void removeTrackListener (TrackTimeListener* listener) { trackTimeListeners.remove(listener);trackStateListeners.remove (listener); }
 
     class AsyncTrackStateStringSynchronizer : public LooperTrack::Listener
     {

@@ -24,11 +24,9 @@
 #include "../../../UI/Style.h"
 
 
-#include "../../../Scripting/Js/JsEnvironmentUI.h"
-
 GenericParameterContainerEditor::GenericParameterContainerEditor (ParameterContainer* _sourceContainer) :
     InspectorEditor(),
-    parentBT ("Up", "Go back to parent container")
+parentBT (juce::translate("Up"), juce::translate("Go back to parent container"))
 {
 
     parentBT.addListener (this);
@@ -55,7 +53,7 @@ GenericParameterContainerEditor::~GenericParameterContainerEditor()
 void GenericParameterContainerEditor::setCurrentInspectedContainer (ParameterContainer* cc, bool forceUpdate,    int recursiveInspectionLevel, bool canInspectChildContainersBeyondRecursion)
 {
 //    if (cc == nullptr) return;
-
+    
     if (innerContainer != nullptr)
     {
         if (!forceUpdate && cc == innerContainer->container) return;
@@ -91,7 +89,8 @@ void GenericParameterContainerEditor::setCurrentInspectedContainer (ParameterCon
 
 int GenericParameterContainerEditor::getContentHeight() const
 {
-    if (innerContainer == nullptr) return 0;
+    if (innerContainer == nullptr || innerContainer->container.get()==nullptr) return 0;
+
     else return  innerContainer->getContentHeight() + parentBT.getHeight() + 5;
 }
 
@@ -208,7 +207,7 @@ void CCInnerContainerUI::rebuild()
 {
     clear();
 
-    if (container->canHavePresets)
+    if (container->canHavePresets())
     {
         presetChooser = new PresetChooserUI (container);
         addAndMakeVisible (presetChooser);
@@ -216,7 +215,8 @@ void CCInnerContainerUI::rebuild()
 
     for (auto& c : container->getControllablesOfType<ParameterBase> (false))
     {
-        if (!c->isHidenInEditor) addParameterUI (c);
+        if(c==container->nameParam && !c->isEditable)continue;
+        if (!c->isHidenInEditor ) addParameterUI (c);
     }
 
     if (level < maxLevel)
@@ -267,20 +267,13 @@ void CCInnerContainerUI::removeCCInnerUI (ParameterContainer* cc)
 
 void CCInnerContainerUI::addCCLink (ParameterContainer* cc)
 {
-//TODO implement more generic parameterContainer UI factory
-    if(auto jsCont = dynamic_cast<JSEnvContainer*> (cc)){
 
-        auto subEditor = new JsEnvironmentUI (jsCont->jsEnv->jsParameters);
-        addAndMakeVisible (subEditor);
-        lowerContainerLinks.add (subEditor);
-    }
-    else
-    {
+
         CCLinkBT* bt = new CCLinkBT (cc);
         bt->addListener (this);
         addAndMakeVisible (bt);
         lowerContainerLinks.add (bt);
-    }
+
 }
 
 void CCInnerContainerUI::removeCCLink (ParameterContainer* cc)
@@ -297,7 +290,7 @@ void CCInnerContainerUI::removeCCLink (ParameterContainer* cc)
 
 void CCInnerContainerUI::addParameterUI ( ParameterBase* c)
 {
-    if ( !c->isControllableExposed) return;
+    if ( c->isHidenInEditor) return;
 
 
     NamedParameterUI* cui = new NamedParameterUI (ParameterUIFactory::createDefaultUI (c), 100);
@@ -378,13 +371,14 @@ int CCInnerContainerUI::getContentHeight() const
 
     for (auto& ccui : innerContainers)
     {
+        if(ccui->container.get()==nullptr) continue;
         if (auto icUI = dynamic_cast<CCInnerContainerUI*> (ccui)) {h += icUI->getContentHeight();}
         else {h += controllableHeight * 2;}
 
         h += ccGap;
     }
 
-    if (container->canHavePresets) h += presetChooserHeight + gap;
+    if (container->canHavePresets()) h += presetChooserHeight + gap;
 
     h += containerLabel.getHeight();
     h += margin * 2;
@@ -423,7 +417,7 @@ void CCInnerContainerUI::resized()
     }
     else
     {
-        if (container->canHavePresets  )
+        if (container->canHavePresets()  )
         {
             presetChooser->setBounds (r.removeFromTop (presetChooserHeight));
             r.removeFromTop (gap);
@@ -463,9 +457,9 @@ void CCInnerContainerUI::resized()
                 auto ccL = dynamic_cast<CCInnerContainerUI::CCLinkBT*> (cclink) ;
                 bool isCustom = ccL == nullptr;
 
-                if (!isCustom && ccL->targetContainer->isUserDefined) continue;
+                if (!isCustom && ccL->targetContainer->isUserDefined) continue; // hide userDefined in inspector
 
-                cclink->setBounds (r.removeFromTop (ccLinkHeight * (isCustom ? 3 : 1)));
+                cclink->setBounds ( r.removeFromTop (ccLinkHeight) );
                 r.removeFromTop (gap);
             }
 
@@ -474,6 +468,7 @@ void CCInnerContainerUI::resized()
 
         for (auto& ccui : innerContainers)
         {
+            if(ccui->container.get()==nullptr) continue;
             int h = controllableHeight * 2;
 
             if (auto icUI = dynamic_cast<CCInnerContainerUI*> (ccui)) {h = icUI->getContentHeight();}
@@ -499,13 +494,31 @@ void CCInnerContainerUI::childControllableAdded (ControllableContainer*, Control
     if (c->isHidenInEditor) return;
 
     auto pc = static_cast <ParameterBase*> (c);
-    addParameterUI (pc);
+    WeakReference<Component> thisRef(this);
+    WeakReference<ParameterBase> pcRef(pc);
+    MessageManager::callAsync(
+                              [thisRef,pcRef](){
+                                  if(thisRef && pcRef){
+                                      auto *thisR = reinterpret_cast<CCInnerContainerUI*>(thisRef.get());
+                                      thisR->addParameterUI (pcRef);
+                                  }
+                              });
 }
 
 void CCInnerContainerUI::childControllableRemoved (ControllableContainer*, Controllable* c)
 {
     auto pc = static_cast <ParameterBase*> (c);
-    removeParameterUI (pc);
+    jassert (pc);
+    WeakReference<Component> thisRef(this);
+    WeakReference<ParameterBase> pcRef(pc);
+    MessageManager::callAsync(
+                              [thisRef,pcRef](){
+                                  if(thisRef && pcRef){
+                                      auto *thisR = reinterpret_cast<CCInnerContainerUI*>(thisRef.get());
+                                      thisR->removeParameterUI (pcRef);
+                                  }
+                              });
+
 }
 
 void CCInnerContainerUI::controllableContainerAdded (ControllableContainer*, ControllableContainer* cc)
@@ -515,15 +528,34 @@ void CCInnerContainerUI::controllableContainerAdded (ControllableContainer*, Con
     auto pc = static_cast<ParameterContainer*> (cc);
     jassert (pc);
     if (pc->isHidenInEditor) return;
-    if (level < maxLevel) addCCInnerUI (pc);
-    else if (canAccessLowerContainers) addCCLink (pc);
+
+    WeakReference<Component> thisRef(this);
+    WeakReference<ParameterContainer> pcRef(pc);
+    MessageManager::callAsync(
+                              [thisRef,pcRef](){
+                                  if(thisRef && pcRef){
+                                      auto *thisR = reinterpret_cast<CCInnerContainerUI*>(thisRef.get());
+
+                                      if (thisR->level < thisR->maxLevel) thisR->addCCInnerUI (pcRef);
+                                      else if (thisR->canAccessLowerContainers) thisR->addCCLink (pcRef);
+                                  }
+                              });
 }
 
 void CCInnerContainerUI::controllableContainerRemoved (ControllableContainer*, ControllableContainer* cc)
 {
     auto pc = static_cast<ParameterContainer*> (cc);
-    removeCCInnerUI (pc);
-    removeCCLink (pc);
+    WeakReference<Component> thisRef(this);
+    WeakReference<ParameterContainer> pcRef(pc);
+    MessageManager::callAsync(
+                              [thisRef,pcRef](){
+                                  if(thisRef && pcRef){
+                                      auto *thisR = reinterpret_cast<CCInnerContainerUI*>(thisRef.get());
+                                      thisR->removeCCInnerUI (pcRef);
+                                      thisR->removeCCLink (pcRef);
+                                  }
+                              });
+
 }
 
 

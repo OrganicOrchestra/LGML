@@ -21,6 +21,134 @@
 #include "../Scripting/Js/JsHelpers.h"
 
 
+const Identifier ControlAddressType::rootIdentifier(Controllable::toShortName("rootidentifier")); // need tobe
+
+String ControlAddressType::toString()const {
+    if(size()==0){return "/none";}
+    String res;
+    for(auto & i:*this){
+        res+="/";
+        res+=i.toString();
+    }
+    return res;
+}
+
+ControlAddressType ControlAddressType::buildFromControllable(const Controllable * c,const ControllableContainer * maxParent){
+    ControlAddressType res;
+    static Identifier noParentId("noParent");
+    res.add(c->shortName);
+    ControllableContainer * insp = c->parentContainer;
+    if(!insp){
+        res.add(noParentId);
+    }
+    else{
+        while(insp!=maxParent && insp && insp->shortName!=rootIdentifier){
+            res.add(insp->shortName);
+            insp = insp->parentContainer;
+        }
+    }
+    std::reverse(res.begin(), res.end());
+    return res;
+}
+
+ControlAddressType ControlAddressType::buildFromControllableContainer(const ControllableContainer * c,const ControllableContainer * maxParent){
+    ControlAddressType res;
+
+    const ControllableContainer * insp = c;
+    while(insp!=maxParent&& insp && insp->shortName!=rootIdentifier){
+        res.add(insp->shortName);
+        insp = insp->parentContainer;
+    }
+
+    std::reverse(res.begin(), res.end());
+    return res;
+}
+
+ControllableContainer * ControlAddressType::resolveContainerFromContainer(const ControllableContainer *  c)const{
+
+    if(size()==0){
+        jassertfalse;
+        return nullptr;
+    }
+    ControllableContainer * insp = c->getControllableContainerByShortName(getUnchecked(0));;
+    int idx = 1;
+    while(insp!=nullptr && idx<size()){
+        insp = insp->getControllableContainerByShortName(getUnchecked(idx));
+        idx++;
+    }
+    return insp;
+}
+
+Controllable * ControlAddressType::resolveControllableFromContainer(const ControllableContainer *  c)const{
+    
+    if(size()==0 || !c){
+        jassertfalse;
+        return nullptr;
+    }
+    const ControllableContainer  * insp = c;
+    if(size()>1){
+        auto parentAddress = *this;
+        parentAddress.resize(size()-1);
+        insp =parentAddress.resolveContainerFromContainer(c);
+        if(!insp){
+            jassertfalse;
+            return nullptr;
+        }
+    }
+
+    return insp->getControllableByShortName(getUnchecked(size()-1));
+
+}
+
+ControlAddressType ControlAddressType::getRelativeTo(ControlAddressType & other)const{
+    int comonIdx = 0;
+    while(comonIdx<size() && comonIdx<other.size() && getUnchecked(comonIdx)==other.getUnchecked(comonIdx)){
+        comonIdx++;
+    }
+    return subAddr(comonIdx);
+}
+
+ControlAddressType ControlAddressType::subAddr(int start, int end)const{
+    if(end == -1) end=size();
+    jassert(start<size());
+    ControlAddressType res;
+    for(int i = start ; i < end ; i++){
+        res.add(getUnchecked(i));
+    }
+    return res;
+}
+
+StringArray ControlAddressType::toStringArray()const{
+    StringArray sa;
+    for(auto & s:*this){
+        sa.add(s.toString());
+    }
+    return sa;
+}
+
+
+ControlAddressType ControlAddressType::getChild(const ShortNameType & c) const{
+    ControlAddressType res;
+    res = *this;
+    res.add(c);
+    return res;
+}
+
+////////////////////
+//Controllable
+
+
+
+
+ShortNameType Controllable::toShortName (const String& s){
+    //        if (s.isEmpty()) return "";
+
+    return ShortNameType(s.retainCharacters("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-.").toLowerCase());
+    //   #*,?[]{}/ based on OSC escaping
+    // http://opensoundcontrol.org/spec-1_0
+    // other for xml or generic escaping
+    //        return ShortNameType(s.removeCharacters (" #*,?[]{}/:;%$<>()").toLowerCase());
+}
 
 Controllable::Controllable ( const String& niceName, const String& description, bool enabled) :
     description (description),
@@ -30,7 +158,9 @@ Controllable::Controllable ( const String& niceName, const String& description, 
     shouldSaveObject (false),
     isSavable (true),
     enabled (enabled),
-    isUserDefined (false)
+    isUserDefined (false),
+    isSavableAsObject(false),
+    isPresettable(true)
 {
     setEnabled (enabled);
     setNiceName (niceName);
@@ -41,7 +171,7 @@ Controllable::Controllable ( const String& niceName, const String& description, 
 Controllable::~Controllable()
 {
     Controllable::masterReference.clear();
-    listeners.call (&Controllable::Listener::controllableRemoved, this);
+    controllableListeners.call (&Controllable::Listener::controllableRemoved, this);
 
 }
 
@@ -62,8 +192,8 @@ void Controllable::setNiceName (const String& _niceName)
 void Controllable::setAutoShortName()
 {
     shortName = toShortName (niceName);
-    updateControlAddress();
-    listeners.call (&Listener::controllableNameChanged, this);
+    updateControlAddress(false);
+    controllableListeners.call (&Listener::controllableNameChanged, this);
 }
 
 
@@ -73,30 +203,58 @@ void Controllable::setEnabled (bool value, bool silentSet, bool force)
 
     enabled = value;
 
-    if (!silentSet) listeners.call (&Listener::controllableStateChanged, this);
+    if (!silentSet) controllableListeners.call (&Listener::controllableStateChanged, this);
 }
 
 
 void Controllable::setParentContainer (ControllableContainer* container)
 {
-    this->parentContainer = container;
-    updateControlAddress();
+    parentContainer = container;
+    updateControlAddress(true);
 }
 
 
-void Controllable::updateControlAddress()
+void Controllable::updateControlAddress(bool isParentResolved)
 {
-    controlAddress = getControlAddress();
-    listeners.call (&Listener::controllableControlAddressChanged, this);
+    if(isParentResolved && parentContainer){
+        controlAddress=parentContainer->controlAddress.getChild(shortName);
+#if JUCE_DEBUG
+        auto tCs= ControlAddressType::buildFromControllable(this).toString();
+        auto ccs = controlAddress.toString();
+        jassert(tCs==ccs);
+#endif
+    }
+    else{
+        controlAddress = ControlAddressType::buildFromControllable(this);
+    }
+    controllableListeners.call (&Listener::controllableControlAddressChanged, this);
 }
 
 
-String Controllable::getControlAddress (const ControllableContainer* relativeTo) const
+ControlAddressType  Controllable::getControlAddressRelative (const ControllableContainer* relativeTo) const
 {
-    return (parentContainer.get()?parentContainer->getControlAddress (relativeTo):"/noParent") + "/" + shortName;
+    if(relativeTo!=nullptr){
+        return ControlAddressType::buildFromControllable(this,relativeTo);
+    }
+    else{
+#if JUCE_DEBUG
+        jassert(controlAddress==ControlAddressType::buildFromControllable(this,relativeTo));
+#endif
+        return controlAddress;
+    }
+
 }
 
+const ControlAddressType &  Controllable::getControlAddress () const
+{
 
+#if JUCE_DEBUG
+        jassert(controlAddress==ControlAddressType::buildFromControllable(this));
+#endif
+        return controlAddress;
+
+
+}
 
 DynamicObject* Controllable::createDynamicObject()
 {

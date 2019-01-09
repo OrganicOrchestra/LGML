@@ -20,55 +20,45 @@
 #define PRESETMANAGER_H_INCLUDED
 
 #include "../JuceHeaderCore.h"//keep
+
+//class Preset;
+#include "Preset.h"
 class ParameterContainer;
+
+class EngineSync;
 
 
 
 class PresetManager
 {
 public:
-    class PresetValue
-    {
+    
+
+
+
+
+    class Listener{
     public:
-        PresetValue (const String& _controlAddress, var _value) : paramControlAddress (_controlAddress), presetValue (_value) {}
-        String paramControlAddress;
-        var presetValue;
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PresetValue)
+        Listener();
+        virtual ~Listener();
+        virtual void presetAdded(Preset * p) = 0;
+        virtual void presetRemoved(Preset * p) = 0;
+        virtual void presetSaved(Preset * p) {};
     };
 
-    class Preset
-    {
-    public:
-        Preset (const String& _name, String _filter) : filter (_filter), name (_name) {}
-
-        String filter; //Used to filter which preset to propose depending on the object (specific nodes, vst, controller, etc.)
-        String name;
-        OwnedArray<PresetValue> presetValues;
-        int presetId; //change each time the a preset list is created, but we don't care because ControllableContainer keeps the pointer to the Preset
-
-        void addPresetValue (const String& controlAddress, var value);
-        void addPresetValues (Array<PresetValue*> _presetValues);
-        var getPresetValue (const String& targetControlAddress);
-
-        void clear();
-
-        DynamicObject*   getObject();
-
-        void configureFromObject (DynamicObject* data);
-
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Preset)
-    };
 
     juce_DeclareSingleton (PresetManager, true)
 
-    OwnedArray<Preset> presets;
+
 
     PresetManager();
     virtual ~PresetManager();
 
-    Preset* addPresetFromControllableContainer (const String& name, const String& filter, ParameterContainer* container, bool recursive = false, bool includeNotExposed = false);
-    Preset* getPreset (String filter, const String& name) const;
+    
+    Preset* getPreset (const String & filter, const String& name) const;
 
+    Array<WeakReference<Preset> > getPresetsForFilter(String filter);
+    Array<WeakReference<Preset> >  getPresetsForType(String type,ParameterContainer *ownerToIgnore=nullptr);
     void removePresetForIdx (int idx);
     int getNumPresetForFilter (const String&) const;
 
@@ -77,9 +67,24 @@ public:
 
     void clear();
 
+    
+    Preset * addPreset(Preset * );
+    void removePreset(Preset * );
 
-    DynamicObject* getObject();
-    void configureFromObject (DynamicObject* data);
+    void notifyPresetSaved(Listener* notif,Preset *p){presetListeners.callExcluding(notif,&Listener::presetSaved,p);}
+    
+
+
+
+    ListenerList<Listener> presetListeners;
+    
+private:
+
+
+    OwnedArray<Preset> presets;
+
+    ScopedPointer<EngineSync> engineSync;
+    friend class EngineSync;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PresetManager)
 };

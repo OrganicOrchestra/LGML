@@ -44,7 +44,7 @@ public :
     bool keyPressed (const KeyPress& key, Component* originatingComponent) override;
     bool keyStateChanged (const bool isKeyDown, Component* originatingComponent) override;
 
-    void newJsFileLoaded()override{};
+    
 
 
 

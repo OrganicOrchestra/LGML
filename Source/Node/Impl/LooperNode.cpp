@@ -30,34 +30,36 @@ LooperNode::LooperNode (StringRef name) :
     streamAudioBuffer (2, 16384) // 16000 ~ 300ms and 256*64
 {
 
-    numberOfTracks = addNewParameter<IntParameter> ("numberOfTracks", "number of tracks in this looper", 8, 1, MAX_NUM_TRACKS);
-    numberOfAudioChannelsIn = addNewParameter<IntParameter> ("numberOfChannelsPerTrack", "number of channels on each audioTrack in local folder LGML_audio/LooperName/LGML_Loop_trackNum_index.wav", 1, 1, 2);
-    exportAudio =  addNewParameter<Trigger> ("exportAudio", "export audio of all recorded Tracks");
-    selectAllTrig =  addNewParameter<Trigger> ("Select All", "Select All tracks, for all clear or main volume for instance");
+    numberOfTracks = addNewParameter<IntParameter> ("Number of tracks", "number of tracks in this looper", 8, 1, MAX_NUM_TRACKS);
+    numberOfAudioChannelsIn = addNewParameter<IntParameter> ("Number of channels per track", "number of channels on each audioTrack in local folder LGML_audio/LooperName/LGML_Loop_trackNum_index.wav", 1, 1, 2);
+    exportAudio =  addNewParameter<Trigger> ("Export audio", "export audio of all recorded Tracks");
+    selectAllTrig =  addNewParameter<Trigger> ("Select all", "Select All tracks, for all clear or main volume for instance");
     selectTrack = addNewParameter<IntParameter> ("Select track", "set track selected", 0, -1, 0);
-    recPlaySelectedTrig =  addNewParameter<Trigger> ("Rec Or Play", "Tells the selected track to wait for the next bar and then start record or play");
+    selectTrack->setSavable(false);
+    recPlaySelectedTrig =  addNewParameter<Trigger> ("Rec or play", "Tells the selected track to wait for the next bar and then start record or play");
     playSelectedTrig =  addNewParameter<Trigger> ("Play", "Tells the selected track to wait for the next bar and then stop recording and start playing");
     stopSelectedTrig =  addNewParameter<Trigger> ("Stop", "Tells the selected track to stop ");
     clearSelectedTrig =  addNewParameter<Trigger> ("Clear", "Tells the selected track to clear it's content if got any");
     volumeSelected = addNewParameter<FloatParameter> ("Volume", "Set the volume of the selected track", 1.f, 0.f, 1.f);
-    clearAllTrig =  addNewParameter<Trigger> ("ClearAll", "Tells all tracks to clear it's content if got any");
-    stopAllTrig =  addNewParameter<Trigger> ("StopAll", "Tells all tracks to stop it's content if got any");
-    playAllTrig =  addNewParameter<Trigger> ("PlayAll", "Tells all tracks to play it's content if got any");
-    togglePlayStopAllTrig =  addNewParameter<Trigger> ("Toggle PlayStop", "Toggle Play/Stop all, will stop if at least one track is playing");
-    isMonitoring = addNewParameter<BoolParameter> ("monitor", "do we monitor audio input ? ", false);
-    preDelayMs = addNewParameter<IntParameter> ("Pre Delay MS", "Pre process delay (in milliseconds)", 0, 0, 250);
-    quantization = addNewParameter<IntParameter> ("quantization", "quantization for this looper - 1 is global", -1, -1, 32);
-    isOneShot = addNewParameter<BoolParameter> ("isOneShot", "do we play once or loop track", false);
-    firstTrackSetTempo = addNewParameter<BoolParameter> ("firstTrackSetTempo", "do the first track sets the global tempo or use quantization", true);
-    waitForOnset = addNewParameter<BoolParameter> ("wait for onset", "wait for onset before actually recording", false);
-    onsetThreshold = addNewParameter<FloatParameter> ("onsetThreshold", "threshold before onset", 0.01f, 0.0001f, 0.1f);
-    outputAllTracksSeparately = addNewParameter<BoolParameter> ("tracksOutputSeparated", "split all tracks in separate audio channel out", false);
+    volumeSelected->setSavable(false);
+    clearAllTrig =  addNewParameter<Trigger> ("Clear all", "Tells all tracks to clear it's content if got any");
+    stopAllTrig =  addNewParameter<Trigger> ("Stop all", "Tells all tracks to stop it's content if got any");
+    playAllTrig =  addNewParameter<Trigger> ("Play all", "Tells all tracks to play it's content if got any");
+    togglePlayStopAllTrig =  addNewParameter<Trigger> ("Toggle play stop", "Toggle Play/Stop all, will stop if at least one track is playing");
+    isMonitoring = addNewParameter<BoolParameter> ("Monitor", "do we monitor audio input ? ", false);
+    preDelayMs = addNewParameter<IntParameter> ("Pre Delay ms", "Pre process delay (in milliseconds)", 0, 0, 250);
+    quantization = addNewParameter<IntParameter> ("Quantization", "quantization for this looper - 1 is global", -1, -1, 32);
+    isOneShot = addNewParameter<BoolParameter> ("Is one shot", "do we play once or loop track", false);
+    firstTrackSetTempo = addNewParameter<BoolParameter> ("First track set tempo", "do the first track sets the global tempo or use quantization", true);
+    waitForOnset = addNewParameter<BoolParameter> ("Wait for onset", "wait for onset before actually recording", false);
+    onsetThreshold = addNewParameter<FloatParameter> ("Onset threshold", "threshold before onset", 0.01f, 0.0001f, 0.1f);
+    outputAllTracksSeparately = addNewParameter<BoolParameter> ("Tracks output separated", "split all tracks in separate audio channel out", false);
 
-    autoNextTrackAfterRecord = addNewParameter<BoolParameter> ("Auto Next", "If enabled, it will select automatically the next track after a track record.", false);
-    autoClearPreviousIfEmpty = addNewParameter<BoolParameter> ("Auto Clear Previous", "/!\\ Will only work if 'Auto Next' is enabled !\nIf enabled, it will automatically clear the previous track if 'clear' is triggered and the actual selected track is empty.", false);
+    autoNextTrackAfterRecord = addNewParameter<BoolParameter> ("Auto next", "If enabled, it will select automatically the next track after a track record.", false);
+    autoClearPreviousIfEmpty = addNewParameter<BoolParameter> ("Auto clear previous", "/!\\ Will only work if 'Auto Next' is enabled !\nIf enabled, it will automatically clear the previous track if 'clear' is triggered and the actual selected track is empty.", false);
 
-    selectNextTrig =  addNewParameter<Trigger> ("Select Next", "Select Next Track");
-    autoSelectTrack =  addNewParameter<BoolParameter> ("Auto Select", "If enabled, it will select automatically the track if rec or play is triggered", true);
+    selectNextTrig =  addNewParameter<Trigger> ("Select next", "Select Next Track");
+    autoSelectTrack =  addNewParameter<BoolParameter> ("Auto select", "If enabled, it will select automatically the track if rec or play is triggered", true);
 
     addChildControllableContainer (&trackGroup);
     setRateAndBufferSizeDetails (44100, 256);

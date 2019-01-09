@@ -25,6 +25,13 @@
 
 juce_ImplementSingleton (MIDIManager)
 
+#if JUCE_DEBUG && 0
+#define DBGMIDI(x) DBG(x)
+#else
+#define DBGMIDI(x)
+#endif
+
+
 #if !ENGINE_HEADLESS
 #include "../JuceHeaderUI.h" // for key listener
 class ComputerKeyboardMIDIDevice:public ReferenceCountedObject,private KeyListener {
@@ -45,8 +52,9 @@ public:
 
     int keyToPitch(int kc){
 
-        constexpr int numpitches = 12;
-        static int pitches[numpitches] = {'q','z','s','e','d','f','t','g','y','h','u','j'};
+        constexpr int numpitches = 12+5;
+        static int pitches[numpitches] = {'q','z','s','e','d','f','t','g','y','h','u','j',
+                                            'k','o','l','p','m'};
         for(int i = 0 ; i < numpitches ; i++){
             if(kc==pitches[i]){
                 return i + 12*octave;
@@ -198,14 +206,14 @@ void MIDIManager::updateDeviceList (bool updateInput)
     {
         //    jassert(!d.contains("error"));
         listeners.call (updateInput ? &MIDIManagerListener::midiInputAdded : &MIDIManagerListener::midiOutputAdded, d);
-        NLOG ("MIDIManager", juce::translate("MIDI 123 Added : 456").replace("123", updateInput ? "Input" : "Output").replace("456", d));
+//        NLOG ("MIDIManager", juce::translate("MIDI 123 Added : 456").replace("123", updateInput ? "Input" : "Output").replace("456", d));
     }
 
     for (auto& d : devicesToRemove)
     {
         //    jassert(!d.contains("error"));
         listeners.call (updateInput ? &MIDIManagerListener::midiInputRemoved : &MIDIManagerListener::midiOutputRemoved, d);
-        NLOG ("MIDIManager",  juce::translate("MIDI 123 Removed : 456").replace("123", updateInput ? "Input" : "Output").replace("456", d));
+//        NLOG ("MIDIManager",  juce::translate("MIDI 123 Removed : 456").replace("123", updateInput ? "Input" : "Output").replace("456", d));
     }
 
     if (devicesToAdd.size() > 0 || devicesToRemove.size() > 0)
@@ -220,7 +228,7 @@ void MIDIManager::enableInputDevice (const String& deviceName)
 {
 
     DeviceUsageCount* duc = getDUCForInputDeviceName (deviceName);
-    DBG ("MIDIManager  Enable Input device : " << deviceName << ", duc != null ?" << (duc != nullptr ? "true" : "false"));
+    DBGMIDI ("MIDIManager  Enable Input device : " << deviceName << ", duc != null ?" << (duc != nullptr ? "true" : "false"));
 
     if (duc == nullptr)
     {
@@ -228,14 +236,14 @@ void MIDIManager::enableInputDevice (const String& deviceName)
         inputCounts.add (duc);
     }
 
-    DBG ("MIDIManager deviceCount before increment : " << duc->usageCount);
+    DBGMIDI ("MIDIManager deviceCount before increment : " << duc->usageCount);
 
     duc->usageCount++;
-    DBG ("MIDIManager deviceCount after increment : " << duc->usageCount);
+    DBGMIDI ("MIDIManager deviceCount after increment : " << duc->usageCount);
 
     if (duc->usageCount >= 1)
     {
-        DBG ("AudioDeviceManager:Enable Input device : " << duc->deviceName);
+        DBGMIDI ("AudioDeviceManager:Enable Input device : " << duc->deviceName);
         if(deviceName==ComputerKeyboardMIDIDevice::deviceName){
             if(!computerKeyboardDevice) {computerKeyboardDevice = new ComputerKeyboardMIDIDevice();}
             computerKeyboardDevice->incReferenceCount();
@@ -295,7 +303,7 @@ void MIDIManager::disableInputDevice (const String& deviceName)
 
     if (duc->usageCount == 0)
     {
-        DBG ("Disable Input device : " << duc->deviceName);
+        DBGMIDI ("Disable Input device : " << duc->deviceName);
         if(deviceName==ComputerKeyboardMIDIDevice::deviceName){
             if(computerKeyboardDevice){
                 if(computerKeyboardDevice->decReferenceCountWithoutDeleting()){

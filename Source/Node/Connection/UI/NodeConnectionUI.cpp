@@ -34,18 +34,22 @@ NodeConnectionUI::NodeConnectionUI (NodeConnection* connection, Connector* sourc
         connection->addConnectionListener (this);
     }
 
-    if (sourceConnector == nullptr || destConnector == nullptr)
-    {
-        setInterceptsMouseClicks (false, false);
-    }
+
+        setInterceptsMouseClicks (true, true);
+//    }
 
     addComponentListener (this);
     setWantsKeyboardFocus (true);
 
+    anchorSource.setAlwaysOnTop(true);
+    anchorDest.setAlwaysOnTop(true);
     addChildComponent (anchorSource);
     addChildComponent (anchorDest);
-    anchorSource.setVisible (false);
-    anchorDest.setVisible (false);
+
+    anchorSource.setVisible (isEditing());
+    anchorDest.setVisible (isEditing());
+    anchorSource.addMouseListener(this, false);
+    anchorDest.addMouseListener(this, false);
 
 
 
@@ -83,16 +87,10 @@ void NodeConnectionUI::paint (Graphics& g)
     Colour baseColor = getBaseConnector()->boxColor;
 
 
-
-    //g.setColour(Colours::yellow.withAlpha(.8f));
-    //g.strokePath(hitPath, PathStrokeType(2.f));
-
-    if (isMouseOver()) baseColor = Colours::red;
-
     if (candidateDropConnector != nullptr) baseColor = Colours::yellow;
 
-    if (isSelected) baseColor = findColour (TextButton::buttonOnColourId);
-
+    else if (isSelected) baseColor = findColour (TextButton::buttonOnColourId);
+    else if (isMouseOver()) baseColor = Colours::red;
     g.setColour (baseColor);
     g.strokePath (path, PathStrokeType (1.5f));
 }
@@ -102,6 +100,10 @@ void NodeConnectionUI::resized()
     // This method is where you should set the bounds of any child
     // components that your component contains..
     buildPath();
+}
+
+DynamicObject * NodeConnectionUI::createObject(){
+    return connection->createObject();
 }
 
 void NodeConnectionUI::buildPath()
@@ -253,7 +255,15 @@ void NodeConnectionUI::buildHitPath (Array<Point<float>> points)
     hitPath.closeSubPath();
 }
 
+bool NodeConnectionUI::hitTest (int x, int y) {
+    bool isOverAnchor = anchorDest.getBoundsInParent().contains(x,y)  ||
+    anchorSource.getBoundsInParent().contains(x,y) ;
+    if(isOverAnchor){
+        DBG("overAnchor");
+    }
+    return hitPath.contains ((float)x, (float)y) || isOverAnchor;
 
+}
 void NodeConnectionUI::updateBoundsFromNodes()
 {
     //  DBG("Update bounds from Nodes, is Editing ? " + String(isEditing()));
@@ -282,6 +292,8 @@ void NodeConnectionUI::updateBoundsFromNodes()
     }
 
 }
+
+
 
 void NodeConnectionUI::mouseDown (const MouseEvent& e)
 {
@@ -312,8 +324,7 @@ void NodeConnectionUI::mouseDown (const MouseEvent& e)
 
         if (isEditing() && candidateDropConnector)
         {
-            auto nodeViewer = findParentComponentOfClass<NodeContainerViewer>();
-            if( nodeViewer) {
+            if(auto nodeViewer = findParentComponentOfClass<NodeContainerViewer>()) {
                 nodeViewer->finishEditingConnection();
             }
             else{
@@ -323,22 +334,6 @@ void NodeConnectionUI::mouseDown (const MouseEvent& e)
         else if (!isEditing())
         {
 
-
-            if (anchorSource.isVisible() || anchorDest.isVisible())
-            {
-                auto nodeViewer = findParentComponentOfClass<NodeContainerViewer>();
-                if ( nodeViewer) {
-
-                    if (connection->connectionType == NodeConnection::ConnectionType::AUDIO) {
-                        nodeViewer->createAudioConnectionFromConnector(
-                                anchorSource.isVisible() ? destConnector : sourceConnector, connection);
-                        connection->remove();
-                    }
-                }
-                else{
-                    jassertfalse;
-                }
-            }
 
 
 
@@ -350,24 +345,75 @@ void NodeConnectionUI::mouseDown (const MouseEvent& e)
     }
 }
 
+void NodeConnectionUI::mouseUp (const MouseEvent& e)
+{
+    if ( auto nodeViewer = findParentComponentOfClass<NodeContainerViewer>()) {
+        if(nodeViewer->isEditingConnection()){
+            nodeViewer->finishEditingConnection();
+        }
+        else{
+            selectThis();
+        }
+
+    }
+}
+
 void NodeConnectionUI::mouseMove (const MouseEvent& e)
 {
-    anchorSource.setVisible (anchorSource.getBoundsInParent().contains (e.getMouseDownPosition()));
-    anchorDest.setVisible (anchorDest.getBoundsInParent().contains (e.getMouseDownPosition()));
+    
 
 
 }
 
+void NodeConnectionUI::mouseDrag (const MouseEvent& e)
+{
+    if(isEditing()){
+        findParentComponentOfClass<NodeContainerViewer>()->mouseDrag(e);
+    }
+    else if(e.getDistanceFromDragStart()>0){
+        jassert(!anchorSource.isHovered || (anchorSource.isHovered != anchorDest.isHovered));
+        if (anchorSource.isHovered || anchorDest.isHovered)
+        {
+
+            if ( auto nodeViewer = findParentComponentOfClass<NodeContainerViewer>()) {
+
+                if (connection->connectionType == NodeConnection::ConnectionType::AUDIO) {
+                    nodeViewer->createAudioConnectionFromConnector(
+                                                                   anchorSource.isHovered ? destConnector : sourceConnector, connection);
+                    connection->remove();
+                }
+            }
+            else{
+                jassertfalse;
+            }
+        }
+        
+
+    }
+
+    
+}
+
 void NodeConnectionUI::mouseEnter (const MouseEvent&)
 {
+    anchorSource.setVisible(true);
+    anchorDest.setVisible(true);
     repaint();
 }
 
 void NodeConnectionUI::mouseExit (const MouseEvent&)
 {
-    anchorSource.setVisible (false);
-    anchorDest.setVisible (false);
+    if(!isSelected){
+        anchorSource.setVisible(false);
+        anchorDest.setVisible(false);
+    }
     repaint();
+}
+
+void NodeConnectionUI::setSelectedInternal(bool v){
+    anchorSource.setVisible (v);
+    anchorDest.setVisible (v);
+
 }
 
 bool NodeConnectionUI::keyPressed (const KeyPress& key)
@@ -446,8 +492,12 @@ void NodeConnectionUI::cancelCandidateDropConnector()
     candidateDropConnector = nullptr;
 }
 
+void NodeConnectionUI::startEditing(bool editDest){
+    Desktop::getInstance().addGlobalMouseListener(this);
+}
 bool NodeConnectionUI::finishEditing()
 {
+    Desktop::getInstance().removeGlobalMouseListener(this);
     bool success = candidateDropConnector != nullptr;
 
     if (success)
@@ -499,7 +549,7 @@ String NodeConnectionUI::getTooltip() {
         if(auto nb = sourceConnector->getNodeBase())
              tt+="\nin : " + String(nb->getTotalNumOutputChannels());
     if(destConnector)
-        if(auto nb = sourceConnector->getNodeBase())
+        if(auto nb = destConnector->getNodeBase())
             tt+="\nout : " + String(nb->getTotalNumOutputChannels());
 
     }

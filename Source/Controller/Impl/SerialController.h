@@ -42,14 +42,13 @@ public:
     EnumParameter * protocol;
 
     
-    void childControllableAdded (ControllableContainer*, Controllable*) override;
-    void childControllableRemoved (ControllableContainer*, Controllable*) override;
+    
     //Script
 
     BoolParameter* logIncoming;
 
     void onContainerParameterChanged ( ParameterBase* p) override;
-    void newJsFileLoaded() override;
+    
 
 
 

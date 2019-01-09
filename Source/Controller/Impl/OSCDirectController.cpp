@@ -85,10 +85,12 @@ Result OSCDirectController::processMessageInternal (const OSCMessage& msg)
     Result result = Result::ok();
     String addr = msg.getAddressPattern().toString();
     auto addrArray = OSCAddressToArray (addr);
+    ControlAddressType ca;
+    for(auto & s:addrArray){ca.add(s);}
 
     bool wasInUserParams = false;
 
-    if (auto* up = ( ParameterBase*)userContainer.getControllableForAddress (addrArray))
+    if (auto* up = ( ParameterBase*)userContainer.getControllableForAddress (ca))
     {
         if (!setParameterFromMessage (up, msg))
         {
@@ -120,13 +122,7 @@ Result OSCDirectController::processMessageInternal (const OSCMessage& msg)
     }
     else{
 
-        
-
-
-        Controllable* cont = root->getControllableForAddress(addrArray);
-
-
-
+        Controllable* cont = root->getControllableForAddress(ca);
         if (auto c = ParameterBase::fromControllable (cont))
         {
             if (c->isControllableExposed && c->isEditable)

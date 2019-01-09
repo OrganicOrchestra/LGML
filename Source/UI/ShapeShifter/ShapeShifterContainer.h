@@ -55,7 +55,7 @@ public:
 
     Array<ShapeShifter*> shifters;
 
-    const int gap = 6;
+    static constexpr int gap = 6;
 
     void resized() override;
 
@@ -69,7 +69,7 @@ public:
 
     ShapeShifterContainer* insertContainerAt (ShapeShifterContainer* container, int index = -1, bool resizeAfter = true);
 
-    void movePanelsInContainer (ShapeShifterPanel* containedPanel, ShapeShifterPanel* newPanel, Direction _newDir, bool secondBeforeFirst);
+    void movePanelsInContainer (ShapeShifterPanel* newPanel, ShapeShifterPanel* containedPanel, Direction _newDir, bool secondBeforeFirst);
 
     bool isFlexible() override;
 
@@ -97,6 +97,7 @@ public:
 
     void paintOverChildren(Graphics & g) override;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ShapeShifterContainer)
+    
 };
 
 

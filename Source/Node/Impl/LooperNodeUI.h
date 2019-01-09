@@ -22,7 +22,7 @@
 #include "LooperNode.h"
 #include "../UI/ConnectableNodeContentUI.h"
 
-class LooperNodeContentUI: public ConnectableNodeContentUI, public LooperNode::LooperListener,ParameterBase::AsyncListener
+class LooperNodeContentUI: public ConnectableNodeContentUI, public LooperNode::LooperListener,ParameterBase::Listener,public FileDragAndDropTarget
 {
 public:
 
@@ -60,7 +60,7 @@ public:
         void mouseUp (const MouseEvent&) override ;
         void trackSelectedAsync (bool _isSelected)override ;
 
-        void trackStateChangedAsync (const LooperTrack::TrackState& /*state*/)override {};
+        void trackStateChangedAsync (const LooperTrack::TrackState& /*state*/)override ;
 
         LooperTrack* track;
 
@@ -74,7 +74,7 @@ public:
         ScopedPointer<EnumParameterUI> sampleChoiceDDL;
 
 
-        class TimeStateUI : public juce::Component, public LooperTrack::Listener
+        class TimeStateUI : public juce::Component, public LooperTrack::TrackTimeListener
         {
         public:
             TimeStateUI (LooperTrack* _track);
@@ -91,7 +91,7 @@ public:
         float headerHackHeight = .2f;
         float volumeWidth = .2f;
         ScopedPointer<FloatSliderUI> volumeSlider;
-        bool isSelected;
+        bool isTrackSelected;
     };
 
 
@@ -108,6 +108,12 @@ private:
     void newMessage (const ParameterBase::ParamWithValue&) override;
     void checkSoloState();
 
+    bool isInterestedInFileDrag (const StringArray& files) override;
+    void fileDragEnter (const StringArray& files, int x, int y) override;
+    void fileDragMove (const StringArray& files, int x, int y) override;
+    void fileDragExit (const StringArray& files) override;
+    void filesDropped (const StringArray& files, int x, int y) override;
+    
 };
 
 

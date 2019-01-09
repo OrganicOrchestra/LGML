@@ -31,7 +31,11 @@
     #define LINK_SUPPORT 0
 #endif
 
-
+#if JUCE_DBG
+#define DBGTIME(x) //DBG(x)
+#else
+#define DBGTIME(x)
+#endif
 juce_ImplementSingleton (TimeManager);
 
 #include "../Node/NodeBase.h"
@@ -59,36 +63,34 @@ TimeManager::TimeManager():
     samplePerBeatGranularity (8),
     audioClock (0)
 {
-    nameParam->isEditable = false;
+    nameParam->setInternalOnlyFlags(true,false);
 
-    BPM = addNewParameter<FloatParameter> ("bpm", "current BPM", 120.f, (float)BPMRange.getStart(), (float)BPMRange.getEnd());
+    BPM = addNewParameter<FloatParameter> ("BPM", "current BPM", 120.f, (float)BPMRange.getStart(), (float)BPMRange.getEnd());
     BPM->isCommitableParameter = true;
-    playState = addNewParameter<BoolParameter> ("PlayStop", "play or stop global transport", false);
+    playState = addNewParameter<BoolParameter> ("Play Stop", "play or stop global transport", false);
     playState->isSavable=false;
-    BPMLocked = addNewParameter<BoolParameter> ("bpmLocked", "bpm is locked by somebody", false);
-    BPMLocked->isSavable = false;
-    BPMLocked->isEditable = false;
-    isSettingTempo = addNewParameter<BoolParameter> ("isSettingTempo", "is someone setting tempo (recording first loop)", false);
-    isSettingTempo->isEditable = false;
-    isSettingTempo->isSavable = false;
-    currentBar  = addNewParameter<IntParameter> ("currentBar", "currentBar in transport", 0, 0, 9999999);
-    currentBeat  = addNewParameter<IntParameter> ("currentBeat", "currentBeat in transport", 0, 0, 999999);
-    beatPerBar = addNewParameter<IntParameter> ("beatPerBar", "beat Per Bar", 4, 1, 8);
-    playTrigger =  addNewParameter<Trigger> ("play", "trigger play");
-    stopTrigger =  addNewParameter<Trigger> ("stop", "trigger stop");
-    quantizedBarFraction = addNewParameter<IntParameter> ("globalQuantization", "Global quantization in fraction of a bar", 1, 0, 16);
-    tapTempo =  addNewParameter<Trigger> ("tapTempo", "tap at least 2 times to set the tempo");
+    BPMLocked = addNewParameter<BoolParameter> ("BPM Locked", "bpm is locked by somebody", false);
+    BPMLocked->setInternalOnlyFlags(true,false);
+    isSettingTempo = addNewParameter<BoolParameter> ("Is Setting Tempo", "is someone setting tempo (recording first loop)", false);
+    isSettingTempo->setInternalOnlyFlags(true,false);
+    currentBar  = addNewParameter<IntParameter> ("Current Bar", "currentBar in transport", 0, 0, 9999999);
+    currentBeat  = addNewParameter<IntParameter> ("Current Beat", "currentBeat in transport", 0, 0, 999999);
+    beatPerBar = addNewParameter<IntParameter> ("Beat Per Bar", "beat Per Bar", 4, 1, 8);
+    playTrigger =  addNewParameter<Trigger> ("Play", "trigger play");
+    stopTrigger =  addNewParameter<Trigger> ("Stop", "trigger stop");
+    quantizedBarFraction = addNewParameter<IntParameter> ("Global Quantization", "Global quantization in fraction of a bar", 1, 0, 16);
+    tapTempo =  addNewParameter<Trigger> ("Tap Tempo", "tap at least 2 times to set the tempo");
     click = addNewParameter<BoolParameter> ("Metronome", "Play the metronome click", false);
     clickVolume = addNewParameter<FloatParameter> ("Metronome Volume", "Click's volume if metronome is active", .5f, 0.f, 1.f);
     setBPMInternal (BPM->doubleValue(), false);
 
-    linkEnabled = addNewParameter<BoolParameter> ("link", "activate link", false);
+    linkEnabled = addNewParameter<BoolParameter> ("Link", "activate Link", false);
     linkEnabled->enabled = LINK_SUPPORT;
 
-    linkNumPeers = addNewParameter<IntParameter> ("linkNumPeers", "number of connected link devices", 0, 0, 32);
+    linkNumPeers = addNewParameter<IntParameter> ("Link Peers", "number of connected Link devices", 0, 0, 32);
     linkNumPeers->isSavable = false;
     linkNumPeers->enabled = LINK_SUPPORT;
-    linkNumPeers->isEditable = false;
+    linkNumPeers->setInternalOnlyFlags(true,false);
 
 
 #if LINK_SUPPORT
@@ -96,8 +98,8 @@ TimeManager::TimeManager():
     linkPimpl = new LinkImpl (this);
 
 #endif
-    linkLatencyParam = addNewParameter<FloatParameter> ("linkLatency", "link latency to add for lgml (ms)", 10.f, 0.f, 1000.f);
-    linkLatencyParam->isSavable = false;
+    linkLatencyParam = addNewParameter<FloatParameter> ("Link Latency", "Link latency to add for lgml (ms)", 10.f, 0.f, 1000.f);
+    linkLatencyParam->setInternalOnlyFlags(true,false);
 
     clickFader = new FadeInOut (10000, 10000, true, 1.0 / 3.0);
 
@@ -343,7 +345,7 @@ void TimeManager::releaseIfMasterCandidate (TimeMasterCandidate* n)
     if (n == timeMasterCandidate)
     {
         isSettingTempo->setValue (false);
-        n = nullptr;
+        timeMasterCandidate = nullptr;
     }
 }
 
@@ -663,7 +665,7 @@ TransportTimeInfo TimeManager::findTransportTimeInfoForLength (sample_clk_t time
     res.makeValidForGranularity (samplePerBeatGranularity);
 
     res.bpm = 60.0 / res.beatTime;
-    DBG ("found beat Sample : " << String (res.beatInSample) << " : " << time);
+    DBGTIME ("found beat Sample : " << String (res.beatInSample) << " : " << time);
 
     return res;
 }
@@ -689,7 +691,7 @@ void TimeManager::setBPMFromTransportTimeInfo (const TransportTimeInfo& info, bo
 
 #if LINK_SUPPORT
 
-    linkPimpl->setBPM (info.bpm, std::chrono::microseconds ((long long) (atSample * 1000000.0 / sampleRate)));
+    linkPimpl->setBPMNow (info.bpm, std::chrono::microseconds ((long long) (atSample * 1000000.0 / sampleRate)));
 
 #endif
     //jassert((int)(barLength*beatPerBar->intValue())>0);

@@ -46,13 +46,13 @@ DummyNode::DummyNode (StringRef name) :
 
 
 
-    pxParam = addNewParameter<FloatParameter> ("PointX", "X", 0.f, 0.f, 1.f);
-    pyParam = addNewParameter<FloatParameter> ("PointY", "Y", 0.f, 0.f, 1.f);
+    pxParam = addNewParameter<FloatParameter> ("Point X", "X", 0.f, 0.f, 1.f);
+    pyParam = addNewParameter<FloatParameter> ("Point Y", "Y", 0.f, 0.f, 1.f);
 
     //AUDIO
     setPlayConfigDetails (2, 3, getSampleRate(), getBlockSize());
 
-
+    Thread::sleep(2000);
 }
 
 DummyNode::~DummyNode()
@@ -79,7 +79,9 @@ void DummyNode::onContainerParameterChanged ( ParameterBase* p)
 
 }
 
-
+void DummyNode::prepareToPlay(double sr,int bs) {
+    Thread::sleep(4000);
+}
 
 
 

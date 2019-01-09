@@ -27,7 +27,7 @@ BufferBlockList::BufferBlockList (int _numChannels, int  _minNumSample, int _blo
 
 }
 
-void BufferBlockList::allocateSamples (int numChannels, int numSamples)
+void BufferBlockList::allocateSamples (int numChannels, int numSamples,bool dontShrink)
 {
     jassert (numChannels > 0);
 
@@ -53,12 +53,13 @@ void BufferBlockList::allocateSamples (int numChannels, int numSamples)
         add (new AudioSampleBuffer (numChannels, bufferBlockSize));
         i += bufferBlockSize;
     }
-
-    while (i > numSamples + bufferBlockSize)
-    {
-        removeLast();
-        i -= bufferBlockSize;
-
+    if(!dontShrink){
+        while (i > numSamples + bufferBlockSize)
+        {
+            removeLast();
+            i -= bufferBlockSize;
+            
+        }
     }
 
 }

@@ -27,7 +27,11 @@ StepperUI<T>::StepperUI ( ParameterBase* _parameter) : ParameterUI (_parameter)
     jassert (fp);
     addAndMakeVisible (slider);
     stepInterval =(T)(.1)==0?1:0.01;
-    slider->setRange (fp->minimumValue, fp->maximumValue,(double) stepInterval);
+    T minimumValue = fp->minimumValue.isUndefined()?std::numeric_limits<T>::min():(T)fp->minimumValue;
+    T maximumValue = fp->maximumValue.isUndefined()?std::numeric_limits<T>::max():(T)fp->maximumValue;
+    if(minimumValue!=maximumValue){
+        slider->setRange (minimumValue,maximumValue,(double) stepInterval);
+    }
     slider->setValue (parameter->floatValue(), dontSendNotification);
     slider->addListener (this);
     

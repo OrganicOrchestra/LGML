@@ -42,12 +42,15 @@ public:
 
     virtual bool isMappable() override;
 
+    void setInternalOnlyFlags(bool isVisible=true,bool _isSavable=false);// shortcut for internalParameters
+    void setSavable(bool savable);
     bool isEditable;
     bool alwaysNotify; // force notifying even if not changed
 
-    bool isPresettable;
+    
     bool isOverriden;
     bool mappingDisabled;
+
     // if true each set value doesn't do nothing until som reader call pushValue
     // useful for thread syncronization
     bool isCommitableParameter;
@@ -84,13 +87,25 @@ public:
     bool boolValue() const { return (bool)value; }
     virtual String stringValue() const { return value.toString(); }
 
-    void notifyValueChanged (bool defferIt = false,Listener * notifier=nullptr);
+
 
     virtual DynamicObject* createDynamicObject() override;
 
 
+    // ASYNC
+    class  ParamWithValue
+    {
+    public:
+        ParamWithValue ( ParameterBase* p, const var & v, bool _isRange,Listener* _notifier=nullptr): parameter (p), value (v), m_isRange (_isRange),notifier(_notifier) {}
+        ParameterBase* parameter;
+        var value;
+        bool m_isRange;
+        Listener* notifier;
+        bool isRange() const {return m_isRange;}
+
+    };
     //Listener
-    class  Listener
+    class  Listener : public QueuedNotifier<ParamWithValue>::Listener
     {
     public:
         /** Destructor. */
@@ -102,8 +117,10 @@ public:
                     linkedP.removeLast();
             }
         }
-        virtual void parameterValueChanged ( ParameterBase* p,ParameterBase::Listener * notifier=nullptr) = 0;
+        virtual void parameterValueChanged ( ParameterBase* p,ParameterBase::Listener * notifier=nullptr) {};
         virtual void parameterRangeChanged ( ParameterBase* ) {};
+        virtual void newMessage (const ParamWithValue& ) override {};
+
         Array<WeakReference<ParameterBase> > linkedP;
     };
 
@@ -121,31 +138,22 @@ public:
 
 
 
-    // ASYNC
-    class  ParamWithValue
-    {
-    public:
-        ParamWithValue ( ParameterBase* p, const var & v, bool _isRange,Listener* _notifier=nullptr): parameter (p), value (v), m_isRange (_isRange),notifier(_notifier) {}
-         ParameterBase* parameter;
-        var value;
-        bool m_isRange;
-        Listener* notifier;
-        bool isRange() const {return m_isRange;}
 
-    };
 
-    typedef QueuedNotifier<ParamWithValue>::Listener AsyncListener;
+
+//    typedef QueuedNotifier<ParamWithValue>::Listener AsyncListener;
     QueuedNotifier<ParamWithValue> queuedNotifier;
     void handleAsyncUpdate()override;
 
+    void notifyValueChanged (bool defferIt = false,Listener * notifier=nullptr);
 
-    void addAsyncParameterListener (AsyncListener* newListener) { queuedNotifier.addListener (newListener); }
-    void addAsyncCoalescedListener (AsyncListener* newListener) { queuedNotifier.addAsyncCoalescedListener (newListener); }
-    void removeAsyncParameterListener (AsyncListener* listener) { queuedNotifier.removeListener (listener); }
+    void addAsyncParameterListener (Listener* newListener) { queuedNotifier.addListener (newListener); }
+    void addAsyncCoalescedListener (Listener* newListener) { queuedNotifier.addAsyncCoalescedListener (newListener); }
+    void removeAsyncParameterListener (Listener* listener) { queuedNotifier.removeListener (listener); }
 
 
     //JS Helper
-    virtual DynamicObject* getObject() override;
+    virtual DynamicObject* createObject() override;
     virtual var getVarState() override;
 
 
@@ -180,6 +188,7 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ParameterBase)
     
 };
+
 
 
 

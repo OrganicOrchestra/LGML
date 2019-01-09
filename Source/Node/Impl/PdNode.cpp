@@ -54,14 +54,13 @@ pdinstance(NULL),
 midiChooser(this,false,true)
 {
 
-    pdPath = addNewParameter<StringParameter>("pd path", "path where to load pd Vanilla file , if a patch contain a subpatch named gui graphical object with send names will be added as parameters", "");
-    isLoadedParam = addNewParameter<BoolParameter>("is loaded", "is file loaded", false);
-    isLoadedParam->isEditable=false;
-    reloadPatch = addNewParameter<Trigger>("reload Patch","reload current patch");
+    pdPath = addNewParameter<FileParameter>("pd path", "path where to load pd Vanilla file , if a patch contain a subpatch named gui graphical object with send names will be added as parameters", "",PdPatch,std::bind(&PdNode::loadPdFile,this,std::placeholders::_1));
+    
+    
     midiActivityTrigger= addNewParameter<Trigger>("midi Activity", "trigger when incomming midi messages");
     midiActivityTrigger->isControllableExposed = false;
 
-    libpd_set_verbose(1);
+    libpd_set_verbose(0);
     libpd_set_printhook(lgml_print_hook);
     libpd_init();
 
@@ -152,42 +151,34 @@ void PdNode::processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer& incom
 }
 
 void PdNode::onContainerTriggerTriggered(Trigger *t){
-    if(t==reloadPatch){
-        loadValidPdFile();
-    }
+    libpd_set_instance(pdinstance);
+    libpd_bang(t->niceName.toRawUTF8());
     NodeBase::onContainerTriggerTriggered(t);
 }
 
 void PdNode::onContainerParameterChanged ( ParameterBase* p) {
-    if(p==pdPath){
-        pdPath->setValueFrom(this,getEngine()->getNormalizedFilePath(File(pdPath->stringValue())));
 
-        loadValidPdFile();
-    }
-
-    else{
         auto idx = pdParameters.indexOf(p);
         if(idx!=-1){
-            if(auto fp = p->getAs<FloatParameter>()){
-                libpd_float(p->niceName.toRawUTF8(), fp->floatValue());
+            libpd_set_instance(pdinstance);
+            if(p->getAs<FloatParameter>() || p->getAs<BoolParameter>() || p->getAs<IntParameter>()){
+                libpd_float(p->niceName.toRawUTF8(), (float)p->value);
             }
             else if(auto sp = p->getAs<StringParameter>()){
                 libpd_symbol(p->niceName.toRawUTF8(), sp->stringValue().toRawUTF8());
             }
         }
-    }
+
     NodeBase::onContainerParameterChanged (p);
 }
 
 void PdNode::unloadFile(){
     if(patchHandle!=NULL){
+        libpd_set_instance(pdinstance);
         libpd_closefile(patchHandle);
         patchHandle = NULL;
         dollarZero = -1;
-        isLoadedParam->setValueFrom(this,false);
     }
-
-    //    tempOutBuf.clear(numTicks*DEFDACBLKSIZE*getTotalNumOutputChannels());
 
 }
 
@@ -195,35 +186,32 @@ bool PdNode::isLoaded(){
     return patchHandle!=NULL;
 }
 
-void PdNode::loadValidPdFile(){
-    auto p = pdPath->stringValue();
+Result PdNode::loadPdFile(const File & f){
+    auto p = f.getFullPathName();
 
-    bool shouldLoad = true;
-    if(!p.endsWith(".pd")){
-        LOGE(juce::translate("file should have pd extension"));
-        shouldLoad = false;
+    if(p.isEmpty()){return Result::fail(juce::translate("No Pd files specified"));}
+    if(!p.endsWith(".pd")){return Result::fail(juce::translate("file should have pd extension"));}
 
-    }
-    if(p.startsWith("/")){
-        LOGW("warning pd file path is absolute, the reference may unresolved if lgml project is transfered on other computer");
-    }
     libpd_set_instance(pdinstance);
 
     unloadFile();
-    if(!p.isEmpty() && shouldLoad){
-        auto fileName = File(pdPath->stringValue()).getFileName();
-        auto dirName = File(pdPath->stringValue()).getParentDirectory().getFullPathName();
-        patchHandle = libpd_openfile(fileName.toRawUTF8(), dirName.toRawUTF8());
-        if(patchHandle==NULL){
-            LOGE("can't open patch at "<<pdPath->stringValue());
-        }
-
-        parseParameters();
-
-
-        dollarZero = libpd_getdollarzero(patchHandle);
+    auto pdFile = pdPath->getFile();
+    auto fileName = pdFile.getFileName();
+    auto dirName = pdFile.getParentDirectory().getFullPathName();
+    patchHandle = libpd_openfile(fileName.toRawUTF8(), dirName.toRawUTF8());
+    if(patchHandle==NULL){
+        return Result::fail(juce::translate(String("can't open patch at  123").replace("123", pdPath->stringValue())));
     }
-    isLoadedParam->setValueFrom(this,patchHandle!=NULL);
+
+    parseParameters();
+
+
+    dollarZero = libpd_getdollarzero(patchHandle);
+    return Result::ok();
+
+
+
+
 
 
 }
@@ -236,7 +224,7 @@ void PdNode::parseParameters(){
     if(!isLoaded()){return;}
     StringArray lines;
 
-    FileInputStream file(File(pdPath->stringValue()));
+    FileInputStream file(pdPath->getFile());
     char c = file.readByte();
     String l;
     StringArray sp;
@@ -374,3 +362,9 @@ void PdNode::handleIncomingMidiMessage (MidiInput*,
     midiActivityTrigger->trigger();
 };
 
+String PdNode::getSubTypeName() {
+    if(pdPath->getFile().exists()){
+        return pdPath->getFile().getFileNameWithoutExtension();
+    }
+    return "";
+}

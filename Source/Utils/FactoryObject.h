@@ -23,21 +23,22 @@
 #define CHK_OBJECT_BASE(T)  int dummy_check_##T = dummy_##T();ignoreUnused(dummy_check_##T);
 #define IMPL_OBJECT_BASE(T)    virtual int dummy_##T() {return 0;};
 
-class FactoryClass{
-    
-};
+
 
 class FactoryObject
 {
 public:
 
+    // to override
+
+    virtual void configureFromObject (DynamicObject*) = 0;
+    virtual DynamicObject* createObject() = 0;
+
+    // internals
     virtual ~FactoryObject() {};
     virtual const Identifier & getFactoryTypeId() const =0;
     virtual const String& getFactoryTypeName() const = 0;
-    virtual void configureFromObject (DynamicObject*) = 0;
-    virtual DynamicObject* getObject() = 0;
     virtual const String & getFactoryInfo() const = 0;
-
 
     template<class OtherType>
     bool isType() const {return getFactoryTypeId() == OtherType::typeId(); };
@@ -59,5 +60,6 @@ explicit T(StringRef name=DEFAULTNAME); \
 
 #define DECLARE_OBJ_TYPE(T,INFO) DECLARE_OBJ_TYPE_DEFAULTNAME(T,#T,INFO)
 // use that for static objects that dont need factories
-#define IMPL_OBJ_TYPE(T)  const Identifier T::_factoryType = Identifier( "t_" #T);
+#define IMPL_OBJ_TYPE_NAMED(T,TN)  const Identifier T::_factoryType = Identifier( "t_" TN);
+#define IMPL_OBJ_TYPE(T)  IMPL_OBJ_TYPE_NAMED(T,#T)
 

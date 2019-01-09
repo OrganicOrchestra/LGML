@@ -27,7 +27,7 @@ public:
 
     Label nameLabel;
     Label valueLabel;
-
+    bool trimStart;
     String prefix;
     String suffix;
     int arraySize;
@@ -48,6 +48,9 @@ public:
 
 
 protected:
+
+    void setValueTextTrimmed(String  s);
+    
     void valueChanged (const var& v) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (StringParameterUI)

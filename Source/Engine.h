@@ -59,10 +59,10 @@ public:
 
     void createNewGraph();
     void clear();
-    void initAudio();
-    bool fadeAudioOut();
-    void closeAudio();
+
+
     ParameterBase* saveSession,*loadSession,*closeEngine;
+
     class EngineStats : public ParameterContainer ,public Timer{
     public:
         EngineStats(Engine *);
@@ -79,13 +79,7 @@ public:
         int timerTicks;
         ScopedPointer< GlobalListener > globalListener;
     };
-    ScopedPointer< EngineStats> engineStats;
-    bool hasDefaultOSCControl;
-    void onContainerParameterChanged( ParameterBase*)override;
-    void onContainerTriggerTriggered(Trigger *t)override;
-    void suspendAudio (bool shouldSuspend);
 
-    void parseCommandline (const CommandLineElements& );
 
     //==============================================================================
     // see EngineFileDocument.cpp
@@ -93,10 +87,7 @@ public:
     //  inherited from FileBasedDocument
     String getDocumentTitle()override ;
     // do not call this, call loadFrom instead (empowers FileBasedDocument behaviour)
-    Result loadDocument (const File& file)override;
-    Result saveDocument (const File& file)override;
-    File getLastDocumentOpened() override;
-    void setLastDocumentOpened (const File& file) override;
+
 
     // helpers for file document
     File getCurrentProjectFolder();
@@ -104,20 +95,12 @@ public:
     String getNormalizedFilePath (const File& f);
     File getFileAtNormalizedPath (const String& path);
 
-    //    #if JUCE_MODAL_LOOPS_PERMITTED
-    //     File getSuggestedSaveAsFile (const File& defaultFile)override;
-    //    #endif
-
-    // our Saving methods
-    DynamicObject* getObject() override;
-    void loadJSONData (const var& data, ProgressTask* loadingTask);
-
-    bool checkFileVersion (DynamicObject* metaData);
+    File getLastDocumentOpened() override;
 
     String getMinimumRequiredFileVersion();
 
     void  stimulateAudio (bool);
-    ScopedPointer<AudioFucker> stimulator;
+
 
     class MultipleAudioSettingsHandler : public ChangeListener, public Timer
     {
@@ -133,19 +116,108 @@ public:
         void timerCallback()override;
 
     };
+
     MultipleAudioSettingsHandler audioSettingsHandler;
 
-    int64 engineStartTime;
-    int loadingStartTime;
+
     const int getElapsedMillis()const ;
 
     void managerEndedLoading() override;
     void managerProgressedLoading (float progress) override;
 
 
+
+
+    class EngineListener
+    {
+    public:
+        virtual ~EngineListener() {};
+        virtual void startEngine() {};
+        virtual void stopEngine() {};
+        virtual void startLoadFile() {};
+        virtual void fileProgress (float percent, int state) {};
+        virtual void endLoadFile() {};
+    };
+
+    class EngineFileSaver{
+    public:
+        EngineFileSaver(const String & name);
+        virtual ~EngineFileSaver();
+        virtual Result saveFiles(const File & baseFolder) = 0;
+        virtual Result loadFiles(const File & baseFolder) = 0;
+        virtual bool isDirty()=0;
+        const String name;
+    };
+
+
+
+
+    void addEngineListener (EngineListener* e) {engineListeners.add (e);}
+    void removeEngineListener (EngineListener* e) {engineListeners.remove (e);}
+
+    bool isLoadingFile;
+    
+    static void setLanguage(const String & l);
+    static StringArray getAvailableLanguages();
+
+
+
+    RecentlyOpenedFilesList getLastOpenedFileList();
+
+
+
+    static int versionNumber;
+    static const char* versionString;
+    static const char* projectName;
+
+    ScopedPointer< EngineStats> engineStats;
+
+
+    ThreadPool threadPool;
+
+private:
+
+    ScopedPointer<AudioFucker> stimulator;
+
+    // our Saving methods
+    DynamicObject* createObject() override;
+    void loadJSONData (const var& data, ProgressTask* loadingTask);
+
+    bool checkFileVersion (DynamicObject* metaData);
+
+
+    Result loadDocument (const File& file)override;
+    Result saveDocument (const File& file)override;
+
+    void setLastDocumentOpened (const File& file) override;
+
+    void parseCommandline (const CommandLineElements& );
+
+
+    int64 engineStartTime;
+    int loadingStartTime;
+
+
     void fileLoaderEnded();
-    bool allLoadingThreadsAreEnded();
     void loadDocumentAsync (const File& file);
+
+    
+    bool hasDefaultOSCControl;
+
+
+    ListenerList<EngineListener> engineListeners;
+
+
+    void initAudio();
+    bool fadeAudioOut();
+    void closeAudio();
+    void suspendAudio (bool shouldSuspend);
+
+
+    bool allLoadingThreadsAreEnded();
+
+    void onContainerParameterChanged( ParameterBase*)final;
+    void onContainerTriggerTriggered(Trigger *t)final;
 
     class FileLoader : public Thread, private Timer
     {
@@ -180,44 +252,19 @@ public:
         File fileToLoad;
         bool isEnded;
 
-
+        
     };
 
-    ScopedPointer<FileLoader> fileLoader;
 
-
-
-    class EngineListener
-    {
-    public:
-        virtual ~EngineListener() {};
-        virtual void startEngine() {};
-        virtual void stopEngine() {};
-        virtual void startLoadFile() {};
-        // TODO implement progression
-        virtual void fileProgress (float percent, int state) {};
-        virtual void endLoadFile() {};
-    };
-
-    ListenerList<EngineListener> engineListeners;
-    void addEngineListener (EngineListener* e) {engineListeners.add (e);}
-    void removeEngineListener (EngineListener* e) {engineListeners.remove (e);}
-
-    bool isLoadingFile;
-    var jsonData;
-
+    Array<EngineFileSaver*> fileSavers;
     void handleAsyncUpdate()override;
 
-    ThreadPool threadPool;
+    ScopedPointer<FileLoader> fileLoader;
+    friend class FileLoader;
 
-    RecentlyOpenedFilesList getLastOpenedFileList();
 
-    static void setLanguage(const String & l);
-    static StringArray getAvailableLanguages();
+    friend class LGMLApplication;
 
-    static int versionNumber;
-    static const char* versionString;
-    static const char* projectName;
 
 };
 

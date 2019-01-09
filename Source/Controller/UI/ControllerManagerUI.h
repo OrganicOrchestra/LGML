@@ -30,7 +30,8 @@
 
 class ControllerManagerUI :
 ControllerManager::Listener,
-public ShapeShifterContentComponent,
+public ShapeShifterContent,
+public InspectableComponent,
 private Button::Listener
 {
 public:

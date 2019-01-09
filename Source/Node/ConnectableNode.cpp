@@ -36,7 +36,7 @@ ConnectableNode::ConnectableNode (const String& name, bool _hasMainAudioControl)
 {
     //set Params
     ParameterContainer::nameParam->isEditable = true;
-    descriptionParam = addNewParameter<StringParameter> ("Description", "Set a custom description for this node.", "Description");
+    descriptionParam = addNewParameter<StringParameter> ("Description", "Set a custom description for this node.", "");
     enabledParam = addNewParameter<BoolParameter> ("Enabled", "Enable processing of the node.\nDisable will bypass the node and pass the audio flux to the output", true);
 
 
@@ -59,8 +59,7 @@ ConnectableNode::ConnectableNode (const String& name, bool _hasMainAudioControl)
       setOutputChannelName(1, "Main Right");
       */
 
-    //allow for all nested container to have all parameters save in node's preset (except node container, see nodecontainer's constructor)
-    presetSavingIsRecursive = true;
+    
 }
 
 ConnectableNode::~ConnectableNode()
@@ -74,6 +73,7 @@ ConnectableNode::~ConnectableNode()
 
 void ConnectableNode::setParentNodeContainer (NodeContainer* _parentNodeContainer)
 {
+    jassert(parentNodeContainer==nullptr ||_parentNodeContainer==nullptr );
     parentNodeContainer = _parentNodeContainer;
 
 

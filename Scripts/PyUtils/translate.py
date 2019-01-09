@@ -7,8 +7,8 @@ import re
 import json
 
 sourcePath = os.path.abspath(os.path.join(__file__,os.path.pardir,os.path.pardir,os.path.pardir,'Source'))
-jucePath = os.path.abspath(os.path.join(__file__,os.path.pardir,os.path.pardir,os.path.pardir,os.path.pardir,'JUCE','modules'))
-print (sourcePath,jucePath)
+jucePath =  'lal'#os.path.abspath(os.path.join(__file__,os.path.pardir,os.path.pardir,os.path.pardir,os.path.pardir,'JUCE','modules'))
+
 baseTranslationPath = os.path.expanduser('~/Documents/LGML/translations/')
 # baseTranslationPath = os.path.expanduser('~/owncloud/DEVSPECTACLES/Tools/LGML/translations')
 
@@ -23,30 +23,21 @@ def getFileList():
   return files
 
 
-def getEnclosed(s,start,opc='(',clc=')',ignore_escaped=False):
-  starti = -1;
-  i=start-1
-  depth = 0
-  wasEscaped = False
-  for c in s[start:]:
-    i+=1
-    if wasEscaped:
-      wasEscaped=False
-      continue
-    if c==clc and depth>0:
-      depth-=1
-    elif c==opc:
-      depth+=1
-      if starti<0 :
-        starti = i;
-    elif ignore_escaped and c=='\\':
-      wasEscaped = True
 
-    if starti>=0 and depth==0:
-      return (starti,i)
-  return None
-
-
+def buildRegFunction(fname,valid_mask,strict = True):
+  anys = r"[\s\n\r]*"
+  s = r'(?<!//)'+anys+fname+anys+"\("+anys
+  for m in  valid_mask:
+    if m:
+      s+=r'(?:String'+anys+'\(|)\"(.+?)\"'
+    else:
+      s+=r'.+'
+    s+=anys+','+anys
+  s = s[:-len(anys)-1]
+  if(strict) :
+    s+=anys+"\)"
+  # print(s)
+  return re.compile(s,re.MULTILINE)
 
 def getRegExs(fl):
   regL = []
@@ -70,7 +61,7 @@ def getRegExs(fl):
   # regL+=[buildRegFunction("NLOGW",[1,1])]
   # regL+=[buildRegFunction("NLOGE",[1,1])]
   for f in fl:
-    print('reading %s'%f)
+    # print('reading %s'%f)
     with open(f,'r',errors='replace',encoding='utf-8') as fp:
       # for l in fp.readlines():
       text = fp.read()
@@ -93,69 +84,14 @@ def getRegExs(fl):
         # if m : print(m);
   return res
 
-def getAllStrings(fl):
-  valid_s = re.compile("([A-Za-z0-9\ ]+)")
-  digit_s = re.compile("([0-9\ ]+)")
-  res ={}
-  for f in fl:
-    if "test" in f.lower():
-      continue
-    # print('reading strings from %s'%f)
-    with open(f,'r',errors='replace',encoding='utf-8') as fp:
-
-      i = 0
-      for l in fp.readlines():
-        i+=1
-        l = l.strip('/ ')
-        if "DBG" in l:
-          continue
-        found_idx = 0
-        sub = getEnclosed(l,found_idx,'"','"',True)
-        while sub:
-          innerT = l[sub[0]+1:sub[1]]
-          if re.match(valid_s,innerT) and len(innerT)>1 and innerT[-2:] != '.h' and not re.match(digit_s,innerT) and not '_' in innerT and not 'http' in innerT:
-            res[innerT]=(f,i)
-          found_idx=l.find('"',sub[1]+1)
-          if found_idx<0:
-            break;
-          
-          sub = getEnclosed(l,found_idx,'"','"',True)
-          
-
-
-  return res
-
-def splitEscaped(s):
-  wasEscaped = False
-  cur = ""
-  ls = []
-  escaped = []
-  for c in s:
-    if wasEscaped:
-      escaped+=['\\'+c]
-      ls+=[cur]
-      cur=""
-      wasEscaped=False
-    elif c=='\\':
-      wasEscaped=True
-    else:
-      cur+=c
-  ls+=[cur]
-  return ls,escaped
-
-def mergeEscaped(ls,escaped):
-  res = ls[0]
-  for i in range(1,len(ls)):
-    res+=escaped[i-1]+ls[i]
-  return res
-
 
 
 def buildLocalMT(strs,locale='fr'):
   mtfile = os.path.join(baseTranslationPath,'mt.'+locale+'.json')
-  from googletrans import Translator
-  translator = Translator()
   
+  from Translators import ManualTranslator
+  translator = ManualTranslator()
+  anglicisms = getAnglicisms(translator,locale)
   i = 0
   if os.path.exists(mtfile):
     with open(mtfile ,'r') as fp:
@@ -164,33 +100,83 @@ def buildLocalMT(strs,locale='fr'):
     mt = {}
 
   res = {}
+  
+  checkUntranslatable(strs)
+
+  def doBatchTranslate(txtL,mt,res,strs):
+      if isinstance(txtL,str):
+        txtL = txtL.split('\n')
+
+      print('translating :%s '%(txtL))
+
+      # flatten \n s
+      itemsIdx =[]
+      flattenedL = []
+      for t in txtL:
+        flat = t.split('\\n')
+        flattenedL += flat
+        itemsIdx+=[len(flat)]
+      # print(itemsIdx,flattenedL)
+      flattenedL = list(map(anglicisms.encode,flattenedL))
+      trs = translator.translate(flattenedL,src='en',dest=locale)
+
+
+      if(len(trs)==1 and len(txtL)==1):
+        trs = trs[0]
+        trsL=trs.split('\n')
+      else:
+        idx = 0
+        idxOr = 0
+        trsL = []
+        while idxOr <len(txtL):
+          toJoin = itemsIdx[idxOr]
+          trsL+=['\\n'.join(trs[idx:idx+toJoin])]
+          idx+=toJoin
+          idxOr+=1
+      trsL = list(map(unifyLanguage,trsL))
+      trsL = list(map(anglicisms.decode,trsL))
+      print('trsL',trsL)
+      # print('textL',txtL)
+
+      assert(len(trsL)==len(txtL))
+      for i in range(len(txtL)):
+        kk = txtL[i] 
+        if(kk==''):
+          continue 
+
+        mt[kk]=trsL[i]
+        res[kk] = {'trans':mt[kk],'meta':strs[kk]}
+      with open(mtfile,'w',encoding='utf-8') as fp:
+        json.dump(mt,fp,ensure_ascii=False,sort_keys=True)
+
+  txt=""
+  maxNumChars = translator.maxNumChar
   for k in strs:
-    if not k in mt:
-      print('translating :%s (%s,%i)'%(k,os.path.basename(strs[k][0]),strs[k][1]))
-      kl,esc = splitEscaped(k)
-      i+=1
-
-      trs = translator.translate(kl,src='en',dest=locale)
-      trs_l=[]
-      for t in trs:
-        trs_l += [t.text];#).decode('utf8')
-      trs_s = mergeEscaped(trs_l,esc)
-      mt[k]=trs_s
-      if(i%10 ==0):
-        with open(mtfile,'w') as fp:
-          json.dump(mt,fp)
-
-    res[k] = {'trans':mt[k],'meta':strs[k]}
-  if i>0:
-    with open(mtfile,'w') as fp:
-      json.dump(mt,fp)
+    if(k in mt):
+      res[k] = {'trans':mt[k],'meta':strs[k]}
+      continue
+    if(len(k)+len(txt)>=maxNumChars):
+      if maxNumChars==0:
+        txt = k
+      if translator.allowList:
+        txt = txt.split('\n')[:-1]
+      doBatchTranslate(txt,mt,res,strs)
+      txt=""
+    else:
+      txt+=k+'\n'
+    
+  if len(txt)>0:
+    doBatchTranslate(txt,mt,res,strs)
   return res
 
 
 def buildPO(mt,lang):
+  from ProJucerUtils import getXmlVersion
+  version = getXmlVersion()
+  print ("version ",version)
   po = polib.POFile(encoding='utf-8')
   po.metadata = {
-      'Project-Id-Version': '1.2.7',
+      'Project-Id-Version': version,
       'Report-Msgid-Bugs-To': 'lab@organic-orchestra.com',
       'POT-Creation-Date': '2007-10-18 14:00+0100',
       'PO-Revision-Date': '2007-10-18 14:00+0100',
@@ -205,14 +191,15 @@ def buildPO(mt,lang):
     trs_s = v['trans'];
     relSrcFile = v['meta'][0][len(sourcePath)+1:]
     lineNum = v['meta'][1]
-    print (k,relSrcFile,lineNum)
+    # print (k,relSrcFile,lineNum)
     entry = polib.POEntry(
         msgid=k,
         msgstr=trs_s,
-        occurrences=[(relSrcFile,lineNum)]
+        
     )
+    entry.occurrences=[(relSrcFile,lineNum)]
     po.append(entry)
-  po.save(os.path.join(baseTranslationPath,'%s.po'%lang['name']))
+  po.save(os.path.join(baseTranslationPath,'%s.po'%(lang['name'])))
 
 
 def toJUCEfmt(mt,lang):
@@ -237,50 +224,126 @@ def getDefaultStrings():
       res[a] = ("No File",0)
   return res
 
+def unifyLanguage(line):
+  # try to have a consistenet ortograph (french : 'nœud' is sometimes spelled 'noeud' )
+  subs = [("œ","oe")]
+  for s in subs:
+    line = re.sub(s[0],s[1],line)
+  return line
+
+def getAnglicisms(translator,dest):
+  #these are not translated but we try to spot them in full sentences
+  class Anglicism(object):
+
+    def __init__(self,anglicisms):
+        from collections import OrderedDict
+        self.encodeAngl = OrderedDict()
+        cn = 65
+        def getValidC(cn):
+          while chr(cn) in 'AEIOUaeiou':
+            cn+=1
+          return cn,"#"+chr(cn)
+        for i in range(len(anglicisms)):
+          a = anglicisms[i]
+          (cn,e) = getValidC(cn)
+          self.encodeAngl[a] = e
+          c = a[0]
+          cn+=1
+          (cn,e) = getValidC(cn)
+          if c.lower()!=a[0]:
+            self.encodeAngl[c.lower()+a[1:]] = e
+          else:
+            self.encodeAngl[a+'s'] = e
+
+
+    def encode(self,s):
+      for a,e in self.encodeAngl.items():
+        # print('checking',trs[i],anglicisms[i],line)
+        s = re.sub(a,e,s)
+      return s
+    def decode(self,s):
+      for a,e in self.encodeAngl.items():
+        # print('checking',trs[i],anglicisms[i],line)
+        s = re.sub(e,a,s)
+      return s
+  return Anglicism(["node","logger","onset","solo","Link"]) #"x","y","X","Y",
 
 
 
+def makeRawFile(tel):
+  with open(baseTranslationPath+ 'raw.json','w') as fp:
+    json.dump(tel,fp,sort_keys=True)
 
-def buildRegFunction(fname,valid_mask,strict = True):
-  anys = r"[\s\n\r]*"
-  s = r'(?<!//)'+anys+fname+anys+"\("+anys
-  for m in  valid_mask:
-    if m:
-      s+=r'(?:String'+anys+'\(|)"(.+?)"'
-    else:
-      s+=r'.+'
-    s+=anys+','+anys
-  s = s[:-len(anys)-1]
-  if(strict) :
-    s+=anys+"\)"
-  print(s)
-  return re.compile(s,re.MULTILINE)
+def getRawFile():
+  with open(baseTranslationPath+ 'raw.json','r') as fp:
+    return json.load(fp)
+
+
+
+def checkUntranslatable(strs):
+  #these are not translated if they fully match regEx (usually exact match)
+  regs = []
+  untranslated = []
+  regs+=list(map(re.compile,["^"+x+"$" for x in ["Link","Link Peers","Link Latency","x","y","X","Y"]]))
+  for k in strs:
+    found = False
+    for r in regs:
+      if r.match(k):
+        found = True
+        break;
+    if found:
+      print('not translating ',k)
+      untranslated +=[k]
+  for k in untranslated:
+    del strs[k]
+
+
+def fromRawTranslation(locale):
+  d = {}
+  with open(baseTranslationPath+'raw.txt','r') as rawfp:
+    with open(baseTranslationPath+'raw.'+locale+'.txt','r') as localefp:
+      r = rawfp.readline()
+      while( r):
+        t = localefp.readline()
+        r = r.strip()
+        t = t.strip()
+        print (r,t)
+        assert(t!="")
+        d[r] = t
+        r = rawfp.readline()
+  return d;
 
 
 if __name__ == "__main__":
+  
+  skip_parse = True;
+  force_rebuild = False;
+  if not skip_parse:
+    print ('parsing folders %s'%([sourcePath,jucePath]))
+    fl = getFileList()
+    tel = {}
+    autoEl = getRegExs(fl)
+    tel.update(autoEl)
 
-  # s = """NLOGE("Engine", String("File : 123 not found.").replace("123", fileArg));"""
-  # r = buildRegFunction("(?<!N)LOGE",[1,1],strict=False)
-  # print (re.findall(r,s))
-  # exit()
+    ds = getDefaultStrings()
+    tel.update(ds)
+    makeRawFile(tel)
+  else:
+    tel = getRawFile()
 
-  fl = getFileList()
-  tel = {}
-  autoEl = getRegExs(fl)
-  tel.update(autoEl)
+ 
 
-  ds = getDefaultStrings()
-  tel.update(ds)
   # print (autoEl)
   langs  = [
   {'code':'fr','name':'french'},
-  {'code':'es','name':'spanish'},
-  {'code':'ru','name':'russian'},
-  {'code':'el','name':'greek'}
+  # {'code':'es','name':'spanish'},
+  # {'code':'ru','name':'russian'},
+  # {'code':'el','name':'greek'}
   ]
   # tel.update({k['name']:('None',0) for k in langs})
   for lang in langs:
     mt = buildLocalMT(tel,lang['code'])
+    print('localMT built')
     toJUCEfmt(mt,lang)
   
     buildPO(mt,lang)

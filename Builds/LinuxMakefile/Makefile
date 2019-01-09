@@ -35,7 +35,7 @@ ifeq ($(CONFIG),Debug)
     TARGET_ARCH := 
   endif
 
-  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DDEBUG=1 -D_DEBUG=1 -DLINK_PLATFORM_LINUX=1 -DJUCE_PLUGINHOST_LADSPA=1 -DJUCER_LINUX_MAKE_6D53C8B4=1 -DJUCE_APP_VERSION=1.2.10 -DJUCE_APP_VERSION_HEX=0x1020a $(shell pkg-config --cflags alsa freetype2 x11 xext xinerama libcurl) -pthread -I../../../JUCE/modules/juce_audio_processors/format_types/VST3_SDK -I../../JuceLibraryCode -I../../../JUCE/modules -I../../Source -I../../../JUCE/modules/juce_audio_processors/format_types/VST3_SDK/ -I../../third_party/VST2_SDK/ -I../../third_party/libpd/pure-data/src -I../../third_party/serial/include -I../../third_party/rubberband/ -I../../third_party/link/include/ -I../../third_party/link/modules/asio-standalone/asio/include $(CPPFLAGS)
+  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DDEBUG=1 -D_DEBUG=1 -DLINK_PLATFORM_LINUX=1 -DJUCE_PLUGINHOST_LADSPA=1 -DJUCER_LINUX_MAKE_6D53C8B4=1 -DJUCE_APP_VERSION=1.3.2 -DJUCE_APP_VERSION_HEX=0x10302 $(shell pkg-config --cflags alsa freetype2 x11 xext xinerama libcurl) -pthread -I../../../JUCE/modules/juce_audio_processors/format_types/VST3_SDK -I../../JuceLibraryCode -I../../../JUCE/modules -I../../Source -I../../../JUCE/modules/juce_audio_processors/format_types/VST3_SDK/ -I../../third_party/VST2_SDK/ -I../../third_party/libpd/pure-data/src -I../../third_party/serial/include -I../../third_party/rubberband/ -I../../third_party/link/include/ -I../../third_party/link/modules/asio-standalone/asio/include $(CPPFLAGS)
   JUCE_CPPFLAGS_APP := -DJucePlugin_Build_VST=0 -DJucePlugin_Build_VST3=0 -DJucePlugin_Build_AU=0 -DJucePlugin_Build_AUv3=0 -DJucePlugin_Build_RTAS=0 -DJucePlugin_Build_AAX=0 -DJucePlugin_Build_Standalone=0 -DJucePlugin_Build_Unity=0
   JUCE_TARGET_APP := LGML
 
@@ -56,7 +56,7 @@ ifeq ($(CONFIG),Release)
     TARGET_ARCH := 
   endif
 
-  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DNDEBUG=1 -DLINK_PLATFORM_LINUX=1 -DJUCE_PLUGINHOST_LADSPA=1 -DJUCER_LINUX_MAKE_6D53C8B4=1 -DJUCE_APP_VERSION=1.2.10 -DJUCE_APP_VERSION_HEX=0x1020a $(shell pkg-config --cflags alsa freetype2 x11 xext xinerama libcurl) -pthread -I../../../JUCE/modules/juce_audio_processors/format_types/VST3_SDK -I../../JuceLibraryCode -I../../../JUCE/modules -I../../Source -I../../../JUCE/modules/juce_audio_processors/format_types/VST3_SDK/ -I../../third_party/VST2_SDK/ -I../../third_party/libpd/pure-data/src -I../../third_party/serial/include -I../../third_party/rubberband/ -I../../third_party/link/include/ -I../../third_party/link/modules/asio-standalone/asio/include $(CPPFLAGS)
+  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DNDEBUG=1 -DLINK_PLATFORM_LINUX=1 -DJUCE_PLUGINHOST_LADSPA=1 -DJUCER_LINUX_MAKE_6D53C8B4=1 -DJUCE_APP_VERSION=1.3.2 -DJUCE_APP_VERSION_HEX=0x10302 $(shell pkg-config --cflags alsa freetype2 x11 xext xinerama libcurl) -pthread -I../../../JUCE/modules/juce_audio_processors/format_types/VST3_SDK -I../../JuceLibraryCode -I../../../JUCE/modules -I../../Source -I../../../JUCE/modules/juce_audio_processors/format_types/VST3_SDK/ -I../../third_party/VST2_SDK/ -I../../third_party/libpd/pure-data/src -I../../third_party/serial/include -I../../third_party/rubberband/ -I../../third_party/link/include/ -I../../third_party/link/modules/asio-standalone/asio/include $(CPPFLAGS)
   JUCE_CPPFLAGS_APP := -DJucePlugin_Build_VST=0 -DJucePlugin_Build_VST3=0 -DJucePlugin_Build_AU=0 -DJucePlugin_Build_AUv3=0 -DJucePlugin_Build_RTAS=0 -DJucePlugin_Build_AAX=0 -DJucePlugin_Build_Standalone=0 -DJucePlugin_Build_Unity=0
   JUCE_TARGET_APP := LGML
 
@@ -77,8 +77,10 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/ControllableContainer_a2acad5b.o \
   $(JUCE_OBJDIR)/ControllableUIHelpers_49826e4b.o \
   $(JUCE_OBJDIR)/ControllableIndexedContainer_32b95300.o \
+  $(JUCE_OBJDIR)/FileParameter_be7c65ea.o \
   $(JUCE_OBJDIR)/UndoableHelper_584c3b19.o \
   $(JUCE_OBJDIR)/ParameterContainerSync_5c3cffa0.o \
+  $(JUCE_OBJDIR)/FileParameterUI_18aa3fb3.o \
   $(JUCE_OBJDIR)/ParameterListUI_d20d268d.o \
   $(JUCE_OBJDIR)/GenericParameterContainerEditor_282bb6ae.o \
   $(JUCE_OBJDIR)/BetterStepper_3cf8b0d3.o \
@@ -168,6 +170,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/ConnectorComponent_6241d4e7.o \
   $(JUCE_OBJDIR)/ConnectableNode_839a1f42.o \
   $(JUCE_OBJDIR)/NodeBase_407fb0e1.o \
+  $(JUCE_OBJDIR)/Preset_bc005410.o \
   $(JUCE_OBJDIR)/PresetChooserUI_a00dd29.o \
   $(JUCE_OBJDIR)/PresetManager_886e07.o \
   $(JUCE_OBJDIR)/JsContainerSync_8918f0e.o \
@@ -299,6 +302,11 @@ $(JUCE_OBJDIR)/ControllableIndexedContainer_32b95300.o: ../../Source/Controllabl
 	@echo "Compiling ControllableIndexedContainer.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/FileParameter_be7c65ea.o: ../../Source/Controllable/Parameter/FileParameter.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling FileParameter.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/UndoableHelper_584c3b19.o: ../../Source/Controllable/Parameter/UndoableHelper.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling UndoableHelper.cpp"
@@ -307,6 +315,11 @@ $(JUCE_OBJDIR)/UndoableHelper_584c3b19.o: ../../Source/Controllable/Parameter/Un
 $(JUCE_OBJDIR)/ParameterContainerSync_5c3cffa0.o: ../../Source/Controllable/Parameter/ParameterContainerSync.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling ParameterContainerSync.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/FileParameterUI_18aa3fb3.o: ../../Source/Controllable/Parameter/UI/FileParameterUI.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling FileParameterUI.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/ParameterListUI_d20d268d.o: ../../Source/Controllable/Parameter/UI/ParameterListUI.cpp
@@ -752,6 +765,11 @@ $(JUCE_OBJDIR)/ConnectableNode_839a1f42.o: ../../Source/Node/ConnectableNode.cpp
 $(JUCE_OBJDIR)/NodeBase_407fb0e1.o: ../../Source/Node/NodeBase.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling NodeBase.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/Preset_bc005410.o: ../../Source/Preset/Preset.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling Preset.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/PresetChooserUI_a00dd29.o: ../../Source/Preset/PresetChooserUI.cpp

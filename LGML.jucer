@@ -4,7 +4,7 @@
               companyWebsite="http://www.organic-orchestra.com" cppLanguageStandard="14"
               displaySplashScreen="1" id="a1hJPO" includeBinaryInAppConfig="1"
               jucerVersion="5.4.1" name="LGML" projectType="guiapp" reportAppUsage="1"
-              splashScreenColour="Dark" version="1.2.10" companyCopyright="Organic Orchestra"
+              splashScreenColour="Dark" version="1.3.2" companyCopyright="Organic Orchestra"
               headerPath="../../../JUCE/modules/juce_audio_processors/format_types/VST3_SDK/&#10;../../third_party/VST2_SDK/&#10;../../third_party/libpd/pure-data/src&#10;../../third_party/serial/include&#10;../../third_party/rubberband/&#10;../../third_party/link/include/&#10;../../third_party/link/modules/asio-standalone/asio/include">
   <MAINGROUP id="RYpQgZ" name="LGML">
     <GROUP id="{C4A5CA13-B090-453E-F1E3-DE9F74C715E2}" name="Assets">
@@ -68,6 +68,9 @@
         <FILE compile="0" file="Source/Controllable/ControllableIndexedContainer.h"
               id="W7C4WZ" name="ControllableIndexedContainer.h" resource="0"/>
         <GROUP id="lRGBzB" name="Parameter">
+          <FILE id="yoeRWg" name="FileParameter.cpp" compile="1" resource="0"
+                file="Source/Controllable/Parameter/FileParameter.cpp"/>
+          <FILE id="ioCHmj" name="FileParameter.h" compile="0" resource="0" file="Source/Controllable/Parameter/FileParameter.h"/>
           <FILE id="hjYavb" name="UndoableHelper.cpp" compile="1" resource="0"
                 file="Source/Controllable/Parameter/UndoableHelper.cpp"/>
           <FILE id="qj0HsL" name="UndoableHelper.h" compile="0" resource="0"
@@ -77,6 +80,10 @@
           <FILE id="zSQQ5G" name="ParameterContainerSync.h" compile="0" resource="0"
                 file="Source/Controllable/Parameter/ParameterContainerSync.h"/>
           <GROUP id="y1gtRH" name="UI">
+            <FILE id="BJ6JLD" name="FileParameterUI.cpp" compile="1" resource="0"
+                  file="Source/Controllable/Parameter/UI/FileParameterUI.cpp"/>
+            <FILE id="X7VG29" name="FileParameterUI.h" compile="0" resource="0"
+                  file="Source/Controllable/Parameter/UI/FileParameterUI.h"/>
             <FILE id="EPzCSu" name="ParameterListUI.cpp" compile="1" resource="0"
                   file="Source/Controllable/Parameter/UI/ParameterListUI.cpp"/>
             <FILE id="aSq0F3" name="ParameterListUI.h" compile="0" resource="0"
@@ -467,6 +474,8 @@
               resource="0"/>
       </GROUP>
       <GROUP id="{8E787ECF-77A1-DE5D-3FC3-DDC21EE0A766}" name="Preset">
+        <FILE id="BjwAMJ" name="Preset.cpp" compile="1" resource="0" file="Source/Preset/Preset.cpp"/>
+        <FILE id="Ae2C3X" name="Preset.h" compile="0" resource="0" file="Source/Preset/Preset.h"/>
         <FILE compile="1" file="Source/Preset/PresetChooserUI.cpp" id="Dq6F4I"
               name="PresetChooserUI.cpp" resource="0"/>
         <FILE compile="0" file="Source/Preset/PresetChooserUI.h" id="hRr3BA"
@@ -724,8 +733,8 @@
   </MAINGROUP>
   <EXPORTFORMATS>
     <XCODE_MAC bigIcon="jsU7Hw" documentExtensions="lgml" externalLibraries=""
-               extraCompilerFlags="-Wno-reorder&#10;&#10;&#10;" extraDefs="LINK_PLATFORM_MACOSX=1&#10;"
-               extraLinkerFlags="../../third_party/rubberband/lib/librubberband.a"
+               extraCompilerFlags="-Wall&#10;-Wno-unknown-pragmas&#10;-Wno-reorder&#10;"
+               extraDefs="LINK_PLATFORM_MACOSX=1&#10;" extraLinkerFlags="../../third_party/rubberband/lib/librubberband.a"
                keepCustomXcodeSchemes="1" postbuildCommand="" prebuildCommand=""
                smallIcon="jsU7Hw" targetFolder="Builds/MacOSX" vst3Folder="third_party/VST3_SDK"
                vstFolder="" microphonePermissionNeeded="1" xcodeSubprojects="third_party/libpd/libpd.xcodeproj:libpd-osx-multi">
@@ -737,10 +746,10 @@
         <CONFIGURATION cppLanguageStandard="c++11" cppLibType="libc++" customXcodeFlags="ONLY_ACTIVE_ARCH=1,GCC_PRECOMPILE_PREFIX_HEADER=1,GCC_PREFIX_HEADER=PrefixHeader.pch"
                        defines="" headerPath="" isDebug="1" name="Debug" osxArchitecture="32BitUniversal"
                        osxCompatibility="10.7 SDK" targetName="LGML" enablePluginBinaryCopyStep="1"/>
-        <CONFIGURATION cppLanguageStandard="c++11" cppLibType="libc++" customXcodeFlags="ONLY_ACTIVE_ARCH=1"
+        <CONFIGURATION cppLanguageStandard="c++11" cppLibType="libc++" customXcodeFlags="ONLY_ACTIVE_ARCH=1,GCC_PREFIX_HEADER=PrefixHeader.pch"
                        defines="LGML_UNIT_TESTS=1&#10;" headerPath="../../Source" isDebug="1"
                        name="Test" osxArchitecture="32BitUniversal" osxCompatibility="10.7 SDK"
-                       targetName="LGML_Debug" enablePluginBinaryCopyStep="1"/>
+                       targetName="LGMLTest" enablePluginBinaryCopyStep="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../JUCE/modules"/>

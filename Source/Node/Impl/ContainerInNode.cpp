@@ -25,7 +25,7 @@ ContainerInNode::ContainerInNode (StringRef name) :
     AudioGraphIOProcessor (AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioInputNode)
 {
     canBeRemovedByUser = false;
-    canHavePresets = false;
+    _canHavePresets = false;
     userCanAccessInputs = false;
 
     numChannels = addNewParameter<IntParameter> ("Num Audio Inputs", "Number of input channels for this container", 2, 0, 100);

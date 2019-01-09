@@ -32,7 +32,7 @@ public:
     void setNormalizedValue (const floatParamType  normalizedValue, bool silentSet = false, bool force = false);
 
     floatParamType getNormalizedValue() const;
-
+    static T UNBOUNDEDVALUE;
     DECLARE_OBJ_TYPE (NumericParameter,"Numeric parameter")
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NumericParameter)
 };
@@ -45,7 +45,10 @@ typedef NumericParameter<floatParamType> FloatParameter;
 template<class T>
 floatParamType NumericParameter<T>::getNormalizedValue() const
 {
-    if ((T)minimumValue == (T)maximumValue)
+    if(!hasFiniteBounds()){
+        return (floatParamType)value;
+    }
+    else if ((T)minimumValue == (T)maximumValue)
     {
         return (floatParamType)0;
     }
@@ -56,7 +59,13 @@ floatParamType NumericParameter<T>::getNormalizedValue() const
 template<class T>
 void NumericParameter<T>::setNormalizedValue (const floatParamType  normalizedValue, bool silentSet, bool force)
 {
-    setValue ((T)(jmap<floatParamType> (normalizedValue, (floatParamType)minimumValue, (floatParamType)maximumValue)), silentSet, force);
+    if(!hasFiniteBounds()){
+        setValue ((T)(normalizedValue), silentSet,force);
+    }
+    else{
+        setValue ((T)(jmap<floatParamType> (normalizedValue, (floatParamType)minimumValue, (floatParamType)maximumValue)), silentSet,
+                  force);
+    }
 }
 
 #endif  // INTPARAMETER_H_INCLUDED

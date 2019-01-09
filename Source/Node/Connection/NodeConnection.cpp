@@ -239,7 +239,7 @@ void NodeConnection::audioOutputRemoved (ConnectableNode* n, int channel)
 }
 
 
-DynamicObject* NodeConnection::getObject()
+DynamicObject* NodeConnection::createObject()
 {
     auto data = new DynamicObject();
 
@@ -258,8 +258,8 @@ DynamicObject* NodeConnection::getObject()
 
     if (auto s = dynamic_cast<ContainerInNode*> (destNode.get())) tDest = (s)->getParentNodeContainer();
 
-    data->setProperty ("srcNode", tSource->shortName);
-    data->setProperty ("dstNode", tDest->shortName);
+    data->setProperty ("srcNode", tSource->shortName.toString());
+    data->setProperty ("dstNode", tDest->shortName.toString());
     data->setProperty ("connectionType", (int)connectionType);
 
     var links;

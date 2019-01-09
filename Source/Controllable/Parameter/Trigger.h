@@ -32,7 +32,7 @@ public:
 
 
     DynamicObject* createDynamicObject() override;
-    DynamicObject* getObject() override;
+    DynamicObject* createObject() override;
     var getVarState() override;
 
     int64 lastTime;

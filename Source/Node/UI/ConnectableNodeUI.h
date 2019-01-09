@@ -128,7 +128,7 @@ public:
     
 
 
-//    DynamicObject* getObject();
+//    DynamicObject* createObject();
 //    void setFromObject(const DynamicObject * obj);
 
 

@@ -33,11 +33,15 @@ class FastMapperUI :
     private Button::Listener,
     private Inspector::InspectorListener,
     private LGMLDragger::Listener,
-    public ShapeShifterContentComponent
+    public ShapeShifterContent,
+    public InspectableComponent
 
 {
 public:
-    FastMapperUI (const String& contentName, FastMapper* fastMapper, ControllableContainer* viewFilterContainer = nullptr);
+    typedef ParameterContainer ContainerType;
+    typedef ParameterBase ControllableType;
+
+    FastMapperUI (const String& contentName, FastMapper* fastMapper, ContainerType* viewFilterContainer = nullptr);
     virtual ~FastMapperUI();
 
     FastMapper* fastMapper;
@@ -49,8 +53,8 @@ public:
     ScopedPointer<Component> potentialIn, potentialOut;
     StackedContainerViewport<FastMapUI,FastMap> mapsUI;
 
-    ControllableContainer* viewFilterContainer;
-    Controllable* viewFilterControllable;
+    Array<WeakReference<ContainerType> > viewFilterContainers;
+    Array<WeakReference<ControllableType>> viewFilterControllables;
 
     void clear();
 
@@ -58,8 +62,8 @@ public:
     void removeFastMapUI (FastMapUI*);
 
     void resetAndUpdateView();
-    void setViewFilter (ControllableContainer* filterContainer);
-    void setViewFilter (Controllable* filterControllable);
+    void setViewFilter (const Array<WeakReference<ContainerType> > & filterContainer);
+    void setViewFilter (const Array<WeakReference<ControllableType>> & filterControllable);
     void resetViewFilter();
     bool mapPassViewFilter (FastMap*);
 
@@ -80,7 +84,7 @@ private:
 
     void buttonClicked (Button*) override;
     // Inspector Listener
-    void currentComponentChanged (Inspector* ) override;
+    void selectionChanged (Inspector* ) override;
 
     // LGMLDrager
     void mappingModeChanged(bool) override;

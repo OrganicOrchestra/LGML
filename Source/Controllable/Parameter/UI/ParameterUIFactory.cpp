@@ -34,6 +34,8 @@
 
 #include "../ParameterProxy.h"
 #include "ParameterProxyUI.h"
+#include "../FileParameter.h"
+#include "FileParameterUI.h"
 
 #include "../RangeParameter.h"
 #include "RangeParameterUI.h"
@@ -44,10 +46,17 @@
 
 
 #define CHKNRETURN(p,classN,UIN)  if(p->isType< classN >()) {return new UIN((classN*)p);}
+
 #define CHKNRETURNSLIDER(p,classN,UIN)      if(auto s = dynamic_cast<classN *>(t)){ \
                                                 if(s->hasFiniteBounds()){ \
                                                     return new UIN(s); \
                                                 } \
+}
+
+#define CHKNRETURNSTEPOR(p,classN,UIN)      if(auto s = dynamic_cast<classN *>(t)){ \
+if(s->hasFiniteBounds()){ \
+return new UIN(s); \
+} \
 }
 
 //#define REG(cls,meth)
@@ -56,12 +65,19 @@ ParameterUI* ParameterUIFactory::createDefaultUI ( ParameterBase* t)
 
     CHKNRETURN (t, BoolParameter, BoolToggleUI)
     CHKNRETURN (t, StringParameter, StringParameterUI)
-    CHKNRETURN (t, FloatParameter, FloatSliderUI)
+
     CHKNRETURN (t, Trigger, TriggerBlinkUI)
+    if(auto s = dynamic_cast<FloatParameter *>(t)){
+        if(s->hasFiniteBounds()){ return new FloatSliderUI(s);} else{return new FloatStepperUI(s);
+        }
+    }
+
+//        CHKNRETURN (t, FloatParameter, FloatSliderUI)
     CHKNRETURN (t, IntParameter, IntStepperUI)
     CHKNRETURN (t, EnumParameter, EnumParameterUI)
     CHKNRETURN (t, RangeParameter, RangeParameterUI)
     CHKNRETURN (t, ParameterProxy, ParameterProxyUI)
+    CHKNRETURN (t, FileParameter, FileParameterUI)
     CHKNRETURNSLIDER(t,ParameterList<int>, ParameterListUI<int>)
     CHKNRETURNSLIDER(t,ParameterList<floatParamType>, ParameterListUI<floatParamType>)
     

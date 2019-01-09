@@ -28,37 +28,51 @@
 InspectableComponent::InspectableComponent (const String& _inspectableType ):
 inspectableType (_inspectableType),
 relatedParameterContainer (nullptr),
-relatedParameter(nullptr),
-recursiveInspectionLevel (0),
-canInspectChildContainersBeyondRecursion (true),
-isSelected (false),
-paintBordersWhenSelected (true),
-bringToFrontOnSelect (true){
-
+relatedParameter(nullptr)
+{
+    init();
+    
 }
 InspectableComponent::InspectableComponent (ParameterContainer* _relatedContainer, const String& _inspectableType) :
 inspectableType (_inspectableType),
 relatedParameterContainer (_relatedContainer),
-relatedParameter(nullptr),
-recursiveInspectionLevel (0),
-canInspectChildContainersBeyondRecursion (true),
-isSelected (false),
-paintBordersWhenSelected (true),
-bringToFrontOnSelect (true)
+relatedParameter(nullptr)
 {
+    visibleName = juce::translate(_relatedContainer->getNiceName());
+    init();
 
 }
 
 InspectableComponent::InspectableComponent ( ParameterBase* _relatedParameter, const String& _inspectableType) :
 inspectableType (_inspectableType),
 relatedParameterContainer (nullptr),
-relatedParameter(_relatedParameter),
-recursiveInspectionLevel (0),
-canInspectChildContainersBeyondRecursion (true),
-isSelected (false),
-paintBordersWhenSelected (true),
-bringToFrontOnSelect (true)
+relatedParameter(_relatedParameter)
 {
+    visibleName = juce::translate(_relatedParameter->niceName);
+    init();
+}
+
+void InspectableComponent::init(){
+    recursiveInspectionLevel  = 0;
+    canInspectChildContainersBeyondRecursion =true;
+    isSelected =false;
+    paintBordersWhenSelected =true;
+    bringToFrontOnSelect =true;
+    setWantsKeyboardFocus(true);
+
+}
+
+void InspectableComponent::setRelatedContainer(ParameterContainer* pc){
+    jassert(relatedParameter==nullptr);
+    jassert(relatedParameterContainer==nullptr);
+    relatedParameterContainer = pc;
+    visibleName = juce::translate(relatedParameterContainer->getNiceName());
+}
+void InspectableComponent::setRelatedParameter(ParameterBase* p ){
+    jassert(relatedParameter==nullptr);
+    jassert(relatedParameterContainer==nullptr);
+    relatedParameter = p;
+    visibleName = juce::translate(relatedParameter->niceName);
 
 }
 InspectableComponent::~InspectableComponent()
@@ -82,6 +96,53 @@ void InspectableComponent::mouseUp (const MouseEvent&)
     selectThis();
 }
 
+
+DynamicObject * InspectableComponent::createObject(){
+    if(auto * pc = getRelatedParameterContainer()){
+        return pc->createObject();
+    }
+    else if(auto * p = getRelatedParameter()){
+        return p->createObject();
+    }
+    jassertfalse; // should override for custom InspectableComponent
+    return new DynamicObject();
+}
+
+Component * getFirstInspectableContainer(Component* c,int maxDepthCount){
+    for(auto *cc:c->getChildren()){
+        if(dynamic_cast<InspectableComponent*>(cc)){
+            return c;
+        }
+    }
+    if(maxDepthCount>0){
+        for(auto *cc:c->getChildren()){
+            if(auto ccc = getFirstInspectableContainer(cc, maxDepthCount-1)){
+                return ccc;
+            }
+        }
+    }
+    return nullptr;
+
+}
+
+bool InspectableComponent::keyPressed (const KeyPress& k){
+    if(k==KeyPress('a',ModifierKeys::commandModifier,0) ){
+        if(Component * iC = getFirstInspectableContainer(this,4)){
+        Array<WeakReference<InspectableComponent> > toSelect;
+        for(auto *c:iC->getChildren()){
+            if(auto ic = dynamic_cast<InspectableComponent*>(c)){
+                toSelect.add(ic);
+            }
+        }
+        if(toSelect.size()){
+            Inspector::getInstance()->selectComponents( toSelect);
+            return true;
+        }
+        }
+    }
+    return false;
+}
+
 void InspectableComponent::selectThis()
 {
     if (Inspector::getInstanceWithoutCreating() == nullptr)
@@ -89,7 +150,9 @@ void InspectableComponent::selectThis()
         ShapeShifterManager::getInstance()->showPanelWindowForContent (PanelName::InspectorPanel);
     }
 
-    Inspector::getInstance()->setCurrentComponent (this);
+    Inspector::getInstance()->selectOnly(this);
+    if(isShowing())
+        grabKeyboardFocus();
 }
 
 void InspectableComponent::setVisuallySelected (bool value)

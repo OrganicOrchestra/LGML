@@ -211,6 +211,8 @@ AudioMixerNode::OutputBus::OutputBus (int _outputIndex, int numInput):
     outputIndex (_outputIndex),
     ParameterContainer ("out " + String (_outputIndex+1))
 {
+    nameParam->setInternalOnlyFlags(true,false);
+    
     setNumInput (numInput);
 
 

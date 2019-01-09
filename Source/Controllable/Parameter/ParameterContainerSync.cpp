@@ -14,7 +14,7 @@
 
 ParameterContainerSync::ParameterContainerSync(const String& name,ParameterContainer *_slave=nullptr):root(nullptr),slave(_slave){
     if(!slave)slave = new ParameterContainer(name);
-    slave->nameParam->isEditable = false;
+    slave->nameParam->setInternalOnlyFlags(true,false);
 
 }
 ParameterContainerSync::~ParameterContainerSync(){
@@ -37,13 +37,19 @@ ParameterContainer * ParameterContainerSync::getSlaveRelatedContainer(ParameterC
     if(c==root){
         return slave;
     }
- StringArray arr (c->getControlAddressArray(root));
-    ParameterContainer * inner = dynamic_cast<ParameterContainer*>(slave->getControllableContainerForAddress(arr));;
-    if( tryLastName && !inner &&  arr.size()){
-        StringArray lastArr (arr);
-        lastArr.getReference(arr.size()-1) = Controllable::toShortName(c->nameParam->lastValue.toString());
-        if(auto lastIn =  dynamic_cast<ParameterContainer*>(slave->getControllableContainerForAddress(lastArr))){
-            inner = lastIn;
+    ParameterContainer * inner = dynamic_cast<ParameterContainer*>(slave->getMirroredContainer(c,root));
+    if( tryLastName && !inner){
+
+        ControlAddressType relAddr = c->controlAddress.getRelativeTo(root->controlAddress);
+        if(relAddr.size()==0){
+            jassertfalse;
+            return nullptr;
+        }
+        relAddr.set(relAddr.size()-1,Controllable::toShortName(c->nameParam->lastValue.toString()));
+        inner =  dynamic_cast<ParameterContainer*>(relAddr.resolveContainerFromContainer(slave));
+
+        if(!inner){
+            jassertfalse;
         }
     }
     
@@ -52,10 +58,7 @@ ParameterContainer * ParameterContainerSync::getSlaveRelatedContainer(ParameterC
 }
 
 ParameterContainer * ParameterContainerSync::getRootRelatedContainer(ParameterContainer *c){
-    const StringArray arr (c->getControlAddressArray(slave));
-    auto inner = dynamic_cast<ParameterContainer*>(root->getControllableContainerForAddress(arr));
-
-    return inner;
+    return dynamic_cast<ParameterContainer*>(root->getMirroredContainer(c,slave));;
 }
 
 void ParameterContainerSync::clear () {
@@ -83,9 +86,9 @@ void ParameterContainerSync::checkContExists(ParameterContainer * fromRoot){
         if(!testTarget){
             return;
         }
-        auto arr =fromRoot->getControlAddressArray(root);
+        auto arr =fromRoot->getControlAddressRelative(root);
 
-        StringArray added;
+        ControlAddressType added;
         ParameterContainer * parent = slave;
         // create object path if not exists
         for(auto& a:arr){
@@ -105,7 +108,7 @@ void ParameterContainerSync::checkContExists(ParameterContainer * fromRoot){
                 else{
                     target->setNiceName(fromRoot->getNiceName());
                 }
-                target->nameParam->isEditable = false;
+                target->nameParam->setInternalOnlyFlags(true,false);
 
 
                 parent->addChildControllableContainer(target);
@@ -179,9 +182,7 @@ void ParameterContainerSync::childAddressChanged (ControllableContainer* /*notif
 
 
 };
-void ParameterContainerSync::controllableContainerPresetLoaded (ControllableContainer*) {
 
-};
 void ParameterContainerSync::containerWillClear (ControllableContainer* c) {
     auto pc=dynamic_cast<ParameterContainer*>(c);
     if(c==root){

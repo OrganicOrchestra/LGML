@@ -1,27 +1,36 @@
 /* Copyright © Organic Orchestra, 2017
-*
-* This file is part of LGML.  LGML is a software to manipulate sound in realtime
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation (version 3 of the License).
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*/
+ *
+ * This file is part of LGML.  LGML is a software to manipulate sound in realtime
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation (version 3 of the License).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
 #if !ENGINE_HEADLESS
 
 #include "EnumParameterUI.h"
 
 #include "../UndoableHelper.h"
 
+#include "../../../Engine.h"
+
+#if JUCE_DEBUG && 0
+#define DBGENUM(x) DBG(x)
+#else
+#define DBGENUM(x)
+#endif
+
 EnumParameterUI::EnumParameterUI ( ParameterBase* parameter) :
-    ParameterUI (parameter),
-    ep ((EnumParameter*)parameter),
-    lastId (NoneId),
-    isSorted(true)
+ParameterUI (parameter),
+ep ((EnumParameter*)parameter),
+lastId (NoneId),
+isSorted(true),
+hoveredByFile(false)
 {
     addMouseListener(this, true);
     cb.addListener (this);
@@ -71,20 +80,20 @@ void EnumParameterUI::updateComboBox()
 
         for (auto& key : keys)
         {
-            
-//            String key = kv.name.toString();
+
+            //            String key = kv.name.toString();
             String displayed = juce::translate(key);//+" ["+kv.value.toString()+"]";
             cb.addItem (displayed, id);
             idKeyMap.set (id, key);
             keyIdMap.set (key, id);
             id++;
         }
-        
+
     }
 
-    
+
     String sel = ep->getFirstSelectedId().toString();
-//    DBG("enum CB Select " << sel << " ; " << ep->shortName);
+    //    DBGENUMENUM("enum CB Select " << sel << " ; " << ep->shortName);
     selectString (sel);
 
     if (ep->isEditable)
@@ -121,11 +130,14 @@ void EnumParameterUI::enumOptionRemoved (EnumParameter*, const Identifier&)
 }
 void EnumParameterUI::enumOptionSelectionChanged (EnumParameter*, bool _isSelected, bool isValid, const Identifier& name)
 {
-    DBG ("enum change : " << name.toString() << (!_isSelected ? " not" : "") << " selected " << (!isValid ? "in-" : "") << "valid");
+    DBGENUM ("enum change : " <<parameter->niceName <<"->"<< name.toString() << (!_isSelected ? " not" : "") << " selected " << (!isValid ? "in-" : "") << "valid");
 
     if (isValid)
     {
-        jassert (keyIdMap.contains (name.toString()));
+        if(!keyIdMap.contains (name.toString())){
+            updateComboBox();
+            jassert(keyIdMap.contains (name.toString()));
+        }
         cb.setSelectedId (_isSelected ? keyIdMap[name.toString()] : 0, dontSendNotification);
     }
 }
@@ -240,10 +252,10 @@ void EnumParameterUI::comboBoxChanged (ComboBox* c)
                 cb.setSelectedId (lastId, dontSendNotification);
             }
             else{
-                
+
                 cb.setTextWhenNothingSelected (ep->niceName);
                 cb.setSelectedId(NoneId);
-                
+
             }
         }
         else if ( id == NoneId)
@@ -277,6 +289,53 @@ void EnumParameterUI::selectString (const juce::String& s)
         lastId = NoneId;
     }
 }
+
+bool EnumParameterUI::isInterestedInFileDrag (const StringArray& files) {
+    return ep->getModel()->isFileBased;
+};
+void EnumParameterUI::fileDragEnter (const StringArray& files, int x, int y) {
+    hoveredByFile = true;
+    repaint();
+};
+void EnumParameterUI::fileDragMove (const StringArray& files, int x, int y) {
+
+};
+void EnumParameterUI::fileDragExit (const StringArray& files) {
+    hoveredByFile = false;
+    repaint();
+};
+void EnumParameterUI::filesDropped (const StringArray& files, int x, int y) {
+    String fname;
+    bool needRemove = ep->getFirstSelectedId()!=Identifier::null;
+    for(auto & fp :files){
+        File f(fp);
+        fname = f.getFileNameWithoutExtension();
+        needRemove &= (fname!=ep->getFirstSelectedId().toString());
+        String fpath = getEngine()->getNormalizedFilePath(f.getFullPathName());
+        ep->addOrSetOption(fname, fpath);
+    }
+    if(fname.isNotEmpty()){
+        if( needRemove){
+            ep->removeOption(ep->getFirstSelectedId());
+        }
+        ep->selectId (fname, true, false);
+    }
+    hoveredByFile = false;
+    repaint();
+
+};
+
+void EnumParameterUI::paintOverChildren(Graphics & g) {
+    if(hoveredByFile){
+        auto r = getLocalBounds();
+        bool willReplace = ep->getFirstSelectedId()!=Identifier::null;
+        g.setColour(willReplace?Colours::red:findColour(TextButton::buttonOnColourId));
+        g.drawRect(r);
+    }
+    
+    
+}
+
 
 
 #endif

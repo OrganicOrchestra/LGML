@@ -196,7 +196,6 @@ private:
     sample_clk_t recordNeedle, playNeedle, globalPlayNeedle;
 
 
-    int tailRecordNeedle;
 
 
 

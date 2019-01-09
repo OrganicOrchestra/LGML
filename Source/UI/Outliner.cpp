@@ -267,7 +267,7 @@ void Outliner::buttonClicked(Button *b){
     if(b==&linkToSelected){
         if(linkToSelected.getToggleState()){
             Inspector::getInstance()->addInspectorListener(this);
-            if(auto sel = Inspector::getInstance()->getCurrentContainerSelected())
+            if(auto sel = Inspector::getInstance()->getFirstCurrentContainerSelected())
                 setRoot(sel);
         }
         else{
@@ -276,14 +276,14 @@ void Outliner::buttonClicked(Button *b){
         }
     }
 }
-void Outliner::currentComponentChanged (Inspector * i ){
+void Outliner::selectionChanged (Inspector * i ){
     if(linkToSelected.getToggleState()){
         // ignore child components
-        if(isParentOf(i->getCurrentComponent()))
+        if(isParentOf(i->getFirstCurrentComponent()))
             return;
 
 
-        if(auto sel = i->getCurrentContainerSelected()){
+        if(auto sel = i->getFirstCurrentContainerSelected()){
             treeView.getProperties().set(blockSelectionPropagationId, true);
             setRoot(sel);
             treeView.getProperties().set(blockSelectionPropagationId, false);
@@ -399,7 +399,12 @@ void OutlinerItem::controllableContainerRemoved(ControllableContainer * notif,Co
 
 void OutlinerItem::childControllableAdded (ControllableContainer* notif, Controllable* ori) {
     if(notif && notif==container){
-        MessageManager::callAsync([this , ori](){addSubItem(new OutlinerItem (dynamic_cast <ParameterBase*>(ori),true));});
+        auto safeOri = WeakReference<Controllable>(ori);
+        auto outlinerItemParent = WeakReference<OutlinerItem>(this);
+        MessageManager::callAsync([outlinerItemParent , safeOri](){
+            if(safeOri && outlinerItemParent)
+                outlinerItemParent.get()->addSubItem(new OutlinerItem (dynamic_cast <ParameterBase*>(safeOri.get()),true));
+        });
     }
     else if (container){
         jassertfalse;
@@ -427,8 +432,8 @@ void OutlinerItem::childControllableRemoved (ControllableContainer* notif, Contr
 String OutlinerItem::getUniqueName() const
 {
     // avoid empty names
-    if (isContainer) {return "/it/" + container.get()->getControlAddress();}
-    else            {return "/it/" + parameter.get()->getControlAddress();}
+    if (isContainer) {return "/it" + (container.get()?container.get()->getControlAddress().toString():"old");}
+    else            {return "/it" + (parameter.get()?parameter.get()->getControlAddress().toString():"old");}
 
 };
 
@@ -442,12 +447,12 @@ void OutlinerItem::itemSelectionChanged (bool isNowSelected){
     }
     if(auto c= static_cast<OutlinerItemComponent*>(currentDisplayedComponent.get())){
         auto* insp = Inspector::getInstance();
-        if(insp->getCurrentComponent()!=c){
+        if(insp->getFirstCurrentComponent()!=c){
             if(isNowSelected ){
-                insp->setCurrentComponent(c);
+                insp->selectOnly(c);
             }
             else{
-                insp->setCurrentComponent(nullptr);
+                insp->deselectAll();
             }
 
         }
@@ -459,17 +464,20 @@ void OutlinerItem::itemSelectionChanged (bool isNowSelected){
 
 
 OutlinerItemComponent::OutlinerItemComponent (OutlinerItem* _item) :
-InspectableComponent (_item->container),
+InspectableComponent ("OutlinerItem"),
 item (_item),
 label ("label", _item->isContainer ? item->container->getNiceName() : item->parameter->niceName),
 paramUI (nullptr)
 
 {
-    if(!_item->isContainer){
-        InspectableComponent::relatedParameter = _item->parameter;
-        InspectableComponent::relatedParameterContainer = nullptr;
+    if(_item->isContainer){
+        InspectableComponent::setRelatedContainer(_item->container);
     }
-    setTooltip (item->isContainer ? item->container->getControlAddress() : juce::translate(item->parameter->description) + "\n"+juce::translate("Control Address")+" : "  + item->parameter->controlAddress);
+    else{
+        InspectableComponent::setRelatedParameter(_item->parameter);
+
+    }
+    setTooltip (item->isContainer ? item->container->getControlAddress().toString() : juce::translate(item->parameter->description) + "\n"+juce::translate("Control Address")+" : "  + item->parameter->controlAddress.toString());
     bool isNameEditable = !item->isContainer && item->parameter->isUserDefined;
     if(item->isContainer)
         isNameEditable|=item->container->nameParam->isEditable;

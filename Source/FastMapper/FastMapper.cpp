@@ -18,12 +18,16 @@
 
 #include "FastMapper.h"
 
+#if !ENGINE_HEADLESS
+#include "../Controllable/Parameter/UI/ParameterUI.h"
+#endif
+
 #include "../Controller/ControllerManager.h"
 juce_ImplementSingleton (FastMapper)
 IMPL_OBJ_TYPE (FastMapper);
 
 template<>
-void ControllableContainer::OwnedFeedbackListener<FastMapper>::controllableFeedbackUpdate (ControllableContainer* notif, Controllable*ori) {
+void ControllableContainer::OwnedFeedbackListener<FastMapper>::controllableFeedbackUpdate (ControllableContainer* notif, Controllable* ori) {
 
     if (auto p = ParameterBase::fromControllable (ori))
     {
@@ -32,7 +36,7 @@ void ControllableContainer::OwnedFeedbackListener<FastMapper>::controllableFeedb
                 auto now=Time::getMillisecondCounter();
                 jassert(now>=owner->lastFMAddedTime);
                 // debounce control changes, to avoid setting potentialOutput back
-                if (ori->isUserDefined && now-owner->lastFMAddedTime>500){
+                if (p->isUserDefined && now-owner->lastFMAddedTime>500){
                     owner->setPotentialInput (p);
                 }
             }
@@ -51,7 +55,7 @@ lastFMAddedTime(0),
 pSync(this)
 {
 
-    nameParam->isEditable = false;
+    nameParam->setInternalOnlyFlags(true,false);
     potentialIn = addNewParameter<ParameterProxy> ("Input", "potential input for new fastMap,\nto assing :\n- move a controller in mapping mode\n- alt click on other LGML parameter\n- use this popup");
     potentialOut = addNewParameter<ParameterProxy> ("Output", "potential output for new fastMap\nto assign :\n- click on parameter in mapping mode\n- navigate through this popup");
 
@@ -61,10 +65,9 @@ pSync(this)
     LGMLDragger::getInstance()->addSelectionListener (this);
     #endif
 
-    potentialIn->isSavable = false;
-    potentialOut->isSavable = false;
-    potentialIn->isPresettable = false;
-    potentialOut->isPresettable = false;
+    potentialIn->setSavable(false);
+    potentialOut->setSavable(false);
+    
 
 
 }
@@ -122,6 +125,7 @@ void FastMapper::clear()
 FastMap* FastMapper::addFastMap()
 {
 
+
     ScopedPointer<FastMap> f ( new FastMap());
 
     f->nameParam->isEditable = true;
@@ -137,6 +141,11 @@ FastMap* FastMapper::addFastMap()
         lastFMAddedTime = Time::getMillisecondCounter();
 
         #if !ENGINE_HEADLESS
+        for(auto ui : ParameterUI::getAllParameterUIs()){
+            if(f->getProxyForParameter(ui->parameter)){
+                ui->setHasMappedParameter(true);
+            }
+        }
         // avoid listener feedback
         MessageManager::callAsync([this](){
             if(auto dr = LGMLDragger::getInstance()){
@@ -189,9 +198,27 @@ bool FastMapper::checkDuplicates (FastMap* f)
 
 void FastMapper::removeFastmap (FastMap* f)
 {
+
     jassert (f);
     removeChildControllableContainer (f);
     maps.removeObject (f);
+#if !ENGINE_HEADLESS
+    for(auto ui:ParameterUI::getAllParameterUIs()){
+        if(ui && f->getProxyForParameter(ui->parameter)){
+            bool isStillMapped = false;
+            for(auto *f:maps){
+                if(f->getProxyForParameter(ui->parameter)){
+                    isStillMapped=true;
+                    break;
+                }
+            }
+            if(!isStillMapped){
+                ui->setHasMappedParameter(false);
+            }
+        }
+
+    }
+#endif
 }
 
 
@@ -241,4 +268,16 @@ void  FastMapper::linkedParamChanged (ParameterProxy* p ) {
             createNewFromPotentials();
     }
 
+}
+
+bool  FastMapper::isParameterMapped (ParameterBase * p){
+    if(!p)return false;
+//    jassert(p);
+    for (const auto * f : maps){
+        if(f->getProxyForParameter(p)){
+            return true;
+        }
+    }
+
+    return false;
 }

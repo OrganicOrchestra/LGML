@@ -23,9 +23,10 @@
 #include "../Controllable/Parameter/UI/ParameterUIFactory.h"
 #include "../Utils/FactoryUIHelpers.h"
 
-FastMapperUI::FastMapperUI (const String& contentName,FastMapper* _fastMapper, ControllableContainer* _viewFilterContainer) :
-ShapeShifterContentComponent (contentName,"Link parameters together\nAdd FastMap here\nCmd+m toggles mapping mode"),
-    fastMapper (_fastMapper), viewFilterContainer (_viewFilterContainer),
+FastMapperUI::FastMapperUI (const String& contentName,FastMapper* _fastMapper, ContainerType* _viewFilterContainer) :
+InspectableComponent(_fastMapper),
+ShapeShifterContent (this,contentName,"Link parameters together\nAdd FastMap here\nCmd+m toggles mapping mode"),
+fastMapper (_fastMapper), viewFilterContainers {WeakReference<ContainerType>(_viewFilterContainer)},
 mapsUI(new StackedContainerUI<FastMapUI, FastMap>(
                                                   [](FastMapUI* ui){return ui->fastMap;},
                                                   [_fastMapper](int ia, int ib){
@@ -52,7 +53,7 @@ mapsUI(new StackedContainerUI<FastMapUI, FastMap>(
 
     potentialIn =  ParameterUIFactory::createDefaultUI (fastMapper->potentialIn);
     potentialOut = ParameterUIFactory::createDefaultUI (fastMapper->potentialOut);
-    candidateLabel.setText("candidate", dontSendNotification);
+    candidateLabel.setText(juce::translate("candidate"), dontSendNotification);
     addAndMakeVisible(candidateLabel);
     addAndMakeVisible (potentialIn);
     addAndMakeVisible (potentialOut);
@@ -115,37 +116,41 @@ void FastMapperUI::resetAndUpdateView()
     resized();
 }
 
-void FastMapperUI::setViewFilter (ControllableContainer* filterContainer)
+void FastMapperUI::setViewFilter (const Array<WeakReference<ContainerType>> & filterContainer)
 {
-    viewFilterContainer = filterContainer;
-    viewFilterControllable = nullptr;
+    viewFilterContainers = filterContainer;
+    viewFilterControllables.clear();
     MessageManager::getInstance()->callAsync([this](){resetAndUpdateView();});
 }
 
-void FastMapperUI::setViewFilter (Controllable* filterControllable)
+void FastMapperUI::setViewFilter (const Array<WeakReference<ControllableType>> & filterControllable)
 {
-    viewFilterContainer = nullptr;
-    viewFilterControllable = filterControllable;
+    viewFilterContainers.clear();
+    viewFilterControllables = filterControllable;
     MessageManager::getInstance()->callAsync([this](){resetAndUpdateView();});
 }
 
 void FastMapperUI::resetViewFilter(){
-    viewFilterContainer = nullptr;
-    viewFilterControllable = nullptr;
+    viewFilterContainers.clear();
+    viewFilterControllables.clear();
     MessageManager::getInstance()->callAsync([this](){resetAndUpdateView();});
 }
 
 bool FastMapperUI::mapPassViewFilter (FastMap* f)
 {
 
-    if (viewFilterContainer == nullptr && viewFilterControllable==nullptr) return true;
+    if (viewFilterContainers.size()==0 && viewFilterControllables.size()==0) return true;
 
-    if( viewFilterContainer){
-    if (f->referenceIn->linkedParam != nullptr && (ControllableContainer*)f->referenceIn->linkedParam->isChildOf (viewFilterContainer)) return true;
 
-    if (f->referenceOut->linkedParam != nullptr && (ControllableContainer*)f->referenceOut->linkedParam->isChildOf (viewFilterContainer)) return true;
+    for(auto & viewFilterContainer : viewFilterContainers){
+        if (f->referenceIn->linkedParam != nullptr && (ControllableContainer*)f->referenceIn->linkedParam->isChildOf (viewFilterContainer)) return true;
+
+        if (f->referenceOut->linkedParam != nullptr && (ControllableContainer*)f->referenceOut->linkedParam->isChildOf (viewFilterContainer)) return true;
+
     }
-    else if(viewFilterControllable){
+
+
+    for (auto & viewFilterControllable: viewFilterControllables){
         if (f->referenceIn->linkedParam == viewFilterControllable ||
             f->referenceOut->linkedParam == viewFilterControllable)
             return true;
@@ -176,7 +181,7 @@ int FastMapperUI::getContentHeight() const
 
 void FastMapperUI::resized()
 {
-    ShapeShifterContentComponent::resized();
+    
     Rectangle<int> r = getLocalBounds().reduced (2);
     auto inputHeader  = r.removeFromTop (getTargetHeight());
     candidateLabel.setBounds(inputHeader.removeFromLeft(100));
@@ -190,9 +195,9 @@ void FastMapperUI::resized()
 
     // empty shows help
     if(mapsUI.getNumStacked()==0){
-        auto labelR = r.removeFromTop(r.getHeight()/2);
-        infoLabel.setVisible(true);
-        infoLabel.setBounds(labelR);
+//        auto labelR = r.removeFromTop(r.getHeight()/2);
+//        infoLabel.setVisible(true);
+//        infoLabel.setBounds(labelR);
         int side = (int)( jmin(r.getWidth(),r.getHeight()) * .95);
         addFastMapButton.setBounds(r.withSizeKeepingCentre(side,side));
 
@@ -201,7 +206,7 @@ void FastMapperUI::resized()
         r.removeFromTop (5);
         r.reduce (2, 0);
         mapsUI.setBounds(r);
-        infoLabel.setVisible(false);
+//        infoLabel.setVisible(false);
         addFastMapButton.setFromParentBounds (r);
     }
 
@@ -218,7 +223,7 @@ void FastMapperUI::mouseDown (const MouseEvent& e)
     if (e.mods.isRightButtonDown())
     {
         PopupMenu m;
-        m.addItem (1, juce::translate("Add Fast Map"));
+        m.addItem (1, juce::translate("Add FastMap"));
         int result = m.show();
 
         switch (result)
@@ -277,7 +282,7 @@ void FastMapperUI::buttonClicked (Button* b)
         if (linkToSelection.getToggleState())
         {
             Inspector::getInstance()->addInspectorListener (this);
-            setViewFilter (Inspector::getInstance()->getCurrentContainerSelected());
+            setViewFilter (Inspector::getInstance()->getContainersSelected());
         }
         else
         {
@@ -302,16 +307,16 @@ ParameterUI * getParamFromComponent(Component * comp){
     }
     return nullptr;
 }
-void FastMapperUI::currentComponentChanged (Inspector* i)
+void FastMapperUI::selectionChanged (Inspector* i)
 {
     jassert (linkToSelection.getToggleState());
-    auto * curCont = i->getCurrentContainerSelected();
+    auto * curCont = i->getFirstCurrentContainerSelected();
     // prevent self selection
     if (dynamic_cast<FastMap*> (curCont) || dynamic_cast<FastMapper*>(curCont)) {return;}
 
-    if(auto container = curCont)
-        setViewFilter (container);
-    else if(auto pui = getParamFromComponent(i->getCurrentComponent())){
+    if(WeakReference<ParameterContainer> container = dynamic_cast<ParameterContainer*> (curCont))
+        setViewFilter (Array<WeakReference<ParameterContainer>>{container});
+    else if(auto pui = getParamFromComponent(i->getFirstCurrentComponent())){
         setViewFilter(pui->parameter);
 
     }

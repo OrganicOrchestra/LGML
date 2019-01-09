@@ -21,7 +21,7 @@
 // LGML is GPL v3
 #define JUCE_DISPLAY_SPLASH_SCREEN 0
 #define JUCE_REPORT_APP_USAGE 0
-
+#define JUCE_ENABLE_REPAINT_DEBUGGING 0
 // we really don't care of unreferenced parameter warnings do we?
 #pragma warning (disable : 4100)
 
