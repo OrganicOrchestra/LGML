@@ -7,7 +7,7 @@ import re
 import json
 
 sourcePath = os.path.abspath(os.path.join(__file__,os.path.pardir,os.path.pardir,os.path.pardir,'Source'))
-jucePath =  'lal'#os.path.abspath(os.path.join(__file__,os.path.pardir,os.path.pardir,os.path.pardir,os.path.pardir,'JUCE','modules'))
+jucePath =  os.path.abspath(os.path.join(__file__,os.path.pardir,os.path.pardir,os.path.pardir,os.path.pardir,'JUCE','modules'))
 
 baseTranslationPath = os.path.expanduser('~/Documents/LGML/translations/')
 # baseTranslationPath = os.path.expanduser('~/owncloud/DEVSPECTACLES/Tools/LGML/translations')
@@ -245,15 +245,16 @@ def getAnglicisms(translator,dest):
           return cn,"#"+chr(cn)
         for i in range(len(anglicisms)):
           a = anglicisms[i]
-          (cn,e) = getValidC(cn)
-          self.encodeAngl[a] = e
           c = a[0]
-          cn+=1
           (cn,e) = getValidC(cn)
           if c.lower()!=a[0]:
             self.encodeAngl[c.lower()+a[1:]] = e
           else:
             self.encodeAngl[a+'s'] = e
+
+          cn+=1
+          (cn,e) = getValidC(cn)
+          self.encodeAngl[a] = e
 
 
     def encode(self,s):
@@ -284,7 +285,7 @@ def checkUntranslatable(strs):
   #these are not translated if they fully match regEx (usually exact match)
   regs = []
   untranslated = []
-  regs+=list(map(re.compile,["^"+x+"$" for x in ["Link","Link Peers","Link Latency","x","y","X","Y"]]))
+  regs+=list(map(re.compile,["^"+x+"$" for x in ["Link","Link Peers","Link Latency","Logger","x","y","X","Y"]]))
   for k in strs:
     found = False
     for r in regs:
