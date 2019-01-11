@@ -91,6 +91,8 @@ class NodeManagerUIViewport :
 public :
     NodeManagerUIViewport (const String& contentName, NodeManagerUI* _nmui): nmui (_nmui), ShapeShifterContentComponent (contentName,"Patch your Audio here")
     {
+        gridSizeUI =ParameterUIFactory::createDefaultUI(nmui->gridSize);
+        addAndMakeVisible(gridSizeUI);
         vp.setViewedComponent (nmui, false);
         vp.setScrollBarsShown (true, true);
         vp.setScrollOnDragEnabled (false);
@@ -109,6 +111,7 @@ public :
 
         vp.addMouseListener(this,true);
 
+
     }
 
     virtual ~NodeManagerUIViewport()
@@ -122,6 +125,7 @@ public :
 //    }
 
     ScopedPointer<ParameterUI> minimizeAllUI;
+    ScopedPointer<ParameterUI> gridSizeUI;
     OwnedArray<TextButton> pathButtons;
 
     void reconstructViewerPath()
@@ -137,6 +141,7 @@ public :
         if( nmui->currentViewer){
         NodeContainer* c = nmui->currentViewer->nodeContainer;
         minimizeAllUI = ParameterUIFactory::createDefaultUI(nmui->currentViewer->minimizeAll);
+
         addAndMakeVisible(minimizeAllUI);
 
             
@@ -212,6 +217,7 @@ public :
         Rectangle<int> buttonR = r.removeFromTop (30).reduced (5);
         
         minimizeAllUI->setBounds(buttonR.removeFromRight(100));
+        gridSizeUI->setBounds(buttonR.removeFromRight(100));
         for (auto& b : pathButtons)
         {
             b->setBounds (buttonR.removeFromLeft (100));
