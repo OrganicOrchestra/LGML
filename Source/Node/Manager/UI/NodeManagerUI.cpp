@@ -77,7 +77,7 @@ ParameterContainer("NodeManagerUI"),isMiniMode(false)
     p->addChildControllableContainer(this);
     nodeManager->addNodeManagerListener (this);
     execOrDefer([this](){setCurrentViewedContainer (nodeManager);});
-    
+    gridSize = addNewParameter<IntParameter>("gridSize","grid size to snap elements to",10,0,100);
 //    nodeManager->parentContainer->addChildControllableContainer(uiSync->getSlaveContainer());
 
 }
@@ -194,6 +194,15 @@ void NodeManagerUI::childBoundsChanged (Component* )
     }
 }
 
+
+void NodeManagerUI::alignOnGrid(Point<int> &toAlign){
+    if(gridSize->intValue()>0){
+        int g = gridSize->intValue();
+        toAlign.x -=toAlign.x%g;
+        toAlign.y -=toAlign.y%g;
+    }
+
+}
 bool NodeManagerUI::keyPressed (const KeyPress& key)
 {
     if (key.getModifiers().isCommandDown() && key.getKeyCode() == KeyPress::upKey)

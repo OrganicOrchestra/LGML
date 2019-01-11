@@ -163,9 +163,18 @@ void ConnectableNodeUI::moved()
     auto pp = getCurrentPositionParam();
     if(pp){
         auto stp=pp->getPoint();
+        auto nmui = findParentComponentOfClass<NodeManagerUI>();
+
         if(stp!=p){
+            auto gridp = p;
+            if(nmui)nmui->alignOnGrid(p);
+            if(p!=gridp){
+                setBounds(p.x,p.y, getWidth(), getHeight());
+            }
+            else{
             Array<var> v  ({p.x,p.y});
             UndoableHelpers::setValueUndoable(pp,v);
+            }
             //else{pp->setValue(v);}
         }
     }

@@ -73,7 +73,9 @@ public:
     bool keyPressed (const KeyPress& key)override;
 
 
-
+    void alignOnGrid(Point<int> &toAlign);
+    IntParameter * gridSize;
+    
     ScopedPointer<UISync> uiSync;
     bool isMiniMode;
     ParameterContainer * addContainerFromObject(const String &,DynamicObject * d) override;

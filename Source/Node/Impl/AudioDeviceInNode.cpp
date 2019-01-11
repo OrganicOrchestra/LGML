@@ -151,7 +151,7 @@ void AudioDeviceInNode::numChannelsChanged (bool isInput)
 void AudioDeviceInNode::addVolMute()
 {
     //  const ScopedLock lk (NodeBase::getCallbackLock());
-    auto* p = addNewParameter<BoolParameter> (String ("mute") + String (inMutes.size() + 1), "Mute if disabled", false);
+    auto* p = addNewParameter<BoolParameter> (String ("mute") + String (inMutes.size() + 1), juce::translate("Mute if disabled"), false);
 
     p->invertVisuals = true;
     inMutes.add (p);
