@@ -462,7 +462,7 @@ const int Engine::getElapsedMillis()const {
 }
 
 
-File& getTranslationFolder(){
+File& Engine::getTranslationFolder(){
 static File tf = File::getSpecialLocation(File::userDocumentsDirectory).getChildFile("LGML").getChildFile("translations");
     return tf;
 }

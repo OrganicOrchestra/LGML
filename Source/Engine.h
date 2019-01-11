@@ -159,6 +159,7 @@ public:
     
     static void setLanguage(const String & l);
     static StringArray getAvailableLanguages();
+    static File& getTranslationFolder();
 
 
 

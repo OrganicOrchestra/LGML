@@ -260,16 +260,25 @@ namespace{
 
 }
 
+template <class T,class ...Args>
+T* createNMod(std::function<void(T*)>  f,Args ...args){
+    auto o = new T(args...);
+    f(o);
+    return o;
+}
+
 class PrefPanel : public PreferencesPanel{
     Component* createComponentForPage (const String& pageName)override{
         if(pageName==juce::translate(AppPropertiesUI::GeneralPageName)){
             auto res =  new PropertyPanel();
+            auto translationUI = new EnumPropUI("language",Engine::getAvailableLanguages(),&Engine::setLanguage,juce::translate("(restart needed)"));
+            translationUI->setTooltip(juce::translate("language files must be located in ")+Engine::getTranslationFolder().getFullPathName() );
             res->addProperties
             (
              {
                  new BoolPropUI("check for updates"),
                  createActionProp(juce::translate("check for updates now"),checkUpdatesNow),
-                 new EnumPropUI("language",Engine::getAvailableLanguages(),&Engine::setLanguage,juce::translate("(restart needed)"))
+                 translationUI
 
              } );
             return res;
