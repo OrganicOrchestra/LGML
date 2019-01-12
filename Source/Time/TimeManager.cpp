@@ -465,7 +465,12 @@ void TimeManager::updateState()
     if (timeState.isPlaying != desiredTimeState.isPlaying)
     {
         dbg += "play:" + String (timeState.isPlaying ? "1" : "0") + "/" + (desiredTimeState.isPlaying ? "1" : "0");
+        if(playState->boolValue()!=desiredTimeState.isPlaying){
+            playState->setValueFrom(this,desiredTimeState.isPlaying);
+        }
+        else{
         timeManagerListeners.call (&TimeManagerListener::playStop, desiredTimeState.isPlaying);
+        }
     }
 
     if (timeState.time != desiredTimeState.time)
