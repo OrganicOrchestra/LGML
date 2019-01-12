@@ -847,6 +847,9 @@ void LooperTrack::setTrackState (TrackState newState)
             if (getQuantization() == 0) quantizedPlayStart = 0;
             else quantizedPlayStart = timeManager->getNextQuantifiedTime (quantizeTime);
 
+            if(!timeManager->isPlaying() && ! timeManager->playState->isSettingValue()){
+                timeManager->play(true);
+            }
             //            quantizedPlayStart = timeManager->getNextQuantifiedTime(1.0/beatLength->intValue());
             //            quantizedPlayStart = timeManager->getTimeForNextBeats(beatLength->value);
 
