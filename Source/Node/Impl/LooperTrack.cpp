@@ -199,6 +199,7 @@ void LooperTrack::processBlock (AudioBuffer<float>& buffer, MidiBuffer&)
 }
 bool LooperTrack::updatePendingLooperTrackState (int blockSize)
 {
+
     TimeManager* tm = TimeManager::getInstance();
     // the sample act as free running clock when no quantization
     sample_clk_t curTime = tm->getTimeInSample();
@@ -701,6 +702,7 @@ void LooperTrack::askForSelection (bool)
 }
 
 
+
 void LooperTrack::setTrackState (TrackState newState)
 {
 
@@ -827,7 +829,7 @@ void LooperTrack::setTrackState (TrackState newState)
             }
         }
         // a cleared track can't be played
-        else  if (trackState == CLEARED)
+        else  if (trackState == CLEARED && desiredState == CLEARED)
         {
             startPlayBeat = 0;
             startRecBeat = 0;
@@ -945,15 +947,17 @@ void LooperTrack::enumOptionSelectionChanged (EnumParameter* ep, bool _isSelecte
 
         if (!path.isEmpty())
         {
-            MessageManager::callAsync([this,path](){loadAudioSample (path);});
+            MessageManager::callAsync([this,path](){
+                loadAudioSample (path);
+            });
             return;
         }
 
     }
 
-    // should clear if no audio sample
+    // TODO :   should clear if no audio sample, but fornow changing enum triggers, unselection,then selection so looper get confuse
     if(ep->getSelectedIds().size()==0){
-        clear();
+        setTrackState (WILL_STOP);
     }
     else{
         //        jassertfalse;
@@ -1019,7 +1023,7 @@ void LooperTrack::loadAudioSample (const String& path)
                 // playableBuffer.stopRecordingTail();
                 bool wasPlaying = tm->isPlaying();
                 playableBuffer.setState (PlayableBuffer::BUFFER_STOPPED);
-                setTrackState (STOPPED);
+                setTrackState (STOPPED); // need to be called even if played later to comply with fsm (cleared track can't be played
 
 
 
@@ -1046,11 +1050,13 @@ void LooperTrack::loadAudioSample (const String& path)
         else
         {
             LOGE(juce::translate("sample loading : format not supported : ") << audioFile.getFileExtension());
+            setTrackState(CLEARED);
         }
     }
     else
     {
         LOGE(juce::translate("sample loading : file not found : ") << audioFile.getFullPathName());
+        setTrackState(CLEARED);
     }
     isLoadingAudioFile = false;
 }
