@@ -520,7 +520,7 @@ timerTicks(0){
                                                         0,0);
     audioCpu->setInternalOnlyFlags(true,false);
 
-    //startTimer(300);
+    startTimer(300);
 
 //TODO implement UI Monitoring tool
 //    activateGlobalStats(true);
