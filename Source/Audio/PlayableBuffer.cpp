@@ -307,12 +307,12 @@ inline bool PlayableBuffer::readNextBlock (AudioBuffer<float>& buffer, sample_cl
         return false;
     }
 
-    if (fromSample > 0)
-    {
-        jassert (isFirstPlayingFrame() ||
-                 (playNeedle + fromSample + getRecordedLength()) % getRecordedLength() == 0);
-
-    }
+//    if (fromSample > 0)
+//    {
+//        jassert (isFirstPlayingFrame() ||
+//                 (playNeedle + fromSample + getRecordedLength()) % getRecordedLength() == 0);
+//
+//    }
 
     int numSamples = buffer.getNumSamples() - fromSample;
 
