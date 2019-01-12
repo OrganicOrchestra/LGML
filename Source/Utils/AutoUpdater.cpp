@@ -514,7 +514,7 @@ hasEnded(false)
 {
     startTimer (2000);
 }
-constexpr int maxTimeOut = 20000;
+constexpr int maxTimeOut = 2000;
 LatestVersionChecker::~LatestVersionChecker()
 {
     stopThread (maxTimeOut);
@@ -634,7 +634,7 @@ void LatestVersionChecker::checkForNewVersion()
         const int numRedirects = 0;
 
         const ScopedPointer<InputStream> in (updateURL.createInputStream (false, nullptr, nullptr,
-                                                                          extraHeaders, maxTimeOut*3/4, &responseHeaders,
+                                                                          extraHeaders, maxTimeOut*0.5f, &responseHeaders,
                                                                           &statusCode, numRedirects));
 
         if (threadShouldExit())
