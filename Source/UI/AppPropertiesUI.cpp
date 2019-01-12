@@ -38,8 +38,9 @@ String AppPropertiesUI::PluginsPageName("Plugins");
 
 class BoolPropUI : public BooleanPropertyComponent{
 public:
-    explicit BoolPropUI(const String & _name):BooleanPropertyComponent(juce::translate(_name),"1","0"),name(_name){
+    explicit BoolPropUI(const String & _name,const String  tooltip=""):BooleanPropertyComponent(juce::translate(_name),"1","0"),name(_name){
         jassert(getAppProperties()->getUserSettings()->containsKey(name));
+        setTooltip(tooltip);
     }
     bool getState() const override{
         return  getAppProperties()->getUserSettings()->getBoolValue(name);
@@ -57,14 +58,14 @@ public:
 class EnumPropUI : public ChoicePropertyComponent{
 public:
     typedef std::function<void(const String &)> CBType;
-    EnumPropUI(const String & _name, StringArray _choices,CBType _cb,const String & suffix=String()):
+    EnumPropUI(const String & _name, StringArray _choices,CBType _cb,const String & suffix=String(),const String  tooltip=""):
     ChoicePropertyComponent(juce::translate(_name)+(suffix.isEmpty()?"":" "+juce::translate(suffix))),
     name(_name),
     cb(std::move(_cb)),
     nonTranslatedChoices (std::move(_choices))
     {
 
-
+        setTooltip(tooltip);
         for(auto &s:nonTranslatedChoices){
             ChoicePropertyComponent::choices.add(juce::translate(s));
         }
@@ -101,13 +102,14 @@ public:
 
 class FileListPropertyComponent : public TextPropertyComponent{
 public:
-    FileListPropertyComponent(const String& propertyName,String defaultValue="",bool isMultiLine=false):
+    FileListPropertyComponent(const String& propertyName,String defaultValue="",bool isMultiLine=false,const String  tooltip=""):
     TextPropertyComponent (juce::translate(propertyName),//const String& propertyName,
                            100,//int maxNumChars,
                            isMultiLine,
                            true)//bool isEditable = true)
     ,name(propertyName)
     {
+        setTooltip(tooltip);
         auto savedV = getAppProperties()->getUserSettings()->getValue(name);
 
             setText(savedV);
@@ -147,9 +149,9 @@ public:
 template<class FunctionType>
 class BoolUnsavedPropUI : public BooleanPropertyComponent{
 public:
-    BoolUnsavedPropUI(const String & _name,FunctionType f,bool defaultV = false):BooleanPropertyComponent(juce::translate(_name),"1","0"),internalState(defaultV),func(f){
+    BoolUnsavedPropUI(const String & _name,FunctionType f,bool defaultV = false,const String  tooltip=""):BooleanPropertyComponent(juce::translate(_name),"1","0"),internalState(defaultV),func(f){
 
-
+        setTooltip(tooltip);
     }
     bool getState() const override{
         return  internalState;
@@ -168,7 +170,7 @@ public:
 template<class FunctionType>
 class ActionPropUI : public ButtonPropertyComponent{
 public:
-    ActionPropUI(const String & name,FunctionType f):ButtonPropertyComponent(juce::translate(name),true),func(f){};
+    ActionPropUI(const String & name,FunctionType f,const String  tooltip=""):ButtonPropertyComponent(juce::translate(name),true),func(f){setTooltip(tooltip);};
     void buttonClicked() override{
         func(this);
     }
@@ -271,14 +273,12 @@ class PrefPanel : public PreferencesPanel{
     Component* createComponentForPage (const String& pageName)override{
         if(pageName==juce::translate(AppPropertiesUI::GeneralPageName)){
             auto res =  new PropertyPanel();
-            auto translationUI = new EnumPropUI("language",Engine::getAvailableLanguages(),&Engine::setLanguage,juce::translate("(restart needed)"));
-            translationUI->setTooltip(juce::translate("language files must be located in ")+Engine::getTranslationFolder().getFullPathName() );
             res->addProperties
             (
              {
                  new BoolPropUI("check for updates"),
                  createActionProp(juce::translate("check for updates now"),checkUpdatesNow),
-                 translationUI
+                 new EnumPropUI("language",Engine::getAvailableLanguages(),&Engine::setLanguage,juce::translate("(restart needed)"),juce::translate("language files must be located in ")+Engine::getTranslationFolder().getFullPathName())
 
              } );
             return res;
