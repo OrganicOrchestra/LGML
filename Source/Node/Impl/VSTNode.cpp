@@ -142,6 +142,8 @@ void VSTNode::onContainerParameterChanged ( ParameterBase* p)
                     initParametersFromProcessor(innerPlugin);
                     getVSTState();
                 }
+                suspendProcessing (false);
+                parentNodeContainer->updateAudioGraph();
 
 
 #endif
@@ -267,7 +269,7 @@ void VSTNode::setVSTState(){
         else updateParametersFromProcessor(innerPlugin);
         
         
-        suspendProcessing (false);
+        
 
 
     }
