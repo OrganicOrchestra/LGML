@@ -539,11 +539,12 @@ void NodeContainerViewer::mouseDrag (const MouseEvent&  e)
                     if(selectedInitBounds.contains(s)){
                         Point <int> newSize = selectedInitBounds.getReference(s).withPosition(Point<int>(0,0)).getBottomRight() + diff;
 
-                        if(auto nodeUI = dynamic_cast<ConnectableNodeUI*>(s.get()))
+                        if(auto nodeUI = dynamic_cast<ConnectableNodeUI*>(s.get())){
                             nodeUI->nodeSize->setPoint(newSize);
-                    }
-                    else{
-                        jassertfalse;
+                        }
+                        else{
+                            jassertfalse;
+                        }
                     }
                 }
             }
