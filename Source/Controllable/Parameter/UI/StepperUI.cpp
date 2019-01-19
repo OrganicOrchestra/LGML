@@ -51,6 +51,7 @@ StepperUI<T>::~StepperUI()
 template<class T>
 void StepperUI<T>::mouseDown(const MouseEvent & e){
     ParameterUI::mouseDown(e);
+    if (!parameter){jassertfalse; return;}
 }
 
 template<class T>

@@ -28,6 +28,7 @@ public:
     }
     //  default creation for simple types
     static ParameterBase* createBaseFromVar (StringRef name, const var&);
+    static Array<Identifier> getCompatibleTypes(ParameterBase*);
 };
 
 

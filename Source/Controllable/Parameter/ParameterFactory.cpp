@@ -13,6 +13,8 @@
 */
 
 #include "ParameterFactory.h"
+#include "ParameterContainer.h"
+
 
 ParameterBase* ParameterFactory::createBaseFromVar (StringRef n, const var& v)
 {
@@ -38,6 +40,17 @@ ParameterBase* ParameterFactory::createBaseFromVar (StringRef n, const var& v)
         jassertfalse;
         return nullptr;
     }
+}
+
+Array<Identifier> ParameterFactory::getCompatibleTypes(ParameterBase* p ){
+    static  Array<Identifier> AllGroup {Trigger::_factoryType,BoolParameter::_factoryType,FloatParameter::_factoryType,IntParameter::_factoryType,EnumParameter::_factoryType,StringParameter::_factoryType,Point2DParameter<floatParamType>::_factoryType};
+    Array<Identifier>    res;
+    for(auto & a : AllGroup){
+        if(a!=p->getFactoryTypeId()){
+            res.add(a);
+        }
+    }
+    return res;
 }
 
 

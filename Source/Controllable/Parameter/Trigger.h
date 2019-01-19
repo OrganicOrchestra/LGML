@@ -52,24 +52,7 @@ public:
         }
     }
     void tryToSetValue (const var & _value, bool silentSet, bool force,Listener * notifier=nullptr) override
-    {
-
-        if (!waitOrDeffer (_value, silentSet, force))
-        {
-            if ( ! ((_value.isInt() && (int) _value == 0)
-                    || (_value.isDouble() && (double) _value == 0)
-                   ))
-            {
-
-                _isSettingValue = true;
-
-                if (!silentSet) notifyValueChanged(false,notifier);
-
-                _isSettingValue = false;
-            }
-        }
-
-    }
+    ;
 
     DECLARE_OBJ_TYPE (Trigger,"trigger parameter")
 

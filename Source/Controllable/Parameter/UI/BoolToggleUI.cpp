@@ -89,7 +89,7 @@ void BoolToggleUI::paint (Graphics& g)
 void BoolToggleUI::mouseDown (const MouseEvent& e)
 {
     ParameterUI::mouseDown (e);
-
+    if (!parameter){jassertfalse; return;}
     if (!parameter->isEditable) return;
 
     if (e.mods.isLeftButtonDown() && !e.mods.isAnyModifierKeyDown())

@@ -54,6 +54,8 @@ EnumParameterUI::~EnumParameterUI()
 }
 
 void EnumParameterUI::mouseDown(const MouseEvent & e){
+    if (!parameter){jassertfalse; return;}
+    ParameterUI::mouseDown(e);
     if(e.mods.isLeftButtonDown())
         ep->getModel()->refresh();
 }

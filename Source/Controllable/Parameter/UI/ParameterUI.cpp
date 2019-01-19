@@ -14,6 +14,7 @@
 #if !ENGINE_HEADLESS
 
 #include "ParameterUI.h"
+#include "../ParameterFactory.h"
 #include "../../../Utils/DebugHelpers.h"
 #include "../../../UI/Style.h"
 #include "../../../UI/LGMLDragger.h"
@@ -101,6 +102,20 @@ void ParameterUI::mouseDown (const MouseEvent& e)
         p.addItem (5, juce::translate("Copy control value"));
         p.addItem (3, juce::translate("Add FastMap To"));
         p.addItem (4, juce::translate("Add FastMap From"));
+        Array<Identifier> typeSwitch;
+        if(parameter->isUserDefined){
+            typeSwitch = ParameterFactory::getCompatibleTypes(parameter);
+            if(typeSwitch.size()){
+                PopupMenu tp;
+                int i = 50;
+                for( auto & t : typeSwitch){
+                    tp.addItem(i,ParameterFactory::typeToNiceName(t.toString()));
+                    i++;
+                }
+                p.addSubMenu(juce::translate("change parameter type"), tp);
+            }
+
+        }
         const UICommandType & cmds(getUICommands());
         if(cmds.size()){
         p.addSeparator();
@@ -136,6 +151,22 @@ void ParameterUI::mouseDown (const MouseEvent& e)
             default:
                 if(result>=100){
                     processUICommand(result-100);
+                }
+                else if(result>=50){
+                    ParameterContainer * parentC = dynamic_cast<ParameterContainer *>(parameter->parentContainer.get());
+
+
+                    if(parentC){
+                        int oriIdx = parentC->controllables.indexOf(parameter);
+                        auto niceName = parameter->niceName;
+                        var obj (parameter->createObject());
+                        parentC->removeControllable(parameter);
+                        auto np = ParameterFactory::createFromTypeID(typeSwitch.getUnchecked(result-50),niceName,obj.getDynamicObject());
+                        parentC->addParameter(np,oriIdx,true);
+                    }
+                    else{
+                        jassertfalse;
+                    }
                 }
                 break;
 

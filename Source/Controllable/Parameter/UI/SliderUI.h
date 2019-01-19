@@ -60,7 +60,7 @@ public:
 
 
 protected:
-
+    void launchEditWindow();
     void processUICommand(int ) override;
     const UICommandType &  getUICommands( ) const override;
 

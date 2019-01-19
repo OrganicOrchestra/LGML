@@ -180,7 +180,7 @@ template<class T>
 void SliderUI<T>::mouseDown (const MouseEvent& e)
 {
     ParameterUI::mouseDown (e);
-
+    if (!parameter){jassertfalse; return;}
     if (!parameter->isEditable) return;
 
 
@@ -252,6 +252,9 @@ void SliderUI<T>::processUICommand(int i) {
         case 2:
             UndoableHelpers::setValueUndoable(parameter, parameter->floatValue()>0?0:(T)parameter->lastValue);
             break;
+        case 3: 
+            launchEditWindow();
+            break;
         default:
             break;
 
@@ -262,11 +265,50 @@ void SliderUI<T>::processUICommand(int i) {
 
 
 template<class T>
+void SliderUI<T>::launchEditWindow(){
+    AlertWindow nameWindow ("Set a value", "Set a new value for this parameter", AlertWindow::AlertIconType::NoIcon, this);
+    nameWindow.addTextEditor ("newValue", parameter->stringValue());
+
+    if (parameter->isUserDefined)
+    {
+        nameWindow.addTextBlock ("min Value");
+        nameWindow.addTextEditor ("minValue", parameter->getAs<MinMaxParameter>()->minimumValue);
+        nameWindow.addTextBlock ("max Value");
+        nameWindow.addTextEditor ("maxValue", parameter->getAs<MinMaxParameter>()->maximumValue);
+    }
+
+    nameWindow.addButton ("OK", 1, KeyPress (KeyPress::returnKey));
+    nameWindow.addButton ("Cancel", 0, KeyPress (KeyPress::escapeKey));
+
+    int result = nameWindow.runModalLoop();
+
+    if (result)
+    {
+        if (parameter->isUserDefined)
+        {
+            float newMin = nameWindow.getTextEditorContents ("minValue").getFloatValue();
+            float newMax = nameWindow.getTextEditorContents ("maxValue").getFloatValue();
+            parameter->getAs<MinMaxParameter>()->setMinMax (newMin, newMax);
+        }
+
+        float newValue = nameWindow.getTextEditorContents ("newValue").getFloatValue();
+        UndoableHelpers::setValueUndoable(parameter,newValue);
+
+        if(valueBox)valueBox->hideEditor(true);
+
+
+    }
+
+}
+
+
+template<class T>
 const ParameterUI::UICommandType & SliderUI<T>::getUICommands( ) const {
     static UICommandType res;
     if(res.size()==0){
         res.set(1,juce::translate("reset value (Shift+click)"));
         res.set(2,juce::translate("toggle value (Meta+click)"));
+        res.set(3,juce::translate("edit value... (double click)"));
     }
     return res;
 };
@@ -302,38 +344,7 @@ void SliderUI<T>::mouseUp (const MouseEvent& me)
     if (me.getNumberOfClicks() >= 2 )
     {
 
-        AlertWindow nameWindow ("Set a value", "Set a new value for this parameter", AlertWindow::AlertIconType::NoIcon, this);
-        nameWindow.addTextEditor ("newValue", parameter->stringValue());
 
-        if (parameter->isUserDefined)
-        {
-            nameWindow.addTextBlock ("min Value");
-            nameWindow.addTextEditor ("minValue", parameter->getAs<MinMaxParameter>()->minimumValue);
-            nameWindow.addTextBlock ("max Value");
-            nameWindow.addTextEditor ("maxValue", parameter->getAs<MinMaxParameter>()->maximumValue);
-        }
-
-        nameWindow.addButton ("OK", 1, KeyPress (KeyPress::returnKey));
-        nameWindow.addButton ("Cancel", 0, KeyPress (KeyPress::escapeKey));
-
-        int result = nameWindow.runModalLoop();
-
-        if (result)
-        {
-            if (parameter->isUserDefined)
-            {
-                float newMin = nameWindow.getTextEditorContents ("minValue").getFloatValue();
-                float newMax = nameWindow.getTextEditorContents ("maxValue").getFloatValue();
-                parameter->getAs<MinMaxParameter>()->setMinMax (newMin, newMax);
-            }
-
-            float newValue = nameWindow.getTextEditorContents ("newValue").getFloatValue();
-            UndoableHelpers::setValueUndoable(parameter,newValue);
-
-            if(valueBox)valueBox->hideEditor(true);
-
-
-        }
     }
 
     if (changeParamOnMouseUpOnly )
