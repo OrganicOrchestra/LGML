@@ -91,9 +91,24 @@ InspectorEditor* InspectableComponent::createEditor()
     return nullptr;
 }
 
-void InspectableComponent::mouseUp (const MouseEvent&)
+void InspectableComponent::mouseUp (const MouseEvent& me)
 {
-    selectThis();
+    if(me.mods.isRightButtonDown())
+        return;
+    
+    bool canSelect = me.originalComponent== this;
+    if(!canSelect){
+        if(auto * p = dynamic_cast<InspectableComponent*>(me.originalComponent)){
+            if(!p->isSelected){
+                canSelect=true;
+            }
+        }
+        else{
+            canSelect=true;
+        }
+    }
+    if(canSelect)
+        selectThis();
 }
 
 
@@ -151,7 +166,7 @@ void InspectableComponent::selectThis()
     }
 
     Inspector::getInstance()->selectOnly(this);
-    if(isShowing())
+    if(isShowing() && !hasKeyboardFocus(true))
         grabKeyboardFocus();
 }
 

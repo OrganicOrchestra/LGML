@@ -109,7 +109,10 @@ void ParameterUI::mouseDown (const MouseEvent& e)
                 p.addItem (it.getKey()+100, juce::translate(it.getValue()));
             }
         }
+        bool oldFocus = getWantsKeyboardFocus();
+        setWantsKeyboardFocus(false);
         int result = p.show();
+        setWantsKeyboardFocus(oldFocus);
 
         switch (result)
         {

@@ -249,7 +249,14 @@ const ControlAddressType &  Controllable::getControlAddress () const
 {
 
 #if JUCE_DEBUG
-        jassert(controlAddress==ControlAddressType::buildFromControllable(this));
+    auto curAddr = ControlAddressType::buildFromControllable(this);
+    if(controlAddress!=curAddr){
+        auto curS = curAddr.toString();
+        auto localS = controlAddress.toString();
+        DBG(String("address mismatch ") + localS + " // " + curS );
+        jassertfalse;
+    }
+        
 #endif
         return controlAddress;
 
