@@ -106,10 +106,6 @@
 			isa = PBXBuildFile;
 			fileRef = 01BA53590B5D339C2694CC01;
 		};
-		76BC7AF0F4DD662F91AA5491 = {
-			isa = PBXBuildFile;
-			fileRef = B53FE1801A20D137E4AD0FAC;
-		};
 		36B2F02434055E8CD9444FDB = {
 			isa = PBXBuildFile;
 			fileRef = 5B151687DA17268304805D97;
@@ -2419,13 +2415,6 @@
 			path = ../../Source/UI/Inspector/Inspector.h;
 			sourceTree = "SOURCE_ROOT";
 		};
-		9F42746B0F32F5A07EE4E226 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = ControllableIndexedContainer.h;
-			path = ../../Source/Controllable/ControllableIndexedContainer.h;
-			sourceTree = "SOURCE_ROOT";
-		};
 		A10D44713C669A83D2EC5DE3 = {
 			isa = PBXFileReference;
 			lastKnownFileType = file;
@@ -2627,13 +2616,6 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = unix.h;
 			path = "../../third_party/serial/include/serial/impl/unix.h";
-			sourceTree = "SOURCE_ROOT";
-		};
-		B53FE1801A20D137E4AD0FAC = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = ControllableIndexedContainer.cpp;
-			path = ../../Source/Controllable/ControllableIndexedContainer.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		B574DD47514F8434B9810C6C = {
@@ -3598,8 +3580,6 @@
 				598B2F3906E20063AB83E0F4,
 				01BA53590B5D339C2694CC01,
 				1D3C7997F641E66E499220BF,
-				B53FE1801A20D137E4AD0FAC,
-				9F42746B0F32F5A07EE4E226,
 				9E74F7F77F049833AA1283EA,
 			);
 			name = Controllable;
@@ -4585,7 +4565,6 @@
 				3384296D2D2F1FBB3F94717E,
 				2A288C5D2C4A12594CBB2360,
 				27FD4423B5E0A23AF45FA359,
-				76BC7AF0F4DD662F91AA5491,
 				36B2F02434055E8CD9444FDB,
 				0860E6A9528B43AA711D9E5C,
 				9870EC2174EF123A69A756B1,

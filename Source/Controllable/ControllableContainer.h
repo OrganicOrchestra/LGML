@@ -179,7 +179,6 @@ public:
     public:
         /** Destructor. */
         virtual ~Listener() {
-
             while(listenedContainers.size()>0){
                 if(auto cc = listenedContainers.getLast().get())
                     cc->removeControllableContainerListener(this);
@@ -227,31 +226,19 @@ public:
     //  typedef ControllableContainerListener Listener ;
     ListenerList<Listener> controllableContainerListeners;
     ListenerList<FeedbackListener> controllableContainerFBListeners;
-    void addControllableContainerListener (Listener* newListener) {
-        controllableContainerListeners.add (newListener);
-        newListener->listenedContainers.addIfNotAlreadyThere(this);
-    }
-    void removeControllableContainerListener (Listener* listener) {
-        controllableContainerListeners.remove (listener);
-        listener->listenedContainers.removeAllInstancesOf(this);
-    }
-    void addControllableContainerListener (FeedbackListener* newListener) {
-        addControllableContainerListener ((Listener*)newListener);
-        controllableContainerFBListeners.add (newListener);
-        newListener->listenedFBContainers.addIfNotAlreadyThere(this);
-    }
-    void removeControllableContainerListener (FeedbackListener* listener) {
-        removeControllableContainerListener((Listener*)listener);
-        controllableContainerFBListeners.remove (listener);
-        listener->listenedFBContainers.removeAllInstancesOf(this);
-    }
+
+
+    void addControllableContainerListener (Listener* newListener) ;
+    void removeControllableContainerListener (Listener* listener) ;
+    void addControllableContainerListener (FeedbackListener* newListener) ;
+    void removeControllableContainerListener (FeedbackListener* listener) ;
 
 
     virtual DynamicObject* createObject() = 0;
 
     static ControllableContainer * globalRoot;
 
-    WeakReference<ControllableContainer >::SharedPointer* getMasterRefPtr(){return ControllableContainer::masterReference.getSharedPointer (this);}
+    
 
     /// identifiers
     static const Identifier controlAddressIdentifier;

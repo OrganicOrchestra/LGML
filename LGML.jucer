@@ -63,10 +63,6 @@
               id="oB1amn" name="ControllableUIHelpers.cpp" resource="0"/>
         <FILE compile="0" file="Source/Controllable/ControllableUIHelpers.h"
               id="XmPrwT" name="ControllableUIHelpers.h" resource="0"/>
-        <FILE compile="1" file="Source/Controllable/ControllableIndexedContainer.cpp"
-              id="j9XQci" name="ControllableIndexedContainer.cpp" resource="0"/>
-        <FILE compile="0" file="Source/Controllable/ControllableIndexedContainer.h"
-              id="W7C4WZ" name="ControllableIndexedContainer.h" resource="0"/>
         <GROUP id="lRGBzB" name="Parameter">
           <FILE id="yoeRWg" name="FileParameter.cpp" compile="1" resource="0"
                 file="Source/Controllable/Parameter/FileParameter.cpp"/>

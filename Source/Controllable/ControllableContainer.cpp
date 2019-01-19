@@ -632,3 +632,23 @@ void ControllableContainer::setUserDefined (bool v)
     isUserDefined = v;
     
 }
+
+void ControllableContainer::addControllableContainerListener (Listener* newListener) {
+    controllableContainerListeners.add (newListener);
+    newListener->listenedContainers.addIfNotAlreadyThere(this);
+}
+void ControllableContainer::removeControllableContainerListener (Listener* listener) {
+    controllableContainerListeners.remove (listener);
+    listener->listenedContainers.removeAllInstancesOf(this);
+}
+void ControllableContainer::addControllableContainerListener (FeedbackListener* newListener) {
+    addControllableContainerListener ((Listener*)newListener);
+    controllableContainerFBListeners.add (newListener);
+    newListener->listenedFBContainers.addIfNotAlreadyThere(this);
+}
+void ControllableContainer::removeControllableContainerListener (FeedbackListener* listener) {
+    removeControllableContainerListener((Listener*)listener);
+    controllableContainerFBListeners.remove (listener);
+    listener->listenedFBContainers.removeAllInstancesOf(this);
+}
+

@@ -31,7 +31,7 @@ public:
     class Listener;
     ParameterBase ( const String& niceName, const String& description, var initialValue, bool enabled = true);
 
-    virtual ~ParameterBase() {ParameterBase::masterReference.clear(); cancelPendingUpdate();}
+    virtual ~ParameterBase() ;
 
 
 
@@ -81,11 +81,11 @@ public:
 
 
     //helpers for fast typing
-    float floatValue() const { return (float)value; }
-    double doubleValue() const {return (double)value;}
-    int intValue() const { return (int)value; }
-    bool boolValue() const { return (bool)value; }
-    virtual String stringValue() const { return value.toString(); }
+    float floatValue() const ;
+    double doubleValue() const ;
+    int intValue() const ;
+    bool boolValue() const ;
+    virtual String stringValue() const ;
 
 
 
@@ -127,14 +127,8 @@ public:
 
 
     ListenerList<Listener> listeners;
-    void addParameterListener (Listener* newListener) {
-        listeners.add (newListener);
-        newListener->linkedP.add(this);
-    }
-    void removeParameterListener (Listener* listener) {
-        listeners.remove (listener);
-        listener->linkedP.removeAllInstancesOf(this);
-    }
+    void addParameterListener (Listener* newListener) ;
+    void removeParameterListener (Listener* listener) ;
 
 
 
@@ -147,9 +141,9 @@ public:
 
     void notifyValueChanged (bool defferIt = false,Listener * notifier=nullptr);
 
-    void addAsyncParameterListener (Listener* newListener) { queuedNotifier.addListener (newListener); }
-    void addAsyncCoalescedListener (Listener* newListener) { queuedNotifier.addAsyncCoalescedListener (newListener); }
-    void removeAsyncParameterListener (Listener* listener) { queuedNotifier.removeListener (listener); }
+    void addAsyncParameterListener (Listener* newListener) ;
+    void addAsyncCoalescedListener (Listener* newListener) ;
+    void removeAsyncParameterListener (Listener* listener) ;
 
 
     //JS Helper
@@ -162,13 +156,12 @@ public:
     static const Identifier valueIdentifier;
 
 
-    static const ParameterBase* fromControllable (const Controllable* c) {return static_cast<const  ParameterBase*> (c);}
-
-    static ParameterBase* fromControllable (Controllable* c) {return static_cast<ParameterBase*> (c);}
+    static const ParameterBase* fromControllable (const Controllable* c) ;
+    static ParameterBase* fromControllable (Controllable* c) ;
     template<typename T> T* getAs() {return dynamic_cast<T*> (this);}
 
 
-    WeakReference<ParameterBase >::SharedPointer* getMasterRefPtr(){return ParameterBase::masterReference.getSharedPointer (this);}
+
 protected:
     bool waitOrDeffer (const var& _value, bool silentSet, bool force);
     Atomic<bool> _isSettingValue;

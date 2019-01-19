@@ -289,7 +289,6 @@
     <ClCompile Include="..\..\Source\Controllable\Controllable.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\ControllableContainer.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\ControllableUIHelpers.cpp"/>
-    <ClCompile Include="..\..\Source\Controllable\ControllableIndexedContainer.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\FileParameter.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\UndoableHelper.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\ParameterContainerSync.cpp"/>
@@ -2281,7 +2280,6 @@
     <ClInclude Include="..\..\Source\Controllable\Controllable.h"/>
     <ClInclude Include="..\..\Source\Controllable\ControllableContainer.h"/>
     <ClInclude Include="..\..\Source\Controllable\ControllableUIHelpers.h"/>
-    <ClInclude Include="..\..\Source\Controllable\ControllableIndexedContainer.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\FileParameter.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\UndoableHelper.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\ParameterContainerSync.h"/>

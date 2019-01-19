@@ -122,8 +122,8 @@ public:
 
 
     ListenerList<Listener> controllableListeners;
-    void addControllableListener (Listener* newListener) { controllableListeners.add (newListener); }
-    void removeControllableListener (Listener* listener) { controllableListeners.remove (listener); }
+    void addControllableListener (Listener* newListener) ;
+    void removeControllableListener (Listener* listener) ;
 
 
     //Script set method handling

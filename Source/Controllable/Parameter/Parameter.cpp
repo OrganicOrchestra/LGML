@@ -40,6 +40,8 @@ ParameterBase::ParameterBase ( const String& niceName, const String& description
 
 }
 
+ParameterBase::~ParameterBase() {ParameterBase::masterReference.clear(); cancelPendingUpdate();}
+
 void ParameterBase::resetValue (bool silentSet,bool force)
 {
     isOverriden = false;
@@ -262,3 +264,27 @@ void ParameterBase::setStateFromVar (const var& v)
 bool ParameterBase::isSettingValue(){
     return _isSettingValue.get();
 }
+
+
+float ParameterBase::floatValue() const { return (float)value; }
+double ParameterBase::doubleValue() const {return (double)value;}
+int ParameterBase::intValue() const { return (int)value; }
+bool ParameterBase::boolValue() const { return (bool)value; }
+String ParameterBase::stringValue() const { return value.toString(); }
+
+void ParameterBase::addParameterListener (Listener* newListener) {
+    listeners.add (newListener);
+    newListener->linkedP.add(this);
+}
+void ParameterBase::removeParameterListener (Listener* listener) {
+    listeners.remove (listener);
+    listener->linkedP.removeAllInstancesOf(this);
+}
+
+
+void ParameterBase::addAsyncParameterListener (Listener* newListener) { queuedNotifier.addListener (newListener); }
+void ParameterBase::addAsyncCoalescedListener (Listener* newListener) { queuedNotifier.addAsyncCoalescedListener (newListener); }
+void ParameterBase::removeAsyncParameterListener (Listener* listener) { queuedNotifier.removeListener (listener); }
+
+ const ParameterBase* ParameterBase::fromControllable (const Controllable* c) {return static_cast<const  ParameterBase*> (c);}
+ ParameterBase* ParameterBase::fromControllable (Controllable* c) {return static_cast<ParameterBase*> (c);}

@@ -84,7 +84,7 @@ public:
     var callFunctionFromIdentifier (const Identifier& function, const var& arg, bool logResult = true, Result* result = nullptr);
     var callFunctionFromIdentifier (const Identifier& function, const var::NativeFunctionArgs& Nargs, bool logResult = true, Result* result = nullptr);
 
-    WeakReference<JsEnvironment >::SharedPointer* getMasterRefPtr(){return masterReference.getSharedPointer (this);}
+    
 private:
     WeakReference<JsEnvironment>::Master masterReference;
     friend class WeakReference<JsEnvironment>;

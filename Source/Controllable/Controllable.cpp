@@ -338,3 +338,7 @@ bool Controllable::isChildOf (const ControllableContainer* p) const
     return false;
 
 }
+
+
+void Controllable::addControllableListener (Listener* newListener) { controllableListeners.add (newListener); }
+void Controllable::removeControllableListener (Listener* listener) { controllableListeners.remove (listener); }

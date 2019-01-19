@@ -76,7 +76,6 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/Controllable_a0f8da50.o \
   $(JUCE_OBJDIR)/ControllableContainer_a2acad5b.o \
   $(JUCE_OBJDIR)/ControllableUIHelpers_49826e4b.o \
-  $(JUCE_OBJDIR)/ControllableIndexedContainer_32b95300.o \
   $(JUCE_OBJDIR)/FileParameter_be7c65ea.o \
   $(JUCE_OBJDIR)/UndoableHelper_584c3b19.o \
   $(JUCE_OBJDIR)/ParameterContainerSync_5c3cffa0.o \
@@ -295,11 +294,6 @@ $(JUCE_OBJDIR)/ControllableContainer_a2acad5b.o: ../../Source/Controllable/Contr
 $(JUCE_OBJDIR)/ControllableUIHelpers_49826e4b.o: ../../Source/Controllable/ControllableUIHelpers.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling ControllableUIHelpers.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/ControllableIndexedContainer_32b95300.o: ../../Source/Controllable/ControllableIndexedContainer.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling ControllableIndexedContainer.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/FileParameter_be7c65ea.o: ../../Source/Controllable/Parameter/FileParameter.cpp

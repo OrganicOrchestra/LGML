@@ -571,9 +571,6 @@
     <ClCompile Include="..\..\Source\Controllable\ControllableUIHelpers.cpp">
       <Filter>LGML\Source\Controllable</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Controllable\ControllableIndexedContainer.cpp">
-      <Filter>LGML\Source\Controllable</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Controllable\Parameter\FileParameter.cpp">
       <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClCompile>
@@ -3037,9 +3034,6 @@
       <Filter>LGML\Source\Controllable</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Controllable\ControllableUIHelpers.h">
-      <Filter>LGML\Source\Controllable</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Controllable\ControllableIndexedContainer.h">
       <Filter>LGML\Source\Controllable</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Controllable\Parameter\FileParameter.h">

@@ -102,7 +102,7 @@ public:
     friend class PresetManager;
     ScopedPointer<Presetable> presetable;
 
-    WeakReference<ParameterContainer >::SharedPointer* getMasterRefPtr(){return masterReference.getSharedPointer (this);}
+    
 private:
     WeakReference< ParameterContainer >::Master masterReference;
     friend class WeakReference<ParameterContainer>;
