@@ -126,7 +126,7 @@ public:
     void handleAsyncUpdate()override;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Outliner)
 
-    void setRoot(ParameterContainer * );
+    void setRoot(ParameterContainer *,bool saveOpenness=true );
     bool showUserContainer;
 
 private:
@@ -135,8 +135,15 @@ private:
     void buttonClicked(Button *b) override;
     void saveCurrentOpenChilds();
     void restoreCurrentOpenChilds();
+    class XmlElementCounted : public ReferenceCountedObject{
+    public:
+        XmlElementCounted(XmlElement * e):xml(e){};
+        ~XmlElementCounted(){if(xml){delete xml;}};
+        XmlElement * xml;
+        using Ptr = ReferenceCountedObjectPtr<XmlElementCounted>;
+    };
     // we should be using RAII like scoped pointer, but hashmap accessors, cant contains Scoped
-    HashMap<WeakReference<ParameterContainer>,XmlElement*> opennessStates;
+    HashMap<WeakReference<ParameterContainer>,XmlElementCounted::Ptr> opennessStates;
     static Identifier blockSelectionPropagationId;
     friend class OutlinerItem;
 

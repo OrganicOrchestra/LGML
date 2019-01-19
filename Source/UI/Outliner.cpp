@@ -60,7 +60,7 @@ showUserContainer(true)
 
 Outliner::~Outliner()
 {
-
+    setRoot(nullptr,false);
     clear();
     if(auto i = Inspector::getInstanceWithoutCreating())
         i->removeInspectorListener(this);
@@ -70,9 +70,6 @@ Outliner::~Outliner()
 
 void Outliner::clear(){
     setRoot(nullptr);
-    for(auto  k : opennessStates){
-        delete k;
-    }
     opennessStates.clear();
 
 }
@@ -101,10 +98,10 @@ void Outliner::paint (Graphics& g)
 }
 
 
-void Outliner::setRoot(ParameterContainer * p){
+void Outliner::setRoot(ParameterContainer * p,bool saveOpenness){
     if (root.get()){
         root->removeControllableContainerListener (this);
-        saveCurrentOpenChilds();
+        if(saveOpenness)saveCurrentOpenChilds();
         rootItem->clearSubItems();
     }
     root = p;
@@ -243,24 +240,21 @@ void Outliner::textEditorTextChanged (TextEditor& t)
 
 void Outliner::saveCurrentOpenChilds()
 {
-    if(opennessStates.contains(root)){
-        delete opennessStates[root];
-    }
 
-    opennessStates.set(root, treeView.getOpennessState (true));
+    opennessStates.set(root, new XmlElementCounted(treeView.getOpennessState (true)));
 
 }
 
 
 void Outliner::restoreCurrentOpenChilds()
 {
-    ScopedPointer <XmlElement> xmlState (nullptr);
+    XmlElementCounted::Ptr xmlState;
     if(root && opennessStates.contains(root)){
         xmlState = opennessStates[root];
         opennessStates.remove(root);
     }
 
-    if (xmlState.get()) {treeView.restoreOpennessState (*xmlState.get(), true);}
+    if (xmlState && xmlState->xml) {treeView.restoreOpennessState (*xmlState->xml, true);}
 
 }
 void Outliner::buttonClicked(Button *b){
