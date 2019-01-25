@@ -67,13 +67,13 @@ void FileParameterUI::buttonClicked (Button*) {
     auto * fp = getFileParameter();
 
     if(fp->hasValidPath(false)){
-        menu.addItem(3, "reload");
-        menu.addItem(4, "show");
-        menu.addItem(5, "watch",true,getFileParameter()->isWatching);
+        menu.addItem(3, juce::translate("reload"));
+        menu.addItem(4, juce::translate("show & watch"));
+        menu.addItem(5, juce::translate("watch"),true,getFileParameter()->isWatching);
         menu.addSeparator();
     }
-    menu.addItem(1,"create");
-    menu.addItem(2,"open");
+    menu.addItem(1,juce::translate("create"));
+    menu.addItem(2,juce::translate("open"));
 
     auto res = menu.show();
     switch(res){
