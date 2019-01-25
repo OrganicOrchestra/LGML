@@ -53,8 +53,8 @@ install:
     - echo "Compile libpd"
     #################
     - cd %PD_BUILD_DIR%\VisualStudio2015
-    - cmake -G "%COMPILER%" -DPD_MULTI=ON -DPD_EXTRA=ON -DPD_UTILS=ON ..
-    - msbuild libpd.sln /t:libpdstatic /nologo /verbosity:quiet /p:Configuration=Release /p:Platform=%PLATFORM%
+    - cmake -G "%COMPILER%" -DPD_MULTI=ON -DPD_EXTRA=ON ..
+    - msbuild libpd.sln /t:libpdstatic /nologo /p:Configuration=Release /p:Platform=%PLATFORM%
 
 before_build:
     - cd C:\projects\lgml\third_party\rubberband
