@@ -56,6 +56,7 @@ public:
     void timerCallback() override{
         if (isEngineLoadingFile())return;
         if(!fp.get())stopTimer();
+        if(fp->stringValue().isEmpty()) return;
         Time newTime = fp->getFile().getLastModificationTime();
 
             if (newTime != lastFileModTime && !(fp->getLoadingState()==LOADING))//|| !_isInSyncWithLGML )
