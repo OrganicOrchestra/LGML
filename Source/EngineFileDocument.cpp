@@ -178,10 +178,12 @@ void Engine::handleAsyncUpdate()
 
 
     isLoadingFile = false;
-    for(auto & f:fileSavers){
-        f->loadFiles(getCurrentProjectFolder());
+    auto cfp = getCurrentProjectFolder();
+    if(cfp.exists()){
+        for(auto & f:fileSavers){
+            f->loadFiles(cfp);
+        }
     }
-
     //  graphPlayer.setProcessor(NodeManager::getInstance()->getAudioGraph());
     //  suspendAudio(false);
     auto timeForLoading  =  getElapsedMillis() - loadingStartTime;
@@ -275,7 +277,7 @@ DynamicObject* Engine::createObject()
 
     data->setProperty ("metaData", metaData);
 
-//    data->setProperty ("presetManager", PresetManager::getInstance()->createObject());
+    //    data->setProperty ("presetManager", PresetManager::getInstance()->createObject());
 
 
     if( auto p = getControllableContainerByName("NodesUI")){
@@ -320,7 +322,7 @@ void Engine::loadJSONData (const var& data, ProgressTask* loadingTask)
 
     presetTask->start();
 
-//    if (d->hasProperty ("presetManager")) PresetManager::getInstance()->configureFromObject (d->getProperty ("presetManager").getDynamicObject());
+    //    if (d->hasProperty ("presetManager")) PresetManager::getInstance()->configureFromObject (d->getProperty ("presetManager").getDynamicObject());
 
     presetTask->end();
 
