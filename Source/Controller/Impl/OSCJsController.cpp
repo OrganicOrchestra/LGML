@@ -265,7 +265,7 @@ var OSCJsController::createJsOSCListener (const var::NativeFunctionArgs& a)
     }
 
 
-    return var::undefined();
+    
 }
 inline void JsOSCListener::processMessage (const OSCMessage& msg)
 {
