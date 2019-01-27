@@ -36,7 +36,7 @@ install:
     - sed -i 's/4820;4668;4255;/4820;4668;4255;4711;4100;4312;4127;4296;4456;4619;4310;4311;/' pthread_lib.2015.vcxproj
     - sed -i 's/MultiThreadedDLL/MultiThreaded/' pthread_lib.2015.vcxproj
     - sed -i 's/MultiThreadedDebugDLL/MultiThreadedDebug/' pthread_lib.2015.vcxproj
-    - echo "truely building PTW32"
+    - echo "truly building PTW32"
     ##############
     - msbuild pthread.2015.sln /t:pthread_lib /nologo /verbosity:quiet /p:Configuration=Release /p:Platform=%PLATFORM% /p:OutDir=lib/
 
@@ -54,7 +54,7 @@ install:
     #################
     - cd %PD_BUILD_DIR%\VisualStudio2015
     - cmake -G "%COMPILER%" -DPD_MULTI=ON -DPD_EXTRA=ON ..
-    - msbuild libpd.sln /t:libpdstatic /nologo /p:Configuration=Release /p:Platform=%PLATFORM%
+    - msbuild libpd.sln /t:libpdstatic /nologo /verbosity:quiet /p:Configuration=Release /p:Platform=%PLATFORM%
 
 before_build:
     - cd C:\projects\lgml\third_party\rubberband
