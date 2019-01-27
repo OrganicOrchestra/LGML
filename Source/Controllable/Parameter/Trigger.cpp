@@ -20,7 +20,7 @@
 #include "../../Scripting/Js/JsHelpers.h"
 #include "ParameterFactory.h"
 
-const var Trigger::triggerVar = var::undefined();
+const var Trigger::triggerVar (true);
 
 
 REGISTER_PARAM_TYPE (Trigger);
