@@ -69,6 +69,8 @@ private:
     void childControllableAdded (ControllableContainer*, Controllable* /*notifier*/) override;
     void controllableRemoved (Controllable* ) override;
     bool resolveAddress();
+    WeakReference<ParameterProxy>::Master masterReference;
+    friend class WeakReference<ParameterProxy>;
 
 };
 

@@ -58,6 +58,9 @@ private:
     void linkedParamValueChanged (ParameterProxy*) override;
     void linkedParamRangeChanged(ParameterProxy*) override;
     void linkedParamChanged (ParameterProxy*) override;
+private:
+    WeakReference< FastMap >::Master masterReference;
+    friend class WeakReference<FastMap>;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FastMap);
 };

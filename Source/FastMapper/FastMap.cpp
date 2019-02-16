@@ -44,6 +44,7 @@ ParameterContainer ("FastMap")
 
 FastMap::~FastMap()
 {
+    masterReference.clear();
     referenceOut->removeParameterProxyListener (this);
     referenceIn->removeParameterProxyListener (this);
 

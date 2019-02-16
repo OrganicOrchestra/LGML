@@ -422,6 +422,7 @@ bool NodeConnectionUI::keyPressed (const KeyPress& key)
 
     if (key.getKeyCode() == KeyPress::deleteKey || key.getKeyCode() == KeyPress::backspaceKey)
     {
+        // todo don't remove when multiple selection
         connection->remove();
         return true;
     }

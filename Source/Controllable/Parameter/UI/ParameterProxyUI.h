@@ -31,7 +31,7 @@ public:
 
     ControllableReferenceUI chooser;
 
-    ParameterProxy* paramProxy;
+    WeakReference<ParameterProxy> paramProxy;
 
     ScopedPointer<Component> linkedParamUI;
 

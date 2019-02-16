@@ -161,8 +161,9 @@ void ParameterUI::mouseDown (const MouseEvent& e)
                         auto niceName = parameter->niceName;
                         var obj (parameter->createObject());
                         parentC->removeControllable(parameter);
-                        auto np = ParameterFactory::createFromTypeID(typeSwitch.getUnchecked(result-50),niceName,obj.getDynamicObject());
+                        auto np = ParameterFactory::createFromTypeID(typeSwitch.getUnchecked(result-50),niceName,nullptr);
                         parentC->addParameter(np,oriIdx,true);
+                        np->configureFromObject(obj.getDynamicObject());
                     }
                     else{
                         jassertfalse;

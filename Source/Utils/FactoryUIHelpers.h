@@ -151,10 +151,11 @@ class UndoableFactoryCreateOrDelete:public UndoableAction{
 
     bool createObj(){
         if(!obj){
-            obj = FactoryBase<T>::createFromTypeID(typeID,"",obSettings.getDynamicObject());
+            obj = FactoryBase<T>::createFromTypeID(typeID,"",nullptr);
         }
         if(obj){
             addF(obj);
+            obj->configureFromObject(obSettings.getDynamicObject());
             return true;
         }
         else{

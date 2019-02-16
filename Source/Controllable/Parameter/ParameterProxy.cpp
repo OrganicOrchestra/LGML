@@ -32,6 +32,7 @@ ParameterProxy::ParameterProxy (const String& niceName, const String& desc, Para
 
 ParameterProxy::~ParameterProxy()
 {
+    masterReference.clear();
     if (auto r = getRoot())r->removeControllableContainerListener (this);
 
     if (linkedParam != nullptr)
@@ -39,6 +40,7 @@ ParameterProxy::~ParameterProxy()
         linkedParam->removeControllableListener (this);
         linkedParam->removeParameterListener (this);
     }
+
 }
 
 bool ParameterProxy::isMappable()

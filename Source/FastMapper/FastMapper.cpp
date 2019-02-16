@@ -141,13 +141,16 @@ FastMap* FastMapper::addFastMap()
         lastFMAddedTime = Time::getMillisecondCounter();
 
         #if !ENGINE_HEADLESS
-        for(auto ui : ParameterUI::getAllParameterUIs()){
-            if(f->getProxyForParameter(ui->parameter)){
-                ui->setHasMappedParameter(true);
-            }
-        }
+        auto addedFastMap = f.release();
+        WeakReference<FastMap> wkf(addedFastMap);
         // avoid listener feedback
-        MessageManager::callAsync([this](){
+        MessageManager::callAsync([this,wkf](){
+            if(!wkf.get()){return;}
+            for(auto ui : ParameterUI::getAllParameterUIs()){
+                if(wkf->getProxyForParameter(ui->parameter)){
+                    ui->setHasMappedParameter(true);
+                }
+            }
             if(auto dr = LGMLDragger::getInstance()){
                 dr->setSelected(nullptr,this);
             }
@@ -155,7 +158,7 @@ FastMap* FastMapper::addFastMap()
             potentialOut->setParamToReferTo (nullptr);
         });
         #endif
-        return f.release();
+        return addedFastMap;
     }
     else{
         return nullptr;

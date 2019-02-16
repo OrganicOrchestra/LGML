@@ -41,7 +41,9 @@ ParameterProxyUI::ParameterProxyUI (ParameterProxy* proxy) :
 
 ParameterProxyUI::~ParameterProxyUI()
 {
-    paramProxy->removeParameterProxyListener (this);
+    if(paramProxy.get()){
+        paramProxy->removeParameterProxyListener (this);
+    }
 //    setLinkedParamUI (nullptr);
 }
 
@@ -50,9 +52,6 @@ void ParameterProxyUI::resized()
     Rectangle<int> r = getLocalBounds();
 
     if (r.getWidth() == 0 || r.getHeight() == 0) return;
-
-
-
 
     if (linkedParamUI != nullptr)
     {
