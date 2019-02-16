@@ -344,7 +344,7 @@ ParameterContainer*   NodeContainer::addContainerFromObject (const String& name,
 {
     //  ConnectableNode * node = addNodeFromJSONData(data);
 
-    ConnectableNode* node = NodeFactory::createBaseFromObject ( "", data);
+    ConnectableNode* node = NodeFactory::createBaseFromObject ( "", data,false); // avoid to configure it before added
     if(!node){jassertfalse; return nullptr;}
     if (auto n = dynamic_cast<ContainerInNode*> (node)) containerInNode = n;
     else if (auto n = dynamic_cast<ContainerOutNode*> (node)) containerOutNode = n;

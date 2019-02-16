@@ -26,12 +26,12 @@ class FactoryBase
 {
 public:
 
-    static CLASSNAME* createBaseFromObject (const String& name, DynamicObject* ob )
+    static CLASSNAME* createBaseFromObject (const String& name, DynamicObject* ob,bool doConfigure=true )
     {
         if (ob)
         {
             Identifier ID (ob->getProperty (factoryTypeIdentifier));
-            return createFromTypeID (ID, name, ob);
+            return createFromTypeID (ID, name,doConfigure?ob:nullptr);
         }
 
         jassertfalse;
