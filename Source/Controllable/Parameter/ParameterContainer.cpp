@@ -147,7 +147,7 @@ DynamicObject* ParameterContainer::createObjectMaxDepth(int maxDepth)
 
         for (auto controllableCont : getContainersOfType<ParameterContainer>(false))
         {
-            DynamicObject * obj =controllableCont->createObjectMaxDepth(maxDepth-1);
+            DynamicObject * obj =controllableCont->createObject();
             if(obj && obj->getProperties().size())
                 childData->setProperty (controllableCont->getNiceName(), obj);
         }
