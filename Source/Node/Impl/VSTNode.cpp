@@ -315,7 +315,7 @@ ParameterBase * VSTNode::generateFromVST(const AudioProcessorParameter* param){
     ParameterBase * p;
     if(param->isBoolean()){
 
-        p = new BoolParameter (uniqueName, label, param->getValue ());
+        p = new BoolParameter (uniqueName, label, (bool)param->getValue ());
     }
     else if(param->isDiscrete()){
         p = new IntParameter (uniqueName,label, param->getValue (),0,param->getNumSteps());

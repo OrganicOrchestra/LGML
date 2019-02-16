@@ -216,7 +216,7 @@ void NodeContainer::removeFromAudioGraph(NodeBase * n)
 
 
 void NodeContainer::setBuildSessionGraph(bool state){
-    jassert(!state || (state!=(bool)isBuildingSession.get()));
+    jassert(!state || (state!=(bool)(isBuildingSession.get())));
     DBGGRAPH(String(":::::::::::") +getNiceName()+" : "+(state?"start":"stop")+" building graph");
     isBuildingSession = state?1:0;
 
