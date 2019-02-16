@@ -340,7 +340,10 @@ ParameterBase * VSTNode::addParameterFromVar(const String & name,const var & dat
 }
 void VSTNode::initParametersFromProcessor (AudioPluginInstance* pi)
 {
-
+    if(!pi){
+        jassertfalse;
+        return;
+    }
     // will check if not already here
     pi->addListener (this);
     {
