@@ -30,6 +30,10 @@ typedef enum {
 class FileWatcher;
 class FileLoaderJob;
 
+
+struct FilePostponedLoader;
+
+
 class FileParameter : public StringParameter{
 public:
     typedef std::function<Result(const File & f)> LoaderFunctionType;
@@ -93,6 +97,6 @@ private:
     WeakReference<FileParameter>::Master masterReference;
     friend class WeakReference<FileParameter>;
 
-
-  
+    ScopedPointer<FilePostponedLoader> filePostponedLoader;
+    friend class FilePostponedLoader;
 };

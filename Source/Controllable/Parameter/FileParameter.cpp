@@ -17,6 +17,7 @@ REGISTER_PARAM_TYPE (FileParameter)
                           //File getFileAtNormalizedPath (const String& path);
 
 
+
 FileParameter::LoaderFunctionType FileParameter::dummyLoader =[](const File &){return Result::fail("no loader");};
 
 struct FileTypeInfo{
@@ -38,8 +39,14 @@ public:
 
 static FileTypeMap* fileTypes = new FileTypeMap(); // will be deleted at shutdown
 
-
-
+// class deffering file loading once the whole session has been loaded
+struct FilePostponedLoader : private Engine::EngineListener
+{
+    FilePostponedLoader(FileParameter * fp):owner(fp){}
+    ~FilePostponedLoader(){};
+    void endLoadFile() override {if(owner.get()){owner->startLoading();}};
+    WeakReference<FileParameter> owner;
+};
 
 static const int watchInterval = 500;
 
@@ -50,9 +57,7 @@ public:
         lastFileModTime = fp->getFile().getLastModificationTime();
     }
 
-    ~FileWatcher(){
-        stopTimer();
-    }
+    ~FileWatcher(){stopTimer();}
     void timerCallback() override{
         if (isEngineLoadingFile())return;
         if(!fp.get())stopTimer();
@@ -81,7 +86,7 @@ FileParameter::FileParameter (const String& niceName, const String& description,
 ,isWatching(false)
 ,loaderFunction(_loaderFunction)
 ,loadingState(EMPTY)
-,isAsync(_isAsync)
+,isAsync( _isAsync)
 {
     
 
@@ -122,7 +127,9 @@ public:
         masterReference.clear();
     }
     ThreadPoolJob::JobStatus runJob() override{
+        if(!shouldExit()){
         loadFileImpl(fp);
+        }
         return ThreadPoolJob::JobStatus::jobHasFinished;
     }
     void loadFileImpl(const WeakReference<FileParameter> fp){
@@ -185,8 +192,13 @@ void FileParameter::startLoading(){
         loadingState = EMPTY;
         return;
     }
+    if(isEngineLoadingFile()){
+        filePostponedLoader = new FilePostponedLoader(this);
+        return;
+    }
     loadingState = LOADING;
     fileListeners.call(&Listener::loadingStarted,this);
+
     if(!isAsync && fileLoaderJob){
         fileLoaderJob->signalJobShouldExit();
     }
