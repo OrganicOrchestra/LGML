@@ -131,7 +131,8 @@ public:
     class EngineListener
     {
     public:
-        virtual ~EngineListener() {};
+        EngineListener();
+        virtual ~EngineListener();
         virtual void startEngine() {};
         virtual void stopEngine() {};
         virtual void startLoadFile() {};

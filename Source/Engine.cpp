@@ -614,4 +614,17 @@ void Engine::EngineStats::activateGlobalStats(bool s){
 
 
 
+Engine::EngineListener::~EngineListener() {
+    if(auto engine = getEngine()){
+        engine->removeEngineListener(this);
+    }
+}
 
+Engine::EngineListener::EngineListener() {
+    if(auto engine = getEngine()){
+        engine->addEngineListener(this);
+    }
+    else{
+        jassertfalse;
+    }
+}

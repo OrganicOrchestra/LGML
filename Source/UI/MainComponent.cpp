@@ -52,7 +52,7 @@ MainContentComponent::MainContentComponent (Engine* e):
     tooltipWindow(nullptr,1200),
     undoWatcher(new UndoWatcher(this))
 {
-    engine->addEngineListener (this);
+    
 
 
 
