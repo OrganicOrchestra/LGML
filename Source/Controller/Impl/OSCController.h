@@ -115,10 +115,16 @@ private:
 
 
     void resolveHostnameIfNeeded();
+    bool connectSender(String & ip,int port);
     bool hostNameResolved ;
 
     String remoteIP;
 
+
+    static HashMap<OSCController * , int> listenedPorts;
+    static HashMap<OSCController * , int> localSentPorts;
+    static bool AnyoneIsListeningOnPort(int);
+    static bool AnyoneIsSendingOnLocalOnPort(int);
 };
 
 
