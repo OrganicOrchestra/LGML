@@ -406,14 +406,17 @@ ParameterBase* ParameterContainer::addParameterFromVar (const String& name, cons
     // handle automagically for userdefined
     if (isUserDefined || containSavableObjects)
     {
+        ParameterBase * up;
         if (data.isObject())
         {
-            return addParameter (ParameterFactory::createBaseFromObject ( name, data.getDynamicObject()));
+             up = addParameter (ParameterFactory::createBaseFromObject ( name, data.getDynamicObject()));
         }
         else
         {
-            return addParameter (ParameterFactory::createBaseFromVar (name, data));
+            up = addParameter (ParameterFactory::createBaseFromVar (name, data));
         }
+        up->isUserDefined = true;
+        return up;
     }
     else
     {
@@ -422,11 +425,19 @@ ParameterBase* ParameterContainer::addParameterFromVar (const String& name, cons
     }
 };
 
+
+void ParameterContainer::clearUserDefinedParameters(){
+    for(auto p:getAllParameters()){
+        if(p.get() && p->isUserDefined){
+            removeControllable(p);
+        }
+    }
+}
 ParameterContainer * ParameterContainer::getForUid(const Uuid &ui){
-    return dynamic_cast<ParameterContainer*>(ControllableContainer::globalRoot->findFirstControllableContainer(
-                                                                                                        [ui](ControllableContainer* c){
-                                                                                                            return c->uid==ui;
-                                                                                                        }));
+    return
+    dynamic_cast<ParameterContainer*>(
+                                      ControllableContainer::globalRoot->
+                                      findFirstControllableContainer([ui](ControllableContainer* c){return c->uid==ui;}));
 
 }
 

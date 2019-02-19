@@ -35,7 +35,7 @@ Trigger::Trigger (const String& niceName, const String& description = "", bool e
 
 void Trigger::tryToSetValue (const var & _value, bool silentSet, bool force,Listener * notifier){
 
-    if (!waitOrDeffer (_value, silentSet, force))
+    if (!shouldBeDeffered (_value, silentSet, force))
     {
         if ( (bool) _value)
         {

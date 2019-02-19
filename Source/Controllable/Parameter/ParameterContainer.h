@@ -84,7 +84,7 @@ public:
 
     ParameterBase* addParameter ( ParameterBase* ,int idxToSwap=-1,bool doListen=true);
     Array<WeakReference<ParameterBase>> getAllParameters (bool recursive = false, bool getNotExposed = false);
-
+    void clearUserDefinedParameters();
     // Inherited via ParameterBase::Listener
     virtual void parameterValueChanged ( ParameterBase* p, ParameterBase::Listener * notifier=nullptr) override;
     void newMessage (const  ParameterBase::ParamWithValue&)override;
