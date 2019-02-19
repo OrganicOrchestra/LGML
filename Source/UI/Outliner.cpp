@@ -405,22 +405,27 @@ void OutlinerItem::childControllableAdded (ControllableContainer* notif, Control
     }
 }
 void OutlinerItem::childControllableRemoved (ControllableContainer* notif, Controllable* ori) {
+    WeakReference<OutlinerItem> bailout(this);
     if(notif && notif==container){
-    int i = 0;
-    while( i < getNumSubItems()){
-        auto item = dynamic_cast<OutlinerItem*>(getSubItem(i));
-        if(item->parameter==ori){
-            removeSubItem(i);
-        }
-        else{
-            i++;
-        }
-    }
+        MessageManager::callAsync([bailout,ori]()mutable{
+            if(bailout.get()){
+                int i = 0;
+                while( i < bailout->getNumSubItems()){
+                    auto item = dynamic_cast<OutlinerItem*>(bailout->getSubItem(i));
+                    if(item->parameter==ori){
+                        bailout->removeSubItem(i);
+                    }
+                    else{
+                        i++;
+                    }
+                }
+            }
+        });
+
     }
     else if (container){
         jassertfalse;
     }
-
 }
 
 String OutlinerItem::getUniqueName() const

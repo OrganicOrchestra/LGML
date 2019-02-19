@@ -102,7 +102,7 @@ void JsNodeUI::childControllableAdded (ControllableContainer*, Controllable* c)
 void JsNodeUI::childControllableRemoved (ControllableContainer*, Controllable* c)
 {
     ParameterBase* pToComp = ParameterBase::fromControllable (c);
-
+    MessageManager::callAsync([=](){
     for (auto& comp : varUI)
     {
         if (comp->parameter == pToComp)
@@ -116,6 +116,7 @@ void JsNodeUI::childControllableRemoved (ControllableContainer*, Controllable* c
     
     
     layoutUI();
+    });
     
     
 };
