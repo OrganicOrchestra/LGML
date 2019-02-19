@@ -21,10 +21,13 @@
 #include "../../Time/TimeManager.h"
 #include "../../Controllable/Parameter/ParameterFactory.h"
 #include "../../Preset/Preset.h" // to ensure that changed param can be a VST one
+#include "../../Engine.h"
+
 
 constexpr int maxVSTParamNameSize = 100;
 
 extern AudioDeviceManager& getAudioDeviceManager();
+
 
 #define USE_JUCE_B64 1
 String toBase64(MemoryBlock &m){
@@ -65,6 +68,19 @@ REGISTER_NODE_TYPE (VSTNode)
 //    }
 //
 //};
+
+struct VSTLoaderPostponer : private Engine::EngineListener{
+    VSTLoaderPostponer(VSTNode * n):owner(n){}
+    void endLoadFile() override{
+        if(owner.get()){
+            if(auto vn = dynamic_cast<VSTNode*>(owner.get())){
+                vn->audioProcessorChanged(vn->innerPlugin);
+            }
+        }
+    }
+
+    WeakReference<NodeBase> owner;
+};
 
 
 VSTNode::VSTNode (StringRef name) :
@@ -195,7 +211,7 @@ void VSTNode::onContainerParameterChanged ( ParameterBase* p)
         setVSTState();
     }
     // a VSTParameter is changed
-    else if(p!=nameParam && innerPlugin)
+    else if(p && p!=nameParam && p->isSavableAsObject &&  innerPlugin)
     {
 
         if (blockFeedback)return;
@@ -217,7 +233,9 @@ void VSTNode::onContainerParameterChanged ( ParameterBase* p)
             }
 
         }
-        jassert(found);
+        if(!found){
+            LOGW(nameParam->stringValue() << " :  can't find param : "<<p->niceName );
+        }
     }
 };
 
@@ -503,7 +521,10 @@ void VSTNode::generatePluginFromDescription (PluginDescription* desc)
 void VSTNode::audioProcessorChanged (juce::AudioProcessor* p )
 {
     if (!innerPlugin || p != innerPlugin) return;
-
+    if(isEngineLoadingFile()){
+        vstLoaderPostponer = new VSTLoaderPostponer(this);
+        return;
+    }
     if(p->getParameters().size()!=VSTParameters.size())
     {
         NLOG("VSTNode : " + innerPlugin->getName(), "rebuilding Parameters");

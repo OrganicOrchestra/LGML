@@ -22,6 +22,8 @@
 #include "../../MIDI/MIDIListener.h"
 #include "../../MIDI/MIDIHelpers.h"
 //#define VSTLOADING_THREADED // TODO remove ref, as loading VST has to be on the main thread
+
+struct VSTLoaderPostponer;
 class VSTNode :
     public NodeBase,
     public AudioProcessorListener,
@@ -159,9 +161,10 @@ private:
 
     bool parameterHaveChanged();
 
-
-    ParameterBase * generateFromVST(const AudioProcessorParameter* param);
     
+    ParameterBase * generateFromVST(const AudioProcessorParameter* param);
+
+    ScopedPointer<VSTLoaderPostponer> vstLoaderPostponer;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (VSTNode)
 };
 
