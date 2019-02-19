@@ -145,6 +145,7 @@ void JsEnvironment::clearNamespace()
     localEnv->setMethod (createParamListenerId, &JsEnvironment::createParameterListenerObject);
 //    localEnv->setProperty (jsPtrIdentifier, -1);//(int64)(JsEnvironment*)this);
     if(linkedContainer.get()){
+        linkedContainer->clearUserDefinedParameters();
         localEnv->setMethod("getLocal",&getLocal );
     }
     jsEngine->registerNativeObject (JsHelpers::jsLocalIdentifier, localEnv);
