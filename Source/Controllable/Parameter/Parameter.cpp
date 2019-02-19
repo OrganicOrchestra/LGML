@@ -29,7 +29,7 @@ ParameterBase::ParameterBase ( const String& niceName, const String& description
     hasCommitedValue (false),
     isCommitableParameter (false),
     _isSettingValue (false),
-    isLocking (true),
+    isReentrant (false),
     defaultValue (initialValue),
     value (initialValue),
     mappingDisabled (false),
@@ -84,18 +84,18 @@ void ParameterBase::setSavable(bool s){
 void ParameterBase::setValueFrom(Listener * notifier,const var & _value, bool silentSet , bool force ){
     jassert(!isCommitableParameter);
     // reentrancy check
-    if(notifier !=nullptr && (_valueSetter.get()==notifier) ) force=!checkValueIsTheSame(_value, value);
+    if(notifier !=nullptr && (_valueSetter.get()==notifier)) force|=!checkValueIsTheSame(_value, value);
     _valueSetter = notifier;
      tryToSetValue (_value, silentSet, alwaysNotify || force,notifier);
     _valueSetter = nullptr;
 
 }
 
-bool ParameterBase::waitOrDeffer (const var& _value, bool silentSet, bool force )
+bool ParameterBase::shouldBeDeffered (const var& _value, bool silentSet, bool force )
 {
-    if (!force && _isSettingValue.get())
+    if (!MessageManager::getInstance()->isThisTheMessageThread() && !force && _isSettingValue.get())
     {
-        if (isLocking)
+        if (!isReentrant)
         {
             int overflow = 1000000;
             auto startWait = Time::currentTimeMillis();
@@ -118,7 +118,12 @@ bool ParameterBase::waitOrDeffer (const var& _value, bool silentSet, bool force 
         {
             if (auto* mm = MessageManager::getInstanceWithoutCreating())
             {
-                mm->callAsync ([this, _value, silentSet, force]() {tryToSetValue (_value, silentSet, force);});
+                WeakReference<ParameterBase> bailout(this);
+                mm->callAsync ([bailout, _value, silentSet, force]()mutable {
+                    if(bailout.get())
+                        bailout->tryToSetValue (_value, silentSet, force);
+
+                });
                 return true;
             }
         }
@@ -133,7 +138,7 @@ void ParameterBase::tryToSetValue (const var & _value, bool silentSet, bool forc
 
     if (!force && checkValueIsTheSame (_value, value)) return;
 
-    if (!waitOrDeffer (_value, silentSet, force))
+    if (!shouldBeDeffered (_value, silentSet, force))
     {
         _isSettingValue = true;
         lastValue = value.clone();

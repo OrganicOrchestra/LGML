@@ -56,7 +56,7 @@ public:
     bool isCommitableParameter;
 
     // when race conditions are met, do we lock?
-    bool isLocking;
+    bool isReentrant;
     bool isSettingValue();
 
 
@@ -163,7 +163,7 @@ public:
 
 
 protected:
-    bool waitOrDeffer (const var& _value, bool silentSet, bool force);
+    bool shouldBeDeffered (const var& _value, bool silentSet, bool force);
     Atomic<bool> _isSettingValue;
     Atomic<ParameterBase::Listener * > _valueSetter;
     
