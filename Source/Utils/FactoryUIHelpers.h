@@ -155,7 +155,8 @@ class UndoableFactoryCreateOrDelete:public UndoableAction{
         }
         if(obj){
             addF(obj);
-            obj->configureFromObject(obSettings.getDynamicObject());
+            if(auto settings = obSettings.getDynamicObject())
+                obj->configureFromObject(settings);
             return true;
         }
         else{
