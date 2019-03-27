@@ -39,5 +39,6 @@ private:
     void childAddressChanged (ControllableContainer* /*notifier*/, ControllableContainer* ) override;
     void containerWillClear (ControllableContainer* /*origin*/) override;
     ParameterContainer *root;
-    ParameterContainer * slave;
+
+    ParameterContainer*   slave;
 };

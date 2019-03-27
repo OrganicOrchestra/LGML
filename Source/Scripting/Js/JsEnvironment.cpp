@@ -646,7 +646,7 @@ void JsEnvironment::controllableFeedbackUpdate (ControllableContainer* originCon
 
     auto sArr = c->getControlAddressRelative (originContainer);
     Array<var> add;
-    for (auto& s : sArr) { add.add (s.toString()); }
+    for (auto& s : sArr.getArray()) { add.add (s.toString()); }
 
     Array<var> argList = { var (add), v };
 

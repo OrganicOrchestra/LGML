@@ -434,10 +434,14 @@ void ParameterContainer::clearUserDefinedParameters(){
     }
 }
 ParameterContainer * ParameterContainer::getForUid(const Uuid &ui){
-    return
-    dynamic_cast<ParameterContainer*>(
-                                      ControllableContainer::globalRoot->
+    if(ui==uid){
+        return this;
+    }
+    return dynamic_cast<ParameterContainer*>(
                                       findFirstControllableContainer([ui](ControllableContainer* c){return c->uid==ui;}));
+}
+    ParameterContainer * ParameterContainer::getForUidGlobal(const Uuid &ui){
+        return dynamic_cast<ParameterContainer*>(ControllableContainer::globalRoot)->getForUid(ui);
 
 }
 

@@ -29,12 +29,12 @@ public:
         ParameterContainer* res (nullptr);
         if(dynamic_cast<ConnectableNode*>(o)){
             auto pc = new ConnectableNodeUIParams(o->shortName);
-            all.add(pc);
+//            all.add(pc);
             res = pc;
         }
         return res;
     }
-    OwnedArray<ConnectableNodeUIParams> all;
+//    OwnedArray<ConnectableNodeUIParams> all;
 
 
 };

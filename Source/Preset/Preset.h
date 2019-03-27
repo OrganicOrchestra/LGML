@@ -27,7 +27,7 @@ public:
     String getOriginUID(){return originUID->stringValue();}
     ParameterContainer* getOriginContainer(){
         Uuid ui (getOriginUID());
-        return ParameterContainer::getForUid(ui);}
+        return ParameterContainer::getForUidGlobal(ui);}
 
     void clear();
 

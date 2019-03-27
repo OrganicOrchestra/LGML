@@ -48,6 +48,9 @@ ControlAddressType ControlAddressType::buildFromControllable(const Controllable 
         }
     }
     std::reverse(res.begin(), res.end());
+#if JUCE_DEBUG
+    res.cachedAddress=res.toString();
+#endif
     return res;
 }
 
@@ -61,6 +64,9 @@ ControlAddressType ControlAddressType::buildFromControllableContainer(const Cont
     }
 
     std::reverse(res.begin(), res.end());
+#if JUCE_DEBUG
+    res.cachedAddress=res.toString();
+#endif
     return res;
 }
 
@@ -118,6 +124,9 @@ ControlAddressType ControlAddressType::subAddr(int start, int end)const{
     for(int i = start ; i < end ; i++){
         res.add(getUnchecked(i));
     }
+#if JUCE_DEBUG
+    res.cachedAddress=res.toString();
+#endif
     return res;
 }
 
@@ -134,9 +143,38 @@ ControlAddressType ControlAddressType::getChild(const ShortNameType & c) const{
     ControlAddressType res;
     res = *this;
     res.add(c);
+#if JUCE_DEBUG
+    res.cachedAddress=res.toString();
+#endif
     return res;
 }
 
+void ControlAddressType::add(const Identifier & i){
+    Array<Identifier>::add(i);
+#if JUCE_DEBUG
+    cachedAddress=toString();
+#endif
+}
+void ControlAddressType::set(const int i,const Identifier & idtf){
+    Array<Identifier>::set(i,idtf);
+#if JUCE_DEBUG
+    cachedAddress=toString();
+#endif
+}
+int ControlAddressType::size()const{
+    return Array<Identifier>::size();
+}
+
+bool ControlAddressType::operator ==(const ControlAddressType & o) const{
+    return getArray()==o.getArray();
+}
+bool ControlAddressType::operator !=(const ControlAddressType & o) const{
+    return getArray()!=o.getArray();
+}
+
+const Array<Identifier> & ControlAddressType::getArray()const {
+    return *(Array<Identifier>*)this;
+}
 ////////////////////
 //Controllable
 

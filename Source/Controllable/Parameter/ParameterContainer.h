@@ -93,8 +93,8 @@ public:
     
     BoolParameter* containSavableObjects;
 
-
-    static ParameterContainer * getForUid(const Uuid &ui);
+    ParameterContainer * getForUid(const Uuid &ui);
+    static ParameterContainer * getForUidGlobal(const Uuid &ui);
 
     bool canHavePresets() const{return _canHavePresets;}
     bool presetSavingIsRecursive() const{return _presetSavingIsRecursive;}

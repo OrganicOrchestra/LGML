@@ -204,7 +204,7 @@ ControllableContainer* ControllableContainer::addChildControllableContainer (Con
 
     controllableContainers.add (container);
     //  container->addControllableContainerListener(this);
-    jassert(container->parentContainer==nullptr);
+    jassert(container->parentContainer==nullptr || container->parentContainer==this);
     container->setParentContainer (this);
 
     if (notify)

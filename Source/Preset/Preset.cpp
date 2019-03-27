@@ -157,7 +157,7 @@ void Presetable::parameterValueChanged ( ParameterBase* p, ParameterBase::Listen
 
 
                      Uuid ui(exterUID);
-                     if(auto p = ParameterContainer::getForUid(ui)){
+                     if(auto p = ParameterContainer::getForUidGlobal(ui)){
                          preset = pm->getPreset(p->presetable->getPresetFilter(), name);
                      }
                      else{

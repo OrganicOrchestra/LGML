@@ -32,8 +32,9 @@ typedef Identifier ShortNameType;
 
 
 class Controllable;
-class ControlAddressType : public Array<Identifier>{
+class ControlAddressType : private Array<Identifier>{
 public:
+
     String toString()const;
     static ControlAddressType buildFromControllable(const Controllable * ,const ControllableContainer * maxParent=nullptr);
     static ControlAddressType buildFromControllableContainer(const ControllableContainer * ,const ControllableContainer * maxParent=nullptr);
@@ -44,8 +45,17 @@ public:
     ControlAddressType subAddr(int start,int end = -1)const;
     StringArray toStringArray()const;
     ControlAddressType getChild(const ShortNameType & c) const;
-
+    void add(const Identifier & i);
+    void set(const int i,const Identifier & idtf);
+    int size()const;
+    bool operator ==(const ControlAddressType & o) const;
+    bool operator !=(const ControlAddressType & o) const;
+    const Array<Identifier> & getArray()const;
     static const Identifier rootIdentifier;
+private:
+#if JUCE_DEBUG
+    String cachedAddress;
+#endif
 };
 
 class Controllable : public FactoryObject

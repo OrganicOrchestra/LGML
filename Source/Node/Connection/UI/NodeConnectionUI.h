@@ -45,7 +45,7 @@ public:
         Anchor():isHovered(false)
         {
             setInterceptsMouseClicks(true, false);
-            const int anchorSize = 10;
+            const int anchorSize = 6;
             setRectangle (Rectangle<float> (0, 0, anchorSize, anchorSize));
             setFill (Colours::white.withAlpha (0.1f));
             setStrokeFill (Colours::white);
