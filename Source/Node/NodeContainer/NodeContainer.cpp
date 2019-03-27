@@ -348,7 +348,9 @@ ParameterContainer*   NodeContainer::addContainerFromObject (const String& name,
     if(!node){jassertfalse; return nullptr;}
     if (auto n = dynamic_cast<ContainerInNode*> (node)) containerInNode = n;
     else if (auto n = dynamic_cast<ContainerOutNode*> (node)) containerOutNode = n;
-
+    if(data && data->hasProperty(uidIdentifier)){
+        node->uid = data->getProperty(uidIdentifier).toString();
+    }
     addNode (node,name,data);
     return node;
 }

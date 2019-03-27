@@ -34,9 +34,8 @@ void ParameterContainerSync::setRoot(ParameterContainer * _root){
     
 }
 ParameterContainer * ParameterContainerSync::getSlaveRelatedContainer(ParameterContainer *c,bool tryLastName){
-    if(c==root){
-        return slave;
-    }
+    if(c==root){return slave;}
+
     ParameterContainer * inner = dynamic_cast<ParameterContainer*>(slave->getMirroredContainer(c,root));
     if( tryLastName && !inner){ // last resort try to find amongst uids
             const auto & ui = c->uid.toString();
@@ -48,7 +47,7 @@ ParameterContainer * ParameterContainerSync::getSlaveRelatedContainer(ParameterC
             }));
             if(!inner)
                 jassertfalse;
-        
+
     }
     
     
@@ -78,6 +77,7 @@ void ParameterContainerSync::controllableContainerAdded (ControllableContainer* 
 }
 
 void ParameterContainerSync::checkContExists(ParameterContainer * fromRoot){
+
     ScopedPointer<ParameterContainer> toCreate = createContainerFromContainer(fromRoot);
     if(!toCreate){
         return;
@@ -87,17 +87,24 @@ void ParameterContainerSync::checkContExists(ParameterContainer * fromRoot){
 
         auto arr =fromRoot->getControlAddressRelative(root);
         
-        ControlAddressType added;
-        ParameterContainer * parent = slave;
+
+        ParameterContainer * slaveIt = slave;
+        ParameterContainer * rootIt = root;
+
         // create object path if not exists
         for(auto& a:arr.getArray()){
-            added.add(a);
-            ParameterContainer * target =dynamic_cast<ParameterContainer*>(slave->getControllableContainerForAddress(added));
-            ParameterContainer * source =dynamic_cast<ParameterContainer*>(root->getControllableContainerForAddress(added));
+            ParameterContainer * source =dynamic_cast<ParameterContainer*>(rootIt->getControllableContainerByShortName(a));
+            ParameterContainer * target =dynamic_cast<ParameterContainer*>(slaveIt->getControllableContainerByShortName(a));
+            if(!source){
+                jassertfalse;
+                return;
+            }
+
+
             
-            jassert(source);
+
             if( !target ){
-                if( added==arr){
+                if( source==fromRoot){
                     target = toCreate.release();
                     target->setNiceName(fromRoot->getNiceName());
                 }
@@ -105,29 +112,33 @@ void ParameterContainerSync::checkContExists(ParameterContainer * fromRoot){
                     target =createContainerFromContainer(source);
                     if(!target){
                         jassertfalse;
-                        target = new ParameterContainer();
+                        return;
+//                        target = new ParameterContainer();
                     }
                     target->setNiceName(source->getNiceName());
                 }
 
+                target->nameParam->setInternalOnlyFlags(true,false);
+
+                String ui = source->uid.toString();
+                StringParameter * uidRefParam = dynamic_cast<StringParameter*>(target->getControllableByShortName(uidRefName));
+                if(!uidRefParam){
+                    uidRefParam =target->addNewUniqueParameter<StringParameter>(uidRefName.toString(), "uid reference", "none");
+                    uidRefParam->setInternalOnlyFlags(true,false);
+                }
+                uidRefParam->setValue(ui);
+                slaveIt->addChildControllableContainer(target);
             }
+
             
             
 
             
-            target->nameParam->setInternalOnlyFlags(true,false);
-            
-            Uuid ui = source->uid;
-            StringParameter * uidRefParam = dynamic_cast<StringParameter*>(target->getControllableByShortName(uidRefName));
-            if(!uidRefParam){
-                uidRefParam =target->addNewUniqueParameter<StringParameter>(uidRefName.toString(), "uid reference", "none");
-                uidRefParam->setInternalOnlyFlags(true,false);
-            }
-            uidRefParam->setValue(ui.toString());
-            parent->addChildControllableContainer(target);
+
             
             
-            parent = target;
+            slaveIt = target;
+            rootIt = source;
         }
     }
 }

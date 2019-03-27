@@ -163,6 +163,7 @@ void NodeContainerViewer::addNodeUI (ConnectableNode* node)
                                         dynamic_cast<ConnectableNodeUIParams*>(uiParams->getControllableContainerByShortName(node->shortName)));
 
         if(nui){
+            nui->setNiceName(node->shortName.toString());
             nodesUI.add (nui);
             addChildControllableContainer(nui);
             if(minimizeAll->boolValue()){
