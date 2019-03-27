@@ -144,7 +144,7 @@ private:
     Array<float> rmsValuesIn;
     Array<float> rmsValuesOut;
 
-    SmoothedValue<floatParamType> logVolume;
+    SimpleSmoothedValue<floatParamType> logVolume;
     float lastVolume;
     friend class RMSTimer;
 

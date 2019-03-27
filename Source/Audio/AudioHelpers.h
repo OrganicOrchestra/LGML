@@ -165,10 +165,10 @@ public:
 // dumb implementation of smoothing
 // unconsistent with samplerate / blockSize but simple and safe
 template<typename floatType>
-class SmoothedValue
+class SimpleSmoothedValue
 {
 public:
-    SmoothedValue (floatType init, floatType _alpha): current (init), target (init), alpha (_alpha)
+    SimpleSmoothedValue (floatType init, floatType _alpha): current (init), target (init), alpha (_alpha)
     {
         jassert (alpha <= 1);
         jassert (alpha >= 0);
@@ -182,6 +182,7 @@ public:
     }
     floatType get() const {return current;}
     void set (float t) {target = t;}
+private:
     floatType current;
     floatType target;
     floatType alpha;

@@ -58,7 +58,7 @@ public:
     FloatParameter* volume;
     FloatParameter* beatLength;
     double startRecBeat, startPlayBeat;
-    SmoothedValue<float> logVolume;
+    SimpleSmoothedValue<float> logVolume;
     BoolParameter* mute;
     BoolParameter* solo;
     FloatParameter*   originBPM ;

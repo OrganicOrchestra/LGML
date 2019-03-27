@@ -32,7 +32,7 @@ ifeq ($(CONFIG),Debug)
   JUCE_OUTDIR := build
 
   ifeq ($(TARGET_ARCH),)
-    TARGET_ARCH := -march=native
+    TARGET_ARCH := 
   endif
 
   JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DDEBUG=1 -D_DEBUG=1 -DLINK_PLATFORM_LINUX=1 -DJUCE_PLUGINHOST_LADSPA=1 -DJUCER_LINUX_MAKE_6D53C8B4=1 -DJUCE_APP_VERSION=1.3.5 -DJUCE_APP_VERSION_HEX=0x10305 $(shell pkg-config --cflags alsa freetype2 x11 xext xinerama libcurl) -pthread -I../../../JUCE/modules/juce_audio_processors/format_types/VST3_SDK -I../../JuceLibraryCode -I../../../JUCE/modules -I../../Source -I../../../JUCE/modules/juce_audio_processors/format_types/VST3_SDK/ -I../../third_party/VST2_SDK/ -I../../third_party/libpd/pure-data/src -I../../third_party/serial/include -I../../third_party/rubberband/ -I../../third_party/link/include/ -I../../third_party/link/modules/asio-standalone/asio/include $(CPPFLAGS)
@@ -53,7 +53,7 @@ ifeq ($(CONFIG),Release)
   JUCE_OUTDIR := build
 
   ifeq ($(TARGET_ARCH),)
-    TARGET_ARCH := -march=native
+    TARGET_ARCH := 
   endif
 
   JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DNDEBUG=1 -DLINK_PLATFORM_LINUX=1 -DJUCE_PLUGINHOST_LADSPA=1 -DJUCER_LINUX_MAKE_6D53C8B4=1 -DJUCE_APP_VERSION=1.3.5 -DJUCE_APP_VERSION_HEX=0x10305 $(shell pkg-config --cflags alsa freetype2 x11 xext xinerama libcurl) -pthread -I../../../JUCE/modules/juce_audio_processors/format_types/VST3_SDK -I../../JuceLibraryCode -I../../../JUCE/modules -I../../Source -I../../../JUCE/modules/juce_audio_processors/format_types/VST3_SDK/ -I../../third_party/VST2_SDK/ -I../../third_party/libpd/pure-data/src -I../../third_party/serial/include -I../../third_party/rubberband/ -I../../third_party/link/include/ -I../../third_party/link/modules/asio-standalone/asio/include $(CPPFLAGS)
