@@ -32,7 +32,7 @@ def exportToOwncloud(builder):
 
 	# send binaries
 	exportedPath = builder.cfg["packaged_path"]
-	basePath = "DEVSPECTACLES/Tools/LGML/App-Dev/dist/bleedingEdge/"+ProJucerUtils.getXmlVersion()
+	basePath = "Spectacles/Tools/LGML/App-Dev/dist/bleedingEdge/"+ProJucerUtils.getXmlVersion()
 	exportedFile = os.path.basename(exportedPath)
 	ownCloudPath = basePath + "/" + exportedFile
 	
