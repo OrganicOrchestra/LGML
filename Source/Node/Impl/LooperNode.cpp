@@ -31,7 +31,7 @@ LooperNode::LooperNode (StringRef name) :
 {
 
     numberOfTracks = addNewParameter<IntParameter> ("Number of tracks", "number of tracks in this looper", 8, 1, MAX_NUM_TRACKS);
-    numberOfAudioChannelsIn = addNewParameter<IntParameter> ("Number of channels per track", "number of channels on each audioTrack in local folder LGML_audio/LooperName/LGML_Loop_trackNum_index.wav", 1, 1, 2);
+    numberOfAudioChannelsIn = addNewParameter<IntParameter> ("Number of channels per track", "number of channels on each audioTrack in local folder LGML_audio/LooperName/LGML_Loop_trackNum_index.wav", 1, 1, 16);
     exportAudio =  addNewParameter<Trigger> ("Export audio", "export audio of all recorded Tracks");
     selectAllTrig =  addNewParameter<Trigger> ("Select all", "Select All tracks, for all clear or main volume for instance");
     selectTrack = addNewParameter<IntParameter> ("Select track", "set track selected", 0, -1, 0);

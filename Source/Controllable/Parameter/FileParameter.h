@@ -98,5 +98,5 @@ private:
     friend class WeakReference<FileParameter>;
 
     ScopedPointer<FilePostponedLoader> filePostponedLoader;
-    friend class FilePostponedLoader;
+    friend struct FilePostponedLoader;
 };

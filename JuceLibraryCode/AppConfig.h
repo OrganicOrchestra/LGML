@@ -209,7 +209,7 @@
 #endif
 
 #ifndef    JUCE_LOG_ASSERTIONS
- #define   JUCE_LOG_ASSERTIONS 1
+ //#define JUCE_LOG_ASSERTIONS 0
 #endif
 
 #ifndef    JUCE_CHECK_MEMORY_LEAKS

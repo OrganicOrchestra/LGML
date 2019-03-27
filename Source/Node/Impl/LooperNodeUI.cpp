@@ -364,6 +364,7 @@ LooperNodeContentUI::TrackUI::TimeStateUI::TimeStateUI (LooperTrack* _track): tr
     track->addTrackListener (this);
     setTrackTimeUpdateRateHz (10);
     trackStateChangedAsync (_track->trackState);
+    setOpaque(true);
 
 }
 LooperNodeContentUI::TrackUI::TimeStateUI::~TimeStateUI()
