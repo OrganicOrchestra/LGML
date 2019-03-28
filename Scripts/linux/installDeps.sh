@@ -7,5 +7,5 @@
 # rubberband
 apt-get -y --assume-yes install librubberband2v5
 # for dns utility
-apt-get -y --assume-yes install libavahi-compat-libdnssd1
+#apt-get -y --assume-yes install libavahi-compat-libdnssd1
 

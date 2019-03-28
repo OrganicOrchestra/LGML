@@ -81,7 +81,7 @@ apt-get -y -q --assume-yes install python3-pip
 # rubberband
 apt-get -y -q --assume-yes install librubberband-dev:$CROSS_ARCH
 # for dns utility
-apt-get -y -q --assume-yes install libavahi-compat-libdnssd-dev:$CROSS_ARCH
+#apt-get -y -q --assume-yes install libavahi-compat-libdnssd-dev:$CROSS_ARCH
 
 #install add-apt-repository
 

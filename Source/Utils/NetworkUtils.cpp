@@ -21,7 +21,7 @@
 
 // TODO implement dns support on  windows
 #ifndef SUPPORT_DNS
-    #if (JUCE_MAC || JUCE_LINUX)
+    #if (JUCE_MAC )
         #define SUPPORT_DNS 1
     #else
         #define SUPPORT_DNS 0
