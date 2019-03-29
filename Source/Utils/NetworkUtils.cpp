@@ -182,7 +182,7 @@ public:
     {
 
         nu->dnsMap.clear();
-        OSCClientRecord rec = {"localhost", IPAddress (String ("127.0.0.1")), "local computer", defaultOSCPort};
+        OSCClientRecord rec = {"localhost", IPAddress (String ("127.0.0.1")), "local computer", OSCClientRecord::noPort};
         nu->addOSCRecord (rec);
 
 
