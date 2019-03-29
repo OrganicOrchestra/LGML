@@ -67,6 +67,7 @@ pSync(this)
         TimeManager::getInstance()->addControllableContainerListener (&pSync);
         }
     }
+    userContainer.addControllableContainerListener (&pSync);
 
 }
 
@@ -77,6 +78,8 @@ OSCDirectController::~OSCDirectController()
 
     if (TimeManager* tm = TimeManager::getInstanceWithoutCreating())
         tm->removeControllableContainerListener (&pSync);
+
+    userContainer.removeControllableContainerListener (&pSync);
 
 }
 
