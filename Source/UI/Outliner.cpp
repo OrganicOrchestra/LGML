@@ -375,7 +375,7 @@ void OutlinerItem::controllableContainerRemoved(ControllableContainer * notif,Co
     int i = 0;
     while( i < getNumSubItems()){
         auto item = dynamic_cast<OutlinerItem*>(getSubItem(i));
-        if(item->container==ori){
+        if(!item->container || item->container==ori){
             removeSubItem(i);
         }
         else{
@@ -406,13 +406,14 @@ void OutlinerItem::childControllableAdded (ControllableContainer* notif, Control
 }
 void OutlinerItem::childControllableRemoved (ControllableContainer* notif, Controllable* ori) {
     WeakReference<OutlinerItem> bailout(this);
+
     if(notif && notif==container){
         MessageManager::callAsync([bailout,ori]()mutable{
             if(bailout.get()){
                 int i = 0;
                 while( i < bailout->getNumSubItems()){
                     auto item = dynamic_cast<OutlinerItem*>(bailout->getSubItem(i));
-                    if(item->parameter==ori){
+                    if(!item->parameter || item->parameter==ori){
                         bailout->removeSubItem(i);
                     }
                     else{
@@ -465,7 +466,7 @@ void OutlinerItem::itemSelectionChanged (bool isNowSelected){
 OutlinerItemComponent::OutlinerItemComponent (OutlinerItem* _item) :
 InspectableComponent ("OutlinerItem"),
 item (_item),
-label ("label", _item->isContainer ? item->container->getNiceName() : item->parameter->niceName),
+label ("label", _item->isContainer ? _item->container->getNiceName() : _item->parameter->niceName),
 paramUI (nullptr)
 
 {
@@ -637,9 +638,14 @@ void OutlinerItemComponent::buttonClicked (Button* b){
             item->container->removeFromParent();
         }
         else{
-            if(auto p = item->parameter->parentContainer)
-                p->removeControllable(item->parameter);
-            else jassertfalse;
+            auto p = item->parameter;
+            if(p && p->parentContainer){
+                    p->parentContainer->removeControllable(p);
+            }
+            else{
+                jassertfalse;
+
+            }
         }
         
     }
