@@ -525,18 +525,19 @@ void VSTNode::audioProcessorChanged (juce::AudioProcessor* p )
         vstLoaderPostponer = new VSTLoaderPostponer(this);
         return;
     }
+    getVSTState();
     if(p->getParameters().size()!=VSTParameters.size())
     {
         NLOG("VSTNode : " + innerPlugin->getName(), "rebuilding Parameters");
         jassertfalse;
         initParametersFromProcessor (innerPlugin);
-        getVSTState();
 
     }
     else
     {
+
         if(parameterHaveChanged()){
-        getVSTState();
+
 //        updateParametersToProcessor(innerPlugin);
         updateParametersFromProcessor(innerPlugin);
         }
