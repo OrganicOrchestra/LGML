@@ -723,7 +723,7 @@ SelectedItemSet<SelectedUIType>& NodeContainerViewer::getLassoSelection() {
 };
 
 
-void NodeContainerViewer::addOrRemoveNodeUndoable(const String & tid,const Point<int> & mousePos,NodeBase * originNodeToRemove,bool isRemove){
+void NodeContainerViewer::addOrRemoveNodeUndoable(const String & tid,const Point<int> & mousePos,NodeBase * originNodeToRemove,bool isRemove,var dobjVar){
 
     var  savedUiParamsObject;
     if(originNodeToRemove  && isRemove){
@@ -739,7 +739,7 @@ void NodeContainerViewer::addOrRemoveNodeUndoable(const String & tid,const Point
                                  [=](NodeBase* c){
                                      if(c)
                                      {
-                                         ConnectableNode* n = (ConnectableNode*)nodeContainer->addNode (c);
+                                         ConnectableNode* n = (ConnectableNode*)nodeContainer->addNode (c,"",dobjVar.getDynamicObject());
                                          jassert (n != nullptr);
 
                                          if(auto m = getUIForNode(n)){
@@ -781,15 +781,15 @@ void NodeContainerViewer::removeNodeListUndoable(Array<NodeBase*> nl){
             removeNodeUndoable(n);
     }
 }
-void NodeContainerViewer::addNodeUndoable(NodeBase * node,const Point<int> & mousePos){
-    addOrRemoveNodeUndoable(node->getFactoryTypeId().toString(),mousePos, node,false);
+void NodeContainerViewer::addNodeUndoable(NodeBase * node,const Point<int> & mousePos,var vObj){
+    addOrRemoveNodeUndoable(node->getFactoryTypeId().toString(),mousePos, node,false,vObj);
 }
 void NodeContainerViewer::createNodeUndoable(const String & tid,const Point<int> & mousePos){
-    addOrRemoveNodeUndoable(tid, mousePos, nullptr,false);
+    addOrRemoveNodeUndoable(tid, mousePos, nullptr,false,{});
 }
 void NodeContainerViewer::removeNodeUndoable(NodeBase * originNodeToRemove){
     if(originNodeToRemove->canBeRemovedByUser)
-        addOrRemoveNodeUndoable(originNodeToRemove->getFactoryTypeId().toString(), Point<int>(), originNodeToRemove,true);
+        addOrRemoveNodeUndoable(originNodeToRemove->getFactoryTypeId().toString(), Point<int>(), originNodeToRemove,true,{});
     else
         jassertfalse;
 }

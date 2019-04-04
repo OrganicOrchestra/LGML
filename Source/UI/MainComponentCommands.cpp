@@ -465,7 +465,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
 
                                 if (cn != nullptr)
                                 {
-                                    NodeBase* n = NodeFactory::createBaseFromObject ("", d->getProperty ("data").getDynamicObject());
+                                    NodeBase* n = NodeFactory::createBaseFromObject ("", d->getProperty ("data").getDynamicObject(),false);
 
                                     NodeContainerViewer *  ncv = dynamic_cast<NodeContainerViewer*>(relatedComponent);
                                     if(!ncv)ncv=relatedComponent->findParentComponentOfClass<NodeContainerViewer>();
@@ -475,7 +475,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                                         n->uid = Uuid();// ensure to have different uuid than the one from JSON
 
                                         String oldName = n->shortName.toString();
-                                        ncv->addNodeUndoable(n, Point<int>());
+                                        ncv->addNodeUndoable(n, Point<int>(),d->getProperty ("data"));
                                         String newName =n->shortName.toString();
                                         newNames.set(oldName,newName);
                                         auto nodeUI = ncv->getUIForNode(n);

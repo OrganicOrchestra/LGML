@@ -147,7 +147,7 @@ void NodeContainer::clear ()
 
 ConnectableNode* NodeContainer::addNodeFromJSONData (DynamicObject* data)
 {
-    ConnectableNode* n = NodeFactory::createBaseFromObject ("", data);
+    ConnectableNode* n = NodeFactory::createBaseFromObject ("", data,false);
     return addNode (n, n->getNiceName(), data);
 }
 
