@@ -57,11 +57,11 @@ void ConnectableNodeUIParams::notifyFromParams(){
 ConnectableNodeUIParams::~ConnectableNodeUIParams(){
 
     if(origin.get()){
-    for(auto p:origin->getAllParameters(false,true)){
-        if(p.get())
-            p->removeParameterListener(this);
+        for(auto p:origin->getAllParameters(false,true)){
+            if(p.get())
+                p->removeParameterListener(this);
 
-    }
+        }
     }
 }
 ConnectableNodeUIParams::ConnectableNodeUIParams(StringRef n): ParameterContainer(n){
@@ -120,8 +120,8 @@ isDraggingFromUI (false)
         addAndMakeVisible (outputContainer);
     }
 
-//    getHeaderContainer()->addMouseListener (this, true); // (true, true);
-//    getContentContainer()->addMouseListener (this, false);
+    //    getHeaderContainer()->addMouseListener (this, true); // (true, true);
+    //    getContentContainer()->addMouseListener (this, false);
 
     initFromParams();
     mainComponentContainer.setNodeAndNodeUI (connectableNode, this);
@@ -167,13 +167,17 @@ void ConnectableNodeUI::moved()
 
         if(stp!=p){
             auto gridp = p;
-            if(nmui)nmui->alignOnGrid(p);
+            Point <int> destS = {getWidth(),getHeight()};
+            if(nmui){
+                nmui->alignOnGrid(p);
+//                nmui->alignOnGrid(destS);
+            }
             if(p!=gridp){
-                setBounds(p.x,p.y, getWidth(), getHeight());
+                setBounds(p.x,p.y, destS.getX(),destS.getY());
             }
             else{
-            Array<var> v  ({p.x,p.y});
-            UndoableHelpers::setValueUndoable(pp,v);
+                Array<var> v  ({p.x,p.y});
+                UndoableHelpers::setValueUndoable(pp,v);
             }
             //else{pp->setValue(v);}
         }
@@ -204,7 +208,7 @@ int ConnectableNodeUI::getMiniModeWidth (bool forMiniMode)
                                 inputContainer.isVisible()*inputContainer.getWidth() +
                                 outputContainer.isVisible()*outputContainer.getWidth() +
                                 (mainComponentContainer.audioCtlUIContainer ? mainComponentContainer.audioCtlUIContainer->getWidth() +
-                                        ConnectableNodeUI::MainComponentContainer::audioCtlContainerPadRight : 0));
+                                 ConnectableNodeUI::MainComponentContainer::audioCtlContainerPadRight : 0));
 }
 
 int ConnectableNodeUI::getMiniModeHeight (bool forMiniMode)
@@ -222,7 +226,15 @@ void ConnectableNodeUI::resized()
 
     Rectangle<int> r = getLocalBounds();
 
-
+    // check grid alignement
+    auto nmui = findParentComponentOfClass<NodeManagerUI>();
+    Point<int> s {r.getWidth(),r.getHeight()};
+    auto alignedS = s;
+    if(nmui)nmui->alignOnGrid(alignedS);
+    if(s!=alignedS){
+        setSize(alignedS.getX(), alignedS.getY());
+        return;
+    }
 
     if (connectableNode->userCanAccessInputs)
     {
@@ -243,32 +255,36 @@ void ConnectableNodeUI::resized()
     resizer.setBounds (r.removeFromRight (10).removeFromBottom (10));
 
     isDraggingFromUI = true;
-    nodeSize->setPoint(mainComponentContainer.contentContainer->getWidth(),mainComponentContainer.contentContainer->getHeight() );
+    nodeSize->setPoint(mainComponentContainer.contentContainer->getWidth(),mainComponentContainer.contentContainer->getHeight() ,this);
     isDraggingFromUI = false;
 }
 
 void ConnectableNodeUI::onContainerParameterChanged( ParameterBase*p){
 
-        if (p == nodePosition )
-        {
-            if (!isDraggingFromUI )
-                postOrHandleCommandMessage (posChangedId);
-        }
-        else if(p== nodeMinimizedPosition){
-            if (!isDraggingFromUI )
-                postOrHandleCommandMessage (posChangedId);
-        }
-        else if ( p == nodeSize)
-        {
-            if (!isDraggingFromUI){
-                postOrHandleCommandMessage (sizeChangedId);
+    if (p == nodePosition )
+    {
+        if (!isDraggingFromUI )
+            postOrHandleCommandMessage (posChangedId);
+    }
+    else if(p== nodeMinimizedPosition){
+        if (!isDraggingFromUI )
+            postOrHandleCommandMessage (posChangedId);
+    }
+    else if ( p == nodeSize)
+    {
+        if (!isDraggingFromUI){
 
-            }
+            postOrHandleCommandMessage (sizeChangedId);
+
         }
-        else if (p == miniModeParam)
-        {
-            postOrHandleCommandMessage (setMiniModeId);
+        else{
+            jassertfalse;
         }
+    }
+    else if (p == miniModeParam)
+    {
+        postOrHandleCommandMessage (setMiniModeId);
+    }
 
 }
 
@@ -309,7 +325,7 @@ void ConnectableNodeUI::handleCommandMessage (int commandId)
 
         case sizeChangedId:
             mainComponentContainer.contentContainer->setSize (nodeSize->getX(), nodeSize->getY());
-//                        childBoundsChanged(&mainComponentContainer);
+//            childBoundsChanged(&mainComponentContainer);
             //            resized();
             break;
 
@@ -322,27 +338,29 @@ void ConnectableNodeUI::handleCommandMessage (int commandId)
 void ConnectableNodeUI::childBoundsChanged (Component* c)
 {
     // if changes in this layout take care to update  childBounds changed to update when child resize itself (ConnectableNodeContentUI::init()
-    //    if (c == &mainComponentContainer)
-    //    {
-    int destWidth = mainComponentContainer.getWidth() + ((inputContainer.isVisible()?1:0) +
-                                                         (outputContainer.isVisible()?1:0))* connectorWidth;
-    int destHeight = mainComponentContainer.getHeight();
-
-    if (getWidth() != destWidth ||
-        destHeight != getHeight())
+    if (c == &mainComponentContainer)
     {
+        int sPad = ((inputContainer.isVisible()?1:0) +
+                    (outputContainer.isVisible()?1:0))* connectorWidth;
 
-        setSize (destWidth, destHeight);
-        nodeSize->setPoint(mainComponentContainer.contentContainer->getWidth(),mainComponentContainer.contentContainer->getHeight() );
+        Point<int> destS = {mainComponentContainer.getWidth() + sPad,
+            mainComponentContainer.getHeight()};
+
+        if (getWidth() != destS.getX() ||
+            getHeight() != destS.getY())
+        {
+            
+            setSize (destS.getX(),destS.getY());
+//             nodeSize->setPoint(mainComponentContainer.contentContainer->getWidth(),mainComponentContainer.contentContainer->getHeight() ,this);
+        }
     }
-    //    }
 }
 
 
 void ConnectableNodeUI::mouseDown (const juce::MouseEvent& /*e*/)
 {
 
-UndoableHelpers::startNewTransaction(getCurrentPositionParam(),true);
+    UndoableHelpers::startNewTransaction(getCurrentPositionParam(),true);
     UndoableHelpers::setParameterCoalesced(true);
 
 }
@@ -453,11 +471,12 @@ void ConnectableNodeUI::MainComponentContainer::resized()
         if (audioCtlUIContainer)
         {
             r.removeFromRight (audioCtlContainerPadRight);
-            audioCtlUIContainer->setBounds (r.removeFromRight (audioCtlContainerWidth).reduced (0, 4));
+            audioCtlUIContainer->setBounds (r.removeFromRight (audioCtlContainerWidth));
         }
-
-        connectableNodeUI->nodeSize->setValue (Array<var> {r.getWidth(), r.getHeight()}, true);
         contentContainer->setBounds (r);
+        Point<int> tp = {contentContainer->getWidth(), contentContainer->getHeight()};
+        connectableNodeUI->nodeSize->setPoint (tp);
+
     }
 }
 
@@ -486,16 +505,18 @@ void ConnectableNodeUI::MainComponentContainer::setMiniMode (bool value)
 
 void ConnectableNodeUI::MainComponentContainer::childBoundsChanged (Component* c)
 {
-    if (c == contentContainer || c == audioCtlUIContainer)
+    if (c == contentContainer )
     {
-        int destWidth = contentContainer->getWidth() +
-        (audioCtlUIContainer ? (audioCtlContainerWidth + audioCtlContainerPadRight ) : 0);
-        int destHeight = contentContainer->getHeight() + headerContainer->getHeight();
 
-        if (getWidth() != destWidth ||
-            getHeight() != destHeight)
+        Point <int> destS = {
+            contentContainer->getWidth() +
+            (audioCtlUIContainer ? (audioCtlContainerWidth + audioCtlContainerPadRight ) : 0) ,
+            contentContainer->getHeight() + headerContainer->getHeight()};
+
+        if (getWidth() != destS.getX() ||
+            getHeight() != destS.getY())
         {
-            setSize (destWidth, destHeight);
+            setSize (destS.getX(), destS.getY());
         }
     }
 }
