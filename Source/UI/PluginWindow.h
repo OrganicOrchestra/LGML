@@ -40,6 +40,7 @@ public:
     PluginWindow (Component* pluginEditor, VSTNode*, WindowFormatType);
     ~PluginWindow();
 
+
     static PluginWindow* getWindowFor (VSTNode*, WindowFormatType w = WindowFormatType::Normal );
 
     static void closeCurrentlyOpenWindowsFor (VSTNode*);
@@ -49,6 +50,11 @@ public:
     void closeButtonPressed() override;
 
 private:
+
+    // transmit keyboard events to globalKeyListener
+    bool keyPressed(const KeyPress &)override;
+    bool keyStateChanged(bool isKeyDown) override;
+
     VSTNode* owner;
     WindowFormatType type;
 

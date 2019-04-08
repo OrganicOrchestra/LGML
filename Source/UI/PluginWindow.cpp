@@ -19,7 +19,7 @@
 #if !ENGINE_HEADLESS
 
 #include "PluginWindow.h"
-
+#include "../Utils/GlobalKeyListener.h"
 
 #include "../Node/Impl/VSTNode.h"
 
@@ -51,6 +51,8 @@ PluginWindow::PluginWindow (Component* const pluginEditor,
     setVisible (true);
 
     activePluginWindows.add (this);
+
+
 }
 
 PluginWindow::~PluginWindow()
@@ -91,7 +93,7 @@ PluginWindow* PluginWindow::getWindowFor (VSTNode* const node,
             return activePluginWindows.getUnchecked (i);
 
     AudioProcessor* processor = node->innerPlugin;
-
+    jassert(node->innerPlugin);
     if (!processor)return nullptr;
 
 
@@ -129,7 +131,21 @@ PluginWindow* PluginWindow::getWindowFor (VSTNode* const node,
     return nullptr;
 }
 
+bool PluginWindow::keyPressed(const KeyPress & k){
+    if(!DocumentWindow::keyPressed(k)){
+        return GlobalKeyListener::i()->keyPressed(k,this);
+    }
+    return true;
+};
 
+
+
+bool PluginWindow::keyStateChanged(bool isKeyDown){
+    if(!DocumentWindow::keyStateChanged(isKeyDown)){
+        return GlobalKeyListener::i()->keyStateChanged(isKeyDown ,this);
+    }
+    return true;
+};
 
 void PluginWindow::moved()
 {

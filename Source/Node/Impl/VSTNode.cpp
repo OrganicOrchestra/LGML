@@ -218,7 +218,7 @@ void VSTNode::onContainerParameterChanged ( ParameterBase* p)
 
         const OwnedArray<juce::AudioProcessorParameter>& vstParams (innerPlugin->getParameters());
         if(VSTParameters.size()!=vstParams.size()){
-            jassertfalse;
+            //jassertfalse;
             return;
         }
         bool found = false;

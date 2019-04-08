@@ -23,6 +23,7 @@ class GlobalKeyListener : public KeyListener{
 public:
     static void addTraversingListener(KeyListener *k);
     static void removeTraversingListener(KeyListener *k);
+
 private:
     static GlobalKeyListener * i();
     static GlobalKeyListener * instance;
@@ -31,4 +32,5 @@ private:
     bool keyPressed (const KeyPress& key,
                      Component* originatingComponent) override;
     bool keyStateChanged (bool isKeyDown, Component* originatingComponent) override;
+    friend class PluginWindow;
 };
