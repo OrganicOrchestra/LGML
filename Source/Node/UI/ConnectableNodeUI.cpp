@@ -47,6 +47,17 @@ void ConnectableNodeUIParams::initFromParams(){
 
 }
 
+ParameterContainer * ConnectableNodeUIParams::addContainerFromObject(const String &s ,DynamicObject * d) {
+    ParameterContainer* existing = dynamic_cast<ParameterContainer*>(getControllableContainerByName(s));
+    if(existing){
+        return existing;
+    }
+
+    ParameterContainer * newP =  new ConnectableNodeUIParams(s);
+    addChildControllableContainer (newP);
+    return newP;
+};
+
 void ConnectableNodeUIParams::notifyFromParams(){
 
     nodeMinimizedPosition->notifyValueChanged();

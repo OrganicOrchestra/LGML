@@ -51,6 +51,7 @@ public:
         }
         else{
             res= new NodeManagerUI(NodeManager::getInstance());
+            addChildControllableContainer(res);
         }
         if(res){
             res->configureFromObject(data);
@@ -148,6 +149,7 @@ ParameterContainer * NodeManagerUI::addContainerFromObject(const String &s ,Dyna
     }
     
     ParameterContainer * newP =  new ConnectableNodeUIParams(s);
+    addChildControllableContainer(newP);
     return newP;
 };
 

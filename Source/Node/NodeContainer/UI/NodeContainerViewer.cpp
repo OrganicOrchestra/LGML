@@ -157,10 +157,13 @@ void NodeContainerViewer::addNodeUI (ConnectableNode* node)
 {
     if (getUIForNode (node) == nullptr)
     {
-
+        auto uip = uiParams->getControllableContainerByShortName(node->shortName);
+        if(!uip){
+           uip =  uiParams->addContainerFromObject(node->shortName.toString(), nullptr);
+        }
         ConnectableNodeUI* nui =
         NodeUIFactory::createDefaultUI (node,
-                                        dynamic_cast<ConnectableNodeUIParams*>(uiParams->getControllableContainerByShortName(node->shortName)));
+                                        dynamic_cast<ConnectableNodeUIParams*>(uip));
 
         if(nui){
             nui->setNiceName(node->shortName.toString());

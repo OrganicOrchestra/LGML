@@ -36,7 +36,7 @@ public:
     virtual ~ConnectableNodeUIParams();
     
 
-    
+    ParameterContainer * addContainerFromObject(const String &s ,DynamicObject * d) override;
 
     Point2DParameter<int>* nodePosition;
     Point2DParameter<int>* nodeMinimizedPosition;
