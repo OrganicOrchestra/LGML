@@ -26,6 +26,7 @@ juce_ImplementSingleton (ControllerManager);
 ControllerManager::ControllerManager() :
     ParameterContainer ("Controllers")
 {
+    canHaveUserDefinedContainers = true;
     nameParam->setInternalOnlyFlags(true,false);
     
 }

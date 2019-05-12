@@ -109,7 +109,7 @@ bool ParameterBase::shouldBeDeffered (const var& _value, bool silentSet, bool fo
 
             if (_isSettingValue.get() && overflow <= 0)
             {
-                LOGE("param " << controlAddress.toString() << " locked for : " << Time::currentTimeMillis() - startWait);
+                LOGW("param " << controlAddress.toString() << " locked for : " << Time::currentTimeMillis() - startWait);
             }
         }
 

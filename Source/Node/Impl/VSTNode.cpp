@@ -353,7 +353,7 @@ ParameterBase * VSTNode::generateFromVST(const AudioProcessorParameter* param){
 
 ParameterBase * VSTNode::addParameterFromVar(const String & name,const var & data){
     auto p = ParameterContainer::addParameterFromVar(name, data);
-    VSTParameters.add(p);
+    if(p) VSTParameters.add(p);
     return p;
 }
 void VSTNode::initParametersFromProcessor (AudioPluginInstance* pi)

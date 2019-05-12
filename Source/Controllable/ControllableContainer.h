@@ -249,7 +249,7 @@ public:
 protected :
 
 
-    
+    bool canHaveUserDefinedContainers;
     
     void dispatchFeedback (Controllable* c);
 

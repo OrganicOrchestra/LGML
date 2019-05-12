@@ -54,7 +54,7 @@ autoAddFastMaps(false),
 lastFMAddedTime(0),
 pSync(this)
 {
-
+    canHaveUserDefinedContainers = true;
     nameParam->setInternalOnlyFlags(true,false);
     potentialIn = addNewParameter<ParameterProxy> ("Input", "potential input for new fastMap,\nto assing :\n- move a controller in mapping mode\n- alt click on other LGML parameter\n- use this popup");
     potentialOut = addNewParameter<ParameterProxy> ("Output", "potential output for new fastMap\nto assign :\n- click on parameter in mapping mode\n- navigate through this popup");

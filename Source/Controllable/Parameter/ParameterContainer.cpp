@@ -46,7 +46,7 @@ _presetSavingIsRecursive(true)
 
 
     // init once all are created to avoid uninitialized values
-//    setNiceName(niceName);
+    //    setNiceName(niceName);
 
 }
 
@@ -223,21 +223,28 @@ void ParameterContainer::childControllableRemoved (ControllableContainer*, Contr
 
 ParameterBase*   ParameterContainer::addParameter ( ParameterBase* p,int idxToInsert,bool doListen)
 {
+    if(p){
+        p->setParentContainer (this);
+        if(idxToInsert==-1)controllables.add (p);
+        else controllables.insert( idxToInsert,p);
 
-    p->setParentContainer (this);
-    if(idxToInsert==-1)controllables.add (p);
-    else controllables.insert( idxToInsert,p);
 
-
-    controllableContainerListeners.call (&ControllableContainerListener::childControllableAdded, this, p);
-    notifyStructureChanged (this,true,true,false);
-    if(doListen){
-        p->addParameterListener (this);
-        p->addAsyncParameterListener (this);
+        controllableContainerListeners.call (&ControllableContainerListener::childControllableAdded, this, p);
+        notifyStructureChanged (this,true,true,false);
+        if(doListen){
+            p->addParameterListener (this);
+            p->addAsyncParameterListener (this);
+        }
+        p->isUserDefined = p->isUserDefined || isUserDefined;
+        if(p->isUserDefined){
+            jassert(!JUCE_DEBUG);
+        }
+        if(p->isSavableAsObject){
+            containSavableObjects->setValue(true,true);
+        }
     }
-    p->isUserDefined = p->isUserDefined || isUserDefined;
-    if(p->isSavableAsObject){
-        containSavableObjects->setValue(true,true);
+    else{
+        //        jassertfalse;
     }
     return p;
 }
@@ -305,7 +312,9 @@ void ParameterContainer::configureFromObject (DynamicObject* dyn)
 
                 for (auto& p : props)
                 {
-                    if (Controllable* c = getControllableByName (p.name.toString()))
+                    Controllable* c = getControllableByName (p.name.toString()); // retro compat : try both
+                    if(!c){c= getControllableByShortName (p.name.toString());}
+                    if (c)
                     {
                         if (c->isSavable)
                         {
@@ -320,7 +329,9 @@ void ParameterContainer::configureFromObject (DynamicObject* dyn)
                                             par->setValue (d->getProperty("value"));
                                         }
                                         else{
-                                            jassertfalse;
+
+                                            LOGE(String("parsing error for parameter 123").replace("123",par->niceName));
+                                            par->setValue (p.value); // retro compat try to set value
                                         }
                                     }
                                     else{
@@ -361,13 +372,18 @@ void ParameterContainer::configureFromObject (DynamicObject* dyn)
                     {
                         cont->configureFromObject (o.value.getDynamicObject());
                     }
-                    else if(o.value.getDynamicObject())
+                    else if(canHaveUserDefinedContainers)
                     {
-                        auto c = addContainerFromObject (o.name.toString(), o.value.getDynamicObject());
+                        if( o.value.getDynamicObject()){
+                            auto c = addContainerFromObject (o.name.toString(), o.value.getDynamicObject());
 
-                        if (c)
-                        {
-                            c->configureFromObject (o.value.getDynamicObject());
+                            if (c)
+                            {
+                                c->configureFromObject (o.value.getDynamicObject());
+                            }
+                            else{
+                                jassertfalse;
+                            }
                         }
                         else
                         {
@@ -375,7 +391,7 @@ void ParameterContainer::configureFromObject (DynamicObject* dyn)
                         }
                     }
                     else{
-                        DBG("ignoring container : "+o.name.toString());
+                        LOGE(String("sub container 456 not allowed in 123").replace("123", getNiceName()).replace("456",o.name.toString()));
                     }
                 }
 
@@ -404,18 +420,20 @@ ParameterContainer*   ParameterContainer::addContainerFromObject (const String& 
 ParameterBase* ParameterContainer::addParameterFromVar (const String& name, const var& data)
 {
     // handle automagically for userdefined
-    if (isUserDefined || containSavableObjects)
+    if (isUserDefined || containSavableObjects->boolValue())
     {
-        ParameterBase * up;
+        ParameterBase * up {nullptr};
         if (data.isObject())
         {
-             up = addParameter (ParameterFactory::createBaseFromObject ( name, data.getDynamicObject()));
+            up = addParameter (ParameterFactory::createBaseFromObject ( name, data.getDynamicObject()));
         }
         else
         {
             up = addParameter (ParameterFactory::createBaseFromVar (name, data));
         }
-        up->isUserDefined = true;
+        if(up){
+            up->isUserDefined = true;
+        }
         return up;
     }
     else
@@ -438,10 +456,10 @@ ParameterContainer * ParameterContainer::getForUid(const Uuid &ui){
         return this;
     }
     return dynamic_cast<ParameterContainer*>(
-                                      findFirstControllableContainer([ui](ControllableContainer* c){return c->uid==ui;}));
+                                             findFirstControllableContainer([ui](ControllableContainer* c){return c->uid==ui;}));
 }
-    ParameterContainer * ParameterContainer::getForUidGlobal(const Uuid &ui){
-        return dynamic_cast<ParameterContainer*>(ControllableContainer::globalRoot)->getForUid(ui);
+ParameterContainer * ParameterContainer::getForUidGlobal(const Uuid &ui){
+    return dynamic_cast<ParameterContainer*>(ControllableContainer::globalRoot)->getForUid(ui);
 
 }
 

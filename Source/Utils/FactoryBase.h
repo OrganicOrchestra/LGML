@@ -30,11 +30,14 @@ public:
     {
         if (ob)
         {
-            Identifier ID (ob->getProperty (factoryTypeIdentifier));
-            return createFromTypeID (ID, name,doConfigure?ob:nullptr);
+            const String idS = ob->getProperty (factoryTypeIdentifier);
+            if(!idS.isEmpty()){
+                Identifier ID (idS);
+                return createFromTypeID (ID, name,doConfigure?ob:nullptr);
+            }
         }
 
-        jassertfalse;
+        LOGE("trying to add badly formated parameter : "+name );
         return nullptr;
 
 
@@ -122,7 +125,7 @@ public:
         jassert (!getFactory().contains (ID));
         jassert (ID[0] == 't' && ID[1] == '_');
         getShortNamesMap().set(ID,shortName);
-//        getInfoMap().set(ID,info);
+        //        getInfoMap().set(ID,info);
         // DBG("registering "+ID+"::"+shortName);
         getFactory().set (ID, Entry (createFromObject<T>));
         return Identifier(ID);
@@ -190,10 +193,10 @@ private:
         return shortNamesMap;
     }
 
-//    static  HashMap<String, String> & getInfoMap(){
-//        static HashMap<String, String> infoMap; // class info
-//        return infoMap;
-//    }
+    //    static  HashMap<String, String> & getInfoMap(){
+    //        static HashMap<String, String> infoMap; // class info
+    //        return infoMap;
+    //    }
 
 
 

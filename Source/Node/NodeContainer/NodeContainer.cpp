@@ -54,6 +54,7 @@ class GraphBuildWatcher : public AsyncUpdater{
 
 
 NodeContainer::NodeContainer (StringRef name):NodeContainer(name,false){
+    canHaveUserDefinedContainers = true;
 
 }
 NodeContainer::NodeContainer (StringRef name,bool _isRoot) :
@@ -64,6 +65,7 @@ nodeChangeNotifier (10000),
 rebuildTimer (this),
 isRoot(_isRoot)
 {
+    canHaveUserDefinedContainers = true;
 
     innerGraph = new AudioProcessorGraph();
     innerGraph->releaseResources();

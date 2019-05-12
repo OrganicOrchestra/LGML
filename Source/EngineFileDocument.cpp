@@ -305,8 +305,12 @@ void Engine::loadJSONData (const var& data, ProgressTask* loadingTask)
     if (!versionChecked)
     {
         String _versionString = md->hasProperty ("version") ? md->getProperty ("version").toString() : "?";
-        AlertWindow::showMessageBox (AlertWindow::AlertIconType::WarningIcon, juce::translate("You're old, bitch !"), juce::translate("File version (123) is not supported anymore.\n(Minimum supported version : 456)").replace("123", _versionString).replace("456", getMinimumRequiredFileVersion()));
-        return;
+        if(!AlertWindow::showOkCancelBox (AlertWindow::AlertIconType::WarningIcon,
+                                          juce::translate("You're old, bitch !"),
+                                          juce::translate("File version (123) is not supported anymore.\n(Minimum supported version : 456)").replace("123", _versionString).replace("456", getMinimumRequiredFileVersion()),
+                                          juce::translate("try anyway !"))){
+            return;
+        }
     }
 
 
@@ -402,7 +406,10 @@ bool Engine::checkFileVersion (DynamicObject* metaData)
 
 String Engine::getMinimumRequiredFileVersion()
 {
-    return "0.2.0";
+    // minor version is marked as breaking per default
+    auto minum = Engine::versionNumber >> 8;
+    return String((minum >> 8) & 0xFF) + "."+
+    String((minum ) & 0xFF)+".0" ;
 }
 
 File Engine::getCurrentProjectFolder()

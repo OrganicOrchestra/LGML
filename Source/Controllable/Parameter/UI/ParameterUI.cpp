@@ -190,7 +190,7 @@ bool ParameterUI::shouldBailOut()
     if (bailOut)
     {
         // TODO : changing vst preset sometimes hit that
-        NLOGE("ParameterUI", "old component still displayed : " << getName());
+        NLOGW("ParameterUI", "old component still displayed : " << getName());
         //jassertfalse;
     }
 

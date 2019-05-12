@@ -1,16 +1,16 @@
 /* Copyright © Organic Orchestra, 2017
-*
-* This file is part of LGML.  LGML is a software to manipulate sound in realtime
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation (version 3 of the License).
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*/
+ *
+ * This file is part of LGML.  LGML is a software to manipulate sound in realtime
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation (version 3 of the License).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
 
 #if !ENGINE_HEADLESS
 
@@ -23,21 +23,21 @@
 
 
 VSTNodeContentUI::VSTNodeContentUI():
-    VSTListShowButton ("VSTs"),
-    showPluginWindowButton ("showWindow"),
-    isDirty (false)
+VSTListShowButton ("VSTs"),
+showPluginWindowButton ("showWindow"),
+isDirty (false)
 {
-
-
+    
+    
 }
 VSTNodeContentUI::~VSTNodeContentUI()
 {
     closePluginWindow();
     if(vstNode){
-    vstNode->removeVSTNodeListener (this);
-    vstNode->removeControllableContainerListener (this);
+        vstNode->removeVSTNodeListener (this);
+        vstNode->removeControllableContainerListener (this);
     }
-
+    
 }
 
 
@@ -54,32 +54,32 @@ void VSTNodeContentUI::closePluginWindow()
 
 void VSTNodeContentUI::init()
 {
-
+    
     vstNode = (VSTNode*)node.get();
     addAndMakeVisible (midiDeviceChooser);
-
+    
     VSTListShowButton.addListener (this);
     showPluginWindowButton.addListener (this);
-
+    
     addAndMakeVisible (showPluginWindowButton);
     addAndMakeVisible (VSTListShowButton);
-
+    
     activityBlink = ParameterUIFactory::createDefaultUI (vstNode->midiActivityTrigger);
     activityBlink->showLabel = false;
     addAndMakeVisible (activityBlink);
-
+    
     midiDeviceChooser = ParameterUIFactory::createDefaultUI(vstNode->midiChooser.getDeviceInEnumParameter());
     addAndMakeVisible(midiDeviceChooser);
     jassert(midiDeviceChooser);
     updateVSTParameters();
     setDefaultSize (250, 100);
-
-
+    
+    
     vstNode->addVSTNodeListener (this);
     vstNode->addControllableContainerListener (this);
-
+    
     //DBG("Set Node and ui -> " << vstNode->midiPortNameParam->stringValue());
-
+    
 }
 
 void VSTNodeContentUI::updateVSTParameters()
@@ -88,25 +88,32 @@ void VSTNodeContentUI::updateVSTParameters()
     {
         removeChildComponent (p);
     }
-
+    
     paramSliders.clear();
-
+    
     int maxParameter = 20;
     int pCount = 0;
-
+    int sizePreClean = vstNode->VSTParameters.size();
+    std::remove_if(vstNode->VSTParameters.begin(), vstNode->VSTParameters.end(), [](auto & p1){ return p1==nullptr;});
+    if(sizePreClean != vstNode->VSTParameters.size()){
+        LOGW(vstNode->getNiceName() + " : VST parameter are dirty ");
+        jassertfalse;
+    }
     for (auto& p : vstNode->VSTParameters)
     {
+        
         ParameterUI* pui = ParameterUIFactory::createDefaultUI(p);
         paramSliders.add (pui);
         addAndMakeVisible (pui);
         pCount++;
-
+        
         if (pCount >= maxParameter)
         {
             break;
         }
+        
     }
-
+    
     resized();
 }
 
@@ -117,9 +124,9 @@ void VSTNodeContentUI::childControllableRemoved (ControllableContainer*, Control
     {
         if (p->parameter == c)removeChildComponent (p);
     }
-
+    
     if (isDirty) return;
-
+    
     postCommandMessage (0);
     isDirty = true;
 }
@@ -133,7 +140,7 @@ void VSTNodeContentUI::controllableContainerRemoved (ControllableContainer*, Con
 void VSTNodeContentUI::newVSTSelected()
 {
     if (isDirty) return;
-
+    
     postCommandMessage (0);
     isDirty = true;
 }
@@ -154,42 +161,42 @@ void VSTNodeContentUI::resized()
     midiDeviceChooser->setBounds (headerArea.removeFromRight (headerArea.getWidth() / 2));
     VSTListShowButton.setBounds (headerArea);
     layoutSliderParameters (area.reduced (2));
-
+    
 }
 
 void VSTNodeContentUI::layoutSliderParameters (Rectangle<int> pArea)
 {
     if (paramSliders.size() == 0) return;
     if(pArea.getHeight()==0) return;
-
+    
     const float targetSliderAR = 4;
     const float AR = pArea.getWidth()*1.0/pArea.getHeight();
-
+    
     int targetNumLine = sqrt(paramSliders.size())*targetSliderAR/AR;
     targetNumLine = jmax(1,targetNumLine);
-
+    
     int numLines = jmin ((int)(targetNumLine), paramSliders.size());
     int numCols = ceil((paramSliders.size() ) *1.0f/ numLines ) ;
-
+    
     int w = pArea.getWidth() / numCols;
     int h = pArea.getHeight() / numLines;
     int idx = 0;
-
+    
     for (int i = 0 ; i < numCols ; i ++)
     {
         Rectangle<int> col = pArea.removeFromLeft (w);
-
+        
         for (int j = 0 ; j < numLines ; j++)
         {
             paramSliders.getUnchecked (idx)->setBounds (col.removeFromTop (h).reduced (1));
             idx++;
-
+            
             if (idx >= paramSliders.size())
             {
                 break;
             }
         }
-
+        
         if (idx >= paramSliders.size())
         {
             break;
@@ -201,11 +208,11 @@ void VSTNodeContentUI::layoutSliderParameters (Rectangle<int> pArea)
 void VSTNodeContentUI::vstSelected (int modalResult, Component*   originComp)
 {
     int index = VSTManager::getInstance()->knownPluginList.getIndexChosenByMenu (modalResult);
-
+    
     if (index >= 0 )
     {
         VSTNodeContentUI* originVSTNodeUI =  dynamic_cast<VSTNodeContentUI*> (originComp);
-
+        
         if (originVSTNodeUI)
         {
             originVSTNodeUI->vstNode->identifierString->setValue (VSTManager::getInstance()->knownPluginList.getType (index)->createIdentifierString());
@@ -224,9 +231,9 @@ void VSTNodeContentUI::buttonClicked (Button* button)
         VSTManager::getInstance()->knownPluginList.addToMenu (VSTList, KnownPluginList::SortMethod::sortByCategory);
         closePluginWindow();
         VSTList.showAt (&VSTListShowButton, 0, 0, 0, 0, ModalCallbackFunction::forComponent (&VSTNodeContentUI::vstSelected, (Component*)this));
-
+        
     }
-
+    
     if (button == &showPluginWindowButton)
     {
         createPluginWindow();

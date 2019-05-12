@@ -42,7 +42,11 @@ public:
 
 class NodeManagerUIFactory : public ParameterContainer{
 public:
-    NodeManagerUIFactory():ParameterContainer("NodesUI"){nameParam->setInternalOnlyFlags(true,false);}
+    NodeManagerUIFactory():ParameterContainer("NodesUI"){
+        canHaveUserDefinedContainers = true;
+        nameParam->setInternalOnlyFlags(true,false);
+
+    }
 
     ParameterContainer* addContainerFromObject (const String& name, DynamicObject*   data) override{
         ParameterContainer * res;
@@ -65,9 +69,10 @@ juce_ImplementSingleton(NodeManagerUI);
 NodeManagerUI::NodeManagerUI (NodeManager* _nodeManager) :
     nodeManager (_nodeManager),
     currentViewer (nullptr),
-ParameterContainer("NodeManagerUI"),isMiniMode(false)
+ParameterContainer("NodeManagerUI"),
+isMiniMode(false)
 {
-    
+    canHaveUserDefinedContainers = true;
     
     uiSync = new UISync("UI",nodeManager,this);
     auto p =getRoot(true)->getControllableContainerByName("NodesUI");

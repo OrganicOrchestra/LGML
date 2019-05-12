@@ -31,7 +31,7 @@
 
 
 ConnectableNodeUIParams::ConnectableNodeUIParams(ConnectableNodeUIParams * _origin):origin(_origin){
-
+    canHaveUserDefinedContainers = true;
     for(auto &p:_origin->getAllParameters(false,true)){
         p->addParameterListener(this);
     }
