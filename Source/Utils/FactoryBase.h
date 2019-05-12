@@ -18,6 +18,7 @@
 
 #pragma once
 #include "../JuceHeaderCore.h"
+#include "./DebugHelpers.h"
 
 static const Identifier factoryTypeIdentifier ("_tName");
 
