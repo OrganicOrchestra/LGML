@@ -135,7 +135,7 @@ jobs:
             git submodule update --init --recursive
             export CXX=arm-linux-gnueabihf-g++-5
             export CC=arm-linux-gnueabihf-gcc-5
-            sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh
+            sh Scripts/linux/installDevDeps.sh
             
 
       - run:
