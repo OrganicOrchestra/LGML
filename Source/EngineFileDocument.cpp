@@ -299,15 +299,15 @@ void Engine::loadJSONData (const var& data, ProgressTask* loadingTask)
 {
 
     DynamicObject* md = data.getDynamicObject()->getProperty ("metaData").getDynamicObject();
-    bool versionChecked = checkFileVersion (md);
+    int versionChecked = checkFileVersion (md);
 
 
-    if (!versionChecked)
+    if (versionChecked!=0)
     {
         String _versionString = md->hasProperty ("version") ? md->getProperty ("version").toString() : "?";
         if(!AlertWindow::showOkCancelBox (AlertWindow::AlertIconType::WarningIcon,
-                                          juce::translate("You're old, bitch !"),
-                                          juce::translate("File version (123) is not supported anymore.\n(Minimum supported version : 456)").replace("123", _versionString).replace("456", getMinimumRequiredFileVersion()),
+                                          juce::translate("this file was created with a diffirent LGML version \n(potentially incompatible)"),
+                                          juce::translate("File version  : 123\nsupported LGML versions : 456").replace("123", _versionString).replace("456", getMajorMinorRequiredFileVersionArray().joinIntoString(".")),
                                           juce::translate("try anyway !"))){
             return;
         }
@@ -374,42 +374,41 @@ void Engine::loadJSONData (const var& data, ProgressTask* loadingTask)
 
 }
 
-bool Engine::checkFileVersion (DynamicObject* metaData)
+int Engine::checkFileVersion (DynamicObject* metaData)
 {
     if (!metaData->hasProperty ("version")) return false;
-
-    DBG (metaData->getProperty ("version").toString() << "/ " << getMinimumRequiredFileVersion());
+    auto versionMask = getMajorMinorRequiredFileVersionArray();
+    String versionMaskString = versionMask.joinIntoString(".");
+    DBG (metaData->getProperty ("version").toString() << "/ " << versionMaskString);
 
     StringArray fileVersionSplit;
     fileVersionSplit.addTokens (metaData->getProperty ("version").toString(), juce::StringRef ("."), juce::StringRef ("\""));
 
-    StringArray minVersionSplit;
-    minVersionSplit.addTokens (getMinimumRequiredFileVersion(), juce::StringRef ("."), juce::StringRef ("\""));
 
-    int maxVersionNumbers = jmax<int> (fileVersionSplit.size(), minVersionSplit.size());
+
+    // checks that major and minor numbers are the same ignore patch
+    int maxVersionNumbers = 2;
 
     while (fileVersionSplit.size() < maxVersionNumbers) fileVersionSplit.add ("0");
 
-    while (minVersionSplit.size() < maxVersionNumbers) minVersionSplit.add ("0");
+    while (versionMask.size() < maxVersionNumbers) {jassertfalse;versionMask.add ("0");}
 
     for (int i = 0; i < maxVersionNumbers; i++)
     {
+        if(versionMask[i]=="x"){continue;}
         int fV = fileVersionSplit[i].getIntValue();
-        int minV = minVersionSplit[i].getIntValue();
-
-        if (fV > minV) return true;
-        else if (fV < minV) return false;
+        int minV = versionMask[i].getIntValue();
+        if (fV > minV) return 1;
+        else if (fV < minV) return -1;
     }
 
-    return true;
+    return 0;
 }
 
-String Engine::getMinimumRequiredFileVersion()
+StringArray Engine::getMajorMinorRequiredFileVersionArray()
 {
     // minor version is marked as breaking per default
-    auto minum = Engine::versionNumber >> 8;
-    return String((minum >> 8) & 0xFF) + "."+
-    String((minum ) & 0xFF)+".0" ;
+    return StringArray  {String((Engine::versionNumber >> 16) & 0xFF) ,String((Engine::versionNumber >> 8 ) & 0xFF),"x" };
 }
 
 File Engine::getCurrentProjectFolder()

@@ -97,7 +97,7 @@ public:
 
     File getLastDocumentOpened() override;
 
-    String getMinimumRequiredFileVersion();
+    StringArray getMajorMinorRequiredFileVersionArray();
 
     void  stimulateAudio (bool);
 
@@ -185,7 +185,7 @@ private:
     DynamicObject* createObject() override;
     void loadJSONData (const var& data, ProgressTask* loadingTask);
 
-    bool checkFileVersion (DynamicObject* metaData);
+    int checkFileVersion (DynamicObject* metaData);
 
 
     Result loadDocument (const File& file)override;
