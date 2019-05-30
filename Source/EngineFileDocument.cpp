@@ -113,9 +113,34 @@ void Engine::loadDocumentAsync (const File& file)
     suspendAudio (true);
     clearTasks();
     taskName = juce::translate("Loading File");
-    ProgressTask* clearTask = addTask (juce::translate("clearing"));
     ProgressTask* parseTask = addTask (juce::translate("parsing"));
+    ProgressTask* clearTask = addTask (juce::translate("clearing"));
     ProgressTask* loadTask = addTask (juce::translate("loading"));
+
+
+    ScopedPointer<InputStream> is ( file.createInputStream());
+    parseTask->start();
+    var jsonData = JSON::parse (*is);
+    parseTask->end();
+    DynamicObject* md = jsonData.getDynamicObject()->getProperty ("metaData").getDynamicObject();
+    bool versionChecked = checkFileVersion (md);
+
+
+    if (!versionChecked)
+    {
+        String _versionString = md->hasProperty ("version") ? md->getProperty ("version").toString() : "?";
+        if(!AlertWindow::showOkCancelBox (AlertWindow::AlertIconType::WarningIcon,
+                                          juce::translate("this file was created with a diffirent LGML version \n(potentially incompatible)"),
+                                          juce::translate("File version  : 123\nsupported LGML versions : 456").replace("123", _versionString).replace("456", getSupportedVersionMask().toString()),
+                                          juce::translate("try anyway !"))){
+            clearTasks();
+            return;
+        }
+    }
+
+
+
+
     clearTask->start();
     clear();
     clearTask->end();
@@ -123,7 +148,7 @@ void Engine::loadDocumentAsync (const File& file)
     //  {
     //    MessageManagerLock ml;
     //  }
-    ScopedPointer<InputStream> is ( file.createInputStream());
+
 
 
 
@@ -136,9 +161,6 @@ void Engine::loadDocumentAsync (const File& file)
     file.getParentDirectory().setAsCurrentWorkingDirectory();
 
 
-    parseTask->start();
-    var jsonData = JSON::parse (*is);
-    parseTask->end();
     loadTask->start();
     loadJSONData (jsonData, loadTask);
     loadTask->end();
@@ -271,9 +293,8 @@ DynamicObject* Engine::createObject()
     var metaData (new DynamicObject());
 
     metaData.getDynamicObject()->setProperty ("version",
-                                              Engine::versionString
+                                              VersionTriplet::getCurrentVersion().toString()
                                               );
-    metaData.getDynamicObject()->setProperty ("versionNumber", Engine::versionNumber);
 
     data->setProperty ("metaData", metaData);
 
@@ -298,20 +319,6 @@ DynamicObject* Engine::createObject()
 void Engine::loadJSONData (const var& data, ProgressTask* loadingTask)
 {
 
-    DynamicObject* md = data.getDynamicObject()->getProperty ("metaData").getDynamicObject();
-    bool versionChecked = checkFileVersion (md);
-
-
-    if (!versionChecked)
-    {
-        String _versionString = md->hasProperty ("version") ? md->getProperty ("version").toString() : "?";
-        if(!AlertWindow::showOkCancelBox (AlertWindow::AlertIconType::WarningIcon,
-                                          juce::translate("this file was created with a diffirent LGML version \n(potentially incompatible)"),
-                                          juce::translate("File version  : 123\nsupported LGML versions : 456").replace("123", _versionString).replace("456", getSupportedVersionMask().toString()),
-                                          juce::translate("try anyway !"))){
-            return;
-        }
-    }
 
 
     clear();
@@ -390,7 +397,7 @@ bool Engine::checkFileVersion (DynamicObject* metaData)
 VersionTriplet Engine::getSupportedVersionMask()
 {
     // minor version is marked as breaking per default
-    return VersionTriplet  {String((Engine::versionNumber >> 16) & 0xFF) ,String((Engine::versionNumber >> 8 ) & 0xFF),"x" };
+    return VersionTriplet::getCurrentVersion().getMasked(1);
 }
 
 File Engine::getCurrentProjectFolder()
