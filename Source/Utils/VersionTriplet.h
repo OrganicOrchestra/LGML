@@ -9,7 +9,7 @@
 */
 
 #pragma once
-
+#include "../JuceHeaderCore.h"
 
 class VersionTriplet{
 public:

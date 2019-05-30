@@ -20,7 +20,7 @@
 #define LGMLLOGGER_H_INCLUDED
 
 #include "../Utils/QueuedNotifier.h"
-
+#include "../Utils/DebugHelpers.h"
 // do not use file logger atm
 // TODO figure out true utility of such
 #define USE_FILE_LOGGER 0
