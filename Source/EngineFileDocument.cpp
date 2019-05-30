@@ -299,10 +299,10 @@ void Engine::loadJSONData (const var& data, ProgressTask* loadingTask)
 {
 
     DynamicObject* md = data.getDynamicObject()->getProperty ("metaData").getDynamicObject();
-    int versionChecked = checkFileVersion (md);
+    bool versionChecked = checkFileVersion (md);
 
 
-    if (versionChecked!=0)
+    if (!versionChecked)
     {
         String _versionString = md->hasProperty ("version") ? md->getProperty ("version").toString() : "?";
         if(!AlertWindow::showOkCancelBox (AlertWindow::AlertIconType::WarningIcon,
