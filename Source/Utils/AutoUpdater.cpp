@@ -221,7 +221,7 @@ public:
     {
 
 
-        VersionTriplet currentVersion (ProjectInfo::versionNumber);
+        VersionTriplet currentVersion (VersionTriplet::getCurrentVersion());
 
         addAndMakeVisible (titleLabel = new Label ("Title Label",
                                                    juce::translate("Download LGML version 123?").replace ("123", version.toString())));
@@ -490,8 +490,8 @@ const LatestVersionChecker::LGMLServerLocationsAndKeys& LatestVersionChecker::ge
     return urlsAndKeys;
 }
 
-int LatestVersionChecker::getProductVersionNumber() const   { return ProjectInfo::versionNumber; }
-const char* LatestVersionChecker::getProductName() const    { return ProjectInfo::projectName; }
+
+
 bool LatestVersionChecker::allowCustomLocation() const      { return true; }
 
 
@@ -612,7 +612,7 @@ bool LatestVersionChecker::processResult (const var& reply, const String& downlo
     {
         String versionString = reply.getProperty ("version", var()).toString();
         String releaseNotes = reply.getProperty ("notes", var()).toString();
-        VersionTriplet version;
+        VersionTriplet version (VersionTriplet::getCurrentVersion());
 
         if (versionString.isNotEmpty() && releaseNotes.isNotEmpty())
         {
@@ -678,7 +678,7 @@ bool LatestVersionChecker::askUserAboutNewVersion (const VersionTriplet& version
                                                    URL& newVersionToDownload,
                                                    const String& extraHeaders,bool hasDirectDownload)
 {
-    VersionTriplet currentVersion (getProductVersionNumber());
+    VersionTriplet currentVersion (VersionTriplet::getCurrentVersion());
 
     if (FORCE_CHECK_VERSION || force_show || (version > currentVersion))
     {
@@ -686,7 +686,7 @@ bool LatestVersionChecker::askUserAboutNewVersion (const VersionTriplet& version
         DialogWindow* modalDialog = nullptr;
 
 
-        modalDialog = UpdateUserDialog::launch (version, getProductName(), releaseNotes,
+        modalDialog = UpdateUserDialog::launch (version, VersionTriplet::getProductName(), releaseNotes,
                                                 appParentFolder.getFullPathName().toRawUTF8(), hasDirectDownload);
 
 

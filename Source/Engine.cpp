@@ -34,11 +34,6 @@
 
 
 
-// this allow to avoid juce header dependency in all other source code
-// calling Engine::versionNumber instead of ProjectInfo::versionNumber
-int Engine::versionNumber( ProjectInfo::versionNumber);
-const char* Engine::versionString ( ProjectInfo::versionString);
-const char* Engine::projectName   ( ProjectInfo::projectName);
 
 
 const char* const filenameSuffix = ".lgml";

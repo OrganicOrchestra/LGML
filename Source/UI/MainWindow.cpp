@@ -163,7 +163,7 @@ void MainWindow::timerCallback()
         latestVChecker = nullptr;
     }
     setName (getEngine()->getDocumentTitle() + " : LGML "
-             + Engine::versionString + String (" (CPU : ") +
+             + VersionTriplet::getCurrentVersion().toString() + String (" (CPU : ") +
              String ((int) getEngine()->engineStats->getAudioCPU()) + String ("%)"));
 }
 

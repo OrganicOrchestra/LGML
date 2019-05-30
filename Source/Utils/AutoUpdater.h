@@ -64,8 +64,8 @@ public:
 
 protected:
     const LGMLServerLocationsAndKeys& getLGMLServerURLsAndKeys() const;
-    int getProductVersionNumber() const;
-    const char* getProductName() const;
+    
+    
     bool allowCustomLocation() const;
 
 private:

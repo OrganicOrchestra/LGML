@@ -634,6 +634,10 @@
 			isa = PBXBuildFile;
 			fileRef = DEFCE8C923EC489CB8ED7DE7;
 		};
+		BDFFF334EB66B1E35AB0F5A6 = {
+			isa = PBXBuildFile;
+			fileRef = AA42CA14665F79EE19778425;
+		};
 		0054FC3A0E52E9D0322B0758 = {
 			isa = PBXBuildFile;
 			fileRef = 0F4A4F62A29DE80C5CCC72E6;
@@ -677,10 +681,6 @@
 		E997E45A0A4A9C0D314FD268 = {
 			isa = PBXBuildFile;
 			fileRef = D63FE7B556B29ECE2209954C;
-		};
-		818340E0668AAB503C2E9573 = {
-			isa = PBXBuildFile;
-			fileRef = FA704AD71D2BE93117E2F30C;
 		};
 		ED6456E02036BDF7B901E547 = {
 			isa = PBXBuildFile;
@@ -2338,6 +2338,13 @@
 			path = ../../Source/Node/Impl/ContainerOutNode.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
+		958F2A57A61CE58E1C602264 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = VersionTriplet.h;
+			path = ../../Source/Utils/VersionTriplet.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		96808889246435657FB32873 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -2518,6 +2525,13 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = NodeManager.h;
 			path = ../../Source/Node/Manager/NodeManager.h;
+			sourceTree = "SOURCE_ROOT";
+		};
+		AA42CA14665F79EE19778425 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = VersionTriplet.cpp;
+			path = ../../Source/Utils/VersionTriplet.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		AAE660AF418694B1A22B7046 = {
@@ -3409,13 +3423,6 @@
 			path = ../../Source/Scripting/Js/JsHelpers.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
-		FA704AD71D2BE93117E2F30C = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = Version.cpp;
-			path = ../../Source/Version.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
 		FB69C272F09120F9ED8867BB = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -3969,6 +3976,8 @@
 		7467E54AD807664B6E3C7879 = {
 			isa = PBXGroup;
 			children = (
+				AA42CA14665F79EE19778425,
+				958F2A57A61CE58E1C602264,
 				0F4A4F62A29DE80C5CCC72E6,
 				D82484212B7C3F5B20489CC6,
 				839DA1019FA86ADAF72B2AF0,
@@ -4018,7 +4027,6 @@
 				DEE1093ABCE13FBD9176210A,
 				565F13E36871AC907D101C92,
 				D63FE7B556B29ECE2209954C,
-				FA704AD71D2BE93117E2F30C,
 				74865F1BD52DB64493EAED8A,
 			);
 			name = Source;
@@ -4697,6 +4705,7 @@
 				20DC1F03DC4C1F4881C5F757,
 				F72124BA0EDF8D9BE8BF375B,
 				FB14FE2D8522142D1D907FA6,
+				BDFFF334EB66B1E35AB0F5A6,
 				0054FC3A0E52E9D0322B0758,
 				38C50F6CDE8316ED635D77B9,
 				B72E5A92824EC549D8842E96,
@@ -4708,7 +4717,6 @@
 				3095EE38CD7919B633477FBB,
 				007FC3CFA0407D7DCA504A17,
 				E997E45A0A4A9C0D314FD268,
-				818340E0668AAB503C2E9573,
 				ED6456E02036BDF7B901E547,
 				565108C5328DCCED91DC49DF,
 				CFF5C1B3464D999116975383,

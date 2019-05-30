@@ -40,7 +40,7 @@ public:
         if(getCrashFile().existsAsFile()){
             ScopedPointer<InputStream> in = getCrashFile().createInputStream();
             if(in){
-                VersionTriplet ver;
+                VersionTriplet ver(VersionTriplet::getCurrentVersion());
                 String bt = "LGMLv"+ver.toString()+"\n";
                 bt+=in->readString();
                 LOG(bt);
@@ -104,8 +104,8 @@ public:
     ScopedPointer<Engine> engine;
 
 
-    const String getApplicationName() override       { return Engine::projectName; }
-    const String getApplicationVersion() override    { return Engine::versionString; }
+    const String getApplicationName() override       { return VersionTriplet::getProductName(); }
+    const String getApplicationVersion() override    { return VersionTriplet::getCurrentVersion().toString(); }
     bool moreThanOneInstanceAllowed() override       { return false; }
 
     //==============================================================================
@@ -118,7 +118,7 @@ public:
         auto commandLinesElements = CommandLineElements::parseCommandLine (commandLine);
 
         if ( commandLinesElements.containsCommand ("v") ){
-            COUT(Engine::versionString );
+            COUT(VersionTriplet::getCurrentVersion().toString() );
             quit();
             return;
         }

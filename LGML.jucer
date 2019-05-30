@@ -631,6 +631,10 @@
         </GROUP>
       </GROUP>
       <GROUP id="{8DA61DCB-02FE-2339-7E79-2A3547284A18}" name="Utils">
+        <FILE id="b85LTY" name="VersionTriplet.cpp" compile="1" resource="0"
+              file="Source/Utils/VersionTriplet.cpp"/>
+        <FILE id="NB3dxj" name="VersionTriplet.h" compile="0" resource="0"
+              file="Source/Utils/VersionTriplet.h"/>
         <FILE id="ZBrDOG" name="GlobalKeyListener.cpp" compile="1" resource="0"
               file="Source/Utils/GlobalKeyListener.cpp"/>
         <FILE id="sVbTnG" name="GlobalKeyListener.h" compile="0" resource="0"
@@ -687,7 +691,6 @@
       <FILE id="RhPCNk" name="JuceHeaderUI.h" compile="0" resource="0" file="Source/JuceHeaderUI.h"/>
       <FILE compile="1" file="Source/Main.cpp" id="zO82Cw" name="Main.cpp"
             resource="0"/>
-      <FILE id="svlAPQ" name="Version.cpp" compile="1" resource="0" file="Source/Version.cpp"/>
       <FILE id="Czij22" name="Version.h" compile="0" resource="0" file="Source/Version.h"/>
     </GROUP>
     <GROUP id="{4ECB17E4-3FE1-7FC4-41D8-E3545696264E}" name="third_party">

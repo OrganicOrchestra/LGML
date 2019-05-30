@@ -970,6 +970,9 @@
     <ClCompile Include="..\..\Source\UI\Inspector\InspectorEditor.cpp">
       <Filter>LGML\Source\UI\Inspector</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Utils\VersionTriplet.cpp">
+      <Filter>LGML\Source\Utils</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Utils\GlobalKeyListener.cpp">
       <Filter>LGML\Source\Utils</Filter>
     </ClCompile>
@@ -1001,9 +1004,6 @@
       <Filter>LGML\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Main.cpp">
-      <Filter>LGML\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Version.cpp">
       <Filter>LGML\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\third_party\serial\src\impl\list_ports\list_ports_linux.cc">
@@ -3449,6 +3449,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Inspector\InspectorEditor.h">
       <Filter>LGML\Source\UI\Inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Utils\VersionTriplet.h">
+      <Filter>LGML\Source\Utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Utils\GlobalKeyListener.h">
       <Filter>LGML\Source\Utils</Filter>

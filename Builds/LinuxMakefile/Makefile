@@ -208,6 +208,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/InspectableComponent_1f8fbae3.o \
   $(JUCE_OBJDIR)/Inspector_8b9570d.o \
   $(JUCE_OBJDIR)/InspectorEditor_ee2341a.o \
+  $(JUCE_OBJDIR)/VersionTriplet_cdd42ba5.o \
   $(JUCE_OBJDIR)/GlobalKeyListener_4d0051f3.o \
   $(JUCE_OBJDIR)/FactoryUIHelpers_a4bc9a4e.o \
   $(JUCE_OBJDIR)/AutoUpdater_e99736fd.o \
@@ -219,7 +220,6 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/Engine_7f3228cb.o \
   $(JUCE_OBJDIR)/EngineFileDocument_abfb722.o \
   $(JUCE_OBJDIR)/Main_90ebc5c2.o \
-  $(JUCE_OBJDIR)/Version_2d694139.o \
   $(JUCE_OBJDIR)/list_ports_linux_5c85ed4.o \
   $(JUCE_OBJDIR)/list_ports_osx_ba915334.o \
   $(JUCE_OBJDIR)/list_ports_win_c7a6a16c.o \
@@ -956,6 +956,11 @@ $(JUCE_OBJDIR)/InspectorEditor_ee2341a.o: ../../Source/UI/Inspector/InspectorEdi
 	@echo "Compiling InspectorEditor.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/VersionTriplet_cdd42ba5.o: ../../Source/Utils/VersionTriplet.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling VersionTriplet.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/GlobalKeyListener_4d0051f3.o: ../../Source/Utils/GlobalKeyListener.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling GlobalKeyListener.cpp"
@@ -1009,11 +1014,6 @@ $(JUCE_OBJDIR)/EngineFileDocument_abfb722.o: ../../Source/EngineFileDocument.cpp
 $(JUCE_OBJDIR)/Main_90ebc5c2.o: ../../Source/Main.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling Main.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/Version_2d694139.o: ../../Source/Version.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling Version.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/list_ports_linux_5c85ed4.o: ../../third_party/serial/src/impl/list_ports/list_ports_linux.cc

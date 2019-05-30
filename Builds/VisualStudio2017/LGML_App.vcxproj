@@ -421,6 +421,7 @@
     <ClCompile Include="..\..\Source\UI\Inspector\InspectableComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Inspector\Inspector.cpp"/>
     <ClCompile Include="..\..\Source\UI\Inspector\InspectorEditor.cpp"/>
+    <ClCompile Include="..\..\Source\Utils\VersionTriplet.cpp"/>
     <ClCompile Include="..\..\Source\Utils\GlobalKeyListener.cpp"/>
     <ClCompile Include="..\..\Source\Utils\FactoryUIHelpers.cpp"/>
     <ClCompile Include="..\..\Source\Utils\AutoUpdater.cpp"/>
@@ -432,7 +433,6 @@
     <ClCompile Include="..\..\Source\Engine.cpp"/>
     <ClCompile Include="..\..\Source\EngineFileDocument.cpp"/>
     <ClCompile Include="..\..\Source\Main.cpp"/>
-    <ClCompile Include="..\..\Source\Version.cpp"/>
     <ClCompile Include="..\..\third_party\serial\src\impl\list_ports\list_ports_linux.cc"/>
     <ClCompile Include="..\..\third_party\serial\src\impl\list_ports\list_ports_osx.cc"/>
     <ClCompile Include="..\..\third_party\serial\src\impl\list_ports\list_ports_win.cc"/>
@@ -2427,6 +2427,7 @@
     <ClInclude Include="..\..\Source\UI\Inspector\InspectableComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Inspector\Inspector.h"/>
     <ClInclude Include="..\..\Source\UI\Inspector\InspectorEditor.h"/>
+    <ClInclude Include="..\..\Source\Utils\VersionTriplet.h"/>
     <ClInclude Include="..\..\Source\Utils\GlobalKeyListener.h"/>
     <ClInclude Include="..\..\Source\Utils\HeadlessWrappers.h"/>
     <ClInclude Include="..\..\Source\Utils\AutoUpdater.h"/>

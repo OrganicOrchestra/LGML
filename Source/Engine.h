@@ -23,6 +23,7 @@
 
 
 #include "JuceHeaderAudio.h"
+#include "Version.h"
 #include <juce_audio_processors/juce_audio_processors.h>
 #include <juce_audio_utils/players/juce_AudioProcessorPlayer.h>
 #include "MIDI/MIDIManager.h"
@@ -35,7 +36,6 @@
 #include "Audio/VSTManager.h"
 #include "Utils/ProgressNotifier.h"
 #include "Utils/CommandLineElements.hpp"
-#include "Version.h"
 
 class AudioFucker;
 
@@ -170,9 +170,6 @@ public:
 
 
 
-    static int versionNumber;
-    static const char* versionString;
-    static const char* projectName;
 
     ScopedPointer< EngineStats> engineStats;
 

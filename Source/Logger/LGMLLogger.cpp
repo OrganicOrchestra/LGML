@@ -17,7 +17,7 @@
  */
 
 #include "LGMLLogger.h"
-#include "../Engine.h"
+#include "../Utils/VersionTriplet.h"
 juce_ImplementSingleton (LGMLLogger);
 
 int LGMLLogger::maxLoggedElements = 5000;
@@ -28,7 +28,7 @@ writeCursor(0),
 welcomeMessage
 (
  String("LGML v123 : (456) \n by OrganicOrchestra")
- .replace("123",String (Engine::versionString))
+ .replace("123",String (VersionTriplet::getCurrentVersion().toString()))
  .replace("456",String (Time::getCompilationDate()
                         .formatted("%d/%m/%y (%R)")))
  ){
@@ -95,32 +95,3 @@ int LGMLLogger::getNumLogs(){
     #endif
     return loggedElements.size();
 }
-/*
- void addToFifo (const int* someData, int numItems)
- {
- int start1, size1, start2, size2;
- abstractFifo.prepareToWrite (numItems, start1, size1, start2, size2);
-
- if (size1 > 0)
- copySomeData (myBuffer + start1, someData, size1);
-
- if (size2 > 0)
- copySomeData (myBuffer + start2, someData + size1, size2);
-
- abstractFifo.finishedWrite (size1 + size2);
- }
-
- void readFromFifo (int* someData, int numItems)
- {
- int start1, size1, start2, size2;
- abstractFifo.prepareToRead (numItems, start1, size1, start2, size2);
-
- if (size1 > 0)
- copySomeData (someData, myBuffer + start1, size1);
-
- if (size2 > 0)
- copySomeData (someData + size1, myBuffer + start2, size2);
-
- abstractFifo.finishedRead (size1 + size2);
- }
- */
