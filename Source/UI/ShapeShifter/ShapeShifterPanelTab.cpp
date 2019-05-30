@@ -18,6 +18,7 @@
 #include "../Style.h"
 #include "ShapeShifterManager.h"
 
+
 ShapeShifterPanelTab::ShapeShifterPanelTab (ShapeShifterContent* _content) : content (_content), selected (false)
 {
     panelLabel.setInterceptsMouseClicks (false, false);
@@ -44,11 +45,12 @@ ShapeShifterPanelTab::ShapeShifterPanelTab (ShapeShifterContent* _content) : con
     setOpaque (true);
     setTooltip(content->info);
 
+
 }
 
 ShapeShifterPanelTab::~ShapeShifterPanelTab()
 {
-
+    
 }
 
 void ShapeShifterPanelTab::setSelected (bool value)
@@ -59,8 +61,16 @@ void ShapeShifterPanelTab::setSelected (bool value)
 
 void ShapeShifterPanelTab::paint (Graphics& g)
 {
+    if(isTimerRunning()){
+        auto pct =  (Time::getCurrentTime() - blinkStartTime).inMilliseconds()*1.0/notificationDurationMs;
+        g.setColour(blinkColour.interpolatedWith(Colours::white, (1+sin(pct * MathConstants<float>::twoPi * 4))/2));
+
+    }
+    else{
     g.setColour (selected ? findColour (ResizableWindow::backgroundColourId) : findColour (ResizableWindow::backgroundColourId).brighter (.15f));
+    }
     Rectangle<int> r = getLocalBounds();
+
     //  if (!selected) r.reduce(1,1);
     g.fillRect (r);
 }
@@ -82,5 +92,19 @@ void ShapeShifterPanelTab::buttonClicked (Button* b)
     if (b == &closePanelBT) tabListeners.call (&TabListener::askForRemoveTab, this);
 }
 
+void ShapeShifterPanelTab::blink(const Colour & c) {
+    startTimer(30);
+    blinkColour = c;
+    blinkStartTime = Time::getCurrentTime();
+
+}
+
+void ShapeShifterPanelTab::timerCallback() {
+    if((Time::getCurrentTime() - blinkStartTime).inMilliseconds() > notificationDurationMs){
+        stopTimer();
+    };
+    repaint();
+    
+}
 
 #endif

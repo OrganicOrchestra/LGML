@@ -293,7 +293,8 @@ void TimeManager::audioDeviceIOCallback (const float** /*inputChannelData*/,
         for (int i = 0; i < numOutputChannels; ++i)
             zeromem (outputChannelData[i], sizeof (float) * (size_t) numSamples);
     }
-
+//    static int count(0);
+//    LOGW("tst : "+String(count++));
 
 #if !LGML_UNIT_TESTS
     incrementClock (numSamples);

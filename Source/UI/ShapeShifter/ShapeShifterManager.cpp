@@ -1,16 +1,16 @@
 /* Copyright © Organic Orchestra, 2017
-*
-* This file is part of LGML.  LGML is a software to manipulate sound in realtime
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation (version 3 of the License).
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*/
+ *
+ * This file is part of LGML.  LGML is a software to manipulate sound in realtime
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation (version 3 of the License).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
 
 #if !ENGINE_HEADLESS
 
@@ -27,8 +27,9 @@ const String appSubFolder = "LGML/layouts";
 
 
 ShapeShifterManager::ShapeShifterManager() :
-    mainShifterContainer (ShapeShifterContainer::Direction::VERTICAL),
-    currentCandidatePanel (nullptr)
+CoalescedListener(30),
+mainShifterContainer (ShapeShifterContainer::Direction::VERTICAL),
+currentCandidatePanel (nullptr)
 {
     defaultFolder = File::getSpecialLocation (File::SpecialLocationType::userDocumentsDirectory).getChildFile (appSubFolder);
 
@@ -38,10 +39,14 @@ ShapeShifterManager::ShapeShifterManager() :
     }
 
     lastFile = defaultFolder.getChildFile ("_lastSession." + appLayoutExtension);
+    LGMLLogger::getInstance()->addLogCoalescedListener(this);
 }
 
 ShapeShifterManager::~ShapeShifterManager()
 {
+    if(auto logI = LGMLLogger::getInstanceWithoutCreating()){
+        logI->removeLogListener(this);
+    }
     openedWindows.clear();
 
     saveCurrentLayoutToFile (lastFile);
@@ -97,7 +102,7 @@ ShapeShifterPanel* ShapeShifterManager::createPanel (ShapeShifterContent* conten
 
     //if(content != nullptr) panel->setSize(content->getWidth(), content->getHeight());
 
-//    DBG ("Add shape shifter panel listener from manager");
+    //    DBG ("Add shape shifter panel listener from manager");
     panel->addShapeShifterPanelListener (this);
     openedPanels.add (panel);
     return panel;
@@ -494,5 +499,39 @@ void ShapeShifterManager::handleMenuPanelCommand (int commandID)
     String contentName = globalPanelNames[relCommandID];
     showContent (contentName);
 }
+
+Colour getColourForSeverity(const LogElement::Severity & s){
+    switch (s) {
+        case LogElement::Severity::LOG_ERR:
+            return Colours::red;
+        case LogElement::Severity::LOG_WARN:
+            return Colours::orange;
+        case LogElement::Severity::LOG_NONE:
+        case LogElement::Severity::LOG_DBG:
+            return Colours::black;
+        default:
+            break;
+    }
+}
+
+void ShapeShifterManager::newMessages(int from,int to){
+    const auto logs = LGMLLogger::getInstance()->loggedElements;
+    LogElement::Severity higherSeverity (LogElement::Severity::LOG_DBG);
+    for(int i = from ; i < to ; i++){
+        if(logs.getUnchecked(i)->severity>higherSeverity){
+            higherSeverity = logs.getUnchecked(i)->severity;
+        }
+    }
+    if(higherSeverity>LogElement::Severity::LOG_DBG){
+        if(auto lp=getPanelForContentName("Logger")){
+            if(auto lc = lp->getContentForName("Logger")){
+                if(auto tab = lp->header.getTabForContent(lc)){
+                    tab->blink(getColourForSeverity(higherSeverity));
+                }
+            }
+        }
+        
+    }
+};
 
 #endif

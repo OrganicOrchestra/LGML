@@ -22,61 +22,32 @@
 
 #include "../Engine.h" //for version
 
+
+int LGMLLoggerUI::maxDisplayedLogs = 5000;
+
+const Array<LogElement*,CriticalSection> & loggedElements(){return LGMLLogger::getInstance()->loggedElements;}
 static String EmptyString;
-void LGMLLoggerUI::newMessage (const String& s)
+void LGMLLoggerUI::newMessages (int from , int to)
 {
-    LogElement* el = new LogElement (s);
-
-
-
-    logElements.add (el);
-    totalLogRow += el->getNumLines();
-
-
     //bool overFlow = false;
-
-    //coalesce messages
-    if(!Timer::isTimerRunning()){
-        startTimer(200);
+    int delta = (to - startDisplayedIdx)-maxDisplayedLogs;
+    if(delta>0){
+        startDisplayedIdx+=delta;
+    }
+    totalLogRow = 0;
+    for(int i = startDisplayedIdx ; i < to ; i++){
+        auto el = loggedElements().getUnchecked(i);
+//        if(!(el->getNumAppearances()>1))
+            totalLogRow += el->getNumLines();
     }
 
-};
-void LGMLLoggerUI::timerCallback()
-{
-    stopTimer();
-    if (totalLogRow.get() > maxNumElement)
-    {
-        int curCount = 0;
-        int idxToRemove = -1;
-
-        for (int i = logElements.size() - 1 ; i >= 0 ; i--)
-        {
-            curCount += logElements[i]->getNumLines();
-
-            if (curCount >= maxNumElement)
-            {
-                if (curCount != maxNumElement)
-                {
-                    logElements[i]->trimToFit (logElements[i]->getNumLines() - (curCount - maxNumElement));
-                }
-
-                idxToRemove = i - 1;
-                break;
-            }
-
-        }
-
-        if (idxToRemove >= 0)logElements.removeRange (0, idxToRemove + 1);
-        
-        totalLogRow = maxNumElement;
-        
-        
-    }
-    logListComponent->updateContent();
+        logListComponent->updateContent();
         logListComponent->scrollToEnsureRowIsOnscreen (totalLogRow.get() - 1);
 #if USE_CACHED_GLYPH
         logList.cleanUnusedGlyphs();
 #endif
+
+
         repaint();
 
 
@@ -87,12 +58,14 @@ LGMLLoggerUI::LGMLLoggerUI (const String& contentName, LGMLLogger* l) :
 logger (l),
 ShapeShifterContentComponent (contentName,
                               "See events occuring in LGML"),
+CoalescedListener(100),
 logList (this),
 maxNumElement (100),
-totalLogRow (0)
+totalLogRow (0),
+startDisplayedIdx(0)
 {
 
-    logger->addLogListener (this);
+    logger->addLogCoalescedListener (this);
     TableHeaderComponent* thc = new TableHeaderComponent();
     thc->addColumn (juce::translate("Time"), 1, 60);
     thc->addColumn (juce::translate("Source"), 2, 80);
@@ -131,7 +104,6 @@ totalLogRow (0)
 
 LGMLLoggerUI::~LGMLLoggerUI()
 {
-    stopTimer();
     //        logListComponent.setModel(nullptr);
     logger->removeLogListener (this);
 }
@@ -167,31 +139,30 @@ void LGMLLoggerUI::updateTotalLogRow()
 {
     totalLogRow = 0;
 
-    for (auto& l : logElements)
+    for (int i = startDisplayedIdx ; i< LGMLLogger::getInstance()->getNumLogs() ; i++)
     {
-        totalLogRow += l->getNumLines();
+        totalLogRow += loggedElements().getUnchecked(i)->getNumLines();
     }
 
 }
 const String& LGMLLoggerUI::getSourceForRow (const int r) const
 {
-    if(auto el = getElementForRow(r)){
-        return el->source;
-    }
+    if(auto el = getElementForRow(r)){ return el->source; }
+
     return EmptyString;
 }
 const bool LGMLLoggerUI::isPrimaryRow (const int r) const
 {
     int count = 0;
-    int idx = 0;
+    int idx = startDisplayedIdx;
 
-    while (count <= r && idx < logElements.size())
+    while (count <= r && idx < LGMLLogger::getInstance()->getNumLogs())
     {
         if (count== r)
         {
             return true;
         }
-        count += logElements.getUnchecked(idx)->getNumLines();
+        count += loggedElements().getUnchecked(idx)->getNumLines();
         idx++;
 
     }
@@ -202,16 +173,16 @@ const bool LGMLLoggerUI::isPrimaryRow (const int r) const
 const String&   LGMLLoggerUI::getContentForRow (const int r) const
 {
     int count = 0;
-    int idx = 0;
+    int idx = startDisplayedIdx;
 
-    while (idx < logElements.size())
+    while (idx < LGMLLogger::getInstance()->getNumLogs())
     {
 
-        int nl = logElements.getUnchecked(idx)->getNumLines();
+        int nl = loggedElements().getUnchecked(idx)->getNumLines();
 
         if (count + nl > r)
         {
-            return logElements.getUnchecked(idx)->getLine (r - count);
+            return loggedElements().getUnchecked(idx)->getLine (r - count);
         }
 
         count += nl;
@@ -223,11 +194,11 @@ const String&   LGMLLoggerUI::getContentForRow (const int r) const
 
 const LogElement* LGMLLoggerUI::getElementForRow(const int r) const{
     int count = 0;
-    int idx = 0;
+    int idx = startDisplayedIdx;
 
-    while (idx < logElements.size())
+    while (idx < LGMLLogger::getInstance()->getNumLogs())
     {
-        auto el = logElements.getUnchecked(idx);
+        auto el = loggedElements().getUnchecked(idx);
 
         int nl = el->getNumLines();
 
@@ -381,6 +352,12 @@ String LGMLLoggerUI::LogList::getTextAt(int rowNumber,int columnId){
             text = owner->getContentForRow (rowNumber);
             break;
     }
+    if(columnId==2 ){
+        auto el = owner->getElementForRow(rowNumber);
+        if(el->getNumAppearances()>1){
+            text = String("(") + String(el->getNumAppearances()) + ") " + text;
+        }
+    }
     return text;
 
 }
@@ -491,7 +468,7 @@ void LGMLLoggerUI::buttonClicked (Button* b)
 
     if (b == &clearB)
     {
-        logElements.clear();
+        startDisplayedIdx = LGMLLogger::getInstance()->getNumLogs();
         totalLogRow = 0;
         logListComponent->updateContent();
         LOG (juce::translate("Cleared."));
@@ -499,7 +476,8 @@ void LGMLLoggerUI::buttonClicked (Button* b)
     
     else if (b == &copyB){
         String s;
-        for(auto & el: logElements){
+        for(int i = startDisplayedIdx ; i< LGMLLogger::getInstance()->getNumLogs() ; i++){
+            const LogElement  * el = loggedElements().getUnchecked(i);
             int leftS = el->source.length() + 3;
             s+=el->source+" : ";
             for(int i = 0 ; i < el->getNumLines() ; i++){

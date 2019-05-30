@@ -74,7 +74,8 @@ class LogElement
 public:
     LogElement (const String& log) :
         source (getLogSource (log)),
-        content (getLogContent (log))
+        content (getLogContent (log)),
+        numAppearances(1)
     {
         _arr = new StringArray();
         time = Time::getCurrentTime();
@@ -110,16 +111,26 @@ public:
     Time time;
     String content;
     String source;
+
+    
     enum Severity {LOG_NONE = -1, LOG_DBG = 0, LOG_WARN = 1, LOG_ERR = 2};
     Severity severity;
     int getNumLines() const {return  _arr->size();}
     void trimToFit (int num) {if (_arr->size() > num)_arr->removeRange (0, _arr->size() - num);}
     const String& getLine (int i) const {return _arr->getReference (i); }
-
+    void incrementNumAppearances(){numAppearances++; time=Time::getCurrentTime();}
+    int getNumAppearances() const{return numAppearances;}
+    bool operator == (const LogElement & other) const{
+        return (other.severity == severity) &&
+        (other.source == source) &&
+        (other.content ==content);
+    }
 
 private:
+    int numAppearances;
     ScopedPointer<StringArray> _arr;
-
+    friend class LinkedListPointer<LogElement>;
+    LogElement * nextItem;
 };
 
 

@@ -28,7 +28,10 @@ ShapeShifterContent::ShapeShifterContent (Component* _contentComponent, const St
 
 ShapeShifterContent::~ShapeShifterContent()
 {
+    masterReference.clear();
 }
+
+
 
 ShapeShifterContentComponent::ShapeShifterContentComponent (const String& contentName,const String & _info) :
     ShapeShifterContent (this, contentName,_info),

@@ -19,6 +19,7 @@
 #include "../../JuceHeaderUI.h"//keep
 #include "../Inspector/InspectableComponent.h"
 
+
 class ShapeShifterContent
 {
 public:
@@ -32,8 +33,13 @@ public:
     bool contentIsFlexible;
 
     bool contentIsShown;
+    
+    protected :
 
 
+    
+    WeakReference<ShapeShifterContent>::Master masterReference;
+    friend class WeakReference<ShapeShifterContent>;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ShapeShifterContent)
 };
 

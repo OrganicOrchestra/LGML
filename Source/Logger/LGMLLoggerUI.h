@@ -30,9 +30,8 @@
 #define LOGGER_USE_LABEL 0
 
 class LGMLLoggerUI : public ShapeShifterContentComponent,
-    public LGMLLogger::Listener,
-    public TextButton::Listener,
-    public Timer
+    public LGMLLogger::CoalescedListener,
+    public TextButton::Listener
 {
 public:
     LGMLLoggerUI (const String& contentName, LGMLLogger* l);
@@ -89,8 +88,8 @@ public:
     void buttonClicked (Button*) override;
 
 
-    OwnedArray<LogElement> logElements;
-    void newMessage (const String& ) override;
+    
+    void newMessages (int from, int to ) override;
 private:
 
 
@@ -112,9 +111,12 @@ private:
     const String getTimeStringForRow (const int r) const;
     friend class LogList;
 
-    void timerCallback()override;
+    
 
 
+    static int maxDisplayedLogs;
+    int startDisplayedIdx;
+    
 
 };
 

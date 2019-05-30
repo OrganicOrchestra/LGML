@@ -20,13 +20,14 @@
 class ShapeShifterPanelTab :
     public juce::Component,
     public Button::Listener,
-    public SettableTooltipClient
+    public SettableTooltipClient,
+    private Timer
 {
 public:
     explicit ShapeShifterPanelTab (ShapeShifterContent* _content);
     ~ShapeShifterPanelTab();
 
-    ShapeShifterContent* content;
+    WeakReference<ShapeShifterContent> content;
     Label panelLabel;
     ImageButton closePanelBT;
 
@@ -52,7 +53,12 @@ public:
     void addShapeShifterTabListener (TabListener* newListener) { tabListeners.add (newListener); }
     void removeShapeShifterTabListener (TabListener* listener) { tabListeners.remove (listener); }
 
-    
+    void blink(const Colour & n) ;
+private:
+    Time blinkStartTime;
+    Colour blinkColour;
+    void timerCallback() final;
+    static constexpr int notificationDurationMs = 500;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ShapeShifterPanelTab)
 };
 

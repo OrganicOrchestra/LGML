@@ -19,11 +19,12 @@
 #include "ShapeShifterContainer.h"
 #include "ShapeShifterWindow.h"
 #include "ShapeShifterFactory.h"
-
+#include "../../Logger/LGMLLogger.h"
 
 
 class ShapeShifterManager :
-    public ShapeShifterPanel::Listener
+    public ShapeShifterPanel::Listener,
+    private LGMLLogger::CoalescedListener
 {
 public:
     juce_DeclareSingleton (ShapeShifterManager, true);
@@ -102,6 +103,8 @@ public:
 
     void handleMenuPanelCommand (int commandID);
 
+    //LGML Logger to blink tabs
+    void newMessages(int from,int to)final;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ShapeShifterManager)
 };
 
