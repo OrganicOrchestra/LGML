@@ -40,7 +40,9 @@ public:
         if(getCrashFile().existsAsFile()){
             ScopedPointer<InputStream> in = getCrashFile().createInputStream();
             if(in){
-                String bt = in->readString();
+                VersionTriplet ver;
+                String bt = "LGMLv"+ver.toString()+"\n";
+                bt+=in->readString();
                 LOG(bt);
 #if !ENGINE_HEADLESS
                 AlertWindow aw("lgml crashed last time","error message : ",AlertWindow::AlertIconType::WarningIcon);

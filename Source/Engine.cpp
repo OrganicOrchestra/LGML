@@ -32,7 +32,7 @@
 
 #include "Scripting/Js/JsGlobalEnvironment.h"
 
-#include "Version.h"
+
 
 // this allow to avoid juce header dependency in all other source code
 // calling Engine::versionNumber instead of ProjectInfo::versionNumber

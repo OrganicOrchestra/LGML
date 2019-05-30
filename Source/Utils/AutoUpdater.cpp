@@ -43,59 +43,6 @@ extern ApplicationProperties * getAppProperties();
 
 
 
-LatestVersionChecker::LGMLVersionTriple::LGMLVersionTriple()
-:  major ((ProjectInfo::versionNumber & 0xff0000) >> 16),
-minor ((ProjectInfo::versionNumber & 0x00ff00) >> 8),
-build ((ProjectInfo::versionNumber & 0x0000ff) >> 0)
-{}
-
-LatestVersionChecker::LGMLVersionTriple::LGMLVersionTriple (int lgmlVersionNumber)
-:  major ((lgmlVersionNumber & 0xff0000) >> 16),
-minor ((lgmlVersionNumber & 0x00ff00) >> 8),
-build ((lgmlVersionNumber & 0x0000ff) >> 0)
-{}
-
-LatestVersionChecker::LGMLVersionTriple::LGMLVersionTriple (int majorInt, int minorInt, int buildNumber)
-: major (majorInt),
-minor (minorInt),
-build (buildNumber)
-{}
-
-bool LatestVersionChecker::LGMLVersionTriple::fromString (const String& versionString,
-                                                          LatestVersionChecker::LGMLVersionTriple& result)
-{
-    StringArray tokenizedString = StringArray::fromTokens (versionString, ".", StringRef());
-
-    if (tokenizedString.size() != 3)
-        return false;
-
-    result.major = tokenizedString [0].getIntValue();
-    result.minor = tokenizedString [1].getIntValue();
-    result.build = tokenizedString [2].getIntValue();
-
-    return true;
-}
-
-String LatestVersionChecker::LGMLVersionTriple::toString() const
-{
-    String retval;
-    retval << major << '.' << minor << '.' << build;
-    return retval;
-}
-
-bool LatestVersionChecker::LGMLVersionTriple::operator> (const LatestVersionChecker::LGMLVersionTriple& b) const noexcept
-{
-    if (major == b.major)
-    {
-        if (minor == b.minor)
-            return build > b.build;
-
-        return minor > b.minor;
-    }
-
-    return major > b.major;
-}
-
 
 static const String getAppFileName(){
     return
@@ -267,14 +214,14 @@ class UpdateUserDialog   : public Component,
 public Button::Listener
 {
 public:
-    UpdateUserDialog (const LatestVersionChecker::LGMLVersionTriple& version,
+    UpdateUserDialog (const VersionTriplet& version,
                       const String& productName,
                       const String& releaseNotes,
                       const char* overwriteFolderPath, bool hasDirectDownload)
     {
 
 
-        LatestVersionChecker::LGMLVersionTriple currentVersion (ProjectInfo::versionNumber);
+        VersionTriplet currentVersion (ProjectInfo::versionNumber);
 
         addAndMakeVisible (titleLabel = new Label ("Title Label",
                                                    juce::translate("Download LGML version 123?").replace ("123", version.toString())));
@@ -399,7 +346,7 @@ public:
             jassertfalse;
     }
 
-    static DialogWindow* launch (const LatestVersionChecker::LGMLVersionTriple& version,
+    static DialogWindow* launch (const VersionTriplet& version,
                                  const String& productName,
                                  const String& releaseNotes,
                                  const char* overwritePath = nullptr,bool hasDirectDownload=false)
@@ -665,11 +612,11 @@ bool LatestVersionChecker::processResult (const var& reply, const String& downlo
     {
         String versionString = reply.getProperty ("version", var()).toString();
         String releaseNotes = reply.getProperty ("notes", var()).toString();
-        LGMLVersionTriple version;
+        VersionTriplet version;
 
         if (versionString.isNotEmpty() && releaseNotes.isNotEmpty())
         {
-            if (LGMLVersionTriple::fromString (versionString, version))
+            if (VersionTriplet::fromUnsafeString (versionString, version))
             {
                 String extraHeaders;
                 String urlPage = reply.getProperty("download_page",
@@ -726,12 +673,12 @@ bool LatestVersionChecker::processResult (const var& reply, const String& downlo
     return true;
 }
 
-bool LatestVersionChecker::askUserAboutNewVersion (const LatestVersionChecker::LGMLVersionTriple& version,
+bool LatestVersionChecker::askUserAboutNewVersion (const VersionTriplet& version,
                                                    const String& releaseNotes,
                                                    URL& newVersionToDownload,
                                                    const String& extraHeaders,bool hasDirectDownload)
 {
-    LGMLVersionTriple currentVersion (getProductVersionNumber());
+    VersionTriplet currentVersion (getProductVersionNumber());
 
     if (FORCE_CHECK_VERSION || force_show || (version > currentVersion))
     {

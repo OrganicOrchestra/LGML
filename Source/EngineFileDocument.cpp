@@ -16,9 +16,8 @@
  ==============================================================================
  */
 
-#if !ENGINE_HEADLESS
-#include "UI/Inspector/Inspector.h"
-#endif
+
+
 #include "Node/Impl/AudioDeviceInNode.h"
 #include "Node/Impl/AudioDeviceOutNode.h"
 #include "Controller/Impl/OSCJsController.h"
@@ -27,6 +26,7 @@
 #include "Engine.h"
 
 #if !ENGINE_HEADLESS
+#include "UI/Inspector/Inspector.h"
 #include "Node/Manager/UI/NodeManagerUI.h"
 #endif
 
@@ -307,7 +307,7 @@ void Engine::loadJSONData (const var& data, ProgressTask* loadingTask)
         String _versionString = md->hasProperty ("version") ? md->getProperty ("version").toString() : "?";
         if(!AlertWindow::showOkCancelBox (AlertWindow::AlertIconType::WarningIcon,
                                           juce::translate("this file was created with a diffirent LGML version \n(potentially incompatible)"),
-                                          juce::translate("File version  : 123\nsupported LGML versions : 456").replace("123", _versionString).replace("456", getMajorMinorRequiredFileVersionArray().joinIntoString(".")),
+                                          juce::translate("File version  : 123\nsupported LGML versions : 456").replace("123", _versionString).replace("456", getSupportedVersionMask().toString()),
                                           juce::translate("try anyway !"))){
             return;
         }
@@ -374,41 +374,23 @@ void Engine::loadJSONData (const var& data, ProgressTask* loadingTask)
 
 }
 
-int Engine::checkFileVersion (DynamicObject* metaData)
+bool Engine::checkFileVersion (DynamicObject* metaData)
 {
     if (!metaData->hasProperty ("version")) return false;
-    auto versionMask = getMajorMinorRequiredFileVersionArray();
-    String versionMaskString = versionMask.joinIntoString(".");
-    DBG (metaData->getProperty ("version").toString() << "/ " << versionMaskString);
+    auto versionMask = getSupportedVersionMask();
 
-    StringArray fileVersionSplit;
-    fileVersionSplit.addTokens (metaData->getProperty ("version").toString(), juce::StringRef ("."), juce::StringRef ("\""));
+    DBG (metaData->getProperty ("version").toString() << "/ " << versionMask.toString());
 
+    VersionTriplet fileVersion =metaData->getProperty ("version").toString();
 
+    return fileVersion.isCompatible(versionMask);
 
-    // checks that major and minor numbers are the same ignore patch
-    int maxVersionNumbers = 2;
-
-    while (fileVersionSplit.size() < maxVersionNumbers) fileVersionSplit.add ("0");
-
-    while (versionMask.size() < maxVersionNumbers) {jassertfalse;versionMask.add ("0");}
-
-    for (int i = 0; i < maxVersionNumbers; i++)
-    {
-        if(versionMask[i]=="x"){continue;}
-        int fV = fileVersionSplit[i].getIntValue();
-        int minV = versionMask[i].getIntValue();
-        if (fV > minV) return 1;
-        else if (fV < minV) return -1;
-    }
-
-    return 0;
 }
 
-StringArray Engine::getMajorMinorRequiredFileVersionArray()
+VersionTriplet Engine::getSupportedVersionMask()
 {
     // minor version is marked as breaking per default
-    return StringArray  {String((Engine::versionNumber >> 16) & 0xFF) ,String((Engine::versionNumber >> 8 ) & 0xFF),"x" };
+    return VersionTriplet  {String((Engine::versionNumber >> 16) & 0xFF) ,String((Engine::versionNumber >> 8 ) & 0xFF),"x" };
 }
 
 File Engine::getCurrentProjectFolder()

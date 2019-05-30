@@ -20,7 +20,7 @@
 
 
 #include "../JuceHeaderUI.h"
-
+#include "../Version.h"
 
 class UpdaterDialogModalCallback;
 
@@ -29,20 +29,7 @@ class LatestVersionChecker  : private Thread,
 private Timer
 {
 public:
-    struct LGMLVersionTriple
-    {
-        LGMLVersionTriple();
 
-        explicit LGMLVersionTriple (int lgmlVersionNumber);
-        LGMLVersionTriple (int majorInt, int minorInt, int buildNumber);
-
-        static bool fromString (const String& versionString, LGMLVersionTriple& result);
-        String toString() const;
-
-        bool operator> (const LGMLVersionTriple& b) const noexcept;
-
-        int major, minor, build;
-    };
 
     //==============================================================================
     struct LGMLServerLocationsAndKeys
@@ -65,7 +52,7 @@ public:
     void checkForNewVersion();
     bool processResult (const var & reply, const String& downloadPath);
 
-    bool askUserAboutNewVersion (const LGMLVersionTriple& version,
+    bool askUserAboutNewVersion (const VersionTriplet& version,
                                  const String& releaseNotes,
                                  URL& newVersionToDownload,
                                  const String& extraHeaders,

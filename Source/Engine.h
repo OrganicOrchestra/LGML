@@ -35,6 +35,8 @@
 #include "Audio/VSTManager.h"
 #include "Utils/ProgressNotifier.h"
 #include "Utils/CommandLineElements.hpp"
+#include "Version.h"
+
 class AudioFucker;
 
 
@@ -97,7 +99,7 @@ public:
 
     File getLastDocumentOpened() override;
 
-    StringArray getMajorMinorRequiredFileVersionArray();
+    VersionTriplet getSupportedVersionMask();
 
     void  stimulateAudio (bool);
 
@@ -185,7 +187,7 @@ private:
     DynamicObject* createObject() override;
     void loadJSONData (const var& data, ProgressTask* loadingTask);
 
-    int checkFileVersion (DynamicObject* metaData);
+    bool checkFileVersion (DynamicObject* metaData);
 
 
     Result loadDocument (const File& file)override;
