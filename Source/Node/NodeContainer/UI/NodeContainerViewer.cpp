@@ -37,7 +37,7 @@ public:
     void mouseEnter(const MouseEvent & me) final{DBG(String("enter ")+niceName(me.originalComponent));}
     void mouseExit(const MouseEvent & me) final{DBG(String("exit ")+niceName(me.originalComponent));}
     void mouseDrag(const MouseEvent & me) final{DBG(String("drag ")+niceName(me.originalComponent));}
-//    void mouseMove(const MouseEvent & me) final{DBG(String("move ")+niceName(me.originalComponent));}
+    //    void mouseMove(const MouseEvent & me) final{DBG(String("move ")+niceName(me.originalComponent));}
 };
 MouseDbg * globalMouse(nullptr);
 #define INITGLOBALMOUSE() if(!globalMouse) globalMouse = new MouseDbg();
@@ -159,7 +159,7 @@ void NodeContainerViewer::addNodeUI (ConnectableNode* node)
     {
         auto uip = uiParams->getControllableContainerByShortName(node->shortName);
         if(!uip){
-           uip =  uiParams->addContainerFromObject(node->shortName.toString(), nullptr);
+            uip =  uiParams->addContainerFromObject(node->shortName.toString(), nullptr);
         }
         ConnectableNodeUI* nui =
         NodeUIFactory::createDefaultUI (node,
@@ -419,6 +419,9 @@ ConnectableNodeUI * getRelatedConnectableNodeUIForDrag(Component * c,bool allowC
     if(auto label = dynamic_cast<Label*>(c)){
         return label->findParentComponentOfClass<ConnectableNodeUI>();
     }
+    if(auto corner = dynamic_cast<ResizableCornerComponent*>(c)){
+        return corner->findParentComponentOfClass<ConnectableNodeUI>();
+    }
 
 
     //    if(auto vumeter = dynamic_cast<VuMeter*>(c)){
@@ -491,7 +494,7 @@ void NodeContainerViewer::mouseMove (const MouseEvent& e)
     if (editingConnection != nullptr )
     {
         //DBG("NMUI mouse mouve while editing connection");
-//        updateEditingConnection();
+        //        updateEditingConnection();
         finishEditingConnection();
     }
 
@@ -502,11 +505,8 @@ void NodeContainerViewer::mouseDrag (const MouseEvent&  e)
 
     if (editingConnection != nullptr)
     {
-        //    if (event.eventComponent == editingConnection->getBaseConnector())
-
         updateEditingConnection();
         return;
-
     }
 
     if (e.eventComponent == this && e.getDistanceFromDragStart()>0){
@@ -517,11 +517,24 @@ void NodeContainerViewer::mouseDrag (const MouseEvent&  e)
 
     else     {
 
-
-
         bool isResizing = dynamic_cast<ResizableCornerComponent*>(e.eventComponent)!=nullptr;
         auto nui = getRelatedConnectableNodeUIForDrag(e.eventComponent,false);
         Point<int> diff = Point<int> (e.getPosition() - e.getMouseDownPosition());
+        // cancel current selection if another node is manipulated
+        if(nui){
+            bool isInSelection = false;
+            for(auto s: getLassoSelection()){
+                if(nui==s){
+                    isInSelection=true;
+                    break;
+                }
+            }
+            if(!isInSelection && diff.getDistanceSquaredFromOrigin()>0){
+                getLassoSelection().selectOnly(nui);
+            }
+        }
+
+        // move lasso selection
         if(!isResizing && nui){
             hasDraggedDuringClick = diff.getDistanceSquaredFromOrigin()>0;
             for(auto s: getLassoSelection()){
@@ -537,6 +550,7 @@ void NodeContainerViewer::mouseDrag (const MouseEvent&  e)
                 }
             }
         }
+        //resize lasso selection
         else if(isResizing &&  !minimizeAll->boolValue()){
             for(auto s: getLassoSelection()){
                 if(dynamic_cast<ConnectableNodeUI*>(s.get())){
@@ -581,8 +595,8 @@ void NodeContainerViewer::mouseUp (const MouseEvent& e)
     for(auto& s: getLassoSelection()){
         if(s.get()){
             if(auto * nodeUI = dynamic_cast<ConnectableNodeUI*>(s.get())){
-            Component * tSize = nodeUI->mainComponentContainer.contentContainer;
-            selectedInitBounds.set(s, s->getBoundsInParent().withSize(tSize->getWidth(), tSize->getHeight()));
+                Component * tSize = nodeUI->mainComponentContainer.contentContainer;
+                selectedInitBounds.set(s, s->getBoundsInParent().withSize(tSize->getWidth(), tSize->getHeight()));
             }
         }
 
@@ -749,7 +763,7 @@ void NodeContainerViewer::addOrRemoveNodeUndoable(const String & tid,const Point
                                              if(originNodeToRemove){
                                                  if(auto * sO = savedUiParamsObject.getDynamicObject()){
                                                      if(auto nodeUIParams = dynamic_cast<ParameterContainer*>(uiParams->getControllableContainerByShortName(n->shortName))){
-                                                     nodeUIParams->configureFromObject(sO);
+                                                         nodeUIParams->configureFromObject(sO);
                                                      }
                                                      else{
                                                          jassertfalse;
