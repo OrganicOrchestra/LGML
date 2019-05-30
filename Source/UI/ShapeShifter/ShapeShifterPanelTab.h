@@ -58,7 +58,7 @@ private:
     Time blinkStartTime;
     Colour blinkColour;
     void timerCallback() final;
-    static constexpr int notificationDurationMs = 500;
+    static constexpr int notificationDurationMs = 1500;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ShapeShifterPanelTab)
 };
 
