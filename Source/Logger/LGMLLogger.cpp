@@ -19,9 +19,10 @@
 #include "LGMLLogger.h"
 #include "../Utils/VersionTriplet.h"
 juce_ImplementSingleton (LGMLLogger);
-
 int LGMLLogger::maxLoggedElements = 5000;
 #define CIRCULAR 0
+
+
 
 LGMLLogger::LGMLLogger():
 writeCursor(0),
@@ -94,4 +95,45 @@ int LGMLLogger::getNumLogs(){
     }
     #endif
     return loggedElements.size();
+}
+
+
+
+
+LogElement::LogElement(const String& log):
+source (DebugHelpers::getLogSource (log)),
+content (DebugHelpers::getLogContent (log)),
+numAppearances(1)
+{
+    _arr = new StringArray();
+    time = Time::getCurrentTime();
+    _arr->addTokens (content, StringRef ("\r\n"), StringRef("\""));
+
+    if (_arr->size())
+    {
+        String* s = &_arr->getReference (0);
+        auto cp = s->getCharPointer();
+        severity = LOG_NONE;
+
+        while (cp.getAndAdvance() == '!' && severity < LOG_ERR)
+        {
+            severity = (Severity) (severity + 1);
+        }
+
+        if (severity == LOG_NONE && s->startsWith ("JUCE Assertion"))
+        {
+            severity = LOG_ERR;
+        }
+        else
+        {
+            if(severity!=LOG_NONE)
+                _arr->set (0, _arr->getReference (0).substring ((int)severity + 2));
+        }
+
+    }
+    else
+    {
+        severity = LOG_NONE;
+    }
+
 }

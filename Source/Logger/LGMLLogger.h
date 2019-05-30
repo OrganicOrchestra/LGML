@@ -27,6 +27,33 @@
 
 
 
+class LogElement
+{
+public:
+    LogElement (const String& log);
+    Time time;
+    String content;
+    String source;
+    enum Severity {LOG_NONE = -1, LOG_DBG = 0, LOG_WARN = 1, LOG_ERR = 2};
+    Severity severity;
+    int getNumLines() const {return  _arr->size();}
+    const String& getLine (int i) const {return _arr->getReference (i); }
+    void incrementNumAppearances(){numAppearances++; time=Time::getCurrentTime();}
+    int getNumAppearances() const{return numAppearances;}
+    bool operator == (const LogElement & other) const{
+        return (other.severity == severity) &&
+        (other.source == source) &&
+        (other.content ==content);
+    }
+
+private:
+    int numAppearances;
+    ScopedPointer<StringArray> _arr;
+    friend class LinkedListPointer<LogElement>;
+    LogElement * nextItem;
+};
+
+
 
 class LGMLLogger : public Logger
 {

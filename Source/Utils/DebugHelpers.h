@@ -50,9 +50,11 @@ juce::Logger::writeToLog(tempDbgBuf);)
 #define NLOGW(n,t) NLOG(n,"!! " << t)
 #define NLOGE(n,t) NLOG(n,"!!! " << t)
 
+namespace DebugHelpers{
 inline void debugDobj(const var & v){
     DBG(JSON::toString(v));
 }
+
 
 inline String getLogSource (const String& logString)
 {
@@ -69,71 +71,7 @@ inline String getLogContent (const String& logString)
     return logString.substring ( startString, logString.length()).trim();
 }
 
-class LogElement
-{
-public:
-    LogElement (const String& log) :
-        source (getLogSource (log)),
-        content (getLogContent (log)),
-        numAppearances(1)
-    {
-        _arr = new StringArray();
-        time = Time::getCurrentTime();
-        _arr->addTokens (content, StringRef ("\r\n"), StringRef("\""));
-
-        if (_arr->size())
-        {
-            String* s = &_arr->getReference (0);
-            auto cp = s->getCharPointer();
-            severity = LOG_NONE;
-
-            while (cp.getAndAdvance() == '!' && severity < LOG_ERR)
-            {
-                severity = (Severity) (severity + 1);
-            }
-
-            if (severity == LOG_NONE && s->startsWith ("JUCE Assertion"))
-            {
-                severity = LOG_ERR;
-            }
-            else
-            {
-                if(severity!=LOG_NONE)
-                    _arr->set (0, _arr->getReference (0).substring ((int)severity + 2));
-            }
-
-        }
-        else
-        {
-            severity = LOG_NONE;
-        }
-    }
-    Time time;
-    String content;
-    String source;
-
-    
-    enum Severity {LOG_NONE = -1, LOG_DBG = 0, LOG_WARN = 1, LOG_ERR = 2};
-    Severity severity;
-    int getNumLines() const {return  _arr->size();}
-    void trimToFit (int num) {if (_arr->size() > num)_arr->removeRange (0, _arr->size() - num);}
-    const String& getLine (int i) const {return _arr->getReference (i); }
-    void incrementNumAppearances(){numAppearances++; time=Time::getCurrentTime();}
-    int getNumAppearances() const{return numAppearances;}
-    bool operator == (const LogElement & other) const{
-        return (other.severity == severity) &&
-        (other.source == source) &&
-        (other.content ==content);
-    }
-
-private:
-    int numAppearances;
-    ScopedPointer<StringArray> _arr;
-    friend class LinkedListPointer<LogElement>;
-    LogElement * nextItem;
-};
-
-
+}
 
 
 
