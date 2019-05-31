@@ -1,16 +1,16 @@
 /* Copyright © Organic Orchestra, 2017
-*
-* This file is part of LGML.  LGML is a software to manipulate sound in realtime
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation (version 3 of the License).
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*/
+ *
+ * This file is part of LGML.  LGML is a software to manipulate sound in realtime
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation (version 3 of the License).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
 
 #if !ENGINE_HEADLESS
 
@@ -21,13 +21,13 @@
 const int ShapeShifter::minSize(50);
 
 ShapeShifter::ShapeShifter (Type _type) :
-    shifterType (_type),
-    preferredWidth (300), preferredHeight (300),
-    parentShifterContainer (nullptr),
-    isMini( false)
+shifterType (_type),
+preferredWidth (300), preferredHeight (300),
+parentShifterContainer (nullptr),
+isMini( false)
 {
 
-addMouseListener(this, true);
+    addMouseListener(this, true);
 }
 
 ShapeShifter::~ShapeShifter()
@@ -111,11 +111,13 @@ void ShapeShifter::mouseUp(const MouseEvent & me){
 class MiniTimer : private MultiTimer{
 public:
     MiniTimer(ShapeShifter * _s):s(_s){
+        mouseTruelyOutTime = 0;
         startTimer(1,200);
     }
     void requestEnd(){
         stopTimer(1);
-        startTimer(2,300);
+        mouseTruelyOutTime = 0;
+        startTimer(2,200);
     }
     bool isRunning(){
         return isTimerRunning(1) || isTimerRunning(2);
@@ -124,6 +126,7 @@ public:
     void stopTimers(){
         stopTimer(1) ;
         stopTimer(2);
+        mouseTruelyOutTime = 0;
     }
     void setMini(){
         for(auto o:s->parentShifterContainer->shifters){
@@ -136,33 +139,53 @@ public:
         s->parentShifterContainer->resized();
     }
     void timerCallback(int id) override{
+
         if(s.get()){
             if(id==1){
                 setMini();
                 stopTimer(1);
+                mouseTruelyOutTime = 0;
             }
             if(id==2){
+                bool mouseHasExitedGrabber = true;
+                for (auto& ms : Desktop::getInstance().getMouseSources()){
+                    if (auto* underMouse = ms.getComponentUnderMouse()){
+                        if(dynamic_cast<GapGrabber*>(underMouse) || dynamic_cast<GapGrabber*>(underMouse->getParentComponent())){
+                            mouseHasExitedGrabber = false;
+                            break;
+                        }
+                    }
+                }
+                if(mouseHasExitedGrabber){mouseTruelyOutTime+=getTimerInterval(2);}
+                else{mouseTruelyOutTime = 0;}
+                if(mouseTruelyOutTime>=1000){
                 stopTimer(2);
                 s->setMini(true);
                 s->miniTimer = nullptr;
+                }
             }
         }
         else{
-            stopTimer(1);
-            stopTimer(2);
+            stopTimers();
         }
     }
-
+    int mouseTruelyOutTime = 0;
     WeakReference<ShapeShifter> s;
 };
 
 void ShapeShifter::setMini(bool s,bool resizeNow){
-//    DBG(String(s?"":"not")+" mini : "+ getName());
+    //    DBG(String(s?"":"not")+" mini : "+ getName());
 
     if(miniTimer){
-        if(!s && !miniTimer->isRunning()){miniTimer=nullptr;} // be sure to delete it if stopped
+
+        if(!s ){
+            if(!miniTimer->isRunning()){miniTimer=nullptr;} // be sure to delete it if stopped
+            else{miniTimer->stopTimers();}
+        }
+
     }
     isMini = s;
+
     ShapeShifterContainer * parent = parentShifterContainer;
     if(parent){
         bool allMinimized = true;
@@ -181,14 +204,18 @@ void ShapeShifter::setMini(bool s,bool resizeNow){
         }
 
         if(resizeNow)parent->resized();
-        
+
     }
+}
+
+bool ShapeShifter::isInAutoMiniMode(){
+    return (miniTimer!=nullptr && miniTimer->isRunning()) || isMini;
+
 }
 
 void ShapeShifter::mouseEnter(const juce::MouseEvent &me){
     if(miniTimer){miniTimer->stopTimers();}
     if(isMini){
-
         miniTimer = new MiniTimer(this);
     }
 

@@ -38,13 +38,13 @@ DummyNode::DummyNode (StringRef name) :
     testTrigger =  addNewParameter<Trigger> ("Test Trigger", "Youpi");
 
     enumParam = addNewParameter<EnumParameter> ("Mode", "Enum Mode test");
-    enumParam->addOption (lrId);
-    enumParam->addOption (rlId);
-    enumParam->addOption (mixedId);
-    enumParam->addOption (clickId);
-    enumParam->addOption (sineId);
+    enumParam->addOption (lrId,true);
+    enumParam->addOption (rlId,true);
+    enumParam->addOption (mixedId,true);
+    enumParam->addOption (clickId,true);
+    enumParam->addOption (sineId,true);
 
-
+    
 
     pxParam = addNewParameter<FloatParameter> ("Point X", "X", 0.f, 0.f, 1.f);
     pyParam = addNewParameter<FloatParameter> ("Point Y", "Y", 0.f, 0.f, 1.f);

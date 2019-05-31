@@ -25,13 +25,7 @@ public:
 
     GapGrabber (Direction _direction);
     virtual ~GapGrabber();
-
-    void paint (Graphics& g) override;
-    void mouseEnter (const MouseEvent& e) override;
-    void mouseExit (const MouseEvent& e) override;
-    void mouseDrag (const MouseEvent& e) override;
-    void mouseUp (const MouseEvent& e) override;
-
+    void resized() override;
     Direction direction;
 
     //Listener
@@ -41,11 +35,13 @@ public:
         virtual ~Listener() {}
         virtual void grabberGrabUpdate (GapGrabber*, int relativeDist) = 0;
     };
+    void parentHierarchyChanged()final;
+    void updateMiniHandleVisibility();
 
     ListenerList<Listener> listeners;
     void addGrabberListener (Listener* newListener) { listeners.add (newListener); }
     void removeGrabberListener (Listener* listener) { listeners.remove (listener); }
-
+    ScopedPointer<Component> goMiniHandle,goMiniHandle2,stretchHandle;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GapGrabber)
 };
 

@@ -539,7 +539,7 @@ void LooperNode::onContainerTriggerTriggered (Trigger* t)
                 }
 
 
-                tr->sampleChoice->addOrSetOption (destFile.getFileNameWithoutExtension(), getEngine()->getNormalizedFilePath (destFile));
+                tr->sampleChoice->addOrSetOption (destFile.getFileNameWithoutExtension(), getEngine()->getNormalizedFilePath (destFile),false);
                 tr->sampleChoice->selectId (destFile.getFileNameWithoutExtension(), true, false);
             }
         }

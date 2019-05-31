@@ -213,7 +213,7 @@ void EnumParameterUI::comboBoxChanged (ComboBox* c)
                     if (res.isNotEmpty())
                     {
                         Identifier elemToAdd = res;
-                        ep->getModel()->addOption (elemToAdd, elemToAdd.toString(), true);
+                        ep->getModel()->addOption (elemToAdd, elemToAdd.toString(), false);
                         ep->selectId (elemToAdd, true, false);
                         changedFromUI = true;
                     }
@@ -314,7 +314,7 @@ void EnumParameterUI::filesDropped (const StringArray& files, int x, int y) {
         fname = f.getFileNameWithoutExtension();
         needRemove &= (fname!=ep->getFirstSelectedId().toString());
         String fpath = getEngine()->getNormalizedFilePath(f.getFullPathName());
-        ep->addOrSetOption(fname, fpath);
+        ep->addOrSetOption(fname, fpath,false);
     }
     if(fname.isNotEmpty()){
         if( needRemove){

@@ -54,6 +54,7 @@ public :
     static const int minSize;
 
     void setMini(bool s,bool resizeNow=true);
+    bool isInAutoMiniMode();
     bool isMini;
     void mouseUp(const MouseEvent & )override;
     void mouseExit(const MouseEvent & )override;

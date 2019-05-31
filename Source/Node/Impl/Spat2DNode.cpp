@@ -27,7 +27,7 @@ alphaFilter(1)
     spatMode = addNewParameter<EnumParameter> ("Mode", "Spatialization Mode (2D/3D, Beam/Proxy)");
     spatMode->isEditable=false;
     //    spatMode->addOption ("Beam", BEAM);
-    spatMode->addOption ("Proxy", PROXY);
+    spatMode->addOption ("Proxy", PROXY,true);
 
     spatMode->setValue ("Proxy");
 
