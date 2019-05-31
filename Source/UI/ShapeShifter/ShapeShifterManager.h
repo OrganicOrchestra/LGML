@@ -67,6 +67,7 @@ public:
 
     ShapeShifterPanel* getPanelForContent (ShapeShifterContent* content);
     ShapeShifterPanel* getPanelForContentName (const String& name);
+    ShapeShifterPanelTab* getTabForContentName (const String& name);
 
     ShapeShifterPanel* createPanel (ShapeShifterContent* content, ShapeShifterPanelTab* sourceTab = nullptr);
     void removePanel (ShapeShifterPanel* panel);

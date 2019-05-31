@@ -514,24 +514,36 @@ Colour getColourForSeverity(const LogElement::Severity & s){
     }
 }
 
-void ShapeShifterManager::newMessages(int from,int to){
-    const auto logs = LGMLLogger::getInstance()->loggedElements;
-    LogElement::Severity higherSeverity (LogElement::Severity::LOG_DBG);
-    for(int i = from ; i < to ; i++){
-        if(logs.getUnchecked(i)->severity>higherSeverity){
-            higherSeverity = logs.getUnchecked(i)->severity;
+ShapeShifterPanelTab* ShapeShifterManager::getTabForContentName (const String& name){
+    if(auto lp=getPanelForContentName(name)){
+        if(auto lc = lp->getContentForName(name)){
+            return lp->header.getTabForContent(lc);
         }
     }
-    if(higherSeverity>LogElement::Severity::LOG_DBG){
-        if(auto lp=getPanelForContentName("Logger")){
-            if(auto lc = lp->getContentForName("Logger")){
-                if(auto tab = lp->header.getTabForContent(lc)){
-                    tab->blink(getColourForSeverity(higherSeverity));
+    return nullptr;
+
+}
+void ShapeShifterManager::newMessages(int from,int to){
+    const auto & logs = LGMLLogger::getInstance()->loggedElements;
+
+    for(int i = from ; i < to ; i++){
+        if(logs.getUnchecked(i)->severity>LogElement::Severity::LOG_DBG){
+            const Colour severityColour ( getColourForSeverity(logs.getUnchecked(i)->severity));
+            if(auto tab = getTabForContentName("Logger")){
+                tab->blink(severityColour);
+            }
+            for(auto & s:globalPanelNames){
+                String concat = s.replace(" ", "");
+                if(logs.getUnchecked(i)->source.contains(concat)){
+                    if(auto tab = getTabForContentName(s)){
+                        tab->blink(severityColour);
+                    }
+                    break;
                 }
             }
         }
-        
     }
+
 };
 
 #endif

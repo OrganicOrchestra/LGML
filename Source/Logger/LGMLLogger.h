@@ -57,25 +57,29 @@ private:
 
 class LGMLLogger : public Logger
 {
-public :
+    public :
 
     juce_DeclareSingleton (LGMLLogger, true);
 
     LGMLLogger();
+    ~LGMLLogger();
 
     void logMessage (const String& message) override;
 
     struct Listener : private AsyncUpdater{
         Listener():readIdx(0),lastIdx(0){}
-        virtual ~Listener(){}
+        virtual ~Listener(){cancelPendingUpdate();}
 
         virtual void newMessage(const LogElement * el)  = 0;
+        virtual void logCleared() {};
     private:
         void handleAsyncUpdate() final{
             int end = lastIdx.get();
-            for(int i = readIdx ; i < end ; i++){
+            if(end<readIdx){logCleared();readIdx = 0;}
+            for(int i = readIdx ; i <= end ; i++){
                 newMessage(LGMLLogger::getInstance()->loggedElements.getUnchecked(i));
             }
+            readIdx=jmax(0,end);
         }
         friend class LGMLLogger;
         void newMessageAtIdx(int idx){
@@ -91,9 +95,9 @@ public :
     ListenerList<Listener> listeners;
 
 
-    class CoalescedListener : public Listener,private Timer{
+    class CoalescedListener : private Listener,private Timer{
     public:
-        CoalescedListener(int _time):time(_time),readIdx(0){
+        CoalescedListener(int _time):time(_time),readIdxCoal(0){
 
         }
         virtual ~CoalescedListener(){stopTimer();};
@@ -108,22 +112,23 @@ public :
 
         void timerCallback() final{
             int tend = LGMLLogger::getInstance()->getNumLogs();
-            if(tend>0 && readIdx==tend)readIdx=tend-1; // if only updating last
-            newMessages(readIdx,tend);
-            readIdx = tend;
-            // check if any modification occured
-            if(tend == LGMLLogger::getInstance()->getNumLogs()){
-                stopTimer();
-            }
+            if(readIdxCoal> tend){ readIdxCoal = 0;}// has been cleared
+            else if(tend>0 && readIdxCoal==tend)readIdxCoal=tend-1; // if only updating last
+            newMessages(readIdxCoal,tend);
+            readIdxCoal = tend;
+            // check if any modification occured during this callback
+            if(tend == LGMLLogger::getInstance()->getNumLogs()){stopTimer();}
         }
-        int readIdx;
+        int readIdxCoal;
         const int time;
+        friend class LGMLLogger;
 
     };
 
     const String & getWelcomeMessage();
     void addLogListener (Listener* l) {listeners.add (l);}
     void addLogCoalescedListener (CoalescedListener* l) {listeners.add (l);}
+    void removeLogListener (CoalescedListener* l) {listeners.remove (l);}
     void removeLogListener (Listener* l) {listeners.remove (l);}
 
 #if USE_FILE_LOGGER
@@ -142,8 +147,9 @@ public :
 
     static int maxLoggedElements;
     Atomic<int> writeCursor;
-    Array<LogElement*,CriticalSection> loggedElements;
+    OwnedArray<LogElement,CriticalSection> loggedElements;
     int getNumLogs();
+    void clearLog();
 private:
     const String welcomeMessage;
 };

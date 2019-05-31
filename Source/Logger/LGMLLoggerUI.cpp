@@ -25,7 +25,7 @@
 
 int LGMLLoggerUI::maxDisplayedLogs = 5000;
 
-const Array<LogElement*,CriticalSection> & loggedElements(){return LGMLLogger::getInstance()->loggedElements;}
+const OwnedArray<LogElement,CriticalSection> & loggedElements(){return LGMLLogger::getInstance()->loggedElements;}
 static String EmptyString;
 void LGMLLoggerUI::newMessages (int from , int to)
 {
@@ -468,7 +468,8 @@ void LGMLLoggerUI::buttonClicked (Button* b)
 
     if (b == &clearB)
     {
-        startDisplayedIdx = LGMLLogger::getInstance()->getNumLogs();
+//        startDisplayedIdx = LGMLLogger::getInstance()->getNumLogs();
+        LGMLLogger::getInstance()->clearLog();
         totalLogRow = 0;
         logListComponent->updateContent();
         LOG (juce::translate("Cleared."));

@@ -44,6 +44,10 @@ welcomeMessage
 
 }
 
+LGMLLogger::~LGMLLogger(){
+    
+}
+
 const String & LGMLLogger::getWelcomeMessage(){
     return welcomeMessage;
 }
@@ -70,6 +74,7 @@ void LGMLLogger::logMessage (const String& message)
         delete el;
         lastLogged->incrementNumAppearances();
         el = lastLogged;
+        writePos = jmax(0,loggedElements.size()-1);
     }
     else{
 #if CIRCULAR
@@ -78,8 +83,11 @@ void LGMLLogger::logMessage (const String& message)
         if(overriden){delete overriden;}
         loggedElements.set(writePos, el);
 #else
-        writeCursor.set(writePos+1);
+        writePos = loggedElements.size();
         loggedElements.add(el);
+        writeCursor .set( writePos);
+
+
 #endif
     }
     listeners.call (&Listener::newMessageAtIdx, writePos);
@@ -97,6 +105,11 @@ int LGMLLogger::getNumLogs(){
     return loggedElements.size();
 }
 
+void LGMLLogger::clearLog(){
+    writeCursor.set(0);
+    loggedElements.clearQuick(true);
+    listeners.call (&Listener::newMessageAtIdx, -1);
+}
 
 
 
