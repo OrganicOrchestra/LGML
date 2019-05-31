@@ -287,7 +287,7 @@ DynamicObject * Presetable::createPresetObject(ParameterContainer * p){
                                      return cc->canHavePresets();
 
                                  },
-                                       -1,false);
+                                       -1,false,true);
     }
     return nullptr;
 }

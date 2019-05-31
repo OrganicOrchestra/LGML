@@ -61,7 +61,7 @@ public:
     virtual void configureFromObject (DynamicObject* data) override;
     virtual DynamicObject* createObject() override;
     DynamicObject* createObjectMaxDepth(int maxDepth) ;
-    DynamicObject* createObjectFiltered(std::function<bool(ParameterBase*)> controllableFilter,std::function<bool(ParameterContainer*)> containerFilter,int maxDepth=-1,bool includeUID=false);
+    DynamicObject* createObjectFiltered(std::function<bool(ParameterBase*)> controllableFilter,std::function<bool(ParameterContainer*)> containerFilter,int maxDepth=-1,bool includeUID=false,bool getNotExposed = false);
     
 
     //  controllableContainer::Listener

@@ -160,7 +160,7 @@ DynamicObject* ParameterContainer::createObjectMaxDepth(int maxDepth)
     return data;
 }
 
-DynamicObject* ParameterContainer::createObjectFiltered(std::function<bool(ParameterBase*)> controllableFilter,std::function<bool(ParameterContainer*)> containerFilter,int maxDepth,bool includeUID)
+DynamicObject* ParameterContainer::createObjectFiltered(std::function<bool(ParameterBase*)> controllableFilter,std::function<bool(ParameterContainer*)> containerFilter,int maxDepth,bool includeUID,bool getNotExposed)
 {
 
     DynamicObject* data = new DynamicObject();
@@ -169,7 +169,7 @@ DynamicObject* ParameterContainer::createObjectFiltered(std::function<bool(Param
     {
         var paramsData (new DynamicObject);
 
-        for (auto& c : getAllParameters())
+        for (auto& c : getAllParameters(false,getNotExposed))
         {
 
             if(controllableFilter(c)){
@@ -198,7 +198,7 @@ DynamicObject* ParameterContainer::createObjectFiltered(std::function<bool(Param
         for (auto controllableCont : getContainersOfType<ParameterContainer>(false))
         {
             if(containerFilter(controllableCont))
-                childData->setProperty (controllableCont->getNiceName(), controllableCont->createObjectFiltered(controllableFilter,containerFilter,maxDepth-1,includeUID));
+                childData->setProperty (controllableCont->getNiceName(), controllableCont->createObjectFiltered(controllableFilter,containerFilter,maxDepth-1,includeUID,getNotExposed));
         }
         if(childData->getProperties().size())
             data->setProperty (childContainerId, childData);

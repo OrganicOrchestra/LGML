@@ -541,6 +541,11 @@ void VSTNode::audioProcessorChanged (juce::AudioProcessor* p )
 //        updateParametersToProcessor(innerPlugin);
         updateParametersFromProcessor(innerPlugin);
         }
+        else{ // try to sync parameters
+            for(int i = 0 ; i < p->getParameters().size() ; i++){
+                VSTParameters.getUnchecked(i)->setValue(p->getParameters().getUnchecked(i)->getValue());
+            }
+        }
 
 //        const OwnedArray<juce::AudioProcessorParameter>& vstParams (innerPlugin->getParameters());
 //
