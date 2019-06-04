@@ -174,8 +174,8 @@ void NodeBase::processBlock (AudioBuffer<float>& buffer,
     int numSample = buffer.getNumSamples();
 
 
-    int totalNumInputChannels = getTotalNumInputChannels();
-    int totalNumOutputChannels = getTotalNumOutputChannels();
+    int totalNumInputChannels = jmin(getTotalNumInputChannels(),buffer.getNumChannels());
+    int totalNumOutputChannels = jmin(getTotalNumOutputChannels(),buffer.getNumChannels());
 
 
 

@@ -340,9 +340,19 @@ void Presetable::cleanUpPresets()
 
 String Presetable::getPresetFilter()
 {
+    if(pc){
     return getType()+"_" + pc->uid.toString();
+    }
+    else{
+        return "";
+    }
 }
 
 String Presetable::getType(){
+    if(pc){
     String st = pc->getSubTypeName();return pc->getFactoryTypeId().toString()+(st.isEmpty()?"":String("_")+st);
+    }
+    else{
+        return "";
+    }
 }

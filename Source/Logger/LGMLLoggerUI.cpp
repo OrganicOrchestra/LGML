@@ -481,9 +481,9 @@ void LGMLLoggerUI::buttonClicked (Button* b)
             const LogElement  * el = loggedElements().getUnchecked(i);
             int leftS = el->source.length() + 3;
             s+=el->source+" : ";
-            for(int i = 0 ; i < el->getNumLines() ; i++){
-                if (i!=0)for ( int j = 0; j < leftS ; j++) s+=" ";
-                s+=el->getLine(i)+"\n";
+            for(int k = 0 ; k < el->getNumLines() ; k++){
+                if (k!=0)for ( int j = 0; j < leftS ; j++) s+=" ";
+                s+=el->getLine(k)+"\n";
             }
         }
         SystemClipboard::copyTextToClipboard (s);

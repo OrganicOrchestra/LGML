@@ -141,8 +141,8 @@ template<class T,class OriginClass=T>
 inline T* castPtrFromObject ( DynamicObject* d)
 {
     if(JsObject* p = getObjectPtrFromObject(d)){
-        if(auto *ref  = dynamic_cast<JsObjectRef<OriginClass> * > (p)){
-            return dynamic_cast<T * >(ref->get());
+        if(auto *ref  = dynamic_cast< JsObjectRef < OriginClass > * > (p)){
+            return dynamic_cast< T * > ( ref->get() );
         }
     }
     return nullptr;

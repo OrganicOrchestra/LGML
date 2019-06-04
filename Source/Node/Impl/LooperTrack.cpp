@@ -76,7 +76,7 @@ hadOnset(false)
     stateParameterStringSynchronizer = new AsyncTrackStateStringSynchronizer (stateParameterString);
     addTrackListener (stateParameterStringSynchronizer);
     stateParameterString->setInternalOnlyFlags(true,false);
-    stateParameterString->isSavable = false;
+    stateParameterString->isControllableExposed = true;
 
 
 

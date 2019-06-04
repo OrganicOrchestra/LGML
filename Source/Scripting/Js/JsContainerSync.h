@@ -62,7 +62,7 @@ private:
     JsContainerNamespace* getContainerNamespace (const String& );
 
 
-    static DynamicObject*   createDynamicObjectFromContainer (ControllableContainer* c);
+    static var   createDynamicObjectFromContainer (ControllableContainer* c);
 
     class AggregChanges : private Timer
     {

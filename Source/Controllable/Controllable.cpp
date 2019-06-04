@@ -183,8 +183,10 @@ const Array<Identifier> & ControlAddressType::getArray()const {
 
 ShortNameType Controllable::toShortName (const String& s){
     //        if (s.isEmpty()) return "";
-
-    return ShortNameType(s.retainCharacters("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-.").toLowerCase());
+    const String sn = s.retainCharacters("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-.").toLowerCase();
+    static ShortNameType emptyName("Empty");
+    if(sn.isEmpty()) return emptyName;
+    return ShortNameType(sn);
     //   #*,?[]{}/ based on OSC escaping
     // http://opensoundcontrol.org/spec-1_0
     // other for xml or generic escaping
@@ -307,7 +309,7 @@ const ControlAddressType &  Controllable::getControlAddress () const
 DynamicObject* Controllable::createDynamicObject()
 {
     DynamicObject* dObject = new DynamicObject();
-    JsHelpers::assignPtrToObject((Controllable*)this,dObject,true);
+    JsHelpers::assignPtrToObject((Controllable*)this,dObject,false);
     dObject->setMethod (JsHelpers::jsGetIdentifier, Controllable::getVarStateFromScript);
     return dObject;
 }

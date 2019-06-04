@@ -36,7 +36,7 @@ void JsContainerSync::linkToControllableContainer (const String& controllableNam
 
     if (!existInContainerNamespace (controllableNamespace))
     {
-        linkedContainerNamespaces.add (new JsContainerNamespace (controllableNamespace, c, obj)) ;
+        linkedContainerNamespaces.add (new JsContainerNamespace (controllableNamespace, c, obj.getDynamicObject())) ;
     }
 
     getEnv()->setProperty (controllableNamespace, obj);
@@ -126,30 +126,30 @@ var getControllableForAddress (const var::NativeFunctionArgs& a)
 
 };
 
-DynamicObject*
-JsContainerSync::createDynamicObjectFromContainer (ControllableContainer* container)
+var JsContainerSync::createDynamicObjectFromContainer (ControllableContainer* container)
 {
-    DynamicObject*  myObj = nullptr;
+    var  myVar ;
 
 
     if (auto js = dynamic_cast<JsEnvironment*> (container))
     {
-        myObj = js->localEnv;
+        myVar = var(js->localEnv);
     }
     else
     {
-        myObj = container->createObject();
+        myVar = var(new DynamicObject());
+        JsHelpers::assignPtrToObject(container,myVar.getDynamicObject(),false);
     }
-
-
+//    myObj = propsToShortName(myObj);
+    auto myObj = myVar.getDynamicObject();
     static Identifier getControllableForAddressId ("getControllableForAddress");
     myObj->setMethod (getControllableForAddressId, getControllableForAddress);
-    JsHelpers::assignPtrToObject(container,myObj,true);
+
 
     for (auto& c : container->controllables)
     {
-        myObj->setProperty (c->shortName, c->createDynamicObject());
-
+        if(c->isControllableExposed)
+            myObj->setProperty(c->shortName,c->createDynamicObject());
 
     }
 
@@ -186,14 +186,14 @@ JsContainerSync::createDynamicObjectFromContainer (ControllableContainer* contai
             {
                 auto childObject = createDynamicObjectFromContainer (c);
 
-                if (childObject != nullptr){
+                if (childObject.getDynamicObject()){
                     myObj->setProperty (c->shortName, childObject);
                 }
             }
         }
     }
 
-    return myObj;
+    return myVar;
 }
 
 void JsContainerSync::updateControllableNamespace (ControllableContainer* c)

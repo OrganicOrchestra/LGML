@@ -98,7 +98,7 @@ void ShapeShifterContainer::removeShifter (ShapeShifter* shifter, bool deleteShi
         else
         {
             GapGrabber* gg = grabbers[ (jmin<int> (shifterIndex, grabbers.size() - 1))];
-            removeChildComponent (gg);
+//            removeChildComponent (gg); will be called when component deletes
             grabbers.remove (grabbers.indexOf (gg), true);
 
             if (resizeAfter) resized();

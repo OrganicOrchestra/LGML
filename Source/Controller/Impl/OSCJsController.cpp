@@ -162,6 +162,11 @@ var OSCJsController::sendOSCFromJS (const juce::var::NativeFunctionArgs& a)
     }
 
     OSCJsController* c = castPtrFromJSEnv<OSCJsController> (a);
+    if(c==nullptr){
+        jassertfalse;
+        LOGE("script corrupted");
+        return var::undefined();
+    }
     OSCMessage msg (address);
 
     for (int i = 1 ; i < a.numArguments ; i++)
