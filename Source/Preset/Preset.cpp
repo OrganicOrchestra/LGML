@@ -319,8 +319,12 @@ bool Presetable::resetToPreset()
 {
     if (!hasPresetLoaded()) return false;
 
-
-    pc->configureFromObject(currentPreset->getPresetValueObject());
+    if(pc){
+        pc->configureFromObject(currentPreset->getPresetValueObject());
+    }
+    else{
+        jassertfalse;
+    }
 
     return true;
 }
