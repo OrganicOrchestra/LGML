@@ -16,7 +16,7 @@
 #include "Parameter.h"
 #include "../../Scripting/Js/JsHelpers.h"
 #include "../../Utils/DebugHelpers.h"
-
+#include "ParameterContainer.h" // for listener
 
 const Identifier ParameterBase::valueIdentifier ("value");
 
