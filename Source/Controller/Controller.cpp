@@ -74,11 +74,9 @@ void Controller::remove()
 
 void Controller::onContainerParameterChanged ( ParameterBase* p)
 {
-    if (p == nameParam)
-    {
-        setNiceName (nameParam->stringValue());
-    }
-    else if (p == enabledParam)
+    ParameterContainer::onContainerParameterChanged(p);
+
+    if (p == enabledParam)
     {
         //TODO move this behaviour to jsEnv
         if (JsEnvironment* jsEnv = dynamic_cast<JsEnvironment*> (this))

@@ -236,9 +236,9 @@ ParameterBase*   ParameterContainer::addParameter ( ParameterBase* p,int idxToIn
             p->addAsyncParameterListener (this);
         }
         p->isUserDefined = p->isUserDefined || isUserDefined;
-        if(p->isUserDefined){
-            jassert(!JUCE_DEBUG);
-        }
+#if JUCE_DEBUG
+//        jassert(!p->isUserDefined);
+#endif
         if(p->isSavableAsObject){
             containSavableObjects->setValue(true,true);
         }

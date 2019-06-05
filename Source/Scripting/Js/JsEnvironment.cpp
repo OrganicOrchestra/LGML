@@ -606,7 +606,13 @@ void JsEnvironment::parameterValueChanged ( ParameterBase* p, ParameterBase::Lis
     {
         // ensure short name is updated...
         // not sure it's needed though
-        linkedContainer->setNiceName (linkedContainer->nameParam->stringValue());
+#if JUCE_DEBUG
+        auto targetSn =Controllable::toShortName(linkedContainer->nameParam->stringValue());
+        auto curSn = linkedContainer->shortName;
+        jassert(targetSn == curSn );
+        //        linkedContainer->setNiceName (linkedContainer->nameParam->stringValue());
+#endif
+
         auto ns = linkedContainer->getControlAddress().toStringArray();
         if(ns.size()>=2){
 

@@ -52,6 +52,7 @@ public:
     bool operator !=(const ControlAddressType & o) const;
     const Array<Identifier> & getArray()const;
     static const Identifier rootIdentifier;
+    
 private:
 #if JUCE_DEBUG
     String cachedAddress;

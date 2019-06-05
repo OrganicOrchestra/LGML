@@ -100,7 +100,7 @@ Controllable * ControlAddressType::resolveControllableFromContainer(const Contro
 #if JUCE_DEBUG
             LOGW("can't resolve : " << parentAddress.toString() <<" in " << c->getControlAddress().toString() );
 #endif
-//            jassertfalse;
+            //            jassertfalse;
             return nullptr;
         }
     }
@@ -194,16 +194,16 @@ ShortNameType Controllable::toShortName (const String& s){
 }
 
 Controllable::Controllable ( const String& niceName, const String& description, bool enabled) :
-    description (description),
-    parentContainer (nullptr),
-    isControllableExposed (true),
-    isHidenInEditor (false),
-    shouldSaveObject (false),
-    isSavable (true),
-    enabled (enabled),
-    isUserDefined (false),
-    isSavableAsObject(false),
-    isPresettable(true)
+description (description),
+parentContainer (nullptr),
+isControllableExposed (true),
+isHidenInEditor (false),
+shouldSaveObject (false),
+isSavable (true),
+enabled (enabled),
+isUserDefined (false),
+isSavableAsObject(false),
+isPresettable(true)
 {
     setEnabled (enabled);
     setNiceName (niceName);
@@ -262,9 +262,12 @@ void Controllable::updateControlAddress(bool isParentResolved)
     if(isParentResolved && parentContainer){
         controlAddress=parentContainer->controlAddress.getChild(shortName);
 #if JUCE_DEBUG
-        auto tCs= ControlAddressType::buildFromControllable(this).toString();
-        auto ccs = controlAddress.toString();
-        jassert(tCs==ccs);
+        //        jassert(Engine::getEngine() && ControllableContainer::globalRoot);
+        if(Controllable::isChildOf(ControllableContainer::globalRoot)){
+            auto tCs= ControlAddressType::buildFromControllable(this).toString();
+            auto ccs = controlAddress.toString();
+            jassert(tCs==ccs);
+        }
 #endif
     }
     else{
@@ -299,9 +302,9 @@ const ControlAddressType &  Controllable::getControlAddress () const
         DBG(String("address mismatch ") + localS + " // " + curS );
         jassertfalse;
     }
-        
+
 #endif
-        return controlAddress;
+    return controlAddress;
 
 
 }

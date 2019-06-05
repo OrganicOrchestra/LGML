@@ -279,6 +279,22 @@ String ParameterBase::stringValue() const { return value.toString(); }
 
 void ParameterBase::addParameterListener (Listener* newListener) {
     listeners.add (newListener);
+
+    auto parentCont = dynamic_cast<ParameterContainer*>(parentContainer.get());
+    bool isParent = parentCont && (newListener==parentCont);
+    if(!isParent){ // insert in list (callback are in reverse order)
+        auto curListeners = listeners.getListeners();
+        int parentIdx = curListeners.indexOf(parentCont);
+        if(parentIdx>=0){
+            curListeners.swap(parentIdx, curListeners.size()-1);
+        }
+        listeners.clear();
+        for(auto cl : curListeners){
+            listeners.add(cl);
+        }
+    }
+
+
     newListener->linkedP.add(this);
 }
 void ParameterBase::removeParameterListener (Listener* listener) {

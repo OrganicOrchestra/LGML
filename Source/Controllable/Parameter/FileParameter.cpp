@@ -86,7 +86,7 @@ FileParameter::FileParameter (const String& niceName, const String& description,
 ,isWatching(false)
 ,loaderFunction(_loaderFunction)
 ,loadingState(EMPTY)
-,isAsync( _isAsync)
+,isAsync( _isAsync) // TODO support Async generate random crash
 {
     
 
