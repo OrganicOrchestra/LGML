@@ -201,85 +201,77 @@ ParameterProxy * FastMap::getProxyForParameter(ParameterBase* p, bool recursive)
 void FastMap::linkedParamChanged (ParameterProxy* p)
 {
 
+    // check forbidden mapping
+    if (p && p->linkedParam && (p == referenceIn  || p == referenceOut)){
+        bool isForbidden = true;
+
+
+        if( p->linkedParam == inputRange || p->linkedParam== outputRange){
+            LOGW(juce::translate("Can't map a parameter to one of it's own range"));
+        }
+        else if ( referenceIn->linkedParam && referenceIn->linkedParam == referenceOut->linkedParam)
+        {
+            LOGW(juce::translate("Can't map a parameter to itself"));
+        }
+        else if (p==referenceOut && !referenceOut->linkedParam->isEditable)
+        {
+            LOGW(juce::translate("Parameter non editable"));
+        }
+        else{
+            isForbidden = false;
+        }
+
+        if(isForbidden){
+            // ignore assert for loopBacks
+            //                p->isSettingValue = false;
+            WeakReference<ParameterProxy> ref ( p==referenceOut?referenceOut:referenceIn );
+            MessageManager::callAsync([ref]()mutable{
+                if(ref.get())
+                    ref->setParamToReferTo (nullptr);
+            });
+        }
+    }
     if (p == referenceIn )
     {
-        if (p->linkedParam == referenceOut->linkedParam)
+
+        auto* lpar = referenceIn->linkedParam.get();
+
+        while (auto* prox = dynamic_cast<ParameterProxy*> (lpar))
         {
-            if (p->linkedParam)
-            {
-
-                LOGW(juce::translate("Can't map a parameter to itself"));
-                // ignore assert for loopBacks
-                //                referenceIn->isSettingValue = false;
-                MessageManager::callAsync([this](){
-                    referenceIn->setParamToReferTo (nullptr);
-                });
-            }
+            lpar = prox->linkedParam;
         }
-        else
-        {
 
-            auto* lpar = referenceIn->linkedParam.get();
+        auto mmp = dynamic_cast<MinMaxParameter*> (lpar);
+        float newMin = mmp ? (float)mmp->minimumValue : 0;
+        float newMax = mmp ? (float)mmp->maximumValue : 1;
+        inputRange->setMinMax (newMin, newMax);
 
-            while (auto* prox = dynamic_cast<ParameterProxy*> (lpar))
-            {
-                lpar = prox->linkedParam;
-            }
+        inputRange->setValue (jmax<float> (inputRange->getRangeMin(),newMin),
+                              jmin<float> (inputRange->getRangeMax(),newMax));
 
-            auto mmp = dynamic_cast<MinMaxParameter*> (lpar);
-            float newMin = mmp ? (float)mmp->minimumValue : 0;
-            float newMax = mmp ? (float)mmp->maximumValue : 1;
-            inputRange->setMinMax (newMin, newMax);
-
-            inputRange->setValue (jmax<float> (inputRange->getRangeMin(),newMin),
-                                  jmin<float> (inputRange->getRangeMax(),newMax));
-
-
-
-        }
 
     }
     else if (p == referenceOut)
     {
-        if (p->linkedParam == referenceIn->linkedParam)
-        {
-            if (p->linkedParam)
-            {
-                LOGW(juce::translate("Can't map a parameter to itself"));
-                // ignore assert for loopBacks
-                //                referenceOut->isSettingValue = false;
-                MessageManager::callAsync([this](){
-                    referenceOut->setParamToReferTo (nullptr);
-                });
-            }
-        }
-        else if (p->linkedParam && !p->linkedParam->isEditable)
-        {
-            LOGW(juce::translate("Parameter non editable"));
-            // ignore assert for loopBacks
-            //            referenceOut->isSettingValue = false;
-            MessageManager::callAsync([this](){
-                referenceOut->setParamToReferTo (nullptr);
-            });
-        }
-        else
-        {
 
-            auto* lpar = referenceOut->linkedParam.get();
 
-            while (auto* prox = dynamic_cast<ParameterProxy*> (lpar))
-            {
-                lpar = prox->linkedParam;
-            }
 
-            auto mmp = dynamic_cast<MinMaxParameter*> (lpar);
-            float newMin = mmp ? (float)mmp->minimumValue : 0;
-            float newMax = mmp ? (float)mmp->maximumValue : 1;
-            outputRange->setMinMax (newMin, newMax);
-            outputRange->setValue (jmax<float> (outputRange->getRangeMin(),newMin),
-                                   jmin<float> (outputRange->getRangeMax(),newMax));
-            
+
+        auto* lpar = referenceOut->linkedParam.get();
+
+        while (auto* prox = dynamic_cast<ParameterProxy*> (lpar))
+        {
+            lpar = prox->linkedParam;
         }
+
+        auto mmp = dynamic_cast<MinMaxParameter*> (lpar);
+        float newMin = mmp ? (float)mmp->minimumValue : 0;
+        float newMax = mmp ? (float)mmp->maximumValue : 1;
+        outputRange->setMinMax (newMin, newMax);
+        outputRange->setValue (jmax<float> (outputRange->getRangeMin(),newMin),
+                               jmin<float> (outputRange->getRangeMax(),newMax));
+
+
         
     }
     
