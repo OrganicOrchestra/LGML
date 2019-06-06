@@ -119,7 +119,7 @@ PresetManager::~PresetManager()
 
 
 PresetManager::Listener::Listener(){
-//    PresetManager::getInstance()->add(this);    
+//    PresetManager::getInstance()->presetListeners.add(this);    
 }
 
 PresetManager::Listener::~Listener(){

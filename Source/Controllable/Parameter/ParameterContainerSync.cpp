@@ -59,7 +59,7 @@ ParameterContainer * ParameterContainerSync::getRootRelatedContainer(ParameterCo
 }
 
 void ParameterContainerSync::clear () {
-    //    slave->clearContainer();
+        slave->clearContainer(true);
 };
 
 ParameterContainer * ParameterContainerSync::getSlaveContainer(){
@@ -158,6 +158,7 @@ void ParameterContainerSync::checkContInSync(ParameterContainer * fromRoot){
         for(auto c:slaveCont->getContainersOfType<ParameterContainer>(false)){
             if(! getRootRelatedContainer(c)){
                 slaveCont->removeChildControllableContainer(c);
+                delete c;
             }
         }
     }
@@ -170,6 +171,7 @@ void ParameterContainerSync::controllableContainerRemoved (ControllableContainer
     if(auto inner = getSlaveRelatedContainer(pc)){
         if(inner!=slave){
             inner->parentContainer->removeChildControllableContainer(inner);
+            delete inner;
         }
     }
     else{

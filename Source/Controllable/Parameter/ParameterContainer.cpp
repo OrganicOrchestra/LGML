@@ -321,7 +321,7 @@ void ParameterContainer::configureFromObject (DynamicObject* dyn)
                             if ( ParameterBase* par = ParameterBase::fromControllable (c))
                             {
                                 // we don't load preset when already loading a state
-                                if (par->shortName != Presetable::presetIdentifier )
+                                if ((par->shortName != Presetable::presetIdentifier )  || !dyn->hasProperty(childContainerId) )
                                 {
                                     if(par->isSavableAsObject){
                                         if(auto d = p.value.getDynamicObject()){
@@ -337,6 +337,9 @@ void ParameterContainer::configureFromObject (DynamicObject* dyn)
                                     else{
                                         par->setValue (p.value);
                                     }
+                                }
+                                else{
+                                    DBG("avoid loading  preset because child properties are present");
                                 }
                             }
                             else

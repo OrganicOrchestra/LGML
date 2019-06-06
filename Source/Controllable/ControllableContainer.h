@@ -57,7 +57,7 @@ public:
 
     void removeFromParent();
 
-    void clearContainer();
+    void clearContainer(bool doDeleteChilds);
 
     void addControllable(Controllable *c);
     void removeControllable (Controllable* c);

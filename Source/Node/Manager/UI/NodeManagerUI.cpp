@@ -101,9 +101,13 @@ NodeManagerUI::~NodeManagerUI()
     auto p = root->getControllableContainerByName("NodesUI");
     if(p){
         p->removeChildControllableContainer(this);
+        root->removeChildControllableContainer(p);
+        p->clearContainer(true);
+        delete p;
     }
     else jassertfalse;
     }
+
 
     clearSingletonInstance();
 }

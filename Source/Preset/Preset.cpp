@@ -1,12 +1,12 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    Preset.cpp
-    Created: 8 Dec 2018 8:38:36pm
-    Author:  Martin Hermant
+ Preset.cpp
+ Created: 8 Dec 2018 8:38:36pm
+ Author:  Martin Hermant
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #include "Preset.h"
 #include "../Controllable/Parameter/ParameterContainer.h"
@@ -46,12 +46,14 @@ void Preset::configurePresetValueObject(DynamicObject *v){values = v->clone();}
 
 DynamicObject* Preset::createObject() {
     DynamicObject * d =  Presetable::createPresetObject(this);
+    if(d==nullptr){jassertfalse; LOGE("preset can not create object");return nullptr;}
     d->setProperty("values", values);
     return d;
 
 }
 
 void Preset::configureFromObject(DynamicObject *data) {
+    if(data==nullptr){jassertfalse; LOGE("preset try to configure from empty object");return;}
     ParameterContainer::configureFromObject(data);
     values = data->getProperty("values");
 
@@ -66,7 +68,7 @@ class PresetSync:public PresetManager::Listener{
         PresetManager::getInstance()->presetListeners.add(this);
     }
     ~PresetSync(){
-     PresetManager::getInstance()->presetListeners.remove(this);
+        PresetManager::getInstance()->presetListeners.remove(this);
     }
 
     void presetSaved(Preset * p) final{
@@ -112,14 +114,14 @@ bool Presetable::isOneOfPresetableParam(ParameterBase * p){return params.contain
 
 void Presetable::newMessage (const ParameterBase::ParamWithValue& pv)
 {
-//
-//    if (pv.parameter == currentPresetName)
-//    {
-//        auto * pm = PresetManager::getInstance();
-//        String name = pv.parameter->stringValue();
-//        Preset* preset = pm->getPreset (getPresetFilter(), name);
-//        currentPreset = loadPreset(preset)?preset:nullptr;
-//    }
+    //
+    //    if (pv.parameter == currentPresetName)
+    //    {
+    //        auto * pm = PresetManager::getInstance();
+    //        String name = pv.parameter->stringValue();
+    //        Preset* preset = pm->getPreset (getPresetFilter(), name);
+    //        currentPreset = loadPreset(preset)?preset:nullptr;
+    //    }
 
 }
 
@@ -141,33 +143,33 @@ void Presetable::parameterValueChanged ( ParameterBase* p, ParameterBase::Listen
 
     }
     else if (p== currentPresetName)
-             {
-                 auto * pm = PresetManager::getInstance();
+    {
+        auto * pm = PresetManager::getInstance();
 
-                 String name = p->stringValue();
-                 String exterUID = getLinkInPresetName(name);
-                 Preset* preset = nullptr;
-                 if(exterUID.isEmpty()){
-                     if(presetSync){delete presetSync;presetSync = nullptr;}
-                      preset = pm->getPreset (getPresetFilter(), name);
-                 }
-                 else{
-                     name = name.substring(0, name.indexOf("("));
-                      if(!presetSync){presetSync = new PresetSync(this);};
+        String name = p->stringValue();
+        String exterUID = getLinkInPresetName(name);
+        Preset* preset = nullptr;
+        if(exterUID.isEmpty()){
+            if(presetSync){delete presetSync;presetSync = nullptr;}
+            preset = pm->getPreset (getPresetFilter(), name);
+        }
+        else{
+            name = name.substring(0, name.indexOf("("));
+            if(!presetSync){presetSync = new PresetSync(this);};
 
 
-                     Uuid ui(exterUID);
-                     if(auto p = ParameterContainer::getForUidGlobal(ui)){
-                         preset = pm->getPreset(p->presetable->getPresetFilter(), name);
-                     }
-                     else{
-                         jassertfalse;
-                     }
+            Uuid ui(exterUID);
+            if(auto p = ParameterContainer::getForUidGlobal(ui)){
+                preset = pm->getPreset(p->presetable->getPresetFilter(), name);
+            }
+            else{
+                jassertfalse;
+            }
 
-                 }
-                 if(currentPreset!=preset)
-                     loadPreset(preset);
-             }
+        }
+        if(currentPreset!=preset)
+            loadPreset(preset);
+    }
 
 }
 
@@ -208,7 +210,7 @@ Preset* Presetable::addNamedPreset (const String& name,bool doLoad,void * notif)
         currentPresetName->setValueFrom(this, pre?pre->getPresetName():"");
         presetableListeners.call (&Presetable::Listener::controllableContainerPresetLoaded, pc,currentPreset);
     }
-        DBG(ts);
+    DBG(ts);
 
 
 
@@ -225,8 +227,14 @@ bool Presetable::loadPreset (Preset* preset,bool sendNotif)
         currentPresetName->setValueFrom (this,"", true);
         return false;
     }
-    
+    if(!pc){jassertfalse; LOGE("presets corrupted");return false;}
+    if(auto nc = dynamic_cast<NodeContainer*>(pc)){
+        // prevent assertion of resetting BuidSessionGraph to true,
+        // when we are loading a preset, it's normal to call configureFromObject from within another configureFrombject
+        nc->setBuildSessionGraph(false);
 
+    }
+    DBG("loading preset" +preset->getPresetName()+ " -> " + pc->getNiceName());
     pc->configureFromObject(preset->getPresetValueObject());
     currentPreset = preset;
     String preName = currentPreset->getPresetName();
@@ -243,7 +251,7 @@ Preset* Presetable::saveNewPreset (const String& _name,void * notif)
 {
     Preset* pre = addNamedPreset(_name,true,notif);
     NLOG (pc->getNiceName(), juce::translate("New preset saved : ") + pre->getPresetName());
-//    loadPreset (pre);
+    //    loadPreset (pre);
     return pre;
 }
 void Presetable::deletePreset(Preset * pre){
@@ -262,32 +270,28 @@ const Preset * Presetable::getCurrentPreset()const{
 
 DynamicObject * Presetable::createPresetObject(ParameterContainer * p){
     if(p){
-
-       return  p->createObjectFiltered(
-                                 [p](ParameterBase * c){
-                                     bool isValid =  c->isPresettable && c!=p->presetable->currentPresetName;
-                                     if(auto *pp = dynamic_cast<ParameterContainer*>(c->parentContainer.get())){
-                                         if(c->parentContainer->parentContainer==p){
-                                             String presetN = pp->presetable->currentPresetName->stringValue();
-                                             bool isPresetLoaded = !presetN.isEmpty();
-//                                             bool isSamePresetLoaded = isPresetLoaded && (presetN==p->presetable->currentPresetName->stringValue());
-                                             bool isCurrentPresetNameParam = c==pp->presetable->currentPresetName;
-                                             isValid&= (isPresetLoaded==isCurrentPresetNameParam);
-
-                                         }
+        return  p->
+        createObjectFiltered(
+                             [p](ParameterBase * c){
+                                 bool isValid =  c->isPresettable && c!=p->presetable->currentPresetName;
+                                 if(auto *pp = dynamic_cast<ParameterContainer*>(c->parentContainer.get())){
+                                     if(c->parentContainer->parentContainer==p){
+                                         String presetN = pp->presetable->currentPresetName->stringValue();
+                                         bool isPresetLoaded = !presetN.isEmpty();
+                                         //bool isSamePresetLoaded = isPresetLoaded && (presetN==p->presetable->currentPresetName->stringValue());
+                                         bool isCurrentPresetNameParam = c==pp->presetable->currentPresetName;
+                                         isValid&= (isPresetLoaded==isCurrentPresetNameParam);
                                      }
-                                     return isValid;
-                                 },
-                                 [p](ParameterContainer * cc){
-
-
-                                     if(auto *nc=dynamic_cast<NodeContainer*>(cc)){
-                                         return p->getDepthDistance(nc)<=1;
-                                     }
-                                     return cc->canHavePresets();
-
-                                 },
-                                       -1,false,true);
+                                 }
+                                 return isValid;
+                             },
+                             [p](ParameterContainer * cc){
+                                 if(auto *nc=dynamic_cast<NodeContainer*>(cc)){
+                                     return p->getDepthDistance(nc)<=1;
+                                 }
+                                 return cc->canHavePresets();
+                             },
+                             -1,false,true);
     }
     return nullptr;
 }
@@ -345,7 +349,7 @@ void Presetable::cleanUpPresets()
 String Presetable::getPresetFilter()
 {
     if(pc){
-    return getType()+"_" + pc->uid.toString();
+        return getType()+"_" + pc->uid.toString();
     }
     else{
         return "";
@@ -354,7 +358,7 @@ String Presetable::getPresetFilter()
 
 String Presetable::getType(){
     if(pc){
-    String st = pc->getSubTypeName();return pc->getFactoryTypeId().toString()+(st.isEmpty()?"":String("_")+st);
+        String st = pc->getSubTypeName();return pc->getFactoryTypeId().toString()+(st.isEmpty()?"":String("_")+st);
     }
     else{
         return "";

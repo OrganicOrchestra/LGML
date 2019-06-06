@@ -263,7 +263,7 @@ private:
 
     ScopedPointer<GraphBuildWatcher> gWatcher;
     friend class GraphBuildWatcher;
-
+    friend class Presetable; // setBuildSessionGraph
 
 };
 

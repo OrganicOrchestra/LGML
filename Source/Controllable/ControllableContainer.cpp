@@ -51,17 +51,7 @@ canHaveUserDefinedContainers(false)
 
 ControllableContainer::~ControllableContainer()
 {
-    //controllables.clear();
-    //DBG("CLEAR CONTROLLABLE CONTAINER");
-
-    // manage memory if not cleared
-    auto all = getAllControllableContainers (true);
-
-    for (auto& a : all)
-    {
-        if (a.get())delete a.get();
-    }
-    clearContainer();
+    clearContainer(true);
     ControllableContainer::masterReference.clear();
 }
 ControllableContainer * ControllableContainer::getRoot(bool global){
@@ -78,7 +68,7 @@ ControllableContainer * ControllableContainer::getRoot(bool global){
     }
 }
 
-void ControllableContainer::clearContainer()
+void ControllableContainer::clearContainer(bool doDeleteChilds)
 {
     controllableContainerListeners.call (&Listener::containerWillClear, this);
 
@@ -86,7 +76,13 @@ void ControllableContainer::clearContainer()
     {
         removeControllable (controllables[0]);
     }
-
+    if(doDeleteChilds){
+        for(auto c : controllableContainers){
+            if(c.get()){
+                c->clearContainer(true);
+                delete c;}
+        }
+    }
     controllableContainers.clear();
 
 }

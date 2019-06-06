@@ -126,7 +126,7 @@ void ConnectableNode::remove()
 
 void ConnectableNode::clear()
 {
-//      ControllableContainer::clearContainer();
+      //ControllableContainer::clearContainer(true);
     //to override
 }
 
