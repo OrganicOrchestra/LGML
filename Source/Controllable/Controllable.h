@@ -36,6 +36,7 @@ class ControlAddressType : private Array<Identifier>{
 public:
 
     String toString()const;
+    static ControlAddressType fromString(const String & s);
     static ControlAddressType buildFromControllable(const Controllable * ,const ControllableContainer * maxParent=nullptr);
     static ControlAddressType buildFromControllableContainer(const ControllableContainer * ,const ControllableContainer * maxParent=nullptr);
 

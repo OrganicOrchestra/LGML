@@ -33,6 +33,17 @@ String ControlAddressType::toString()const {
     return res;
 }
 
+ControlAddressType ControlAddressType::fromString(const String & s){
+    ControlAddressType res;
+    StringArray sa;
+    sa.addTokens(s, juce::StringRef ("/"), juce::StringRef ("\""));
+    for(auto el:sa){
+        if(el.isNotEmpty()){
+            res.add(el);
+        }
+    }
+    return res;
+}
 ControlAddressType ControlAddressType::buildFromControllable(const Controllable * c,const ControllableContainer * maxParent){
     ControlAddressType res;
     static Identifier noParentId("noParent");

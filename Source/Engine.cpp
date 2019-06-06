@@ -130,10 +130,11 @@ Engine::~Engine()
 
     threadPool.removeAllJobs(true, -1);
     JsGlobalEnvironment::deleteInstance(); // need to be first to avoid memory leaks
+    FastMapper::deleteInstance(); // need to be high to keep track of mapped objects
 
     NodeManager::deleteInstance();
     PresetManager::deleteInstance();
-    FastMapper::deleteInstance();
+
 
 
 

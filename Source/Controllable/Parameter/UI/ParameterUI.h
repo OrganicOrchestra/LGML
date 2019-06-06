@@ -20,6 +20,18 @@
 #include "../../../JuceHeaderUI.h"
 #include "../../../UI/Inspector/InspectableComponent.h"
 
+class ParameterUI;
+class AllParamType{
+public:
+    void add(ParameterUI*);
+    void removeAllInstancesOf(ParameterUI*);
+    typedef Array<ParameterUI*> ArrayType;
+    ArrayType getForParameter(ParameterBase *) const;
+
+private:
+    HashMap<ParameterBase*,ArrayType> container;
+
+};
 
 class ParameterUI : public InspectableComponent,
     protected ParameterBase::Listener,
@@ -34,7 +46,8 @@ public:
 
     bool showLabel;
     bool showValue;
-    static const Array<WeakReference<ParameterUI>> & getAllParameterUIs();
+//    typedef HashMap<ParameterBase *,WeakReference<ParameterUI>> AllParamType;
+    static const AllParamType & getAllParameterUIs();
     void setCustomText (const String text);
 
     enum MappingState

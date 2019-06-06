@@ -138,6 +138,9 @@ FastMap* FastMapper::addFastMap()
     if(!checkDuplicates (f)){
         addChildControllableContainer (f);
         maps.add (f);
+        f->referenceIn->addParameterProxyListener(this);
+        f->referenceOut->addParameterProxyListener(this);
+
         lastFMAddedTime = Time::getMillisecondCounter();
 
         #if !ENGINE_HEADLESS
@@ -146,11 +149,12 @@ FastMap* FastMapper::addFastMap()
         // avoid listener feedback
         MessageManager::callAsync([this,wkf](){
             if(!wkf.get()){return;}
-            for(auto ui : ParameterUI::getAllParameterUIs()){
-                if(wkf->getProxyForParameter(ui->parameter)){
-                    ui->setHasMappedParameter(true);
-                }
-            }
+            auto pIns = wkf->referenceIn->linkedParam?ParameterUI::getAllParameterUIs().getForParameter(wkf->referenceIn->linkedParam):AllParamType::ArrayType();
+            auto pOuts = wkf->referenceOut->linkedParam?ParameterUI::getAllParameterUIs().getForParameter(wkf->referenceOut->linkedParam):AllParamType::ArrayType();
+
+            for(auto p : pIns){p->setHasMappedParameter(true);}
+            for(auto p : pOuts){p->setHasMappedParameter(true);}
+
             if(auto dr = LGMLDragger::getInstance()){
                 dr->setSelected(nullptr,this);
             }
@@ -201,27 +205,11 @@ bool FastMapper::checkDuplicates (FastMap* f)
 
 void FastMapper::removeFastmap (FastMap* f)
 {
-
+    f->referenceIn->setParamToReferTo(nullptr);
+    f->referenceOut->setParamToReferTo(nullptr);
     jassert (f);
     removeChildControllableContainer (f);
     maps.removeObject (f);
-#if !ENGINE_HEADLESS
-    for(auto ui:ParameterUI::getAllParameterUIs()){
-        if(ui && f->getProxyForParameter(ui->parameter)){
-            bool isStillMapped = false;
-            for(auto *f:maps){
-                if(f->getProxyForParameter(ui->parameter)){
-                    isStillMapped=true;
-                    break;
-                }
-            }
-            if(!isStillMapped){
-                ui->setHasMappedParameter(false);
-            }
-        }
-
-    }
-#endif
 }
 
 
@@ -269,6 +257,47 @@ void FastMapper::mappingModeChanged(bool state){
 void  FastMapper::linkedParamChanged (ParameterProxy* p ) {
     if(p== potentialIn || p== potentialOut){
             createNewFromPotentials();
+    }
+    else{
+#if !ENGINE_HEADLESS
+        // remove old mapped uis
+        String lastAddressS = p->lastValue;
+        if(lastAddressS.isNotEmpty()){
+            ControlAddressType lastAddress =  ControlAddressType::fromString(lastAddressS);
+            auto lastP = dynamic_cast<ParameterBase*>(ControllableContainer::getRoot(true)->getControllableForAddress(lastAddress));
+            if(lastP){
+                bool isStillMapped=false;
+                for(auto fm : maps){
+                    if(fm->getProxyForParameter(lastP)){
+                        isStillMapped = true;
+                        break;
+                    }
+                }
+                if(!isStillMapped){
+                    auto & allUis (ParameterUI::getAllParameterUIs());
+                    auto pUIs = allUis.getForParameter(lastP);
+                    for(auto ui:pUIs){
+                        ui->setHasMappedParameter(false);
+                    }
+                }
+            }
+        }
+
+        // add newMapped uis
+        String addrS = p->stringValue();
+        if(addrS.isNotEmpty()){
+            ControlAddressType addr =  ControlAddressType::fromString(addrS);
+            auto lastP = dynamic_cast<ParameterBase*>(ControllableContainer::getRoot(true)->getControllableForAddress(addr));
+            if(lastP){
+                auto pUIs = ParameterUI::getAllParameterUIs().getForParameter(lastP);
+                for(auto ui:pUIs){
+                    ui->setHasMappedParameter(true);
+                }
+            }
+        }
+
+
+#endif
     }
 
 }

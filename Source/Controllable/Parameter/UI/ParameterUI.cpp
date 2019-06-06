@@ -21,7 +21,24 @@
 #include "../../../FastMapper/FastMapper.h"
 #include "../UndoableHelper.h"
 
-Array<WeakReference<ParameterUI>> allParameterUIs;
+void AllParamType::add(ParameterUI* p){
+    jassert(p->parameter.get());
+
+    container.getReference(p->parameter.get()).add(p);
+}
+void AllParamType::removeAllInstancesOf(ParameterUI* p){
+    jassert(p->parameter.get());
+    container.getReference(p->parameter.get()).removeAllInstancesOf(p);
+}
+
+AllParamType::ArrayType AllParamType::getForParameter(ParameterBase *p) const{
+    jassert(p);
+    
+    return container[p];
+}
+
+
+AllParamType allParameterUIs;
 //==============================================================================
 ParameterUI::ParameterUI ( ParameterBase* _parameter) :
     InspectableComponent(_parameter,"ParameterUI"),
@@ -33,10 +50,12 @@ ParameterUI::ParameterUI ( ParameterBase* _parameter) :
     isDraggable (true),
     wasShowing(true)
 {
-    allParameterUIs.add(this);
+
     setBufferedToImage(true);
+    allParameterUIs.add(this);
     if (parameter.get())
     {
+
         parameter->addAsyncCoalescedListener (this);
         parameter->addParameterListener (this);
         controllableStateChanged (parameter.get());
@@ -74,7 +93,8 @@ ParameterUI::~ParameterUI()
 
     ParameterUI::masterReference.clear();
 }
-const Array<WeakReference<ParameterUI>> & ParameterUI::getAllParameterUIs(){
+
+const AllParamType & ParameterUI::getAllParameterUIs(){
     return allParameterUIs;
 }
 
