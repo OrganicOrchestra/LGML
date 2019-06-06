@@ -33,7 +33,8 @@ void Inspector::shouldListen (bool value)
 {
     if (isListening == value) return;
 
-    if (!value) setCurrentComponent (nullptr);
+    if (!value){ setCurrentComponent (nullptr);}
+    else{inspectCurrentComponent();}
 
     isListening = value;
 }
@@ -59,11 +60,15 @@ void Inspector::setCurrentComponent (InspectableComponent* c)
     if(!isListening) return;
 
     // avoid selection from inspector that will get self-deleted
-    if(isParentOf(c)){return;}
+    if(c && isParentOf(c)){return;}
 
     jassert(MessageManager::getInstance()->currentThreadHasLockedMessageManager());
-
-    inspectCurrentComponent();
+    if(c){
+        inspectCurrentComponent();
+    }
+    else{
+        clearEditor();
+    }
 
 }
 
