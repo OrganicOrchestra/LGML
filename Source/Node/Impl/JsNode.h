@@ -32,7 +32,7 @@ public :
 
     void buildLocalEnv() final;
 
-
+    ParameterBase* addParameterFromVar(const String& name, const var& data) override;
     void onContainerParameterChanged ( ParameterBase* p) final;
 
 

@@ -339,6 +339,7 @@ void ParameterContainer::configureFromObject (DynamicObject* dyn)
                                     }
                                 }
                                 else{
+                                    
                                     DBG("avoid loading  preset because child properties are present");
                                 }
                             }
@@ -380,11 +381,8 @@ void ParameterContainer::configureFromObject (DynamicObject* dyn)
                         if( o.value.getDynamicObject()){
                             auto c = addContainerFromObject (o.name.toString(), o.value.getDynamicObject());
 
-                            if (c)
+                            if (!c)
                             {
-                                c->configureFromObject (o.value.getDynamicObject());
-                            }
-                            else{
                                 jassertfalse;
                             }
                         }
@@ -413,11 +411,12 @@ void ParameterContainer::configureFromObject (DynamicObject* dyn)
 }
 
 
-ParameterContainer*   ParameterContainer::addContainerFromObject (const String& name, DynamicObject*   /*data*/)
+ParameterContainer*   ParameterContainer::addContainerFromObject (const String& name, DynamicObject*   data)
 {
     auto res = new ParameterContainer (name);
     res->setUserDefined (true);
     addChildControllableContainer (res);
+    res->configureFromObject(data);
     return res;;
 };
 ParameterBase* ParameterContainer::addParameterFromVar (const String& name, const var& data)
@@ -441,7 +440,7 @@ ParameterBase* ParameterContainer::addParameterFromVar (const String& name, cons
     }
     else
     {
-        //    jassertfalse;
+        jassertfalse;
         return nullptr;
     }
 };

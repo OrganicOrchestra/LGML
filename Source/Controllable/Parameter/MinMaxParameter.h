@@ -48,7 +48,7 @@ public:
 
     void configureFromObject (DynamicObject* ob) override
     {
-        ParameterBase::configureFromObject (ob);
+
 
         if (ob)
         {
@@ -60,6 +60,8 @@ public:
         {
             jassertfalse;
         }
+
+        ParameterBase::configureFromObject (ob);
     }
 
     virtual void setMinMax (var min, var max,ParameterBase::Listener * notifier = nullptr)

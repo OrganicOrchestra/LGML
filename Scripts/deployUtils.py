@@ -6,9 +6,8 @@ import zipfile
 import gzip
 
 
-desiredVersion = "1.2.10"
-raiseErrorOnDifferentSha = False;
-dry_run = False;
+desiredVersion = "1.3.6"
+dry_run=False; #dont change
 distPath = os.path.expanduser("~/owncloud/DEVSPECTACLES/Tools/LGML/App-Dev/dist/")
 if not os.path.exists(distPath):
   distPath = "/var/www/owncloud/data/admin/files/OrganicRoot/Spectacles/Tools/LGML/App-Dev/dist/"
@@ -35,15 +34,12 @@ def copy_dry(s,d):
 
 
 allCfgs={}
-for c in glob.glob(lastVPath+"/*.cfg"):
-  if not "Debug" in c:
-    with open(c,'r') as fp:
-      allCfgs [os.path.basename(c)[:-4]]=json.load(fp)
+
 
 currentSha = ""
 
 def checkIntegrity(errorOnWrongSha=True):
-  global currentSha
+  global currentSha,allCfgs
   
   if( not os.path.exists(changeLogPath)):
     raise NameError("can't find CHANGELOG at "+changeLogPath)
@@ -92,9 +88,6 @@ def checkIntegrity(errorOnWrongSha=True):
 
   return bins,zips
 
-bins,zips = checkIntegrity(raiseErrorOnDifferentSha)
-with open(changeLogPath,'r') as fp:
-  notes = ''.join(fp.readlines())
 
 def createJSON(destFolder):
   global allCfgs,dry_run
@@ -188,10 +181,44 @@ def deployBinsToGithub():
 
 
 if __name__ == '__main__':
+  global dry_run
+
+  import argparse
+  parser = argparse.ArgumentParser()
+  parser.add_argument('--force',action="store_true")
+  parser.add_argument('--loop',action="store_true")
+  parser.add_argument('--dry',action="store_true")
+  args = parser.parse_args()
+  dry_run = args.dry
+  bins,zips = checkIntegrity(True)
+  with open(changeLogPath,'r') as fp:
+    notes = ''.join(fp.readlines())
+  while(True):
+    try:
+      allCfgs={}
+      for c in glob.glob(lastVPath+"/*.cfg"):
+        if not "Debug" in c:
+          with open(c,'r') as fp:
+            allCfgs [os.path.basename(c)[:-4]]=json.load(fp)
+
+      bins,zips = checkIntegrity(True)
+      with open(changeLogPath,'r') as fp:
+        notes = ''.join(fp.readlines())
+      break;
+    except NameError:
+      if args.loop :
+        sleep(100);
+      else:
+        print("error : exiting")
+        exit(1);
+
   
   print(json.dumps(allCfgs,indent=1))
   printReleaseMessage()
-  nn = input('doyouwantToProceed %s (y/N)' % ("dry run" if dry_run else ""))
+  if args.force:
+    nn='y'
+  else:    
+    nn = input('doyouwantToProceed %s (y/N)' % ("dry run" if dry_run else ""))
   if nn=='y':
     deployBinsToOwncloud()
     deployBinsToGithub()

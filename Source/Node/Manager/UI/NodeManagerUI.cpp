@@ -152,14 +152,17 @@ void NodeManagerUI::managerEndedLoading()
 
 }
 ParameterContainer * NodeManagerUI::addContainerFromObject(const String &s ,DynamicObject * d) {
-    ParameterContainer* existing = dynamic_cast<ParameterContainer*>(getControllableContainerByName(s));
-    if(existing){
-        return existing;
+    ParameterContainer* res = dynamic_cast<ParameterContainer*>(getControllableContainerByName(s));
+    if(!res){
+        ParameterContainer * newP =  new ConnectableNodeUIParams(s);
+        addChildControllableContainer(newP);
+        newP->configureFromObject(d);
     }
-    
-    ParameterContainer * newP =  new ConnectableNodeUIParams(s);
-    addChildControllableContainer(newP);
-    return newP;
+    else{
+        res->configureFromObject(d);
+    }
+
+    return res;
 };
 
 void NodeManagerUI::setCurrentViewedContainer (NodeContainer* c)

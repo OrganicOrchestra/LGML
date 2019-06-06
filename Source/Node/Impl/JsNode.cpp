@@ -27,6 +27,7 @@ JsNode::JsNode (StringRef name) : NodeBase (name, false), JsEnvironment ("node.j
 
     setPreferedNumAudioInput (0);
     setPreferedNumAudioOutput (0);
+    containSavableObjects->setValue(true,true);
 }
 
 void JsNode::clearNamespace()
@@ -83,8 +84,9 @@ var JsNode::addIntParameter (const var::NativeFunctionArgs& a)
         LOGE(juce::translate("wrong number of arg for addIntParameter"));
         return var::undefined();
     };
-
-    jsNode->jsDynamicParameters.add (jsNode->ParameterContainer::addNewParameter<IntParameter> (a.arguments[0], a.arguments[1], a.arguments[2], a.arguments[3], a.arguments[4]));
+    auto res = jsNode->ParameterContainer::addNewParameter<IntParameter> (a.arguments[0], a.arguments[1], a.arguments[2], a.arguments[3], a.arguments[4]);
+    res->isUserDefined = true;
+    jsNode->jsDynamicParameters.add (res);
 
     return var::undefined();
 }
@@ -100,8 +102,10 @@ var JsNode::addFloatParameter (const var::NativeFunctionArgs& a)
         return var::undefined();
     };
 
-    jsNode->jsDynamicParameters.add (jsNode->ParameterContainer::addNewParameter<FloatParameter> (a.arguments[0], a.arguments[1], a.arguments[2], a.arguments[3], a.arguments[4]));
+    auto res = jsNode->ParameterContainer::addNewParameter<FloatParameter> (a.arguments[0], a.arguments[1], a.arguments[2], a.arguments[3], a.arguments[4]);
 
+    res->isUserDefined = true;
+    jsNode->jsDynamicParameters.add (res);
     return var::undefined();
 }
 
@@ -116,8 +120,9 @@ var JsNode::addStringParameter (const var::NativeFunctionArgs& a)
         return var::undefined();
     };
 
-    jsNode->jsDynamicParameters.add (jsNode->ParameterContainer::addNewParameter<StringParameter> (a.arguments[0], a.arguments[1], a.arguments[2]));
-
+    auto res = jsNode->ParameterContainer::addNewParameter<StringParameter> (a.arguments[0], a.arguments[1], a.arguments[2]);
+    res->isUserDefined = true;
+    jsNode->jsDynamicParameters.add (res);
     return var::undefined();
 }
 
@@ -132,8 +137,9 @@ var JsNode::addBoolParameter (const var::NativeFunctionArgs& a)
         return var::undefined();
     };
 
-    jsNode->jsDynamicParameters.add (jsNode->ParameterContainer::addNewParameter<BoolParameter> (a.arguments[0], a.arguments[1], a.arguments[2]));
-
+    auto res = jsNode->ParameterContainer::addNewParameter<BoolParameter> (a.arguments[0], a.arguments[1], a.arguments[2]);
+    res->isUserDefined = true;
+    jsNode->jsDynamicParameters.add (res);
     return var::undefined();
 }
 
@@ -148,11 +154,19 @@ var JsNode::addTriggerParameter (const var::NativeFunctionArgs& a)
         return var::undefined();
     };
 
-    jsNode->jsDynamicParameters.add (jsNode->ParameterContainer::addNewParameter<Trigger> (a.arguments[0], a.arguments[1]));
+    auto res = jsNode->ParameterContainer::addNewParameter<Trigger> (a.arguments[0], a.arguments[1]);
+    res->isUserDefined = true;
+    jsNode->jsDynamicParameters.add (res);
 
     return var::undefined();
 }
 
+ParameterBase* JsNode::addParameterFromVar(const String& name, const var& data) {
+    containSavableObjects->setValue(true,true);
+    auto res = ParameterContainer::addParameterFromVar(name, data);
+    if(res)jsDynamicParameters.add (res);
+    return res;
+}
 
 String JsNode::getSubTypeName(){
     if(auto * fp = getJsFileParameter()){

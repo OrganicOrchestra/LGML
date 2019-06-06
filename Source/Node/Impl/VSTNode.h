@@ -55,7 +55,6 @@ public:
 
             isHidenInEditor = true;
             _canHavePresets = false;
-//            currentPresetName->isPresettable = false;
             x->setInternalOnlyFlags(false,true);
             y->setInternalOnlyFlags(false,true);
             isDisplayed->setInternalOnlyFlags(false,true);

@@ -78,7 +78,6 @@ public:
     bool enabled;
     bool isControllableExposed;
     bool isHidenInEditor;
-    bool shouldSaveObject;
     bool isUserDefined;
     bool isSavableAsObject;
     bool isSavable;

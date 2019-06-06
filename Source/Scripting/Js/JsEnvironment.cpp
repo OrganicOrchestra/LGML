@@ -180,7 +180,23 @@ Result JsEnvironment::loadFile (const File& file)
     String jsString = destLines.joinIntoString ("\n");
 
 
+    HashMap<String,var> savedState;
+    for(auto p:  linkedContainer->getAllParameters()){
+        if(p->isUserDefined){
+            savedState.set(p->shortName.toString(),p->value);
+        }
+    }
+
     Result r = loadScriptContent (jsString);
+
+    if(hasValidJsFile()){
+        HashMap<String, var>::Iterator it (savedState);
+        while(it.next()){
+            if(auto p = dynamic_cast<ParameterBase*>(linkedContainer->ParameterContainer::getControllableByShortName(it.getKey()))){
+                p->setValue(it.getValue());
+            }
+        }
+    }
 
 
     static FunctionIdentifier onUpdateFId (onUpdateIdentifier.toString());
@@ -605,7 +621,7 @@ void JsEnvironment::parameterValueChanged ( ParameterBase* p, ParameterBase::Lis
     if (p == linkedContainer->nameParam)
     {
         // ensure short name is updated...
-        // not sure it's needed though
+        // happens if listener are called in wrong order
 #if JUCE_DEBUG
         auto targetSn =Controllable::toShortName(linkedContainer->nameParam->stringValue());
         auto curSn = linkedContainer->shortName;
