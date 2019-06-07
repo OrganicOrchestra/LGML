@@ -61,7 +61,7 @@ class OSXBuilder (BuilderBase):
 	def getArchReadable(self):
 		if self.cfg['arch'] == "i386":
 			return "32bit"
-		else if self.cfg['arch'] == "x86_64":
+		elif self.cfg['arch'] == "x86_64":
 			return "64bit"
 		raise NameError("can't find current arch")
 	
