@@ -24,6 +24,7 @@ class OSXBuilder (BuilderBase):
 	def __init__(self,cfg):
 		BuilderBase.__init__(self,cfg)
 		self.applyCfg(self.default_cfg)
+		# self.localExportPath+=self.cfg['arch']+'/'
 
 	def getPlatformName(self):
 		return "osx"
@@ -57,15 +58,22 @@ class OSXBuilder (BuilderBase):
 		if len(appPath)>10:
 			sh("rm -rf "+appPath)
 
-
+	def getArchReadable(self):
+		if self.cfg['arch'] == "i386":
+			return "32bit"
+		else if self.cfg['arch'] == "x86_64":
+			return "64bit"
+		raise NameError("can't find current arch")
+	
 
 	def createDmg(self,exportFileBaseName):
 		import dmgbuild
 		print('creating dmg')
+		dmgPath = exportFileBaseName+'_(%s).dmg'%self.getArchReadable()
 		os.chdir(os.path.abspath(os.path.join(__file__,os.path.pardir)))
-		dmgbuild.build_dmg(exportFileBaseName,"Le Grand Mechant Loop",settings_file = 'dmgbuild_conf.py',defines={'app':self.getBinaryPath()})
-		print('dmg done at :'+exportFileBaseName+'.dmg')
-		return exportFileBaseName+'.dmg'
+		dmgbuild.build_dmg(dmgPath,"Le Grand Mechant Loop",settings_file = 'dmgbuild_conf.py',defines={'app':self.getBinaryPath()})
+		print('dmg done at :'+dmgPath)
+		return dmgPath
 
 
 

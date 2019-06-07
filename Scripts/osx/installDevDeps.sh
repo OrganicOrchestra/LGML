@@ -27,7 +27,7 @@ cd $SCRIPTPATH/../../third_party/rubberband
 echo "original CXX : $CXX"
 CXX=`xcodebuild -find clang++`
 CXX="$CXX -stdlib=libc++"
-ARCHFLAGS="-arch i386 -mmacosx-version-min=10.7"
+# ARCHFLAGS="-arch $ARCH -mmacosx-version-min=10.7"
 echo $CXX
 # ./configure
 mkdir -p lib

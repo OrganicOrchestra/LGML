@@ -175,10 +175,11 @@ jobs:
       - run:
           name: build and package LGML OSX
           command: |
-            python3 Scripts/buildScript.py --configure --exportpath=/tmp/buildOSX/32/ --os=osx --configuration=Release --arch=i386
-            python3 Scripts/buildScript.py --build --package --export
             python3 Scripts/buildScript.py --configure --exportpath=/tmp/buildOSX/64/ --os=osx --configuration=Release --arch=x86_64
             python3 Scripts/buildScript.py --build --package --export
+            python3 Scripts/buildScript.py --configure --exportpath=/tmp/buildOSX/32/ --os=osx --configuration=Release --arch=i386
+            python3 Scripts/buildScript.py --build --package --export
+            
       - store_artifacts:
           path: /tmp/buildOSX #$DST_LGML_PATH
 
