@@ -26,7 +26,7 @@ class Spat2DNode : public NodeBase
 public:
     DECLARE_OBJ_TYPE (Spat2DNode,"paint with sound in space")
     enum SpatMode {BEAM, PROXY};
-    enum ShapeMode {FREE, CIRCLE};
+    enum ShapeMode {FREE=1, CIRCLE=2};
 
     EnumParameter* spatMode;  //Beam / Proxy
     EnumParameter* shapeMode;  //Free, Circle

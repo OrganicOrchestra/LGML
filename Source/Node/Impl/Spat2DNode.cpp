@@ -33,8 +33,8 @@ alphaFilter(1)
 
     shapeMode = addNewParameter<EnumParameter> ("Shape", "Predefined shape or free positioning");
     shapeMode->isEditable=false;
-    shapeMode->addOption ("Circle", ShapeMode::CIRCLE);
-    shapeMode->addOption ("Free", ShapeMode::FREE);
+    shapeMode->addOption ("Circle", ShapeMode::CIRCLE,true);
+    shapeMode->addOption ("Free", ShapeMode::FREE,true);
 
 
     //circle
@@ -93,11 +93,11 @@ void Spat2DNode::updateTargetsFromShape()
 
     switch ((int)shapeMode->getFirstSelectedValue())
     {
-        case FREE:
+        case  ShapeMode::FREE:
             //do nothing
             break;
 
-        case CIRCLE:
+        case  ShapeMode::CIRCLE:
             for (int i = 0; i < numSpatOutputs->intValue(); i++)
             {
                 Point2DParameter<floatParamType>* p = targetPositions[i];
