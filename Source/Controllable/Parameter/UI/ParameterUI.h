@@ -23,10 +23,11 @@
 class ParameterUI;
 class AllParamType{
 public:
+    typedef WeakReference<ParameterUI> Ptr;
     void add(ParameterUI*);
     void removeAllInstancesOf(ParameterUI*);
-    typedef Array<ParameterUI*> ArrayType;
-    ArrayType getForParameter(ParameterBase *) const;
+    typedef Array< Ptr > ArrayType;
+    ArrayType getForParameter(ParameterBase *  ) const;
 
 private:
     HashMap<ParameterBase*,ArrayType> container;
