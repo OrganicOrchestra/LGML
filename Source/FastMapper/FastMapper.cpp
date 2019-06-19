@@ -61,9 +61,9 @@ pSync(this)
 
     potentialIn->addParameterProxyListener(this);
     potentialOut->addParameterProxyListener(this);
-    #if !ENGINE_HEADLESS
+#if !ENGINE_HEADLESS
     LGMLDragger::getInstance()->addSelectionListener (this);
-    #endif
+#endif
 
     potentialIn->setSavable(false);
     potentialOut->setSavable(false);
@@ -74,12 +74,12 @@ pSync(this)
 
 FastMapper::~FastMapper()
 {
-    #if !ENGINE_HEADLESS
+#if !ENGINE_HEADLESS
     if (auto* dr = LGMLDragger::getInstanceWithoutCreating())
     {
         dr->removeSelectionListener (this);
     }
-    #endif
+#endif
     if(auto cm = ControllerManager::getInstanceWithoutCreating()){
         cm->removeControllableContainerListener(&pSync);
     }
@@ -143,7 +143,7 @@ FastMap* FastMapper::addFastMap()
 
         lastFMAddedTime = Time::getMillisecondCounter();
 
-        #if !ENGINE_HEADLESS
+#if !ENGINE_HEADLESS
         auto addedFastMap = f.release();
         WeakReference<FastMap> wkf(addedFastMap);
         // avoid listener feedback
@@ -161,7 +161,7 @@ FastMap* FastMapper::addFastMap()
             potentialIn->setParamToReferTo (nullptr);
             potentialOut->setParamToReferTo (nullptr);
         });
-        #endif
+#endif
         return addedFastMap;
     }
     else{
@@ -244,10 +244,14 @@ void FastMapper::selectionChanged ( ParameterBase* c )
 void FastMapper::mappingModeChanged(bool state){
     autoAddFastMaps = state;
     if(auto cm = ControllerManager::getInstance()){
-    if(state)
-        cm->addControllableContainerListener(&pSync);
-    else
-        cm->removeControllableContainerListener(&pSync);
+        if(state){
+            cm->addControllableContainerListener(&pSync);
+        }
+        else{
+            cm->removeControllableContainerListener(&pSync);
+            setPotentialInput(nullptr);
+            setPotentialOutput(nullptr);
+        }
     }
 
 
@@ -256,7 +260,7 @@ void FastMapper::mappingModeChanged(bool state){
 #endif
 void  FastMapper::linkedParamChanged (ParameterProxy* p ) {
     if(p== potentialIn || p== potentialOut){
-            createNewFromPotentials();
+        createNewFromPotentials();
     }
     else{
 #if !ENGINE_HEADLESS
@@ -304,7 +308,7 @@ void  FastMapper::linkedParamChanged (ParameterProxy* p ) {
 
 bool  FastMapper::isParameterMapped (ParameterBase * p){
     if(!p)return false;
-//    jassert(p);
+    //    jassert(p);
     for (const auto * f : maps){
         if(f->getProxyForParameter(p)){
             return true;
