@@ -620,7 +620,7 @@ void LooperNode::onContainerParameterChanged ( ParameterBase* p)
     {
         if (trackGroup.selectedTrack != nullptr)
         {
-            trackGroup.selectedTrack->volume->setValue (volumeSelected->floatValue());
+            trackGroup.selectedTrack->volume->setValueFrom (this,volumeSelected->floatValue());
         }
         else
         {

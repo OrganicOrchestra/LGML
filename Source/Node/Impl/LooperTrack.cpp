@@ -571,7 +571,7 @@ void LooperTrack::onContainerParameterChanged ( ParameterBase* p)
 
     if (p == volume)
     {
-        if (parentLooper->trackGroup.selectedTrack == this) parentLooper->volumeSelected->setValue (volume->floatValue());
+        if (parentLooper->trackGroup.selectedTrack == this) parentLooper->volumeSelected->setValueFrom (parentLooper,volume->floatValue()); // 
 
         logVolume.set (float01ToGain (volume->value));
 
