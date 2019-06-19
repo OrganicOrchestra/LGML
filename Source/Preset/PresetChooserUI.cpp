@@ -209,8 +209,8 @@ void PresetChooserUI::comboBoxChanged (ComboBox* cb)
         if (ok)
         {
             PresetManager* pm = PresetManager::getInstance();
-            int originId = cb->getSelectedId() - PresetChoice::deleteStartId - 1;
-            String originText = cb->getItemText (cb->getNumItems() - getPresetable()->getNumPresets() * 2 + originId);
+            int index = cb->indexOfItemId(getSelectedId()-PresetChoice::deleteStartId);
+            String originText = cb->getItemText (index);
             Preset* pre = pm->getPreset (getPresetable()->getPresetFilter(), originText);
             if(pre){
                 getPresetable()->deletePreset(pre);
