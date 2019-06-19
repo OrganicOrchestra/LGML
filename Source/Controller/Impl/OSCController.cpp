@@ -353,6 +353,23 @@ bool OSCController::setParameterFromMessage ( ParameterBase* c, const OSCMessage
             }
         }
     }
+    else if (targetType == Point2DParameter<floatParamType>::_factoryType)
+    {
+        if (msg.size() > 1 )
+        {
+            Array<var> arrVal;
+            for(int i = 0 ; i < 2 ; i++){
+
+                if ((allowConversions && msg[i].isInt32()) || msg[i].isFloat32())
+                {
+                    float value = msg[i].isInt32() ? msg[i].getInt32() : msg[i].getFloat32();
+                    arrVal.add((float) value);
+
+                }
+            }
+            (( ParameterBase*)c)->setValue (arrVal, false, force);
+        }
+    }
     else
     {
         return false;
