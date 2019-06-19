@@ -79,9 +79,11 @@ public:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Spat2DTarget)
 };
 
+
 class Spat2DViewer : public juce::Component, public Spat2DHandle::Listener,
     public ConnectableNode::ConnectableNodeListener,
-    public ControllableContainer::Listener
+    public ControllableContainer::Listener,
+private Timer
 {
 public:
     Spat2DViewer (Spat2DNode* node);
@@ -99,7 +101,7 @@ public:
 
     void updateSourcePosition (int sourceIndex);
     void updateTargetPosition (int targetIndex);
-    void updateTargetInfluence (int targetIndex);
+    void updateTargetInfluence (int targetIndex,bool repaint=true);
 
     void resized() override;
     void paint (Graphics& g) override;
@@ -115,7 +117,8 @@ public:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Spat2DViewer)
 
-
+    
+    void timerCallback() final; // source, target and intensities
 
 
 

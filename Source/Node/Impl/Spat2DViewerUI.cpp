@@ -1,22 +1,24 @@
 /* Copyright © Organic Orchestra, 2017
-*
-* This file is part of LGML.  LGML is a software to manipulate sound in realtime
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation (version 3 of the License).
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*/
+ *
+ * This file is part of LGML.  LGML is a software to manipulate sound in realtime
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation (version 3 of the License).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
 
 #if !ENGINE_HEADLESS
 
 #include "Spat2DViewerUI.h"
 #include "../../UI/Style.h"
+#include "../../Controllable/ControllableUIHelpers.h"
 
+#define REPAINT_INTERVAL_MS 50
 Spat2DViewer::Spat2DViewer (Spat2DNode* _node) : node (_node)
 {
     updateNumTargets();
@@ -34,10 +36,12 @@ Spat2DViewer::Spat2DViewer (Spat2DNode* _node) : node (_node)
     }
 
     setOpaque (true);
+
 }
 
 Spat2DViewer::~Spat2DViewer()
 {
+    stopTimer();
     node->removeConnectableNodeListener (this);
     sources.clear();
     targets.clear();
@@ -128,13 +132,14 @@ void Spat2DViewer::updateTargetPosition (int targetIndex)
     targets[targetIndex]->setPosition (node->targetPositions[targetIndex]->getPoint());
 }
 
-void Spat2DViewer::updateTargetInfluence (int targetIndex)
+void Spat2DViewer::updateTargetInfluence (int targetIndex,bool repaint)
 {
     if (targetIndex == -1 || targetIndex >= targets.size()) return;
 
     targets[targetIndex]->influence = node->outputsIntensities[targetIndex]->floatValue();
-    targets[targetIndex]->repaint();
+    if(repaint)targets[targetIndex]->repaint();
 }
+
 
 void Spat2DViewer::resized()
 {
@@ -166,56 +171,32 @@ void Spat2DViewer::paint (Graphics& g)
     g.fillRect (getLocalBounds());
 }
 
-void Spat2DViewer::nodeParameterChanged (ConnectableNode*, ParameterBase* p)
-{
+void Spat2DViewer::nodeParameterChanged (ConnectableNode*, ParameterBase* p){
+    // non heavy changes
 
+    if (p == node->numSpatInputs)  execOrDefer([=](){ updateNumSources();});
+    else if (p == node->numSpatOutputs)  execOrDefer([=](){ updateNumTargets();});
 
-    if (p == node->numSpatInputs) updateNumSources();
-    else if (p == node->numSpatOutputs) updateNumTargets();
-    else if (p == node->targetRadius) updateTargetRadius();
-    else if (p->isType<Point2DParameter<floatParamType>>())
-    {
-        if (p == node->globalTargetPosition)
-        {
+    else if (p == node->globalTargetPosition){
+        execOrDefer([=](){
             if (globalTarget != nullptr)
             {
                 globalTarget->setPosition (node->globalTargetPosition->getPoint());
                 resized();
             }
-        }
-
-        else
-        {
-            Point2DParameter<floatParamType>* p2d = (Point2DParameter<floatParamType>*)p;
-            if(node->targetPositions.contains(p2d)){
-                int index = node->targetPositions.indexOf (p2d);
-                updateTargetPosition (index);
-            }
-            else if(node->inputsPositionsParams.contains(p2d)){
-                int index = node->inputsPositionsParams.indexOf (p2d);
-                updateSourcePosition(index);
-            }
-            else{
-                jassertfalse;
-            }
-
-        }
+        });
 
     }
-    else if(node->outputsIntensities.contains((FloatParameter*)p)){
-        int index = node->outputsIntensities.indexOf((FloatParameter *)p);
-        updateTargetInfluence(index);
 
-    }
     else if (p == node->shapeMode)
-    {
+    { execOrDefer([=](){
         bool circleMode = (int)node->shapeMode->getFirstSelectedValue() == Spat2DNode::ShapeMode::CIRCLE;
 
         for (int i = 0; i < targets.size(); i++) targets[i]->setEnabled (!circleMode);
-
+    });
     }
     else if (p == node->useGlobalTarget)
-    {
+    { execOrDefer([=](){
         if (node->useGlobalTarget->boolValue())
         {
             globalTarget = new Spat2DTarget (-1, Colours::green);
@@ -232,19 +213,56 @@ void Spat2DViewer::nodeParameterChanged (ConnectableNode*, ParameterBase* p)
         }
 
         resized();
-
+    });
     }
     else if (p == node->globalTargetRadius)
-    {
+    { execOrDefer([=](){
         if (globalTarget != nullptr)
         {
             globalTarget->radius = node->globalTargetRadius->floatValue();
             resized();
         }
+    });
     }
+    else if (p == node->targetRadius){ execOrDefer([=](){updateTargetRadius();});}
+    // heavy repainters
+    else if(node->outputsIntensities.contains((FloatParameter*)p)){
+        if(!isTimerRunning()){Timer::startTimer(REPAINT_INTERVAL_MS);}
+    }
+    else if (p->isType<Point2DParameter<floatParamType>>())
+    {
+
+
+        Point2DParameter<floatParamType>* p2d = (Point2DParameter<floatParamType>*)p;
+        if(node->targetPositions.contains(p2d)){
+            if(!isTimerRunning()){Timer::startTimer(REPAINT_INTERVAL_MS);}
+
+        }
+        else if(node->inputsPositionsParams.contains(p2d)){
+            if(!isTimerRunning()){Timer::startTimer(REPAINT_INTERVAL_MS);}
+        }
+        else{
+            jassertfalse;
+        }
+
+
+
+    }
+
+
+    //}                );
 }
 
 
+void Spat2DViewer::timerCallback(){
+
+    for(int index = 0 ; index <  node->outputsIntensities.size() ; index++){
+     updateTargetInfluence(index,false);
+        updateTargetPosition (index);
+        updateSourcePosition(index);
+    }
+    stopTimer();
+}
 void Spat2DViewer::childControllableAdded (ControllableContainer*, Controllable* c)
 {
     if (c->isType<Point2DParameter<floatParamType>>()) updateNumTargets();
