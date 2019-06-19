@@ -96,10 +96,10 @@ void MIDIController::handleIncomingMidiMessage (MidiInput*,
         bool isNoteOn = message.isNoteOn();
         if (logIncoming->boolValue())
         {
-            NLOG ("MIDI", String("123 : 456 (Channel 1011)")
+            NLOG ("MIDI", String("123 : 456 (#789) : Ch 1011")
                   .replace("123", String (isNoteOn ? "NoteOn" : "NoteOff"))
                   .replace("456", MidiMessage::getMidiNoteName (message.getNoteNumber(), true, true, 0))
-                  .replace("789",String (message.getVelocity()))
+                  .replace("789",String (message.getNoteNumber()))
                   .replace("1011",String (message.getChannel()))
                   );
                   
