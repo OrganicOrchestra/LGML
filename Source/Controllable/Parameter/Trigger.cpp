@@ -37,7 +37,7 @@ void Trigger::tryToSetValue (const var & _value, bool silentSet, bool force,List
 
     if (!shouldBeDeffered (_value, silentSet, force))
     {
-        if ( (bool) _value)
+        if ( _value.isUndefined() || (bool) _value) // undefined are set from script
         {
 
             _isSettingValue = true;
