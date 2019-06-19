@@ -17,7 +17,7 @@
  */
 
 #include "LGMLLogger.h"
-#include "../Utils/VersionTriplet.h"
+#include "../Version.h"
 juce_ImplementSingleton (LGMLLogger);
 int LGMLLogger::maxLoggedElements = 5000;
 #define CIRCULAR 0
@@ -28,10 +28,11 @@ LGMLLogger::LGMLLogger():
 writeCursor(0),
 welcomeMessage
 (
- String("LGML v123 : (456) \n by OrganicOrchestra")
+ String("LGML v123 : 456\n789\n by OrganicOrchestra")
  .replace("123",String (VersionTriplet::getCurrentVersion().toString()))
  .replace("456",String (Time::getCompilationDate()
                         .formatted("%d/%m/%y (%R)")))
+ .replace("789",BUILD_VERSION_UID)
  ){
 #if CIRCULAR
     loggedElements.resize(maxLoggedElements);
