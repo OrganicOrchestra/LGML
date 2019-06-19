@@ -308,7 +308,12 @@ bool MainContentComponent::perform (const InvocationInfo& info)
 
         case CommandIDs::aboutBox:
             //TODO about box
-            LOG("about LGML");
+            LOG("about : ");
+            LOG(String ("LGML v123 : 456\n789\n by OrganicOrchestra")
+                .replace("123",String (VersionTriplet::getCurrentVersion().toString()))
+                .replace("456",String (Time::getCompilationDate()
+                                       .formatted("%d/%m/%y (%R)")))
+                .replace("789",BUILD_VERSION_UID));
             break;
 
         case CommandIDs::allWindowsForward:

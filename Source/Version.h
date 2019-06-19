@@ -2,4 +2,4 @@
 // BUILD_VERSION_UID is only used in auto updater
 #pragma once
 #include "Utils/VersionTriplet.h"
-#define BUILD_VERSION_UID "None"
+#define BUILD_VERSION_UID "UnknownBuildUID"
