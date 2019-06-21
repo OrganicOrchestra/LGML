@@ -70,7 +70,7 @@ NodeManagerUI::NodeManagerUI (NodeManager* _nodeManager) :
     nodeManager (_nodeManager),
     currentViewer (nullptr),
 ParameterContainer("NodeManagerUI"),
-isMiniMode(false)
+isMiniMode(true)
 {
     canHaveUserDefinedContainers = true;
     

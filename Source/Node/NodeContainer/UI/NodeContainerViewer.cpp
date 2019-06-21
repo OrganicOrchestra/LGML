@@ -70,7 +70,7 @@ nodesLayer(new NodeLayerComponent())
 
     canInspectChildContainersBeyondRecursion = false;
 
-    minimizeAll = addNewParameter<BoolParameter>("minimize all", "minimize all visible nodes", false);
+    minimizeAll = addNewParameter<BoolParameter>("minimize all", "minimize all visible nodes", true);
 
     addAndMakeVisible(nodesLayer);
     nodesLayer->setInterceptsMouseClicks(false,true);
