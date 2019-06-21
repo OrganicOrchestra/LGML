@@ -42,7 +42,7 @@ ConnectableNode::ConnectableNode (const String& name, bool _hasMainAudioControl)
 
 
     descriptionParam->isPresettable = false;
-    enabledParam->isPresettable = false;
+    enabledParam->isPresettable = true;
 
 
     //Audio

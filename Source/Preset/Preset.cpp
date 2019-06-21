@@ -273,9 +273,9 @@ DynamicObject * Presetable::createPresetObject(ParameterContainer * p){
         return  p->
         createObjectFiltered(
                              [p](ParameterBase * c){
-                                 bool isValid =  c->isPresettable && c!=p->presetable->currentPresetName;
+                                 bool isValid = c->isPresettable && c!=p->presetable->currentPresetName;
                                  if(auto *pp = dynamic_cast<ParameterContainer*>(c->parentContainer.get())){
-                                     if(c->parentContainer->parentContainer==p){
+                                     if(c->parentContainer->parentContainer==p){ // sub containers at depth 1
                                          String presetN = pp->presetable->currentPresetName->stringValue();
                                          bool isPresetLoaded = !presetN.isEmpty();
                                          //bool isSamePresetLoaded = isPresetLoaded && (presetN==p->presetable->currentPresetName->stringValue());
