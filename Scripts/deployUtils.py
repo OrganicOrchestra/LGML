@@ -15,14 +15,7 @@ if not os.path.exists(distPath):
   raise NameError("dist path not found")
 
 
-lastVPath = os.path.join(distPath,"bleedingEdge",desiredVersion)
-publicFolder = '/Volumes/sshfs/owncloud/tools/LGML/'
-if not os.path.exists(publicFolder):
-  publicFolder = os.path.expanduser("~/tools/LGML");
-if not os.path.exists(publicFolder):
-  raise NameError("public folder path not found") 
-# publicFolder = '/tmp/LGML/dist'
-changeLogPath  = os.path.join(lastVPath,"CHANGELOG.md")
+
 
 def copy_dry(s,d):
   global dry_run
@@ -174,6 +167,17 @@ def deployBinsToGithub():
   gh.gh_release_create(repo_name,desiredVersion,publish=True,asset_pattern =allAssets, name=desiredVersion,body=notes,dry_run=dry_run)
 
 
+def findPaths(version):
+  lastVPath = os.path.join(distPath,"bleedingEdge",desiredVersion)
+  publicFolder = '/Volumes/sshfs/owncloud/tools/LGML/'
+  if not os.path.exists(publicFolder):
+    publicFolder = os.path.expanduser("~/tools/LGML");
+  if not os.path.exists(publicFolder):
+    raise NameError("public folder path not found") 
+  # publicFolder = '/tmp/LGML/dist'
+  changeLogPath  = os.path.join(lastVPath,"CHANGELOG.md")
+  return lastVPath,publicFolder,changeLogPath
+
 
   
   
@@ -181,16 +185,18 @@ def deployBinsToGithub():
 
 
 if __name__ == '__main__':
-  global dry_run
-
   import argparse
   parser = argparse.ArgumentParser()
   parser.add_argument('--force',action="store_true")
+  parser.add_argument('-y','--yes',action="store_true")
   parser.add_argument('--loop',action="store_true")
   parser.add_argument('--dry',action="store_true")
+  parser.add_argument('-v','--version',default=desiredVersion)
   args = parser.parse_args()
+  desiredVersion = args.version
+  lastVPath,publicFolder,changeLogPath = findPaths(desiredVersion)
   dry_run = args.dry
-  bins,zips = checkIntegrity(True)
+  bins,zips = checkIntegrity(not args.force)
   with open(changeLogPath,'r') as fp:
     notes = ''.join(fp.readlines())
   while(True):
@@ -201,7 +207,11 @@ if __name__ == '__main__':
           with open(c,'r') as fp:
             allCfgs [os.path.basename(c)[:-4]]=json.load(fp)
 
-      bins,zips = checkIntegrity(True)
+      if not (len(allCfgs) ==8):
+          print ([v["build_os"] for v in allCfgs.itervalues()]) # check all releases are posted:
+          assert(false);
+
+      bins,zips = checkIntegrity(not args.force)
       with open(changeLogPath,'r') as fp:
         notes = ''.join(fp.readlines())
       break;
@@ -215,7 +225,7 @@ if __name__ == '__main__':
   
   print(json.dumps(allCfgs,indent=1))
   printReleaseMessage()
-  if args.force:
+  if args.yes or args.loop:
     nn='y'
   else:    
     nn = input('doyouwantToProceed %s (y/N)' % ("dry run" if dry_run else ""))
