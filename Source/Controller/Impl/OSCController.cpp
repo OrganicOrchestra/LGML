@@ -103,9 +103,9 @@ void OSCController::setupReceiver()
 {
     // DBG("setupReceiver");
     listenedPorts.remove(this);
-//#if JUCE_DEBUG
-//    LOGW(nameParam->stringValue() << "disconnect reciever " << localPortParam->stringValue());
-//#endif
+    //#if JUCE_DEBUG
+    //    LOGW(nameParam->stringValue() << "disconnect reciever " << localPortParam->stringValue());
+    //#endif
     receiver.disconnect();
     int targetP = localPortParam->stringValue().getIntValue();
     int availableP = targetP;
@@ -116,7 +116,7 @@ void OSCController::setupReceiver()
         localPortParam->setValueFrom(this, String(availableP),false,true);
         LOGW(nameParam->stringValue() <<" : " <<
              juce::translate(String("reassigning port to avoid feedback: 123 to 456"))
-                             .replace("123", String(targetP)).replace("456",String(availableP)));
+             .replace("123", String(targetP)).replace("456",String(availableP)));
     }
     if (!receiver.connect (localPortParam->stringValue().getIntValue()))
     {
@@ -125,9 +125,9 @@ void OSCController::setupReceiver()
              juce::translate("can't connect to local port : ") + localPortParam->stringValue());
     }
     else{
-//#if JUCE_DEBUG
-//        LOGW (nameParam->stringValue()  << "listen to " << localPortParam->stringValue());
-//#endif
+        //#if JUCE_DEBUG
+        //        LOGW (nameParam->stringValue()  << "listen to " << localPortParam->stringValue());
+        //#endif
         listenedPorts.set(this,localPortParam->stringValue().getIntValue());
     }
 
@@ -137,9 +137,9 @@ void OSCController::setupSender()
 {
     isConnected->setValue (false);
     sender.disconnect();
-//#if JUCE_DEBUG
-//    LOGW(nameParam->stringValue() << "disconnect sender " << remotePortParam->stringValue());
-//#endif
+    //#if JUCE_DEBUG
+    //    LOGW(nameParam->stringValue() << "disconnect sender " << remotePortParam->stringValue());
+    //#endif
     if(localSentPorts.contains(this))localSentPorts.remove(this);
     hostNameResolved = false;
     resolveHostnameIfNeeded();
@@ -190,7 +190,7 @@ void OSCController::resolveHostnameIfNeeded()
                 remoteIP = resolved.ipAddress.toString();
                 int targetPort=resolved.hasValidPort()?resolved.port:remotePortParam->stringValue().getTrailingIntValue();
                 if(connectSender(remoteIP,targetPort)){
-//                    LOG (nameParam->stringValue() << juce::translate(" has resolved IP : ") << hostName << " > " << remoteIP << ":" << remotePortParam->stringValue());
+                    //                    LOG (nameParam->stringValue() << juce::translate(" has resolved IP : ") << hostName << " > " << remoteIP << ":" << remotePortParam->stringValue());
                 }
                 else{
                     LOGW(nameParam->stringValue() <<" : " <<
@@ -225,9 +225,9 @@ bool OSCController::connectSender(String & remoteIP, int portNum){
     bool connected = validPort && sender.connect (remoteIP,portNum );
     isConnected->setValue (connected);
     localSentPorts.set(this,portNum);
-//#if JUCE_DEBUG
-//        LOGW (nameParam->stringValue() << (connected?"":"not ") << "connected " << remoteIP << ":" << remotePortParam->stringValue());
-//#endif
+    //#if JUCE_DEBUG
+    //        LOGW (nameParam->stringValue() << (connected?"":"not ") << "connected " << remoteIP << ":" << remotePortParam->stringValue());
+    //#endif
     return connected;
 }
 
@@ -646,13 +646,18 @@ void OSCController::sendAllControllableStates (ControllableContainer* c, int& se
 }
 
 void OSCController::sendOSCFromParam(const Controllable *c){
-    if (c->isChildOf (&userContainer))
-    {
-        sendOSCForAddress (c, c->getControlAddressRelative (&userContainer).toString());
+    if (c){
+        if (c->isChildOf (&userContainer))
+        {
+            sendOSCForAddress (c, c->getControlAddressRelative (&userContainer).toString());
+        }
+        else
+        {
+            sendOSCForAddress (c, c->controlAddress.toString());
+        }
     }
-    else
-    {
-        sendOSCForAddress (c, c->controlAddress.toString());
+    else{
+        LOGE("trying to send deleted param");
     }
 }
 
