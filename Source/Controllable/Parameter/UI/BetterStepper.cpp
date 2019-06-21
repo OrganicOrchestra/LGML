@@ -24,8 +24,8 @@ BetterStepper::BetterStepper (TooltipClient* tooltip) : Slider (SliderStyle::Inc
 {
 
     setIncDecButtonsMode (IncDecButtonMode::incDecButtonsDraggable_AutoDirection);
-
-    setScrollWheelEnabled (true);
+    addMouseListener(this,true);
+//    setScrollWheelEnabled (true);
 
 
 }

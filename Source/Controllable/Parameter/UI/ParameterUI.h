@@ -31,6 +31,7 @@ public:
 
 private:
     HashMap<ParameterBase*,ArrayType> container;
+    HashMap<ParameterUI* , ParameterBase*> allPs;
 
 };
 
