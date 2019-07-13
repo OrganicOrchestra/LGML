@@ -30,7 +30,7 @@ public:
 
     //settings
     Direction orientation;
-    Colour defaultColor;
+
 
     bool changeParamOnMouseUpOnly;
     bool assignOnMousePosDirect;
@@ -47,7 +47,7 @@ public:
     void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
     void mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& wheel) override;
-
+    void displayedTextChangedInternal()override;
     T getValueFromMouse();
     T getValueFromPosition (const Point<int>& pos);
 
@@ -68,6 +68,7 @@ protected:
     bool scrollWheelAllowed;
     Time lastMouseWheelTime;
     ScopedPointer<Label> valueBox;
+    Label nameCachedLabel,valueCachedLabel;
     void labelTextChanged (Label* labelThatHasChanged) override;
     void editorHidden (Label*, TextEditor&) override;
     

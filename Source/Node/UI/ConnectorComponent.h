@@ -96,4 +96,7 @@ private:
 };
 
 
+
+
+
 #endif  // CONNECTORCOMPONENT_H_INCLUDED

@@ -142,6 +142,7 @@ public:
         setScrollBarsShown (!isH,isH,!isH,isH);
         setScrollOnDragEnabled (false);
         setScrollBarThickness (10);
+        setPaintingIsUnclipped(true);
 
     }
 

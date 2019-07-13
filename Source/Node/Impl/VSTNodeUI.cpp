@@ -12,7 +12,7 @@
  *
  */
 
-#if !ENGINE_HEADLESS
+#if !ENGINE_HEADLESS && !NON_INCREMENTAL_COMPILATION
 
 #include "VSTNodeUI.h"
 #include "../../Controllable/Parameter/UI/TriggerBlinkUI.h"
@@ -27,6 +27,8 @@ VSTListShowButton ("VSTs"),
 showPluginWindowButton ("showWindow"),
 isDirty (false)
 {
+    LGMLUIUtils::optionallySetBufferedToImage(&VSTListShowButton);
+    LGMLUIUtils::optionallySetBufferedToImage(&showPluginWindowButton);
     
     
 }

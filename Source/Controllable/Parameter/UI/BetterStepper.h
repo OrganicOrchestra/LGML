@@ -24,6 +24,7 @@ public:
     BetterStepper (TooltipClient* tooltip=nullptr);
     virtual ~BetterStepper();
     void resized()override;
+    void paint(Graphics & g)override;
     bool isMini;
     void setEditable(bool s);
     String getTooltip() override;

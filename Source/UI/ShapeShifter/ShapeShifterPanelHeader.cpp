@@ -29,6 +29,7 @@ ShapeShifterPanelHeader::ShapeShifterPanelHeader()
     addPannelMenu.setTooltip(juce::translate("add tab to this panel"));
     addPannelMenu.addListener (this);
     setOpaque (true);
+    setPaintingIsUnclipped(true);
 
 }
 
@@ -40,6 +41,7 @@ ShapeShifterPanelHeader::~ShapeShifterPanelHeader()
 void ShapeShifterPanelHeader::addTab (ShapeShifterContent* content)
 {
     ShapeShifterPanelTab* tab = new ShapeShifterPanelTab (content);
+    LGMLUIUtils::markHasNewBackground(tab,1);
     attachTab (tab);
 }
 
@@ -100,7 +102,7 @@ void ShapeShifterPanelHeader::mouseDrag (const MouseEvent& e)
 
 void ShapeShifterPanelHeader::paint (Graphics& g)
 {
-    g.fillAll (findColour (ResizableWindow::backgroundColourId).brighter (.1f));
+    LGMLUIUtils::fillBackground(this,g);
 }
 
 void ShapeShifterPanelHeader::resized()

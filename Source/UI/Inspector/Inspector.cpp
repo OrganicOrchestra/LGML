@@ -16,18 +16,25 @@
 
 #include "Inspector.h"
 #include "../../Controllable/Parameter/ParameterContainer.h"
+#include "../Style.h"
 juce_ImplementSingleton (Inspector)
 
 Inspector::Inspector() :
     currentEditor (nullptr),
     isListening (true)
 {
+    setOpaque(true);
+    setPaintingIsUnclipped(true);
 }
 
 Inspector::~Inspector()
 {
     clear();
 }
+
+void Inspector::paint(Graphics & g){
+    LGMLUIUtils::fillBackground(this,g);
+};
 
 void Inspector::shouldListen (bool value)
 {
@@ -249,7 +256,8 @@ ShapeShifterContentComponent (contentName, "See inside :\nDisplays info on selec
     contentIsFlexible = false;
     addAndMakeVisible (vp);
     vp.setScrollBarThickness (10);
-
+    setPaintingIsUnclipped(true);
+    vp.setPaintingIsUnclipped(true);
     inspector->addInspectorListener (this);
 
 }

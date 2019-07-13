@@ -82,12 +82,19 @@ void ParameterBase::setSavable(bool s){
     isPresettable = s;
 }
 void ParameterBase::setValueFrom(Listener * notifier,const var & _value, bool silentSet , bool force ){
-    jassert(!isCommitableParameter);
+    if (isCommitableParameter && !force)
+    {
+       // jassertfalse;// TODO may be Queue notifiers??
+        commitValue (_value);
+    }
+    else
+    {
     // reentrancy check
     if(notifier !=nullptr && (_valueSetter.get()==notifier)) force|=!checkValueIsTheSame(_value, value);
     _valueSetter = notifier;
      tryToSetValue (_value, silentSet, alwaysNotify || force,notifier);
     _valueSetter = nullptr;
+    }
 
 }
 
@@ -206,7 +213,7 @@ void ParameterBase::notifyValueChanged (bool defferIt,Listener * notifier)
         listeners.call (&Listener::parameterValueChanged, this,notifier);
     }
 
-    queuedNotifier.addMessage (new ParamWithValue (this, value, false,notifier),false,notifier);
+    queuedNotifier.addMessage (new ParamWithValue (this, value, false,notifier),false,nullptr);
 }
 
 
@@ -303,7 +310,7 @@ void ParameterBase::removeParameterListener (Listener* listener) {
 }
 
 
-void ParameterBase::addAsyncParameterListener (Listener* newListener) { queuedNotifier.addListener (newListener); }
+void ParameterBase::addAsyncParameterListener (Listener* newListener) { queuedNotifier.addAsyncCoalescedListener (newListener);}//addListener (newListener); } // TODO clarify usge of non coalesced listeners
 void ParameterBase::addAsyncCoalescedListener (Listener* newListener) { queuedNotifier.addAsyncCoalescedListener (newListener); }
 void ParameterBase::removeAsyncParameterListener (Listener* listener) { queuedNotifier.removeListener (listener); }
 

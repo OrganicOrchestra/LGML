@@ -85,6 +85,7 @@ public:
 
 private:
     void resized() override;
+    void paint(Graphics & g)override;
     void setCurrentComponent (InspectableComponent* component);
     void clearEditor();
     void inspectCurrentComponent();

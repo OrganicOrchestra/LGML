@@ -13,10 +13,7 @@
 */
 
 
-#ifndef AUDIODEVICEOUTNODEUI_H_INCLUDED
-#define AUDIODEVICEOUTNODEUI_H_INCLUDED
-
-
+#pragma once
 
 #include "../UI/ConnectableNodeContentUI.h"
 #include "../NodeBase.h"
@@ -50,7 +47,7 @@ public:
     void addVuMeter();
     void removeLastVuMeter();
 
-    virtual void nodeParameterChanged (ConnectableNode*, ParameterBase*) override;
+    virtual void nodeParameterChangedAsync (ConnectableNode*, ParameterBase*) override;
 
     virtual void numAudioOutputChanged (ConnectableNode*, int newNum) override;
     virtual void numAudioInputChanged (ConnectableNode*, int newNum) override;
@@ -61,5 +58,6 @@ public:
 };
 
 
-
-#endif  // AUDIODEVICEOUTNODEUI_H_INCLUDED
+#if NON_INCREMENTAL_COMPILATION
+    #include "AudioDeviceOutNodeUI.cpp"
+#endif

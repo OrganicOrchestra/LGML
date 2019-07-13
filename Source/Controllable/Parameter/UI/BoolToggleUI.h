@@ -27,12 +27,13 @@ public:
 
 
     void paint (Graphics& g) override;
+    void resized() override;
     void mouseDown (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
 
 protected:
     void valueChanged (const var& ) override;
-
+    ScopedPointer<Component> labelComp;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BoolToggleUI)
 };
 

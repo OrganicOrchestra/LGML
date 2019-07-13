@@ -107,7 +107,7 @@ bool ConnectableNode::hasAudioOutputs()
 
 void ConnectableNode::onContainerParameterChanged ( ParameterBase* p)
 {
-    nodeListeners.call (&ConnectableNodeListener::nodeParameterChanged, this, p);
+
 }
 
 
@@ -131,9 +131,16 @@ void ConnectableNode::clear()
 }
 
 
+void ConnectableNode::parameterValueChanged ( ParameterBase* p, ParameterBase::Listener * notifier){ // force calling listener even if notifier is this
+    nodeListeners.call (&ConnectableNodeListener::nodeParameterChanged, this, p);
+    ParameterContainer::parameterValueChanged(p,notifier);
+}
 
 
-
+void ConnectableNode::newMessage(const ParameterBase::ParamWithValue &pv){
+    nodeListeners.call (&ConnectableNodeListener::nodeParameterChangedAsync, this, pv.parameter);
+    ParameterContainer::newMessage(pv);
+}
 
 
 /////////////////////////////  AUDIO

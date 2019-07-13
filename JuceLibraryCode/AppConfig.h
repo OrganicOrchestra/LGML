@@ -22,6 +22,11 @@
 #define JUCE_DISPLAY_SPLASH_SCREEN 0
 #define JUCE_REPORT_APP_USAGE 0
 #define JUCE_ENABLE_REPAINT_DEBUGGING 0
+#define JUCE_COREGRAPHICS_RENDER_WITH_MULTIPLE_PAINT_CALLS 1
+
+#ifndef NON_INCREMENTAL_COMPILATION
+    #define NON_INCREMENTAL_COMPILATION 0
+#endif
 // we really don't care of unreferenced parameter warnings do we?
 #pragma warning (disable : 4100)
 

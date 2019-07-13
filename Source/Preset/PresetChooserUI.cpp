@@ -23,12 +23,13 @@
 #include "../Controllable/Parameter/ParameterContainer.h"
 #include "PresetManager.h"
 #include "Preset.h"
+#include "../UI/Style.h"
 
 enum PresetChoice
 {
     SaveCurrent = -3,
     SaveToNew = -2,
-    ResetToDefault = -1,
+    ResetToCurrent = -1,
     deleteStartId = 1000,
     otherStartId = 2000
 };
@@ -45,6 +46,11 @@ PresetChooserUI::PresetChooserUI (ParameterContainer* _container) :
     setTextWhenNothingSelected ("Preset");
     setTooltip (juce::translate("Set the current preset at")+" :\n" + getPresetable()->currentPresetName->getControlAddress().toString() + " <presetName>");
     getPresetable()->presetableListeners.add(this);
+    setOpaque(true);
+    setPaintingIsUnclipped(true);
+    LGMLUIUtils::optionallySetBufferedToImage(this);
+    setRepaintsOnMouseActivity(false);
+    
 }
 
 PresetChooserUI::~PresetChooserUI()
@@ -95,10 +101,12 @@ void PresetChooserUI::fillWithPresets (ComboBox* cb)
     cb->clear();
     if(!container) return;
 
-    if (getPresetable()->hasPresetLoaded()) cb->addItem (juce::translate("Save current preset"), SaveCurrent);
-
     cb->addItem (juce::translate("Save to new preset"), SaveToNew);
-    cb->addItem (juce::translate("Reset to default"), ResetToDefault);
+    if (getPresetable()->hasPresetLoaded()){
+        cb->addItem (juce::translate("Save current preset"), SaveCurrent);
+        cb->addItem (juce::translate("Reload current preset"), ResetToCurrent);
+    }
+
 
     int pIndex = 1;
 
@@ -186,9 +194,9 @@ void PresetChooserUI::comboBoxChanged (ComboBox* cb)
 
 
     }
-    else if (presetIDCmd == PresetChoice::ResetToDefault)   //Reset to default
+    else if (presetIDCmd == PresetChoice::ResetToCurrent)   //Reset to default
     {
-        getPresetable()->resetToPreset();
+        getPresetable()->resetToCurrentPreset();
         updatePresetComboBox (true);
         
 

@@ -41,4 +41,6 @@ public:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ConnectableNodeContentUI)
 };
 
+
+
 #endif  // ConnectableNodeCONTENTUI_H_INCLUDED

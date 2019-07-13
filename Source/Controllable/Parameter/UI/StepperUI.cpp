@@ -23,6 +23,7 @@ StepperUI<T>::StepperUI ( ParameterBase* _parameter) : ParameterUI (_parameter)
 {
 
     slider = new BetterStepper (this);
+    
     MinMaxParameter* fp = parameter->getAs<MinMaxParameter>();
     jassert (fp);
     addAndMakeVisible (slider);

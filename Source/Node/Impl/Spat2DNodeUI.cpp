@@ -12,8 +12,9 @@
 *
 */
 
-#if !ENGINE_HEADLESS
+#if !ENGINE_HEADLESS && !NON_INCREMENTAL_COMPILATION
 
+#include "Spat2DViewerUI.hpp"
 #include "Spat2DNodeUI.h"
 #include "../UI/ConnectableNodeUI.h"
 #include "../../Controllable/Parameter/UI/StepperUI.h"
@@ -128,7 +129,7 @@ void Spat2DNodeContentUI::updateShapeModeView()
     resized();
 }
 
-void Spat2DNodeContentUI::nodeParameterChanged (ConnectableNode*, ParameterBase* p)
+void Spat2DNodeContentUI::nodeParameterChangedAsync (ConnectableNode*, ParameterBase* p)
 {
     if (p == spatNode->shapeMode) updateShapeModeView();
     else if (p == spatNode->useGlobalTarget)

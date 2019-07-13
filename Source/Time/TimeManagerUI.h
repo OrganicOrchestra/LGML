@@ -30,9 +30,10 @@
 
 
 class TimeManagerUI :
-public ShapeShifterContent,
-public InspectableComponent,
-public ParameterBase::Listener
+    public InspectableComponent,
+    public ShapeShifterContent,
+    public ParameterBase::Listener
+
 {
 
 public :
@@ -52,8 +53,8 @@ public :
 
         bool isSettingTempo = false;
 
-        int refreshHz = 60;
-        float blinkHz = 1;
+        int refreshHz ;
+        float blinkHz;
         double blinkCount = 0;
 
 
@@ -63,6 +64,7 @@ public :
         class BeatComponent : public juce::Component
         {
         public:
+            BeatComponent();
             float percentDone = 0;
             void paint (Graphics& g)override;
         };

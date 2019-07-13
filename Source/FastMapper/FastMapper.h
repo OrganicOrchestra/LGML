@@ -24,10 +24,10 @@
 
 #if !ENGINE_HEADLESS
 #include "../UI/LGMLDragger.h"
-#include "../UI/Inspector/Inspector.h"
+//#include "../UI/Inspector/Inspector.h"
 #endif
 
-class FastMapper;
+
 
 
 class FastMapper :

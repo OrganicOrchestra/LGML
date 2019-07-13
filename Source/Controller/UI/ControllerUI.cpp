@@ -63,6 +63,7 @@ ControllerUI::ControllerUI (Controller* controller) :
     InspectableComponent (controller, "controller"),
     controller (controller)
 {
+    LGMLUIUtils::markHasNewBackground(this,2);
     canInspectChildContainersBeyondRecursion = true;
     {
         MessageManagerLock ml;
@@ -120,7 +121,8 @@ ControllerUI::~ControllerUI()
 
 void ControllerUI::paint (Graphics& g)
 {
-    g.setColour (findColour (LGMLColors::elementBackground));
+    LGMLUIUtils::fillBackground(this, g);
+    g.setColour (LGMLUIUtils::getCurrentBackgroundColor(this));
     g.fillRoundedRectangle (getLocalBounds().toFloat(), 4);
 
 }

@@ -48,11 +48,11 @@ checking (false)
     panel->addShapeShifterPanelListener (this); //is it necessary ?
 
 
-    setBackgroundColour (
-                         Colours::transparentWhite
-//                         findColour (ResizableWindow::backgroundColourId).darker (.1f).withAlpha (.3f)
-                         );
-    setColour(ResizableWindow::backgroundColourId, Colours::transparentWhite);
+//    setBackgroundColour (
+//                         Colours::transparentWhite
+////                         findColour (ResizableWindow::backgroundColourId).darker (.1f).withAlpha (.3f)
+//                         );
+//    setColour(ResizableWindow::backgroundColourId, Colours::transparentWhite);
 
 
     setResizable (true, true);

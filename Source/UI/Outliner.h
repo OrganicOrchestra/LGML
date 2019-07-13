@@ -55,6 +55,10 @@ public:
     // ParamListener
     void newMessage(const ParameterBase::ParamWithValue &pv)override;
 
+private:
+    void updateLabelText( );
+    int labelWidth;
+
 };
 
 class OutlinerItem : public TreeViewItem,ControllableContainer::Listener

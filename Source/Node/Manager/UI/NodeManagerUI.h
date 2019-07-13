@@ -48,7 +48,7 @@ public:
     void clear();
 
     void resized() override;
-
+    void paint(Graphics & g)override;
     int getContentWidth() const;
     int getContentHeight() const;
 
@@ -107,10 +107,11 @@ public :
         addAndMakeVisible (addNodeBt);
         addNodeBt.addListener (this);
         addNodeBt.setTooltip (juce::translate("Add Node"));
-        //    setOpaque(true);
+            setOpaque(true);
 
         vp.addMouseListener(this,true);
-
+        setPaintingIsUnclipped(true);
+        vp.setPaintingIsUnclipped(true);
 
     }
 
@@ -148,7 +149,7 @@ public :
         while (c != nullptr)
         {
             TextButton* b = new TextButton (c->getNiceName());
-
+            LGMLUIUtils::optionallySetBufferedToImage(b);
             if (c == nmui->currentViewer->nodeContainer) b->setEnabled (false);
 
             pathButtons.insert (0, b);
@@ -163,13 +164,13 @@ public :
         resized();
     }
     void mouseDown(const MouseEvent & e)override{
-        if(nmui->isParentOf(e.originalComponent)) {
-            beginDragAutoRepeat(40);
-        }
+//        if(nmui->isParentOf(e.originalComponent)) {
+//            beginDragAutoRepeat(40);
+//        }
     }
     void mouseDrag(const MouseEvent & e)override{
         Component *c  = e.originalComponent;
-        if(nmui->currentViewer && nmui->currentViewer->isParentOf(c)){
+        if(e.mouseWasDraggedSinceMouseDown() && nmui->currentViewer && nmui->currentViewer->isParentOf(c)){
             Rectangle<int> r = vp.getLocalArea(c->getParentComponent(),c->getBoundsInParent());
             Point<int> mouse = vp.getLocalPoint(e.originalComponent,e.position).toInt();
 //            DBG(String(r.getRight()) +"::::" +String(mouse.x));
@@ -182,15 +183,14 @@ public :
             auto maxP = vp.getLocalArea(nmui->currentViewer,nb);
             nmui->currentViewer->resizeToFitNodes(maxP.getTopLeft());
         }
-        beginDragAutoRepeat(-1);
+//        beginDragAutoRepeat(-1);
 
     }
 
 
     void paint (Graphics& g) override
     {
-//        g.setColour (findColour (ResizableWindow::backgroundColourId).darker (.2f));
-//        g.fillRect (getLocalBounds().removeFromTop (30));
+        LGMLUIUtils::fillBackground(this, g);
         const int grid = 100;
         auto area = vp.getViewArea();
         g.setColour (Colours::white.withAlpha (0.03f));

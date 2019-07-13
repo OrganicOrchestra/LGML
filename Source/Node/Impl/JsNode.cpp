@@ -14,7 +14,7 @@
 
 
 #include "JsNode.h"
-#include "../../Engine.h"
+//#include "../../Engine.h"
 #include "../../Scripting/Js/JsHelpers.h"
 
 REGISTER_NODE_TYPE (JsNode)

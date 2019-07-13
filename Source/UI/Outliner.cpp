@@ -19,7 +19,7 @@
 #if !ENGINE_HEADLESS
 
 #include "Outliner.h"
-#include "../Engine.h"
+#include "../Engine.h" // baseRoot and postponing updates
 #include "Style.h"
 #include "../Controllable/Parameter/UI/ParameterUIFactory.h"
 //#include "../Controllable/UI/ParameterEditor.h"
@@ -54,7 +54,7 @@ showUserContainer(true)
         linkToSelected.setToggleState(true,sendNotification);
     }
     infoLabel.setVisible(false);
-
+    
 
 }
 
@@ -67,6 +67,10 @@ Outliner::~Outliner()
 
 }
 
+void Outliner::paint(Graphics &g){
+    LGMLUIUtils::fillBackground(this,g);
+
+}
 
 void Outliner::clear(){
     setRoot(nullptr);
@@ -92,10 +96,6 @@ int Outliner::getTargetHeight(){
     return  (filterTextEditor.isVisible()?(10+30):0) + treeView.getViewport()->getViewedComponent()->getHeight();
 }
 
-void Outliner::paint (Graphics& g)
-{
-    //g.fillAll(Colours::green.withAlpha(.2f));
-}
 
 
 void Outliner::setRoot(ParameterContainer * p,bool saveOpenness){
@@ -466,7 +466,7 @@ void OutlinerItem::itemSelectionChanged (bool isNowSelected){
 OutlinerItemComponent::OutlinerItemComponent (OutlinerItem* _item) :
 InspectableComponent ("OutlinerItem"),
 item (_item),
-label ("label", _item->isContainer ? _item->container->getNiceName() : _item->parameter->niceName),
+label ("label"),
 paramUI (nullptr)
 
 {
@@ -507,7 +507,10 @@ paramUI (nullptr)
     if (!_item->isContainer )
     {
         paramUI = ParameterUIFactory::createDefaultUI (item->parameter);
+        paramUI->showLabel = false;
         item->parameter->addControllableListener(this);
+
+
 
     }
     else
@@ -515,6 +518,9 @@ paramUI (nullptr)
         paramUI = ParameterUIFactory::createDefaultUI (item->container->nameParam);
         item->container->nameParam->addAsyncCoalescedListener(this);
     }
+//    label.setPaintingIsUnclipped(true);
+    LGMLUIUtils::optionallySetBufferedToImage(&label);
+    updateLabelText();
 
     addAndMakeVisible (paramUI);
 }
@@ -548,27 +554,46 @@ void OutlinerItemComponent::resized()
 
 }
 
+void OutlinerItemComponent::updateLabelText(){
+    String t = "error";
+    if(item->isContainer){
+        if(item->container) t= item->container->getNiceName();
+        else jassertfalse;
+    }
+    else{
+        if(item->parameter) t=item->parameter->niceName;
+        else jassertfalse;
+    }
+//    item->container->nameParam->stringValue()
+    label.setText(  t,dontSendNotification);
+    labelWidth = label.getFont().getStringWidthFloat (t);
+}
+
 void OutlinerItemComponent::controllableNameChanged (Controllable* ) {
-    if(!item->isContainer)
-        label.setText(  item->parameter->niceName,dontSendNotification);
+    if(!item->isContainer){
+        updateLabelText();
+    }
     else
         jassertfalse;
 }
 
+
+
 void OutlinerItemComponent::newMessage(const ParameterBase::ParamWithValue &pv){
-    if(item->isContainer && pv.parameter==item->container->nameParam)
-        label.setText(  item->container->nameParam->stringValue(),dontSendNotification);
+    if(item->isContainer && pv.parameter==item->container->nameParam){
+        updateLabelText();
+    }
     else
-        jassertfalse;
+        {jassertfalse;}
 }
 void OutlinerItemComponent::paint (Graphics& g)
 {
+    LGMLUIUtils::fillBackground(this, g);
     Rectangle<int> r = getLocalBounds();
-
     Colour c = item->isContainer ? findColour (TextButton::buttonOnColourId) : findColour (Label::textColourId);
 
 
-    int labelWidth = label.getFont().getStringWidthFloat (label.getText());
+
 
     if (item->isSelected())
     {

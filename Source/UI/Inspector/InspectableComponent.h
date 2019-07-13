@@ -56,7 +56,8 @@ public:
     String visibleName;
 protected:
     bool keyPressed (const KeyPress&)override;
-
+    void paint(Graphics & g)override;
+    void parentHierarchyChanged()override;
     void paintOverChildren (juce::Graphics& g) override;
 
     void setRelatedContainer(ParameterContainer*);

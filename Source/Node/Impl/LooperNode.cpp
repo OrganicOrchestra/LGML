@@ -18,7 +18,7 @@
 
 #include "../NodeContainer/NodeContainer.h"
 #include "../../Utils/AudioDebugPipe.h"
-#include "../../Engine.h"
+#include "../../Engine.h" // for audio Exporting
 
 REGISTER_NODE_TYPE (LooperNode)
 

@@ -12,9 +12,7 @@
 *
 */
 
-
-#ifndef LOOPERNODEUI_H_INCLUDED
-#define LOOPERNODEUI_H_INCLUDED
+#pragma once
 
 #include "../../Controllable/Parameter/UI/TriggerBlinkUI.h"
 #include "../../Controllable/Parameter/UI/SliderUI.h"
@@ -43,8 +41,9 @@ public:
     void init() override;
 
     class TrackUI :
-        public LooperTrack::Listener,
-        public InspectableComponent
+        public InspectableComponent,
+        public LooperTrack::Listener
+
     {
     public:
 
@@ -117,4 +116,7 @@ private:
 };
 
 
-#endif  // LOOPERNODEUI_H_INCLUDED
+
+#if NON_INCREMENTAL_COMPILATION
+    #include "LooperNodeUI.cpp"
+#endif

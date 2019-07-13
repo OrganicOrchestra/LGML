@@ -15,6 +15,7 @@
 #if !ENGINE_HEADLESS
 
 #include "BetterStepper.h"
+//#include "../../../UI/Style.h"
 
 BetterStepper::BetterStepper (TooltipClient* tooltip) : Slider (SliderStyle::IncDecButtons, TextEntryBoxPosition::TextBoxLeft)
 ,tooltipClient(tooltip)
@@ -26,10 +27,16 @@ BetterStepper::BetterStepper (TooltipClient* tooltip) : Slider (SliderStyle::Inc
     setIncDecButtonsMode (IncDecButtonMode::incDecButtonsDraggable_AutoDirection);
     addMouseListener(this,true);
 //    setScrollWheelEnabled (true);
-
+//    setOpaque(true);
+//    setPaintingIsUnclipped(true);
 
 }
 
+void BetterStepper::paint(Graphics & g){
+//    LGMLUIUtils::fillBackground(this,g);
+    Slider::paint(g);
+
+}
 BetterStepper::~BetterStepper()
 {
 }
@@ -73,11 +80,11 @@ void BetterStepper::setEditable(bool s){
 }
 
 void BetterStepper::mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& wheel) {
-    //    Viewport *vp =findParentComponentOfClass<Viewport>();
-    //    bool _scrollWheelAllowed = !vp  || !(vp->canScrollVertically() || vp->canScrollHorizontally());
+        Viewport *vp =findParentComponentOfClass<Viewport>();
+        bool _scrollWheelAllowed = !vp  || !(vp->canScrollVertically() || vp->canScrollHorizontally());
 
     // filter out scrolling when scrolling in viewport
-    bool _scrollWheelAllowed = Time::currentTimeMillis()- timeEntered  > 500;
+//    bool _scrollWheelAllowed = Time::currentTimeMillis()- timeEntered  > 500;
     if(_scrollWheelAllowed){
         Slider::mouseWheelMove(e, wheel);
     }

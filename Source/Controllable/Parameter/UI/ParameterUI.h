@@ -20,20 +20,10 @@
 #include "../../../JuceHeaderUI.h"
 #include "../../../UI/Inspector/InspectableComponent.h"
 
-class ParameterUI;
-class AllParamType{
-public:
-    typedef WeakReference<ParameterUI> Ptr;
-    void add(ParameterUI*);
-    void removeAllInstancesOf(ParameterUI*);
-    typedef Array< Ptr > ArrayType;
-    ArrayType getForParameter(ParameterBase *  ) const;
 
-private:
-    HashMap<ParameterBase*,ArrayType> container;
-    HashMap<ParameterUI* , ParameterBase*> allPs;
+class DefferTimer;
 
-};
+
 
 class ParameterUI : public InspectableComponent,
     protected ParameterBase::Listener,
@@ -48,9 +38,9 @@ public:
 
     bool showLabel;
     bool showValue;
-//    typedef HashMap<ParameterBase *,WeakReference<ParameterUI>> AllParamType;
-    static const AllParamType & getAllParameterUIs();
+
     void setCustomText (const String text);
+    String getDisplayedText () const;
 
     enum MappingState
     {
@@ -67,11 +57,18 @@ public:
     void updateOverlayEffect();
 
     void visibilityChanged() final;
-    void parentHierarchyChanged()final;
+    void paint(Graphics & g)override;
+    void parentHierarchyChanged()override;
+    struct Listener{
+        virtual ~Listener(){}
+        virtual void displayedTextChanged(ParameterUI * ) = 0;
+    };
+    ListenerList<ParameterUI::Listener> paramUIListeners;
 
 protected:
 
     String customTextDisplayed;
+    virtual void displayedTextChangedInternal(){};
     // helper to spot wrong deletion order
     bool shouldBailOut();
 
@@ -106,6 +103,7 @@ private:
 
     // Inherited via Listener
     virtual void controllableStateChanged (Controllable* c) override;
+    virtual void controllableNameChanged (Controllable*) override;
     virtual void controllableControlAddressChanged (Controllable* c) override;
 
 
@@ -113,7 +111,9 @@ private:
 
     var lastValuePainted;
 
+
 protected:
+    
     typedef HashMap<int, String> UICommandType;
     virtual void processUICommand(int cmd){};
     virtual const UICommandType & getUICommands() const;
@@ -123,47 +123,13 @@ private:
 
     bool wasShowing;
     bool hasMappedParameter;
-
+    ScopedPointer<DefferTimer> defferTimer;
+    friend class DefferTimer;
 
 };
 
 
 
-class LabelLinkedTooltip : public Component,public TooltipClient{
-public:
-    LabelLinkedTooltip(TooltipClient * p):t(p){
-        label.setJustificationType (Justification::centredLeft);
-        addAndMakeVisible(label);
-        label.setVisible(false);
-        label.setBorderSize(BorderSize<int>(0));
-    }
-        void paint(Graphics & g) override{
-            getLookAndFeel().drawLabel (g, label);
-        }
-    void resized()override{
-        label.setBounds(getLocalBounds());
-    }
-    String getTooltip() override{
-        return t->getTooltip();
-    }
-    void addListener(Label::Listener *l){
-        label.addListener(l);
-    }
-    void setEditable(bool editOnSingleClick,
-                     bool editOnDoubleClick=false,
-                     bool lossOfFocusDiscards=false){
-        label.setEditable(editOnSingleClick,editOnDoubleClick,lossOfFocusDiscards);
-    }
-
-    void setFont(const Font & f){label.setFont(f);}
-    Font getFont(){return label.getFont();}
-    String getText(){return label.getText();}
-    void setText(const String & s,juce::NotificationType notif){label.setText(s,notif);}
-
-private:
-    Label label;
-    TooltipClient * t;
-};
 //    this class allow to automaticly generate label / ui element for parameter listing in editor
 //    it owns the created component
 class NamedParameterUI : public ParameterUI, public Label::Listener
@@ -173,7 +139,7 @@ public:
     void resized()override;
     bool labelAbove;
     void labelTextChanged (Label* labelThatHasChanged) override;
-    ScopedPointer<LabelLinkedTooltip> controllableLabel;
+    ScopedPointer<Label> controllableLabel;
     int labelWidth;
     ScopedPointer <ParameterUI > ownedParameterUI;
     void controllableControlAddressChanged (Controllable*)override;

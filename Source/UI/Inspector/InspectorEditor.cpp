@@ -15,5 +15,10 @@
 #if !ENGINE_HEADLESS
 
 #include "InspectorEditor.h"
+#include "../Style.h"
+
+void InspectorEditor::paint(Graphics & g){
+    LGMLUIUtils::fillBackground(this,g);
+}
 
 #endif

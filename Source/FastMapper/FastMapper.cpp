@@ -21,6 +21,7 @@
 #if !ENGINE_HEADLESS
 #include "../Controllable/Parameter/UI/ParameterUI.h"
 #endif
+#include "../Controllable/Parameter/UI/ParameterUIHelpers.h" // keep after ParameterUI.h
 
 #include "../Controller/ControllerManager.h"
 juce_ImplementSingleton (FastMapper)
@@ -149,8 +150,8 @@ FastMap* FastMapper::addFastMap()
         // avoid listener feedback
         MessageManager::callAsync([this,wkf](){
             if(!wkf.get()){return;}
-            auto pIns = wkf->referenceIn->linkedParam?ParameterUI::getAllParameterUIs().getForParameter(wkf->referenceIn->linkedParam):AllParamType::ArrayType();
-            auto pOuts = wkf->referenceOut->linkedParam?ParameterUI::getAllParameterUIs().getForParameter(wkf->referenceOut->linkedParam):AllParamType::ArrayType();
+            auto pIns = wkf->referenceIn->linkedParam?AllParamType::getAllParameterUIs().getForParameter(wkf->referenceIn->linkedParam):AllParamType::ArrayType();
+            auto pOuts = wkf->referenceOut->linkedParam?AllParamType::getAllParameterUIs().getForParameter(wkf->referenceOut->linkedParam):AllParamType::ArrayType();
 
             for(auto p : pIns){p->setHasMappedParameter(true);}
             for(auto p : pOuts){p->setHasMappedParameter(true);}
@@ -278,7 +279,7 @@ void  FastMapper::linkedParamChanged (ParameterProxy* p ) {
                     }
                 }
                 if(!isStillMapped){
-                    auto & allUis (ParameterUI::getAllParameterUIs());
+                    auto & allUis (AllParamType::getAllParameterUIs());
                     auto pUIs = allUis.getForParameter(lastP);
                     for(auto ui:pUIs){
                         ui->setHasMappedParameter(false);
@@ -293,7 +294,7 @@ void  FastMapper::linkedParamChanged (ParameterProxy* p ) {
             ControlAddressType addr =  ControlAddressType::fromString(addrS);
             auto lastP = dynamic_cast<ParameterBase*>(ControllableContainer::getRoot(true)->getControllableForAddress(addr));
             if(lastP){
-                auto pUIs = ParameterUI::getAllParameterUIs().getForParameter(lastP);
+                auto pUIs = AllParamType::getAllParameterUIs().getForParameter(lastP);
                 for(auto ui:pUIs){
                     ui->setHasMappedParameter(true);
                 }

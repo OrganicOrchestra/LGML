@@ -31,7 +31,7 @@ public:
         addAndMakeVisible (slider);
         slider.setRange (p->minimumValue, p->maximumValue);
         slider.setMinAndMaxValues (p->getRangeMin(), p->getRangeMax(),dontSendNotification);
-
+        slider.setPaintingIsUnclipped(true);
     }
 
     void valueChanged (const var& v) override

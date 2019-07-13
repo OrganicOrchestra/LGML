@@ -22,6 +22,7 @@
 #include "AppPropertiesUI.h"
 
 #include "../Node/Manager/UI/NodeManagerUI.h"
+#include "Inspector/Inspector.h"
 //#include "../Controller/UI/ControllerManagerUI.h"
 
 
@@ -54,7 +55,7 @@ MainContentComponent::MainContentComponent (Engine* e):
 {
     
 
-
+    LGMLUIUtils::markHasNewBackground(this,0);
 
     addAndMakeVisible (&ShapeShifterManager::getInstance()->mainShifterContainer);
 
@@ -78,6 +79,9 @@ MainContentComponent::MainContentComponent (Engine* e):
 
     setWantsKeyboardFocus (true);
     setOpaque (true);
+    setPaintingIsUnclipped(true);
+
+
     tooltipWindow.setOpaque (false);
 
 
@@ -154,7 +158,7 @@ void MainContentComponent::paintOverChildren (Graphics& g)
 
 void MainContentComponent::paint (Graphics& g)
 {
-    g.fillAll (findColour (ResizableWindow::backgroundColourId).darker());
+    g.fillAll (findColour (ResizableWindow::backgroundColourId).darker().withAlpha(1.f));
 }
 
 void MainContentComponent::startLoadFile()

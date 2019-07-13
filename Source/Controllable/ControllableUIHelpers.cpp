@@ -22,6 +22,7 @@
 #include "../Utils/DebugHelpers.h"
 
 #include "../Node/Manager/NodeManager.h"
+#include "../UI/Style.h"
 
 ControllableContainerPopupMenu::ControllableContainerPopupMenu (ControllableContainer* rootContainer, Array<Controllable*>* _filterOut,int _startId ):
 filterOutControllable (_filterOut),
@@ -89,6 +90,7 @@ rootContainer (container),
 TextButton ("Target"),
 filterOutControllable (filterOut)
 {
+    LGMLUIUtils::optionallySetBufferedToImage(this);
     addListener (this);
 
 }

@@ -26,15 +26,16 @@
 #include "../UI/LGMLDragger.h"
 #include "../UI/StackedContainerUI.h"
 
-class FastMapper;
+#include "FastMapper.h"
 
 class FastMapperUI :
+    public InspectableComponent,
+    public ShapeShifterContent,
     private ControllableContainerListener,
     private Button::Listener,
     private Inspector::InspectorListener,
-    private LGMLDragger::Listener,
-    public ShapeShifterContent,
-    public InspectableComponent
+    private LGMLDragger::Listener
+
 
 {
 public:

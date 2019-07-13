@@ -27,6 +27,7 @@
 
 class Trigger;
 
+
 class TriggerBlinkUI : public ParameterUI, private Timer
 {
 public:
@@ -35,6 +36,7 @@ public:
 
 
     void paint (Graphics&)override;
+    void resized ()override;
     void mouseDown (const MouseEvent& event)override;
     void startBlink();
     void timerCallback()override;
@@ -49,6 +51,7 @@ public:
 private:
 
     
+    ScopedPointer<Component> cachedLabel;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TriggerBlinkUI)
 };
 

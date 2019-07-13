@@ -15,6 +15,7 @@
 #if !ENGINE_HEADLESS
 
 #include "ControllerEditor.h"
+#include "../../UI/Style.h"
 
 #include "../../Controllable/Parameter/UI/ParameterUIFactory.h"
 ControllerEditor::ControllerEditor (Controller* _controller, bool generateAuto) :
@@ -22,6 +23,7 @@ ControllerEditor::ControllerEditor (Controller* _controller, bool generateAuto) 
     controller (_controller),
     addParameterBT ("Add Variable")
 {
+    LGMLUIUtils::optionallySetBufferedToImage(&addParameterBT);
     addParameterBT.addListener (this);
 
     if (generateAuto)

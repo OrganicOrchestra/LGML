@@ -756,7 +756,7 @@ bool TimeManager::getCurrentPosition (CurrentPositionInfo& result)
     result.isPlaying = playState->boolValue();
     result.isRecording = isSettingTempo->boolValue();
 
-    result.ppqPosition = (double) (getBeat() / beatPerBar->intValue());
+    result.ppqPosition = (double) (getBeat() );
     result.ppqPositionOfLastBarStart = (double) (getBar() * beatPerBar->intValue());
     result.ppqLoopStart = 0;
     result.ppqLoopEnd = 0;

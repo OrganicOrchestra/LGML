@@ -103,6 +103,7 @@ public :
 
     void resized() override;
     void clear() override;
+    void paint(Graphics & g)override;
 
     void buttonClicked (Button*  b)override;
 

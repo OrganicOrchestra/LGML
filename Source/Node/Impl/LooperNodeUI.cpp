@@ -12,14 +12,14 @@
  *
  */
 
-#if !ENGINE_HEADLESS
+#if !ENGINE_HEADLESS && !NON_INCREMENTAL_COMPILATION
 
 #include "LooperNodeUI.h"
 #include "../../Controllable/Parameter/UI/ParameterUIFactory.h"
 #include "../../Controllable/ControllableUIHelpers.h"
 
 
-#include "../../Engine.h"
+
 
 LooperNodeContentUI::LooperNodeContentUI()
 {
@@ -245,6 +245,7 @@ void LooperNodeContentUI::filesDropped (const StringArray& files, int x, int y) 
 LooperNodeContentUI::TrackUI::TrackUI (LooperTrack* track) :InspectableComponent(track), track (track),
 isTrackSelected (track->isSelected), timeStateUI (track)
 {
+    LGMLUIUtils::markHasNewBackground(this,3);
     recPlayButton = ParameterUIFactory::createDefaultUI (track->recPlayTrig);
     recPlayButton->setCustomText (">");
     clearButton = ParameterUIFactory::createDefaultUI (track->clearTrig);
@@ -277,6 +278,9 @@ isTrackSelected (track->isSelected), timeStateUI (track)
     // manual triggering of listeners on creation
     trackStateChangedAsync(track->trackState);
 
+
+    
+
 }
 
 LooperNodeContentUI::TrackUI::~TrackUI()
@@ -286,7 +290,7 @@ LooperNodeContentUI::TrackUI::~TrackUI()
 
 void LooperNodeContentUI::TrackUI::paint (Graphics& g)
 {
-    g.setColour (findColour (ResizableWindow::backgroundColourId).brighter().withAlpha (0.5f));
+    g.setColour(LGMLUIUtils::getCurrentBackgroundColor(this));
     g.fillRoundedRectangle (getLocalBounds().toFloat(), 2.f);
 
 }
@@ -364,6 +368,7 @@ LooperNodeContentUI::TrackUI::TimeStateUI::TimeStateUI (LooperTrack* _track): tr
     track->addTrackListener (this);
     setTrackTimeUpdateRateHz (10);
     trackStateChangedAsync (_track->trackState);
+    setInterceptsMouseClicks(false,false);
     setOpaque(true);
 
 }
@@ -375,7 +380,7 @@ void LooperNodeContentUI::TrackUI::TimeStateUI::paint (Graphics& g)
 {
     Path p;
     Rectangle<int> r = getLocalBounds();
-
+    LGMLUIUtils::fillBackground(this,g);
     // For a circle, we can avoid having to generate a stroke
 
     float angle = 2.0f * float_Pi * trackPosition;

@@ -29,9 +29,9 @@
 */
 
 class ControllerManagerUI :
-ControllerManager::Listener,
-public ShapeShifterContent,
 public InspectableComponent,
+public ShapeShifterContent,
+public ControllerManager::Listener,
 private Button::Listener
 {
 public:
@@ -47,7 +47,7 @@ public:
 
     
 
-    void paint (Graphics&)override;
+    
     void resized()override;
 
     void mouseDown (const MouseEvent& e) override;

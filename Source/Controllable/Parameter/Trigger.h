@@ -42,6 +42,10 @@ public:
     {
         setValue (triggerVar);
     }
+    void triggerFrom(Listener * notifier)
+    {
+        setValueFrom (notifier,triggerVar);
+    }
 
     void triggerDebounced( const uint32_t debounceMillis)
     {

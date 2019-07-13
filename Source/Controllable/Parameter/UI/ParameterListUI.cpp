@@ -15,8 +15,9 @@ ParameterListUI<T>::ParameterListUI(ParameterList<T> *p):ParameterUI(p){
     for(int i = 0 ; i < p->size() ; i++){
         uiElems.add(new SliderUI<T>(p->paramsList[i]));
         addAndMakeVisible(uiElems.getLast());
+        
     }
-
+    
 }
 
 

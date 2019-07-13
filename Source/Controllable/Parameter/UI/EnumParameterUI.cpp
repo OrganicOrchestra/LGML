@@ -17,7 +17,7 @@
 
 #include "../UndoableHelper.h"
 
-#include "../../../Engine.h"
+#include "../../../Engine.h" // for file path whith file Lists
 
 #if JUCE_DEBUG && 0
 #define DBGENUM(x) DBG(x)
@@ -38,6 +38,7 @@ hoveredByFile(false)
     cb.setTextWhenNothingSelected (ep->niceName);
     cb.setTooltip (ParameterUI::getTooltip());
     cb.setEditableText (ep->userCanEnterText);
+    cb.setRepaintsOnMouseActivity(false);
     addAndMakeVisible (cb);
     ep->addAsyncEnumParameterListener (this);
 

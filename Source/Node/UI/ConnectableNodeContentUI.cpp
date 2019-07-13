@@ -22,6 +22,7 @@ ConnectableNodeContentUI::ConnectableNodeContentUI()
     node = nullptr;
     nodeUI = nullptr;
     setMouseCursor(MouseCursor::ParentCursor);
+    setPaintingIsUnclipped(true);
 }
 
 ConnectableNodeContentUI::~ConnectableNodeContentUI()

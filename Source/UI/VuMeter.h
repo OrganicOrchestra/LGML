@@ -51,6 +51,7 @@ public:
         colorLow = Colours::lightgreen;
         isActive = true;
         setOpaque (true);
+        setPaintingIsUnclipped(true);
         setInterceptsMouseClicks(false, false);
     }
 

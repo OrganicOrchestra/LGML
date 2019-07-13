@@ -40,6 +40,7 @@ currentCandidatePanel (nullptr)
 
     lastFile = defaultFolder.getChildFile ("_lastSession." + appLayoutExtension);
     LGMLLogger::getInstance()->addLogCoalescedListener(this);
+//    LGMLUIUtils::markHasNewBackground(mainShifterContainer);
 }
 
 ShapeShifterManager::~ShapeShifterManager()

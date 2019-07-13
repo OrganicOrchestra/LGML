@@ -15,7 +15,7 @@
 #if !ENGINE_HEADLESS
 
 #include "NodeConnectionUI.h"
-#include "NodeConnectionEditor.h"
+#include "NodeConnectionEditor.hpp"
 
 //==============================================================================
 NodeConnectionUI::NodeConnectionUI (NodeConnection* connection, Connector* sourceConnector, Connector* destConnector) :

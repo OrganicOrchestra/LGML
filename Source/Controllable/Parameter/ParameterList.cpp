@@ -213,14 +213,27 @@ ParameterList<T>( niceName, description, Array<var> {x, y}, minPoint, maxPoint, 
 }
 
 template<typename T>
-void Point2DParameter<T>::setPoint (const Point<T>& _value,ParameterBase::Listener * notifier)
+void Point2DParameter<T>::setPoint (const Point<T>& _value)
 {
-    setPoint (_value.x, _value.y,notifier);
+    setPoint (_value.x, _value.y);
 }
 
 template<typename T>
-void Point2DParameter<T>::setPoint (const T _x, const T _y,ParameterBase::Listener * notifier)
+void Point2DParameter<T>::setPoint (const T _x, const T _y)
 {
+    var d;
+    d.append (_x);
+    d.append (_y);
+    ParameterList<T>::setValue(d);
+}
+
+template<typename T>
+void Point2DParameter<T>::setPointFrom(ParameterBase::Listener * notifier ,const Point<T>& _value){
+    setPointFrom(notifier, _value.x,_value.y);
+}
+
+template<typename T>
+void Point2DParameter<T>::setPointFrom(ParameterBase::Listener * notifier ,const T _x, const T _y){
     var d;
     d.append (_x);
     d.append (_y);

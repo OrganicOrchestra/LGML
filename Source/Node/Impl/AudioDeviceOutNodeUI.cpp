@@ -11,7 +11,7 @@
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 *
 */
-#if !ENGINE_HEADLESS
+#if !ENGINE_HEADLESS && !NON_INCREMENTAL_COMPILATION
 
 #include "AudioDeviceOutNodeUI.h"
 
@@ -124,6 +124,7 @@ void AudioDeviceOutNodeContentUI::addVuMeter()
     int curVuMeterNum = muteToggles.size();
 
     auto b = ParameterUIFactory::createDefaultUI (audioOutNode->outMutes[curVuMeterNum]);
+    b->setCustomText(String(v->targetChannel+1));
     muteToggles.add (b);
     addAndMakeVisible (b);
 
@@ -149,7 +150,7 @@ void AudioDeviceOutNodeContentUI::removeLastVuMeter()
     removeChildComponent (volumes[curVuMeterNum]);
     volumes.removeLast();
 }
-void AudioDeviceOutNodeContentUI::nodeParameterChanged (ConnectableNode*, ParameterBase* p)
+void AudioDeviceOutNodeContentUI::nodeParameterChangedAsync (ConnectableNode*, ParameterBase* p)
 {
 
     int index = 0;

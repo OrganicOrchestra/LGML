@@ -72,7 +72,7 @@ public:
     public:
         virtual ~ConnectableNodeListener() {}
         virtual void nodeParameterChanged (ConnectableNode*, ParameterBase*) {}
-
+        virtual void nodeParameterChangedAsync(ConnectableNode*, ParameterBase*) {}
         virtual void numAudioInputChanged (ConnectableNode*, int /*newNumInput*/) {};
         virtual void numAudioOutputChanged (ConnectableNode*, int /*newNumOutput*/) {};
 
@@ -149,6 +149,13 @@ protected:
 
 
 private:
+    // hijack listener to force nodeListeners notification (before notifier==this filtering)
+    void parameterValueChanged ( ParameterBase* p, ParameterBase::Listener * notifier)override;
+
+    void newMessage(const ParameterBase::ParamWithValue &pv)override;
+
+
+    
     WeakReference<ConnectableNode>::Master masterReference;
     friend class WeakReference<ConnectableNode>;
 

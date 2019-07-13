@@ -53,10 +53,9 @@ public:
     void setTargetPosition (int index, const Point<floatParamType>& position);
     
     void updateIOParams();
-    void updateTargetsFromShape();
+
     void computeAllInfluences();
-    void computeInfluencesForTarget (int targetIndex);
-    void computeInfluence (int sourceIndex, int targetIndex);
+
     float getValueForSourceAndTargetPos (const Point<floatParamType>& sourcePosition, const Point<floatParamType>& targetPosition, float radius);
 
     bool modeIsBeam();
@@ -74,6 +73,11 @@ public:
     AudioBuffer<float> tempBuf;
     Array<float> influences;
     float alphaFilter;
+
+private:
+    void updateTargetsFromShape();
+    void computeInfluencesForTarget (int targetIndex);
+    void computeInfluence (int sourceIndex, int targetIndex);
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Spat2DNode)
 };
 

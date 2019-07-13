@@ -292,7 +292,11 @@ void ParameterContainer::parameterValueChanged ( ParameterBase* p, ParameterBase
         }
     }
 
-    if ( (p != nullptr && p->parentContainer == this && p->isControllableExposed ) ) dispatchFeedback (p);
+    if ( (p != nullptr && p->parentContainer == this ) ){
+        if(p->isControllableExposed)
+            dispatchFeedback (p);
+        
+    }
 }
 
 void ParameterContainer::configureFromObject (DynamicObject* dyn)

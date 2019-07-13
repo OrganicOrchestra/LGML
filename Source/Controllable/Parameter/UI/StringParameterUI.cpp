@@ -49,13 +49,14 @@ ParameterUI (p), autoSize (false), maxFontHeight (12),trimStart(false)//,valueLa
     addMouseListener(this, true);
     nameLabel.setJustificationType (Justification::centredLeft);
     nameLabel.setText (prefix + parameter->niceName + suffix, NotificationType::dontSendNotification);
+    nameLabel.setPaintingIsUnclipped(true);
 
     
     valueChanged(parameter->value);
 
     bool stringEditable = parameter->isEditable ;
     valueLabel.setEditable ( stringEditable,stringEditable);
-
+    valueLabel.setPaintingIsUnclipped(true);
 
     valueLabel.addListener (this);
 
@@ -99,7 +100,7 @@ void StringParameterUI::setNameLabelVisible (bool visible)
 }
 void StringParameterUI::setBackGroundIsTransparent (bool t)
 {
-    valueLabel.setColour (Label::backgroundColourId, Colours::transparentWhite.withAlpha (t ? 0 : 0.1f));
+//    valueLabel.setColour (Label::backgroundColourId, Colours::transparentWhite.withAlpha (t ? 0 : 0.1f));
 }
 
 

@@ -24,8 +24,8 @@
 #include "../Utils/FactoryUIHelpers.h"
 
 FastMapperUI::FastMapperUI (const String& contentName,FastMapper* _fastMapper, ContainerType* _viewFilterContainer) :
-InspectableComponent(_fastMapper),
 ShapeShifterContent (this,contentName,"Link parameters together\nAdd FastMap here\nCmd+m toggles mapping mode"),
+InspectableComponent(_fastMapper),
 fastMapper (_fastMapper), viewFilterContainers {WeakReference<ContainerType>(_viewFilterContainer)},
 mapsUI(new StackedContainerUI<FastMapUI, FastMap>(
                                                   [](FastMapUI* ui){return ui->fastMap;},
@@ -42,6 +42,7 @@ mapsUI(new StackedContainerUI<FastMapUI, FastMap>(
     fastMapper->addControllableContainerListener (this);
 
     linkToSelection.setButtonText (juce::translate("Show from selected"));
+    LGMLUIUtils::optionallySetBufferedToImage(&linkToSelection);
     linkToSelection.setTooltip (juce::translate("Filter viewed fastmap to currently selected element :\n- Node\n- Controller\n- Parameter\n- ..."));
     linkToSelection.setClickingTogglesState (true);
     linkToSelection.addListener (this);

@@ -43,7 +43,11 @@ struct LGMLUIUtils{
     static void printComp(Component * c);
     static void drawBounds(Component * c,Graphics & g);
     static void forceRepaint(Component * c) ;
-
+    static Colour getBackgroundColorForDepth(const Colour   baseColor,int depth);
+    static Colour getCurrentBackgroundColor(const Component *c);
+    static void markHasNewBackground(Component * c,int depth);
+    static void fillBackground(const Component *c,Graphics & g);
+    static void optionallySetBufferedToImage(Component * c, bool l=true );
 };
 
 namespace LGMLColors
@@ -67,8 +71,10 @@ public:
     void paintButton (Graphics& g,
                       bool isMouseOverButton,
                       bool isButtonDown)override;
+    void paint(Graphics &g) override;
     // utility function to share common positioning
     void setFromParentBounds (const Rectangle<int>& area);
+    void parentHierarchyChanged()override;
 
 private:
     JUCE_LEAK_DETECTOR(AddElementButton);
@@ -84,6 +90,7 @@ public:
     void paintButton (Graphics& g,
                       bool isMouseOverButton,
                       bool isButtonDown)override;
+    void paint(Graphics &g) override;
 
 private:
     JUCE_LEAK_DETECTOR(RemoveElementButton);
@@ -122,6 +129,7 @@ private:
     CachedFont::Ptr  _font;
 
 };
+
 
 
 

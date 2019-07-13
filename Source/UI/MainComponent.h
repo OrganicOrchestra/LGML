@@ -30,7 +30,7 @@
 
 
 
-#include "../Engine.h"
+#include "../Engine.h" //EngineListener
 #include "ShapeShifter/ShapeShifterManager.h"
 #include "../Utils/DebugHelpers.h"
 #include "ProgressWindow.h"

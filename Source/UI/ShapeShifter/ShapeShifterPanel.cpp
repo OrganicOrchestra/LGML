@@ -45,8 +45,8 @@ ShapeShifterPanel::ShapeShifterPanel (ShapeShifterContent* _content, ShapeShifte
             attachTab (sourceTab);
         }
     }
-
-      setOpaque(true);
+    setPaintingIsUnclipped(true);
+    setOpaque(true);
 
 }
 
@@ -114,7 +114,8 @@ void ShapeShifterPanel::setTargetMode (bool value)
 
 void ShapeShifterPanel::paint (Graphics& g)
 {
-    g.setColour (findColour (ResizableWindow::backgroundColourId).withAlpha (transparentBackground ? .15f : 1.f));
+    
+    g.setColour (findColour (LGMLColors::elementBackground,true).withAlpha (transparentBackground ? .15f : 1.f));
     g.fillRect (getLocalBounds().withTrimmedTop (headerHeight));
 }
 

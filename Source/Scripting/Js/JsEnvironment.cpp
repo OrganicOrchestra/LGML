@@ -20,7 +20,7 @@
 #include "../../Utils/DebugHelpers.h"
 
 
-#include "../../Engine.h"
+#include "../../Engine.h" // listen global changes
 #include "JsGlobalEnvironment.h"
 
 

@@ -52,6 +52,7 @@ public:
     ShapeShifterContentComponent (const String& contentName,const String & info);
     virtual ~ShapeShifterContentComponent(){};
     void resized() override;
+    void paint(Graphics & g)override;
     Label infoLabel;
 };
 

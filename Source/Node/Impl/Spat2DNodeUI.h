@@ -13,14 +13,13 @@
 */
 
 
-#ifndef SPATNODEUI_H_INCLUDED
-#define SPATNODEUI_H_INCLUDED
+#pragma once
 
 #include "../UI/ConnectableNodeContentUI.h"
 #include "../../Controllable/Parameter/UI/ParameterUI.h"
 #include "Spat2DNode.h"
-#include "Spat2DViewerUI.h"
 
+class Spat2DViewer;
 
 class Spat2DNodeContentUI :
     public ConnectableNodeContentUI,
@@ -50,11 +49,13 @@ public:
 
     void updateShapeModeView();
 
-    void nodeParameterChanged (ConnectableNode*, ParameterBase* p) override;
+    void nodeParameterChangedAsync (ConnectableNode*, ParameterBase* p) override;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Spat2DNodeContentUI)
 };
 
 
 
 
-#endif  // SPATNODEUI_H_INCLUDED
+#if NON_INCREMENTAL_COMPILATION
+    #include "Spat2DNodeUI.cpp"
+#endif

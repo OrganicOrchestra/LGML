@@ -12,9 +12,7 @@
 *
 */
 
-
-#ifndef JSNODEEDITOR_H_INCLUDED
-#define JSNODEEDITOR_H_INCLUDED
+#pragma once
 
 #include "../../Scripting/Js/JsEnvironmentUI.h"
 #include "../UI/ConnectableNodeContentUI.h"
@@ -46,4 +44,8 @@ public:
 
 
 
-#endif  // JSNODEEDITOR_H_INCLUDED
+
+
+#if NON_INCREMENTAL_COMPILATION
+#include "JsNodeUI.cpp"
+#endif

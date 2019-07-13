@@ -12,7 +12,7 @@
 *
 */
 
-#if !ENGINE_HEADLESS
+#if !ENGINE_HEADLESS && !NON_INCREMENTAL_COMPILATION
 
 #include "AudioMixerNodeUI.h"
 #include "../UI/ConnectableNodeUI.h"

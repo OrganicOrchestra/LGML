@@ -23,9 +23,10 @@
 class InspectorEditor : public juce::Component, public juce::ComponentListener
 {
 public:
-    InspectorEditor(){};
+    InspectorEditor(){setOpaque(true);};
     virtual ~InspectorEditor(){};
 
+    void paint(Graphics & g)override;
 
     virtual int getContentHeight() const = 0;
 

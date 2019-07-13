@@ -19,6 +19,8 @@
 #include "VSTManager.h"
 //#include "../Engine.h"
 
+extern ApplicationProperties* getAppProperties();
+
 juce_ImplementSingleton (VSTManager);
 
 static String pluginListKey("pluginList");

@@ -85,7 +85,8 @@ isMiniMode(true)
     execOrDefer([this](){setCurrentViewedContainer (nodeManager);});
     gridSize = addNewParameter<IntParameter>("gridSize","grid size to snap elements to",10,0,100);
 //    nodeManager->parentContainer->addChildControllableContainer(uiSync->getSlaveContainer());
-
+    setPaintingIsUnclipped(true);
+    setOpaque(true);
 }
 
 NodeManagerUI::~NodeManagerUI()
@@ -199,6 +200,9 @@ void NodeManagerUI::setCurrentViewedContainer (NodeContainer* c)
 
     nodeManagerUIListeners.call (&NodeManagerUIListener::currentViewedContainerChanged);
 
+}
+void NodeManagerUI::paint(Graphics & g){
+    LGMLUIUtils::fillBackground(this,g);
 }
 void NodeManagerUI::childBoundsChanged (Component* )
 {

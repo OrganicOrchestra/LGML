@@ -19,28 +19,35 @@
 #include "../../JuceHeaderUI.h"//keep
 #include "Spat2DNode.h"
 
-class Spat2DHandle : public juce::Component
+class Spat2DElement;
+class CircularHandleComponent : public Component{
+public:
+    CircularHandleComponent(Spat2DElement * );
+    void paint (Graphics& g) override;
+    void mouseDown (const MouseEvent& e) override;
+    void mouseDrag (const MouseEvent& e) override;
+    void resized () override;
+    bool hitTest (int x, int y) override;
+    Label numLabel;
+    Spat2DElement * owner;
+    float size;
+};
+
+class Spat2DElement : public juce::Component
 {
 public:
-    enum HandleType { SOURCE, TARGET};
-    Spat2DHandle (HandleType type, int index, float size, Colour color);
-    ~Spat2DHandle();
+    enum Type { SOURCE, TARGET};
+    Spat2DElement (Type type, int index, Colour color);
+    ~Spat2DElement();
 
-    virtual void paint (Graphics& g) override;
-    virtual void mouseDown (const MouseEvent& e) override;
-    virtual void mouseDrag (const MouseEvent& e) override;
-
-    virtual void resized() override;
-
-    HandleType type;
+    Type type;
     int index;
     Colour color;
-    float size;
-    Point<float> position;
 
-    void setPosition (Point<floatParamType> newPosition);
+    Point<floatParamType> position;
 
-    virtual bool hitTest (int x, int y) override;
+    void setFloatPosition (const Point<floatParamType> & newPosition);
+    void moved () override;
 
     class  Listener
     {
@@ -48,17 +55,17 @@ public:
 
         /** Destructor. */
         virtual ~Listener() {}
-        virtual void handleUserMoved (Spat2DHandle* handle, const Point<floatParamType>& newPosition) = 0;
+        virtual void spatElementUserMoved (Spat2DElement* handle, const Point<floatParamType>& newPosition) = 0;
     };
 
-    ListenerList<Listener> handleListeners;
-    void addHandleListener (Listener* newListener) { handleListeners.add (newListener); }
-    void removeHandleListener (Listener* listener) { handleListeners.remove (listener); }
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Spat2DHandle)
+    ListenerList<Listener> elemListeners;
+    void addSpatElementListener (Listener* newListener) { elemListeners.add (newListener); }
+    void removeSpatElementListener (Listener* listener) { elemListeners.remove (listener); }
+    CircularHandleComponent handle;
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Spat2DElement)
 };
 
-class Spat2DSource : public Spat2DHandle
+class Spat2DSource : public Spat2DElement
 {
 public:
     Spat2DSource (int index);
@@ -67,20 +74,20 @@ public:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Spat2DSource)
 };
 
-class Spat2DTarget : public Spat2DHandle
+class Spat2DTarget : public Spat2DElement
 {
 public:
     Spat2DTarget (int index, Colour color = Colours::orange);
+    void setFloatRadius(float r,bool repaint = true);
     float radius;
     float influence;
-
     void paint (Graphics& g) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Spat2DTarget)
 };
 
 
-class Spat2DViewer : public juce::Component, public Spat2DHandle::Listener,
+class Spat2DViewer : public juce::Component, public Spat2DElement::Listener,
     public ConnectableNode::ConnectableNodeListener,
     public ControllableContainer::Listener,
 private Timer
@@ -106,13 +113,13 @@ public:
     void resized() override;
     void paint (Graphics& g) override;
 
-    void nodeParameterChanged (ConnectableNode*, ParameterBase* p) override;
+    void nodeParameterChangedAsync (ConnectableNode*, ParameterBase* p) override;
 
     void childControllableAdded (ControllableContainer*, Controllable*) override;
     void childControllableRemoved (ControllableContainer*, Controllable*) override;
 
-    // Inherited via Listener (Spat2DHandle)
-    virtual void handleUserMoved (Spat2DHandle* handle, const Point<floatParamType>& newPosition) override;
+    // Inherited via Listener (Spat2DElement)
+    virtual void spatElementUserMoved (Spat2DElement* handle, const Point<floatParamType>& newPosition) override;
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Spat2DViewer)
@@ -124,5 +131,5 @@ public:
 
 };
 
-
+#include "Spat2DViewerUI.ipp"
 #endif  // SPAT2DVIEWER_H_INCLUDED

@@ -24,6 +24,9 @@
 #include <juce_audio_devices/juce_audio_devices.h>
 #include <juce_audio_utils/gui/juce_AudioDeviceSelectorComponent.h> // AudioDevice selector
 #include "../Utils/AutoUpdater.h" // for version checking
+#include "../Audio/VSTManager.h"
+
+extern ApplicationProperties* getAppProperties();
 
 juce_ImplementSingleton(AppPropertiesUI);
 /*

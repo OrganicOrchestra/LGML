@@ -75,7 +75,7 @@ public:
              if(!allowRecreation && dynamic_cast<T*>((T*)map[k]->getVoid())){
                  return k;
              }
-             jassert(allowRecreation );
+//             jassert(allowRecreation );
              deleteEntry(k,false);
          }
          map.set(k,new JsObjectRef<T>(o));

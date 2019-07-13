@@ -13,11 +13,9 @@
 */
 
 
-#ifndef NODECONNECTIONEDITORLINK_H_INCLUDED
-#define NODECONNECTIONEDITORLINK_H_INCLUDED
+#pragma once
 
-
-#include "NodeConnectionEditorDataSlot.h"//keep
+//#include "NodeConnectionEditorDataSlot.h"//keep
 //==============================================================================
 /*
 */
@@ -90,5 +88,4 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeConnectionEditorLink)
 };
 
-
-#endif  // NODECONNECTIONEDITORLINK_H_INCLUDED
+#include "NodeConnectionEditorLink.ipp"

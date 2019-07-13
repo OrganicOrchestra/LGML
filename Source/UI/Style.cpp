@@ -78,9 +78,59 @@ static void _repaint(Component* c ,int /*idx*/){
     c->repaint();
 }
 
+Identifier bgIdentifier("bgDepth");
+void LGMLUIUtils::markHasNewBackground(Component * c,int depth){
+    c->getProperties().set(bgIdentifier,depth);
+    c->setColour(LGMLColors::elementBackground,getCurrentBackgroundColor(c));
+
+}
+
+Colour LGMLUIUtils::getCurrentBackgroundColor(const Component *c){
+    auto insp = c;
+    int depth = 0;
+    while(insp){
+        int d = insp->getProperties().getWithDefault(bgIdentifier, -1);
+        if(d>=0){
+            depth =d;
+            break;
+        }
+        insp = insp->getParentComponent();
+    }
+    return  getBackgroundColorForDepth(c->getLookAndFeel().findColour(LGMLColors::elementBackground),depth);
+
+}
 
 
+Colour LGMLUIUtils::getBackgroundColorForDepth( const Colour   baseColor,int depth){
+//    const auto amp = 0.15;
+//    while(depth>=5){
+//        depth-=5;
+//    };
+//    float brightness = amp*(1.0 - depth/5.0);
+//    if(depth%2==0){ brightness*=-1; }
+//    brightness+=amp+0.1;
+    if(depth%2==0){
+        return baseColor.withAlpha(1.f).brighter(.25);
+    }
+//    return Colours::red.interpolatedWith(Colours::green, brightness).withAlpha(1.f);
+    return baseColor.withAlpha(1.f);
+//    return baseColor.withBrightness(brightness).withAlpha(1.f);
+}
 
+void LGMLUIUtils::optionallySetBufferedToImage(Component * c, bool l){
+    if(0){
+
+    }
+    else{
+        c->setBufferedToImage(l);
+    }
+}
+
+void LGMLUIUtils::fillBackground(const Component *c,Graphics & g){
+        g.setColour (getCurrentBackgroundColor(c).withAlpha(1.f));
+        g.fillRect (c->getLocalBounds());
+    
+}
 
 void LGMLUIUtils::printComp(Component * c) {
     itercomp<decltype(_printComp)>::doit(_printComp,c,0);
@@ -103,10 +153,20 @@ void LGMLUIUtils::forceRepaint(Component * c) {
 
 AddElementButton::AddElementButton(): DrawableButton ("Add",DrawableButton::ButtonStyle::ImageFitted) {
     setImages(createDrawable(),createDrawable(true));
+    setPaintingIsUnclipped(true);
+    setOpaque(true);
+    LGMLUIUtils::optionallySetBufferedToImage(this);
+
 };
 AddElementButton::~AddElementButton(){
 
 };
+void AddElementButton::parentHierarchyChanged(){
+    repaint();// for background
+}
+void AddElementButton::paint(Graphics & g){
+    LGMLUIUtils::fillBackground(this,g);
+}
 
 class ElemDrawables : public DeletedAtShutdown{
 public:
@@ -200,11 +260,18 @@ void AddElementButton::setFromParentBounds (const Rectangle<int>& area)
 
 
 RemoveElementButton::RemoveElementButton(): Button ("Remove") {
-
+    setOpaque(true);
+    setPaintingIsUnclipped(true);
+    LGMLUIUtils::optionallySetBufferedToImage(this);
 };
+
 RemoveElementButton::~RemoveElementButton(){
-
 };
+
+void RemoveElementButton::paint(Graphics & g){
+    LGMLUIUtils::fillBackground(this,g);
+}
+
 void RemoveElementButton::paintButton (Graphics& g,
                                        bool isMouseOverButton,
                                        bool isButtonDown)

@@ -19,13 +19,28 @@
 #include "../NumericParameter.h"
 #include "../UndoableHelper.h"
 
+int maxDecimals = 2;
 //==============================================================================
 template<class T>
 SliderUI<T>::SliderUI ( ParameterBase* parameter) :
-    ParameterUI (parameter), fixedDecimals (2),
-    defaultColor (0xff99ff66),
+    ParameterUI (parameter),
     scrollWheelAllowed(true)
 {
+//    showValue = false;
+//    showLabel = false;
+    if(auto fp = parameter->getAs<FloatParameter>()){
+        if(fp->precisionMask>0){
+            fixedDecimals = jmin(maxDecimals,(int)log10f(fp->precisionMask));
+        }
+        else{
+            fixedDecimals = maxDecimals;
+        }
+
+    }
+    else{
+        fixedDecimals = 0;
+    }
+
     assignOnMousePosDirect = false;
     changeParamOnMouseUpOnly = false;
     orientation = HORIZONTAL;
@@ -40,8 +55,28 @@ SliderUI<T>::SliderUI ( ParameterBase* parameter) :
         valueBox->setColour(TextEditor::highlightColourId,Colours::grey);
         valueBox->setJustificationType(Justification::centred);
         valueBox->addMouseListener(this, false);
+        valueBox->setPaintingIsUnclipped(true);
         addChildComponent(valueBox);
     }
+
+    nameCachedLabel.setBorderSize({0,4,0,0});
+    valueCachedLabel.setBorderSize({0,0,0,4});
+    LGMLUIUtils::optionallySetBufferedToImage(&nameCachedLabel);
+    LGMLUIUtils::optionallySetBufferedToImage(&valueCachedLabel);
+    valueCachedLabel.setColour(Label::textColourId,Colours::white);
+    nameCachedLabel.setColour(Label::textColourId,Colours::white);
+    valueCachedLabel.setInterceptsMouseClicks(false,false);
+    nameCachedLabel.setInterceptsMouseClicks(false,false);
+    valueCachedLabel.setJustificationType(Justification::right);
+    nameCachedLabel.setJustificationType(Justification::left);
+    valueCachedLabel.setPaintingIsUnclipped(true);
+    nameCachedLabel.setPaintingIsUnclipped(true);
+
+    addChildComponent(nameCachedLabel);
+    addChildComponent(valueCachedLabel);
+    displayedTextChangedInternal();
+    valueChanged(parameter->value);
+
 
 }
 
@@ -51,19 +86,31 @@ SliderUI<T>::~SliderUI()
 
 }
 
+#define FILL_RECT_FUNC(a,r) fillRect(a)
+//#define FILL_RECT_FUNC(a,r) fillRoundedRectangleRect(a.toFloat(),b)
 
 template<class T>
 void SliderUI<T>::paint (Graphics& g)
 {
 
     if (shouldBailOut())return;
+    if(showLabel!=nameCachedLabel.isVisible()){
+        nameCachedLabel.setVisible(showLabel);
+        if(showLabel)displayedTextChangedInternal();
+    }
+    if(showValue!=valueCachedLabel.isVisible()){
+        valueCachedLabel.setVisible(showValue);
+        if(showValue)valueChanged(parameter->value);
+    }
 
+    ParameterUI::paint(g);
     Rectangle<int> sliderBounds = getLocalBounds();
 
     const float corner = 2;
     auto bgColor =findColour (Slider::backgroundColourId);
     g.setColour (bgColor);
-    g.fillRoundedRectangle (sliderBounds.toFloat(), corner);
+    g.FILL_RECT_FUNC (sliderBounds, corner);
+
 
 //    g.setColour (findColour (Slider::backgroundColourId).withAlpha (1.f).brighter());
 //    g.drawRoundedRectangle (sliderBounds.toFloat(), corner, 1);
@@ -80,51 +127,19 @@ void SliderUI<T>::paint (Graphics& g)
     if (orientation == HORIZONTAL)
     {
         drawPos = changeParamOnMouseUpOnly ? getMouseXYRelative().x : normalizedValue * getWidth();
-        g.fillRoundedRectangle (sliderBounds.removeFromLeft ((int)drawPos).toFloat(), corner);
+        g.FILL_RECT_FUNC (sliderBounds.removeFromLeft ((int)drawPos), corner);
     }
     else
     {
         drawPos = changeParamOnMouseUpOnly ? getMouseXYRelative().y : normalizedValue * getHeight();
-        g.fillRoundedRectangle (sliderBounds.removeFromBottom ((int)drawPos).toFloat(), corner);
+        g.FILL_RECT_FUNC (sliderBounds.removeFromBottom ((int)drawPos), corner);
     }
 
+}
 
-    if ((showLabel || showValue))
-    {
-        //Colour textColor = normalizedValue > .5f?Colours::darkgrey : Colours::grey;
-
-        g.setColour (Colours::grey);
-
-        sliderBounds = getLocalBounds();
-        Rectangle<int> destRect;
-
-        if (orientation == VERTICAL)
-        {
-            //destRect = Rectangle<int>(0, 0, 100, 100);
-            juce::AffineTransform at;
-            at = at.rotated ((float) (-double_Pi / 2.0f)); // , sliderBounds.getCentreX(), sliderBounds.getCentreY());
-            at = at.translated (0.f, (float)sliderBounds.getHeight());
-            g.addTransform (at);
-            destRect = Rectangle<int> (0, 0, sliderBounds.getHeight(), sliderBounds.getWidth()).withSizeKeepingCentre (sliderBounds.getHeight(), 12);
-        }
-        else
-        {
-            destRect = sliderBounds.withSizeKeepingCentre (sliderBounds.getWidth(), 12);
-        }
-
-        String text = "";
-
-        if (showLabel)
-        {
-            text += customTextDisplayed.isNotEmpty()?customTextDisplayed:parameter.get()?parameter->niceName:"No Parameter";
-
-            if (showValue) text += " : ";
-        }
-
-        if (showValue) text += String::formatted ("%." + String (fixedDecimals) + "f", parameter->floatValue());
-
-        g.drawFittedText (text, destRect, Justification::centred, 1);
-    }
+template<class T>
+void SliderUI<T>::displayedTextChangedInternal(){
+    nameCachedLabel.setText(getDisplayedText(),dontSendNotification);
 }
 
 template<class T>
@@ -136,6 +151,41 @@ void SliderUI<T>::resized() {
             r = r.transformedBy(AffineTransform::rotation(float_Pi/2,r.getCentreX(),r.getCentreY()));
         }
         valueBox->setBounds(r);
+    }
+    if(showLabel || showValue){
+
+        if(!showValue){
+            nameCachedLabel.setBounds(getLocalBounds());
+        }
+        else{
+            Rectangle<int> r = getLocalBounds();
+
+
+//            int idealWidth = valueCachedLabel.getFont().getStringWidth(valueCachedLabel.getText()+" ");
+//            idealValue = jmin(r.getWidth(),idealWidth);
+            if(orientation==VERTICAL){// simulate horizontal but rotate it
+                r.setWidth(r.getHeight());
+                r.setHeight(getLocalBounds().getWidth());
+                auto at = AffineTransform::rotation(-float_Pi/2.f,0,0).translated(0,r.getWidth());
+                valueCachedLabel.setTransform(at);
+                nameCachedLabel.setTransform(at);
+            }
+            Font bF = valueCachedLabel.getFont();
+            auto bSize = valueCachedLabel.getBorderSize();
+            int tFontH = jmin(jmax(r.getHeight()-(bSize.getTop()+bSize.getBottom()),5),13);
+            if(bF.getHeight()!=tFontH){
+                bF.setHeight(tFontH);
+                valueCachedLabel.setFont(bF);
+                nameCachedLabel.setFont(bF);
+            }
+            int valueSize =r.getWidth()/2;
+            if(valueSize<30){valueSize=r.getWidth();}
+            valueCachedLabel.setBounds(r.removeFromRight(valueSize));
+            nameCachedLabel.setBounds(r);
+
+
+        }
+
     }
 }
 
@@ -390,10 +440,16 @@ float SliderUI<T>::getParamNormalizedValue()
     return parameter->getAs<NumericParameter<T> >()->getNormalizedValue();
 }
 
+String getFormatedValueText(float f,int precision){
+    return String::formatted ("%." + String (precision) + "f", f);
+}
 template<class T>
-void SliderUI<T>::valueChanged (const var&)
+void SliderUI<T>::valueChanged (const var& v)
 {
     if(valueBox)valueBox->hideEditor(true);
+    if(showValue){
+        valueCachedLabel.setText(getFormatedValueText(v, fixedDecimals),dontSendNotification);
+    }
     repaint();
 };
 template<class T>

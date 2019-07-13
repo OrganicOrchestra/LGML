@@ -22,6 +22,8 @@
 #include "../../Utils/NetworkUtils.h"
 #include "../../Controllable/Parameter/ParameterProxy.h"
 
+extern bool isEngineLoadingFile();
+
 HashMap<OSCController * , int> OSCController::listenedPorts{};
 HashMap<OSCController * , int> OSCController::localSentPorts{};
 
@@ -248,7 +250,7 @@ void OSCController::processMessage (const OSCMessage& msg)
 
     }
 
-    if (!enabledParam->boolValue()) return;
+    if (!enabledParam->boolValue() || isEngineLoadingFile()) return;
 
     if (blockFeedback->boolValue())
     {

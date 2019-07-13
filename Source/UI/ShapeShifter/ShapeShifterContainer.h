@@ -95,6 +95,7 @@ public:
     int getMinWidth() override;
     int getMinHeight() override;
 
+    void paint(Graphics & g)override;
     void paintOverChildren(Graphics & g) override;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ShapeShifterContainer)
     

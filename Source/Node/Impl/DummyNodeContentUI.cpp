@@ -12,7 +12,7 @@
 *
 */
 
-#if !ENGINE_HEADLESS
+#if !ENGINE_HEADLESS && !NON_INCREMENTAL_COMPILATION
 
 #include "DummyNodeContentUI.h"
 #include "../UI/ConnectableNodeUI.h"

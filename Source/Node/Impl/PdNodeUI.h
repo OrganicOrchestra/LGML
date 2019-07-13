@@ -79,4 +79,7 @@ private:
 
 };
 
+#if NON_INCREMENTAL_COMPILATION
+    #include "PdNodeUI.cpp"
+#endif
 

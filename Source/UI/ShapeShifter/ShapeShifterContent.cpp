@@ -14,7 +14,7 @@
 #if !ENGINE_HEADLESS
 
 #include "ShapeShifterContent.h"
-
+#include "../Style.h"
 
 ShapeShifterContent::ShapeShifterContent (Component* _contentComponent, const String& _contentName,const String& _info) :
     contentIsFlexible (false),
@@ -23,7 +23,10 @@ ShapeShifterContent::ShapeShifterContent (Component* _contentComponent, const St
     contentComponent (_contentComponent),
     info(juce::translate(_info))
 {
-
+    _contentComponent->setOpaque(true);
+    _contentComponent->setPaintingIsUnclipped(false);
+    LGMLUIUtils::markHasNewBackground(_contentComponent,1);
+    _contentComponent->repaint();
 }
 
 ShapeShifterContent::~ShapeShifterContent()
@@ -41,6 +44,16 @@ ShapeShifterContentComponent::ShapeShifterContentComponent (const String& conten
     infoLabel.setAlpha(0.5);
     infoLabel.toBack();
     infoLabel.setJustificationType(Justification::centred);
+    LGMLUIUtils::optionallySetBufferedToImage(&infoLabel);
+    infoLabel.setPaintingIsUnclipped(true);
+    setPaintingIsUnclipped(true);
+    setOpaque(true);
+
+
+}
+void ShapeShifterContentComponent::paint(Graphics & g){
+
+    LGMLUIUtils::fillBackground(this,g);
 }
 void ShapeShifterContentComponent::resized(){
     infoLabel.setBounds(getLocalBounds());

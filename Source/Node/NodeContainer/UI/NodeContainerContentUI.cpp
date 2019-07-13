@@ -27,12 +27,14 @@ NodeContainerContentUI::NodeContainerContentUI() :
     addUserParamBT ("Add Param Proxy")
 {
     addAndMakeVisible (&editContainerBT);
+    LGMLUIUtils::optionallySetBufferedToImage(&editContainerBT);
     editContainerBT.addListener (this);
 
     addAndMakeVisible (&addUserParamBT);
     addUserParamBT.addListener (this);
 
     setSize (250, 100);
+    setPaintingIsUnclipped(true);
 
 }
 

@@ -16,11 +16,10 @@
 
 #include "NodeContainerViewer.h"
 #include "../../Connection/UI/NodeConnectionUI.h"
-#include "../../Connection/UI/NodeConnectionEditor.h"
 #include "../../../UI/Inspector/Inspector.h"
 #include "../../../Utils/FactoryUIHelpers.h"
 #include "../../UI/NodeUIFactory.h"
-#include "../../UI/ConnectableNodeHeaderUI.h"
+//#include "../../UI/ConnectableNodeHeaderUI.h"
 
 UndoManager & getAppUndoManager();
 #if 0 && JUCE_DEBUG
@@ -48,7 +47,7 @@ MouseDbg * globalMouse(nullptr);
 
 class NodeLayerComponent : public Component{
 public:
-
+    NodeLayerComponent(){ setPaintingIsUnclipped(true);}
     void childBoundsChanged(Component *c) override{
         auto nv = static_cast<NodeContainerViewer *>( getParentComponent());
         nv->resizeToFitNodes();
@@ -90,7 +89,7 @@ nodesLayer(new NodeLayerComponent())
     nodesLayer->addMouseListener(this, true);
 
     resizeToFitNodes();
-
+//    setOpaque(true);
 
 }
 
@@ -407,14 +406,19 @@ ConnectableNodeUI * getRelatedConnectableNodeUIForDrag(Component * c,bool allowC
     if( auto nui = dynamic_cast<ConnectableNodeUI*>(c)){
         return nui;
     }
+    if(c){
+        if(auto nui = dynamic_cast<ConnectableNodeUI*>(c->getParentComponent())){
+            return nui;
+        }
+    }
 
     if(auto cont = dynamic_cast<ConnectableNodeContentUI*>(c)){
         return cont->nodeUI;
     }
 
-    if(auto header = dynamic_cast<ConnectableNodeHeaderUI*>(c)){
-        return header->nodeUI;
-    }
+//    if(auto header = dynamic_cast<ConnectableNodeHeaderUI*>(c)){
+//        return header->nodeUI;
+//    }
 
     if(auto label = dynamic_cast<Label*>(c)){
         return label->findParentComponentOfClass<ConnectableNodeUI>();

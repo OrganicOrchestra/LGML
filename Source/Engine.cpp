@@ -18,6 +18,13 @@
 
 #include "Engine.h"
 
+#include "Utils/AudioFucker.h"
+#include "Controller/ControllerManager.h"
+#include "Preset/PresetManager.h"
+#include "Time/TimeManager.h"
+#include "FastMapper/FastMapper.h"
+#include "Audio/VSTManager.h"
+
 #include "Controller/Impl/SerialManager.h"
 #include "Logger/LGMLLogger.h"
 #include "Utils/DebugHelpers.h"
@@ -33,7 +40,7 @@
 #include "Scripting/Js/JsGlobalEnvironment.h"
 
 
-
+extern ApplicationProperties* getAppProperties();
 
 
 const char* const filenameSuffix = ".lgml";
@@ -624,3 +631,7 @@ Engine::EngineListener::EngineListener() {
         jassertfalse;
     }
 }
+
+
+
+#include "EngineFileDocument.ipp"

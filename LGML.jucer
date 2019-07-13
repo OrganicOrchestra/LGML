@@ -76,6 +76,12 @@
           <FILE id="zSQQ5G" name="ParameterContainerSync.h" compile="0" resource="0"
                 file="Source/Controllable/Parameter/ParameterContainerSync.h"/>
           <GROUP id="y1gtRH" name="UI">
+            <FILE id="YrpstV" name="ParameterUIHelpers.cpp" compile="1" resource="0"
+                  file="Source/Controllable/Parameter/UI/ParameterUIHelpers.cpp"/>
+            <FILE id="y5WGgl" name="ParameterUIHelpers.h" compile="0" resource="0"
+                  file="Source/Controllable/Parameter/UI/ParameterUIHelpers.h"/>
+            <FILE id="FzRWfs" name="CachedNameLabel.hpp" compile="1" resource="0"
+                  file="Source/Controllable/Parameter/UI/CachedNameLabel.hpp"/>
             <FILE id="BJ6JLD" name="FileParameterUI.cpp" compile="1" resource="0"
                   file="Source/Controllable/Parameter/UI/FileParameterUI.cpp"/>
             <FILE id="X7VG29" name="FileParameterUI.h" compile="0" resource="0"
@@ -294,18 +300,18 @@
       <GROUP id="{4F947802-2B57-F99B-01BA-C8137508F603}" name="Node">
         <GROUP id="{6ABFCD79-CA05-2C8D-601A-40C5CB9B595B}" name="Connection">
           <GROUP id="{CB75A01B-EDB6-EFD1-E67E-F2CFED508B7A}" name="UI">
-            <FILE compile="1" file="Source/Node/Connection/UI/NodeConnectionEditor.cpp"
-                  id="zzP7n2" name="NodeConnectionEditor.cpp" resource="0"/>
-            <FILE compile="0" file="Source/Node/Connection/UI/NodeConnectionEditor.h"
-                  id="F2YhDZ" name="NodeConnectionEditor.h" resource="0"/>
-            <FILE compile="1" file="Source/Node/Connection/UI/NodeConnectionEditorDataSlot.cpp"
-                  id="DEG7s7" name="NodeConnectionEditorDataSlot.cpp" resource="0"/>
-            <FILE compile="0" file="Source/Node/Connection/UI/NodeConnectionEditorDataSlot.h"
-                  id="XTxPg0" name="NodeConnectionEditorDataSlot.h" resource="0"/>
-            <FILE compile="1" file="Source/Node/Connection/UI/NodeConnectionEditorLink.cpp"
-                  id="LIjfhO" name="NodeConnectionEditorLink.cpp" resource="0"/>
-            <FILE compile="0" file="Source/Node/Connection/UI/NodeConnectionEditorLink.h"
-                  id="nZ0P3F" name="NodeConnectionEditorLink.h" resource="0"/>
+            <FILE compile="0" file="Source/Node/Connection/UI/NodeConnectionEditor.ipp"
+                  id="zzP7n2" name="NodeConnectionEditor.ipp" resource="0"/>
+            <FILE compile="0" file="Source/Node/Connection/UI/NodeConnectionEditor.hpp"
+                  id="F2YhDZ" name="NodeConnectionEditor.hpp" resource="0"/>
+            <FILE compile="0" file="Source/Node/Connection/UI/NodeConnectionEditorDataSlot.ipp"
+                  id="DEG7s7" name="NodeConnectionEditorDataSlot.ipp" resource="0"/>
+            <FILE compile="0" file="Source/Node/Connection/UI/NodeConnectionEditorDataSlot.hpp"
+                  id="XTxPg0" name="NodeConnectionEditorDataSlot.hpp" resource="0"/>
+            <FILE compile="0" file="Source/Node/Connection/UI/NodeConnectionEditorLink.ipp"
+                  id="LIjfhO" name="NodeConnectionEditorLink.ipp" resource="0"/>
+            <FILE compile="0" file="Source/Node/Connection/UI/NodeConnectionEditorLink.hpp"
+                  id="nZ0P3F" name="NodeConnectionEditorLink.hpp" resource="0"/>
             <FILE compile="1" file="Source/Node/Connection/UI/NodeConnectionUI.cpp"
                   id="n2yl4A" name="NodeConnectionUI.cpp" resource="0"/>
             <FILE compile="0" file="Source/Node/Connection/UI/NodeConnectionUI.h"
@@ -381,10 +387,10 @@
                 name="Spat2DNodeUI.cpp" resource="0"/>
           <FILE compile="0" file="Source/Node/Impl/Spat2DNodeUI.h" id="LJ5Dgk"
                 name="Spat2DNodeUI.h" resource="0"/>
-          <FILE compile="1" file="Source/Node/Impl/Spat2DViewerUI.cpp" id="xf2Z06"
-                name="Spat2DViewerUI.cpp" resource="0"/>
-          <FILE compile="0" file="Source/Node/Impl/Spat2DViewerUI.h" id="zBHMQ3"
-                name="Spat2DViewerUI.h" resource="0"/>
+          <FILE compile="0" file="Source/Node/Impl/Spat2DViewerUI.ipp" id="xf2Z06"
+                name="Spat2DViewerUI.ipp" resource="0"/>
+          <FILE compile="0" file="Source/Node/Impl/Spat2DViewerUI.hpp" id="zBHMQ3"
+                name="Spat2DViewerUI.hpp" resource="0"/>
           <FILE compile="1" file="Source/Node/Impl/VSTNode.cpp" id="Wmu1dx" name="VSTNode.cpp"
                 resource="0"/>
           <FILE compile="0" file="Source/Node/Impl/VSTNode.h" id="n6WVTf" name="VSTNode.h"
@@ -435,22 +441,22 @@
                 id="DXAXWw" name="NodeContainer.h" resource="0"/>
         </GROUP>
         <GROUP id="{C35F704D-DA15-9824-09B6-524C116EE3FA}" name="UI">
+          <FILE id="QueSc0" name="ConnectorContainerComponent.hpp" compile="0"
+                resource="0" file="Source/Node/UI/ConnectorContainerComponent.hpp"/>
           <FILE compile="1" file="Source/Node/UI/NodeUIFactory.cpp" id="xDCSRQ"
                 name="NodeUIFactory.cpp" resource="0"/>
           <FILE compile="0" file="Source/Node/UI/NodeUIFactory.h" id="bljAKy"
                 name="NodeUIFactory.h" resource="0"/>
-          <FILE compile="1" file="Source/Node/UI/ConnectableNodeAudioCtlUI.cpp"
-                id="q5sFVf" name="ConnectableNodeAudioCtlUI.cpp" ressource="0"/>
-          <FILE compile="0" file="Source/Node/UI/ConnectableNodeAudioCtlUI.h"
-                id="CkUg7E" name="ConnectableNodeAudioCtlUI.h" ressource="0"/>
+          <FILE compile="0" file="Source/Node/UI/ConnectableNodeAudioCtlUI.hpp"
+                id="CkUg7E" name="ConnectableNodeAudioCtlUI.hpp" ressource="0"/>
           <FILE compile="1" file="Source/Node/UI/ConnectableNodeContentUI.cpp"
                 id="pxtUIW" name="ConnectableNodeContentUI.cpp" ressource="0"/>
           <FILE compile="0" file="Source/Node/UI/ConnectableNodeContentUI.h"
                 id="k8fEzD" name="ConnectableNodeContentUI.h" ressource="0"/>
-          <FILE compile="1" file="Source/Node/UI/ConnectableNodeHeaderUI.cpp"
-                id="SfXQ26" name="ConnectableNodeHeaderUI.cpp" ressource="0"/>
-          <FILE compile="0" file="Source/Node/UI/ConnectableNodeHeaderUI.h" id="sSZ3Hg"
-                name="ConnectableNodeHeaderUI.h" ressource="0"/>
+          <FILE compile="0" file="Source/Node/UI/ConnectableNodeHeaderUI.ipp"
+                id="SfXQ26" name="ConnectableNodeHeaderUI.ipp" ressource="0"/>
+          <FILE compile="0" file="Source/Node/UI/ConnectableNodeHeaderUI.hpp"
+                id="sSZ3Hg" name="ConnectableNodeHeaderUI.hpp" ressource="0"/>
           <FILE compile="1" file="Source/Node/UI/ConnectableNodeUI.cpp" id="tA6v1M"
                 name="ConnectableNodeUI.cpp" ressource="0"/>
           <FILE compile="0" file="Source/Node/UI/ConnectableNodeUI.h" id="AenN0O"
@@ -682,8 +688,8 @@
             resource="0"/>
       <FILE compile="0" file="Source/Engine.h" id="aap4kO" name="Engine.h"
             resource="0"/>
-      <FILE compile="1" file="Source/EngineFileDocument.cpp" id="fqvNis"
-            name="EngineFileDocument.cpp" resource="0"/>
+      <FILE compile="0" file="Source/EngineFileDocument.ipp" id="fqvNis"
+            name="EngineFileDocument.ipp" resource="0"/>
       <FILE id="VRl38p" name="JuceHeaderAudio.h" compile="0" resource="0"
             file="Source/JuceHeaderAudio.h"/>
       <FILE id="GgXgTu" name="JuceHeaderCore.h" compile="0" resource="0"
@@ -740,7 +746,7 @@
       <CONFIGURATIONS>
         <CONFIGURATION binaryPath="" cppLanguageStandard="c++11" cppLibType="libc++"
                        headerPath="" isDebug="0" linkTimeOptimisation="1" name="Release"
-                       optimisation="3" osxArchitecture="32BitUniversal" osxCompatibility="10.8 SDK"
+                       optimisation="3" osxArchitecture="Native" osxCompatibility="10.8 SDK"
                        targetName="LGML" enablePluginBinaryCopyStep="1"/>
         <CONFIGURATION cppLanguageStandard="c++11" cppLibType="libc++" customXcodeFlags="ONLY_ACTIVE_ARCH=1,GCC_PRECOMPILE_PREFIX_HEADER=1,GCC_PREFIX_HEADER=PrefixHeader.pch"
                        defines="" headerPath="" isDebug="1" name="Debug" osxArchitecture="Native"

@@ -80,7 +80,7 @@ public:
     int getNumPresets( );
 
 
-    bool resetToPreset();
+    bool resetToCurrentPreset();
     void cleanUpPresets( );
 
     String getPresetFilter();

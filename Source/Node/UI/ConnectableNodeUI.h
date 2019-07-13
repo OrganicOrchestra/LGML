@@ -18,12 +18,16 @@
 #pragma once
 
 #include "../../UI/Inspector/InspectableComponent.h"
-#include "../ConnectableNode.h"
+#include "ConnectableNodeContentUI.h"
 #include "ConnectorComponent.h"
+#include "../ConnectableNode.h"
+
+
 
 class ConnectableNodeHeaderUI;
-#include "ConnectableNodeContentUI.h"
-#include "ConnectableNodeAudioCtlUI.h"
+class ConnectorContainerComponent;
+class ConnectableNodeAudioCtlUI;
+
 
 
 class ConnectableNodeUIParams: public ParameterContainer{
@@ -63,31 +67,7 @@ public:
     ResizableCornerComponent resizer;
     ComponentBoundsConstrainer constrainer;
 
-    class ConnectorContainer :
-        public juce::Component,
-        public ConnectorComponent::ConnectorListener
-    {
-    public:
-        OwnedArray<ConnectorComponent> connectors;
 
-        ConnectorComponent::ConnectorDisplayLevel displayLevel;
-        ConnectorComponent::ConnectorIOType type;
-
-        explicit ConnectorContainer (ConnectorComponent::ConnectorIOType type);
-
-        void setConnectorsFromNode (ConnectableNode* node);
-        void addConnector (ConnectorComponent::ConnectorIOType ioType, NodeConnection::ConnectionType dataType, ConnectableNode* node);
-        void resized() override;
-
-        void connectorVisibilityChanged (ConnectorComponent*) override;
-        bool hitTest(int x, int y) override;
-
-        ConnectorComponent* getFirstConnector (NodeConnection::ConnectionType dataType);
-
-
-
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ConnectorContainer)
-    };
 
     //ui
     class MainComponentContainer : public juce::Component,public TooltipClient
@@ -138,8 +118,8 @@ public:
     ConnectableNodeContentUI* getContentContainer() { return mainComponentContainer.contentContainer; }
     ConnectableNodeHeaderUI* getHeaderContainer() { return mainComponentContainer.headerContainer; }
 
-    ConnectorContainer inputContainer;
-    ConnectorContainer outputContainer;
+    ScopedPointer<ConnectorContainerComponent> inputContainer;
+    ScopedPointer<ConnectorContainerComponent> outputContainer;
 
 
     // receives x y position from node parameters
@@ -168,7 +148,7 @@ private:
     friend class NodeContainerViewer;
 
     void childBoundsChanged (Component*)override;
-    void nodeParameterChanged (ConnectableNode*, ParameterBase* p) override;
+    void nodeParameterChangedAsync (ConnectableNode*, ParameterBase* p) override;
     void onContainerParameterChanged( ParameterBase*p) override;
 
     void mouseDown (const MouseEvent& e) override;

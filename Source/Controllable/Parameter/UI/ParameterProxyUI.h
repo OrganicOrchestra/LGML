@@ -45,7 +45,7 @@ public:
     virtual void linkedParamChanged (ParameterProxy* c) override;
     virtual void choosedControllableChanged (ControllableReferenceUI*, Controllable* c) override;
 
-    virtual void controllableNameChanged (Controllable* c) override;
+//    virtual void controllableNameChanged (Controllable* c) override;
 
 };
 

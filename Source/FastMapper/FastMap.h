@@ -39,7 +39,7 @@ public:
     RangeParameter* inputRange;
     RangeParameter* outputRange;
 
-    BoolParameter* invertParam;
+    BoolParameter* invertParam,*toggleParam;
 
     ParameterProxy* referenceIn;
     ParameterProxy*   referenceOut;
@@ -55,7 +55,7 @@ private:
 
     void process (bool toReferenceOut = true);
     // inherited from proxy listener
-    void linkedParamValueChanged (ParameterProxy*) override;
+    void linkedParamValueChanged (ParameterProxy*,ParameterBase::Listener *) override;
     void linkedParamRangeChanged(ParameterProxy*) override;
     void linkedParamChanged (ParameterProxy*) override;
 private:

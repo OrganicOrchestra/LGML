@@ -19,7 +19,13 @@
 #if !ENGINE_HEADLESS
 
 #include "MainComponent.h"
-#include "../FastMapper/FastMap.h"
+
+//#include "../Utils/AudioFucker.h"
+#include "../Controller/ControllerManager.h"
+#include "../Preset/PresetManager.h"
+#include "../Time/TimeManager.h"
+#include "../FastMapper/FastMapper.h"
+//#include "../Audio/VSTManager.h"
 #include "../Engine.h"
 #include "Inspector/Inspector.h"
 #include "../Node/NodeContainer/NodeContainer.h"

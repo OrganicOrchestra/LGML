@@ -13,9 +13,9 @@
 */
 
 
-#ifndef DUMMYNODECONTENTUI_H_INCLUDED
-#define DUMMYNODECONTENTUI_H_INCLUDED
+#pragma once
 
+#if JUCE_DEBUG
 
 #include "DummyNode.h"//keep
 #include "../UI/ConnectableNodeContentUI.h"
@@ -23,7 +23,7 @@
 
 #include "../../Controllable/Parameter/UI/EnumParameterUI.h"
 
-#if JUCE_DEBUG
+
 class DummyNodeContentUI : public ConnectableNodeContentUI
 {
 public:
@@ -46,6 +46,9 @@ public:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DummyNodeContentUI)
 };
 
+#if NON_INCREMENTAL_COMPILATION
+    #include "DummyNodeContentUI.cpp"
+#endif
 
-#endif  // DUMMYNODECONTENTUI_H_INCLUDED
 #endif // JUCE_DEBUG
+

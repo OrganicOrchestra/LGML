@@ -23,12 +23,17 @@
 static int blinkTime (200);
 static int refreshPeriod (40);
 
+#include "CachedNameLabel.hpp"
+
 TriggerBlinkUI::TriggerBlinkUI (Trigger* t) :
     ParameterUI (t),
     intensity (0),
-    animateIntensity (true)
+    animateIntensity (false)
 {
+    cachedLabel = new CachedNameLabel(this);
+    addAndMakeVisible(cachedLabel);
     setSize (30, 20);
+    setOpaque(true);
 
 }
 
@@ -47,31 +52,30 @@ void TriggerBlinkUI::valueChanged (const var& )
 
 void TriggerBlinkUI::paint (Graphics& g)
 {
+
+    ParameterUI::paint(g);
     if (parameter.get())
     {
         auto    offColor =findColour (TextButton::buttonColourId);
         auto onColor  =findColour (TextButton::buttonOnColourId);
         g.setColour (offColor.interpolatedWith (onColor, intensity));
-        g.fillRoundedRectangle (getLocalBounds().toFloat(), 2);
-        g.setFont (10);
-        g.setColour (Colours::white.darker (.1f));
+        g.fillRoundedRectangle (getLocalBounds().toFloat(), 4);
+//        g.setFont (10);
+//        g.setColour (Colours::white.darker (.1f));
 
-        if (showLabel)
-        {
 
-            g.drawFittedText (customTextDisplayed.isNotEmpty() ? customTextDisplayed : parameter.get()?parameter->niceName:"No Parameter", getLocalBounds().reduced (2), Justification::centred, 1);
-        }
     }
 }
 
 
 void TriggerBlinkUI::startBlink()
 {
-    if (intensity <= 0) startTimer (animateIntensity ? refreshPeriod : blinkTime);
+    bool isFirst = intensity <= 0;
+    if (isFirst) startTimer (animateIntensity ? refreshPeriod : blinkTime);
 
     intensity = 1;
 
-    if (!animateIntensity) repaint();
+    if (!animateIntensity && isFirst) repaint();
 
 
 
@@ -115,4 +119,18 @@ void TriggerBlinkUI::mouseDown (const MouseEvent& e)
     }
 
 }
+void TriggerBlinkUI::resized (){
+    auto r = getLocalBounds();
+    cachedLabel->setBounds(r);
+    cachedLabel->setVisible(showLabel);
+
+}
+
+
 #endif
+
+//if (showLabel)
+//{
+
+//    g.drawFittedText (customTextDisplayed.isNotEmpty() ? customTextDisplayed : parameter.get()?parameter->niceName:"No Parameter", getLocalBounds().reduced (2), Justification::centred, 1);
+//    }

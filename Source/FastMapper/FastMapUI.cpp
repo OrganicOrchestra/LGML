@@ -42,12 +42,15 @@ FastMapUI (FastMap* f) :
 
 
     invertUI = ParameterUIFactory::createDefaultUI (fastMap->invertParam);
+    toggleUI =ParameterUIFactory::createDefaultUI (fastMap->toggleParam);
+
     fullSyncUI = ParameterUIFactory::createDefaultUI (fastMap->fullSync);
 
     addAndMakeVisible (refUI);
     f->referenceIn->addParameterProxyListener (this);
     addChildComponent (inRangeUI);
     addAndMakeVisible (targetUI);
+    addAndMakeVisible (toggleUI);
     f->referenceOut->addParameterProxyListener (this);
 
     addChildComponent (outRangeUI);
@@ -61,7 +64,7 @@ FastMapUI (FastMap* f) :
                         removeImage, 1.0f, Colours::white.withAlpha (.7f),
                         0.5f);
     removeBT.addListener (this);
-
+    
     addAndMakeVisible (&removeBT);
     linkedParamChanged (f->referenceIn);
     linkedParamChanged (f->referenceOut);
@@ -77,6 +80,7 @@ FastMapUI::~FastMapUI()
 
 void FastMapUI::paint (Graphics& g)
 {
+    LGMLUIUtils::fillBackground(this, g);
     g.setColour (findColour (LGMLColors::elementBackground));
     g.fillRoundedRectangle (getLocalBounds().toFloat(), 2);
 }
@@ -106,9 +110,20 @@ void FastMapUI::resized()
     }
 
     targetUI.setBounds (targetRect.reduced (6, 0));
-
-    invertUI->setBounds (r.removeFromTop(r.getHeight()/2).reduced (1));
+    int numB = (invertUI->isVisible()?1:0) +
+    (toggleUI->isVisible()?1:0) +
+    (fullSyncUI->isVisible()?1:0);
+    if(invertUI->isVisible()){
+        invertUI->setBounds (r.removeFromTop(r.getHeight()/numB).reduced (1));
+        numB--;
+    }
+    if(toggleUI->isVisible()){
+        toggleUI->setBounds (r.removeFromTop(r.getHeight()/numB).reduced (1));
+        numB--;
+    }
+    if(fullSyncUI->isVisible()){
     fullSyncUI->setBounds(r.reduced(1));
+    }
 
 
 
@@ -137,6 +152,7 @@ void FastMapUI::linkedParamChanged (ParameterProxy* p )
         else if (p == targetUI.parameter)
         {
             outRangeUI.setVisible (p->linkedParam && p->linkedParam->getAs<MinMaxParameter>());
+            toggleUI->setVisible( refUI.parameter &&  !refUI.parameter->getAs<Trigger>() && p->linkedParam && p->linkedParam->getAs<BoolParameter>());
         }
 
         resized();

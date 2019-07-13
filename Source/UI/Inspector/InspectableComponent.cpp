@@ -50,6 +50,7 @@ relatedParameter(_relatedParameter)
 {
     visibleName = juce::translate(_relatedParameter->niceName);
     init();
+
 }
 
 void InspectableComponent::init(){
@@ -59,6 +60,8 @@ void InspectableComponent::init(){
     paintBordersWhenSelected =true;
     bringToFrontOnSelect =true;
     setWantsKeyboardFocus(true);
+    setPaintingIsUnclipped(true);
+    setOpaque(true);
 
 }
 
@@ -205,8 +208,17 @@ void InspectableComponent::setSelectedInternal (bool)
     //to be overriden
 }
 
+void InspectableComponent::paint(Graphics & g){
+    LGMLUIUtils::fillBackground(this, g);
+}
+void InspectableComponent::parentHierarchyChanged(){
+    repaint();//update background
+
+}
+
 void InspectableComponent::paintOverChildren (juce::Graphics& g)
 {
+    
     if (isSelected && paintBordersWhenSelected)
     {
         g.setColour ( findColour (TextButton::buttonOnColourId));

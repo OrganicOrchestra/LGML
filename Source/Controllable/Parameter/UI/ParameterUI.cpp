@@ -14,38 +14,21 @@
 #if !ENGINE_HEADLESS
 
 #include "ParameterUI.h"
+
 #include "../ParameterFactory.h"
 #include "../../../Utils/DebugHelpers.h"
 #include "../../../UI/Style.h"
 #include "../../../UI/LGMLDragger.h"
 #include "../../../FastMapper/FastMapper.h"
 #include "../UndoableHelper.h"
-
-void AllParamType::add(ParameterUI* p){
-    jassert(p->parameter.get());
-
-    container.getReference(p->parameter.get()).add(p);
-    allPs.set(p,p->parameter.get());
-}
-void AllParamType::removeAllInstancesOf(ParameterUI* p){
-    auto paramPtr = p->parameter.get();
-    if(!paramPtr){
-        paramPtr = allPs[p];
-    }
-    jassert(paramPtr);
-    container.getReference(paramPtr).removeAllInstancesOf(p);
-    allPs.remove(p);
-}
-
-AllParamType::ArrayType AllParamType::getForParameter(ParameterBase *p) const{
-    jassert(p);
-    
-    return container[p];
-}
+#include "../../../UI/Inspector/Inspector.h"
+#include "ParameterUIHelpers.h" 
 
 
-AllParamType allParameterUIs;
+
 //==============================================================================
+
+//-------------------
 ParameterUI::ParameterUI ( ParameterBase* _parameter) :
     InspectableComponent(_parameter,"ParameterUI"),
     parameter (_parameter),
@@ -56,9 +39,11 @@ ParameterUI::ParameterUI ( ParameterBase* _parameter) :
     isDraggable (true),
     wasShowing(true)
 {
-
-    setBufferedToImage(true);
-    allParameterUIs.add(this);
+    defferTimer = new DefferTimer(this);
+    LGMLUIUtils::optionallySetBufferedToImage(this);
+    setPaintingIsUnclipped(true);
+    setOpaque(true);
+    AllParamType::getAllParameterUIs().add(this);
     if (parameter.get())
     {
 
@@ -85,7 +70,7 @@ ParameterUI::ParameterUI ( ParameterBase* _parameter) :
 
 ParameterUI::~ParameterUI()
 {
-    allParameterUIs.removeAllInstancesOf(this);
+    AllParamType::getAllParameterUIs().removeAllInstancesOf(this);
     if(auto * draggerI = LGMLDragger::getInstanceWithoutCreating()){
         draggerI->unRegisterDragCandidate (this);
     }
@@ -100,19 +85,23 @@ ParameterUI::~ParameterUI()
     ParameterUI::masterReference.clear();
 }
 
-const AllParamType & ParameterUI::getAllParameterUIs(){
-    return allParameterUIs;
-}
+
+
 
 void ParameterUI::setCustomText (const String text)
 {
     String newText =juce::translate(text);
     if(newText!=customTextDisplayed){
         customTextDisplayed =newText;
+        displayedTextChangedInternal();
+        paramUIListeners.call(&ParameterUI::Listener::displayedTextChanged,this);
         repaint();
     }
 }
 
+String  ParameterUI::getDisplayedText () const{
+    return customTextDisplayed.isNotEmpty() ? customTextDisplayed : parameter.get()?parameter->niceName:"No Parameter";
+}
 const ParameterUI::UICommandType & ParameterUI::getUICommands() const{
     static UICommandType dummy;
     return dummy;
@@ -232,7 +221,14 @@ void ParameterUI::controllableStateChanged (Controllable* c)
 }
 
 void ParameterUI::controllableControlAddressChanged (Controllable*)
-{
+{   
+//repaint();
+}
+
+void ParameterUI::controllableNameChanged (Controllable*) {
+    if(customTextDisplayed.isEmpty()){
+        paramUIListeners.call(&ParameterUI::Listener::displayedTextChanged,this);
+    }
     repaint();
 }
 
@@ -271,8 +267,13 @@ void ParameterUI::visibilityChanged(){
     wasShowing =_isShowing;
 
 }
+
+void ParameterUI::paint(Graphics & g){
+    LGMLUIUtils::fillBackground(this,g);
+}
 void ParameterUI::parentHierarchyChanged(){
     visibilityChanged();
+    InspectableComponent::parentHierarchyChanged();
 };
 
 void ParameterUI::setHasMappedParameter(bool s){
@@ -411,8 +412,8 @@ void ParameterUI::newMessage (const ParameterBase::ParamWithValue& p)
         rangeChanged (p.parameter);
     }
     else
-    {
-        valueChanged (p.value);
+    {   defferTimer->trigger(p.value);
+//        valueChanged (p.value);
     }
 };
 
@@ -430,9 +431,10 @@ NamedParameterUI::NamedParameterUI (ParameterUI* ui, int _labelWidth, bool label
     labelAbove (labelA),
     controllableLabel(new LabelLinkedTooltip(ui))
 {
+    ui->showLabel = false;
     // prevent mapping state for named parameterUI -> inner will handle it
     setMappingState(false);
-
+    setPaintingIsUnclipped(true);
     addAndMakeVisible (controllableLabel);
 
 
@@ -443,6 +445,7 @@ NamedParameterUI::NamedParameterUI (ParameterUI* ui, int _labelWidth, bool label
         controllableLabel->setEditable (true);
         controllableLabel->addListener (this);
     }
+    LGMLUIUtils::optionallySetBufferedToImage(controllableLabel);
 
     addAndMakeVisible (ui);
     ui->toFront (false);

@@ -48,6 +48,7 @@ public:
     ParameterProxyUI targetUI;
     RangeParameterUI outRangeUI;
     ScopedPointer<ParameterUI> invertUI;
+    ScopedPointer<ParameterUI> toggleUI;
 
 
 

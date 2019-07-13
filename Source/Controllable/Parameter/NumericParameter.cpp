@@ -33,10 +33,12 @@ MinMaxParameter ( niceName, description, var (initialValue), var (minValue), var
     if (std::is_same<T, int>::value)
     {
         jassert (value.isInt());
+        precisionMask=0;
     }
     else if (std::is_same<T, floatParamType>::value)
     {
         jassert (value.isDouble());
+        setPrecision(-1);
     }
     else
     {
@@ -62,8 +64,36 @@ else if(minimumValue.isUndefined() && !maximumValue.isUndefined()){
 else{
     value = (T)_value;
 }
+    if(precisionMask>0){
+        value = floor((T)_value * precisionMask)/precisionMask;
+    }
 }
 
+
+template<class T>
+bool  NumericParameter<T>::checkValueIsTheSame (const var& v1, const var& v2){
+    if(v1.hasSameTypeAs(v2)){
+    T a {v1};
+    T b {v2};
+    return precisionMask>0?floor(a*precisionMask)==floor(b*precisionMask):a==b;
+    }
+    return false;
+}
+
+template<>
+void  NumericParameter<int>::setPrecision(int p){
+    jassertfalse; // can't set precision for ints
+}
+
+template<class T>
+void  NumericParameter<T>::setPrecision(int p){
+    if(p<0){
+        precisionMask = 0;
+    }
+    else{
+        precisionMask = pow(10,p);
+    }
+}
 
 template class NumericParameter<int>;
 template class NumericParameter<floatParamType>;

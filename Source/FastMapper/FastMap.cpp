@@ -19,7 +19,7 @@
 #include "FastMap.h"
 #include "../Node/Manager/NodeManager.h"
 
-#include "../Engine.h"
+//#include "../Engine.h"
 
 FastMap::FastMap() :
 referenceIn (nullptr),
@@ -38,6 +38,7 @@ ParameterContainer ("FastMap")
     outputRange = addNewParameter<RangeParameter> ("Out Range", "Out Range", 0.0f, 1.0f, 0.0f, 1.0f);
 
     invertParam = addNewParameter<BoolParameter> ("Invert", "Invert the output signal", false);
+    toggleParam = addNewParameter<BoolParameter> ("Toggle", "Toggles the output signal", false);
     fullSync = addNewParameter<BoolParameter> ("FullSync", "synchronize source parameter too", true);
 }
 
@@ -91,19 +92,25 @@ void FastMap::process (bool toReferenceOut)
 
     if (type == Trigger::_factoryType)
     {
-        if ((newIsInRange != isInRange && newIsInRange) || inRef->getFactoryTypeId() == Trigger::_factoryType) ((Trigger*)outRef)->trigger();
+        if ((newIsInRange != isInRange && newIsInRange) || inRef->getFactoryTypeId() == Trigger::_factoryType) ((Trigger*)outRef)->triggerFrom(this);
     }
     else
     {
         if (type == BoolParameter::_factoryType)
         {
-            if (inRef->getFactoryTypeId() == Trigger::_factoryType)
+            if ((inRef->getFactoryTypeId() == Trigger::_factoryType ))
             {
-                ((BoolParameter*)outRef)->setValue (!outRef->boolValue());
+                ((BoolParameter*)outRef)->setValueFrom (this,!outRef->boolValue());
+            }
+            else if(toggleParam->boolValue() ){ // toggles only on max for float values
+                if(sourceVal==maxIn){
+                    ((BoolParameter*)outRef)->setValueFrom (this,!outRef->boolValue());
+                }
+
             }
             else
             {
-                ((BoolParameter*)outRef)->setValue (newIsInRange);
+                ((BoolParameter*)outRef)->setValueFrom (this,newIsInRange);
             }
         }
         else
@@ -118,7 +125,7 @@ void FastMap::process (bool toReferenceOut)
 
                 if (invertParam->boolValue()) targetVal = maxOut - (targetVal - minOut);
 
-                (( ParameterBase*)outRef)->setValue (targetVal);
+                (( ParameterBase*)outRef)->setValueFrom (this,targetVal);
             }
         }
     }
@@ -133,8 +140,11 @@ void FastMap::process (bool toReferenceOut)
 
 
 
-void FastMap::linkedParamValueChanged (ParameterProxy* p)
+void FastMap::linkedParamValueChanged (ParameterProxy* p,ParameterBase::Listener * notifier)
 {
+    if(notifier==this){
+        return;
+    }
     if (p == referenceIn)
     {
         process();
@@ -245,11 +255,9 @@ void FastMap::linkedParamChanged (ParameterProxy* p)
         float newMin = mmp ? (float)mmp->minimumValue : 0;
         float newMax = mmp ? (float)mmp->maximumValue : 1;
         inputRange->setMinMax (newMin, newMax);
-
-        inputRange->setValue (jmax<float> (inputRange->getRangeMin(),newMin),
-                              jmin<float> (inputRange->getRangeMax(),newMax));
-
-
+        if(inputRange->getRangeMin() < newMin || inputRange->getRangeMax()>newMax){ // modify only if range changed a lot
+            inputRange->setValue (newMin,newMax);
+        }
     }
     else if (p == referenceOut)
     {
@@ -265,8 +273,10 @@ void FastMap::linkedParamChanged (ParameterProxy* p)
         float newMin = mmp ? (float)mmp->minimumValue : 0;
         float newMax = mmp ? (float)mmp->maximumValue : 1;
         outputRange->setMinMax (newMin, newMax);
-        outputRange->setValue (jmax<float> (outputRange->getRangeMin(),newMin),
-                               jmin<float> (outputRange->getRangeMax(),newMax));
+        if(outputRange->getRangeMin() < newMin || outputRange->getRangeMax()>newMax){ // modify only if range changed a lot
+            outputRange->setValue (newMin,newMax);
+        }
+
 
 
         

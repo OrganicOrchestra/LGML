@@ -34,6 +34,7 @@ ConnectorComponent::ConnectorComponent (ConnectorIOType _ioType, NodeConnection:
     setSize (10, 10);
 
     generateToolTip();
+    setPaintingIsUnclipped(true);
     postCommandMessage (0);
 }
 
@@ -148,5 +149,8 @@ ConnectableNodeUI* ConnectorComponent::getNodeUI() const noexcept
 {
     return findParentComponentOfClass<ConnectableNodeUI>();
 }
+
+
+
 
 #endif

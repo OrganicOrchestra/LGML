@@ -12,10 +12,7 @@
 *
 */
 
-
-#ifndef AUDIOMIXERNODEUI_H_INCLUDED
-#define AUDIOMIXERNODEUI_H_INCLUDED
-
+#pragma once
 
 #include "AudioMixerNode.h"
 #include "../UI/ConnectableNodeContentUI.h"
@@ -84,6 +81,6 @@ public:
 
 };
 
-
-
-#endif  // AUDIOMIXERNODEUI_H_INCLUDED
+#if NON_INCREMENTAL_COMPILATION
+    #include "AudioMixerNodeUI.cpp"
+#endif

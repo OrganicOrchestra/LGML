@@ -22,6 +22,7 @@
 ShapeShifterPanelTab::ShapeShifterPanelTab (ShapeShifterContent* _content) : content (_content), selected (false)
 {
     panelLabel.setInterceptsMouseClicks (false, false);
+    panelLabel.setPaintingIsUnclipped(true);
 
     panelLabel.setFont (12);
     panelLabel.setJustificationType (Justification::centred);
@@ -37,14 +38,17 @@ ShapeShifterPanelTab::ShapeShifterPanelTab (ShapeShifterContent* _content) : con
                             removeImage, 1.0f, Colours::white.withAlpha (.7f),
                             0.5f);
     closePanelBT.addListener (this);
+    closePanelBT.setPaintingIsUnclipped(true);
+
 
     addAndMakeVisible (closePanelBT);
 
 
     setSize (getLabelWidth(), 20);
     setOpaque (true);
+    setPaintingIsUnclipped(true);
     setTooltip(content->info);
-
+   LGMLUIUtils::optionallySetBufferedToImage(this);
 
 }
 
@@ -67,7 +71,9 @@ void ShapeShifterPanelTab::paint (Graphics& g)
 
     }
     else{
-    g.setColour (selected ? findColour (ResizableWindow::backgroundColourId) : findColour (ResizableWindow::backgroundColourId).brighter (.15f));
+        auto baseC = LGMLUIUtils::getCurrentBackgroundColor(this);
+        if(!selected)baseC = baseC.darker(1.f);
+        g.setColour (baseC);
     }
     Rectangle<int> r = getLocalBounds();
 

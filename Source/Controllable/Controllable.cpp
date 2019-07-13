@@ -108,9 +108,9 @@ Controllable * ControlAddressType::resolveControllableFromContainer(const Contro
         parentAddress.resize(size()-1);
         insp =parentAddress.resolveContainerFromContainer(c);
         if(!insp){
-#if JUCE_DEBUG
-            LOGW("can't resolve : " << parentAddress.toString() <<" in " << c->getControlAddress().toString() );
-#endif
+//#if JUCE_DEBUG
+//            LOGW("can't resolve : " << parentAddress.toString() <<" in " << c->getControlAddress().toString() );
+//#endif
             //            jassertfalse;
             return nullptr;
         }

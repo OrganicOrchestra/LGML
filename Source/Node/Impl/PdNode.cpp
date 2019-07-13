@@ -9,11 +9,12 @@
  */
 
 #include "PdNode.h"
-#include "../../Engine.h"
+#include "../../Engine.h" // for pd search paths
 
 #define DEFDACBLKSIZE 64
 REGISTER_NODE_TYPE (PdNode)
 
+extern ApplicationProperties* getAppProperties();
 
 String pdPrintMsg="";
 static void lgml_print_hook(const char * m){

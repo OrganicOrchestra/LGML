@@ -23,8 +23,8 @@
 
 
 TimeManagerUI::TimeManagerUI (const String& contentName, TimeManager* _timeManager) :
-    ShapeShifterContent (this,contentName,"Be the master of Time"),
     InspectableComponent(_timeManager),
+    ShapeShifterContent (this,contentName,"Be the master of Time"),
     timeManager (_timeManager),
     timeBar (_timeManager)
 {
@@ -155,10 +155,14 @@ void TimeManagerUI::resized()
 }
 #pragma warning(pop)
 
-TimeManagerUI::TimeBar::TimeBar (TimeManager* t) : timeManager (t)
+TimeManagerUI::TimeBar::TimeBar (TimeManager* t) :
+timeManager (t),
+refreshHz(20),
+blinkHz(1)
 {
     initComponentsForNumBeats (timeManager->beatPerBar->intValue());
     setOpaque (true);
+    setPaintingIsUnclipped(true);
 }
 
 
@@ -269,7 +273,7 @@ void TimeManagerUI::TimeBar::timerCallback()
 
 void TimeManagerUI::TimeBar::paint (Graphics& g)
 {
-
+    LGMLUIUtils::fillBackground(this,g);
     if (isSettingTempo)
     {
         // called only if setting tempo
@@ -288,14 +292,16 @@ void TimeManagerUI::TimeBar::paint (Graphics& g)
     }
 }
 
-
+TimeManagerUI::TimeBar::BeatComponent::BeatComponent(){
+    setPaintingIsUnclipped(true);
+    setOpaque(true);
+}
 void TimeManagerUI::TimeBar::BeatComponent::paint (Graphics& g)
 {
     int beatBarWidth = 1;
 
     Rectangle<int> r = getLocalBounds();
-    g.setColour (findColour (ResizableWindow::backgroundColourId));
-    g.fillRect (r);
+    LGMLUIUtils::fillBackground(this,g);
     Rectangle<int> lineR = r.removeFromTop (1);
     lineR.removeFromLeft (beatBarWidth);
     lineR.removeFromRight (beatBarWidth);

@@ -27,26 +27,30 @@
 #include <juce_audio_processors/juce_audio_processors.h>
 #include <juce_audio_utils/players/juce_AudioProcessorPlayer.h>
 #include "MIDI/MIDIManager.h"
-#include "Controller/ControllerManager.h"
+
 #include "Node/Manager/NodeManager.h"
-#include "Preset/PresetManager.h"
-#include "Utils/AudioFucker.h"
-#include "Time/TimeManager.h"
-#include "FastMapper/FastMapper.h"
-#include "Audio/VSTManager.h"
+
 #include "Utils/ProgressNotifier.h"
 #include "Utils/CommandLineElements.hpp"
 
+//#include "Utils/AudioFucker.h"
+//#include "Controller/ControllerManager.h"
+//#include "Preset/PresetManager.h"
+//#include "Time/TimeManager.h"
+//#include "FastMapper/FastMapper.h"
+//#include "Audio/VSTManager.h"
 class AudioFucker;
 
 
 
 #if ENGINE_HEADLESS
 #include "Utils/HeadlessWrappers.h"
+#else
+    #include "JuceHeaderUI.h"
 #endif
 
 class Engine:
-    public FileBasedDocument,
+    public juce::FileBasedDocument,
     NodeManager::NodeManagerListener,
     AsyncUpdater,
     public ProgressNotifier,

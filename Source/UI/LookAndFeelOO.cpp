@@ -52,8 +52,8 @@ LookAndFeelOO::LookAndFeelOO()
         0xffCCCCCC       //    menuText,
     );
     LookAndFeel_V4::setColourScheme (scheme);
-    setColour (Slider::trackColourId, Colour (0xff99ff66));
-    setColour (Slider::backgroundColourId, Colours::black.withAlpha (0.1f));
+    setColour (Slider::trackColourId, Colour (0xff39C101));
+    setColour (Slider::backgroundColourId, Colours::black.brighter (0.25f));
     setColour (TextButton::buttonOnColourId, Colour (0xffFF922F));
 //    setColour (TextButton::textColourOnId, Colours::black.brighter(.1f));
     setColour (Label::textWhenEditingColourId, Colours::white);
@@ -64,11 +64,12 @@ LookAndFeelOO::LookAndFeelOO()
     setColour (TreeView::backgroundColourId,Colours::white.withAlpha(0.f)
                //scheme.getUIColour (ColourScheme::UIColour::windowBackground)
                );
-    setColour(DrawableButton::backgroundOnColourId, Colours::transparentWhite);
-    setColour(DrawableButton::backgroundColourId, Colours::transparentWhite);
+//    setColour(DrawableButton::backgroundOnColourId, Colours::transparentWhite);
+//    setColour(DrawableButton::backgroundColourId, Colours::transparentWhite);
     setColour (LGMLColors::audioColor, Colours::cadetblue);
     setColour (LGMLColors::dataColor, Colours::pink);
-    setColour (LGMLColors::elementBackground, findColour (ResizableWindow::backgroundColourId).brighter (0.1f));
+    
+    setColour (LGMLColors::elementBackground, findColour (ResizableWindow::backgroundColourId).brighter(0.02f));
     setColour (TooltipWindow::ColourIds::textColourId, scheme.getUIColour (ColourScheme::UIColour::defaultText));
 
 
@@ -157,7 +158,8 @@ void LookAndFeelOO::drawComboBox (Graphics& g, int width, int height, const bool
 {
     buttonX = 2;
     buttonW = comboButtonW;
-    g.fillAll (box.findColour (ComboBox::backgroundColourId));
+    g.setColour(box.findColour (ComboBox::backgroundColourId));
+    g.fillRect (box.getLocalBounds());
 
     if (box.isEnabled() && box.hasKeyboardFocus (false))
     {
@@ -219,7 +221,7 @@ void LookAndFeelOO::positionComboBoxText (ComboBox& box, Label& label)
 class LookAndFeelOO::SliderLabelComp  : public Label
 {
 public:
-    SliderLabelComp() : Label ("", "") {}
+    SliderLabelComp() : Label ("", "") {setPaintingIsUnclipped(true);}
 
     void mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& d)
     {

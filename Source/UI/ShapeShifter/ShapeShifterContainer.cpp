@@ -15,13 +15,16 @@
 
 #include "ShapeShifterContainer.h"
 #include "ShapeShifterManager.h"
+#include "../Style.h"
 
 
 ShapeShifterContainer::ShapeShifterContainer (Direction _direction) :
 ShapeShifter (ShapeShifter::CONTAINER),
 direction (_direction)
 {
-
+    setOpaque(true);
+    setPaintingIsUnclipped(true);
+    
 }
 
 ShapeShifterContainer::~ShapeShifterContainer()
@@ -562,6 +565,11 @@ void ShapeShifterContainer::oneShifterRemaining (ShapeShifterContainer* containe
 void ShapeShifterContainer::paintOverChildren(Graphics & g) {
     //    LGMLUIUtils::drawBounds(this,g);
     
+}
+void ShapeShifterContainer::paint(Graphics & g){
+
+    LGMLUIUtils::fillBackground(this,g);
+
 }
 
 int ShapeShifterContainer::getPreferredWidth() {

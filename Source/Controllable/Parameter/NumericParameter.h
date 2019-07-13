@@ -32,6 +32,9 @@ public:
     void setNormalizedValue (const floatParamType  normalizedValue, bool silentSet = false, bool force = false);
 
     floatParamType getNormalizedValue() const;
+    bool checkValueIsTheSame (const var& v1, const var& v2) override;
+    void setPrecision(int p);
+    uint32 precisionMask;
     static T UNBOUNDEDVALUE;
     DECLARE_OBJ_TYPE (NumericParameter,"Numeric parameter")
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NumericParameter)

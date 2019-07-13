@@ -60,15 +60,15 @@ public:
 
         forceSendNow |= MessageManager::getInstance()->isThisTheMessageThread();
 
-        if (forceSendNow)
-        {
-            listeners.callExcluding(notifier,&Listener::newMessage, *msg);
-            lastListeners.callExcluding (notifier,&Listener::newMessage, *msg);
-            delete msg;
-            return;
-        }
-        else
-        {
+//        if (forceSendNow)
+//        {
+//            listeners.callExcluding(notifier,&Listener::newMessage, *msg);
+//            lastListeners.callExcluding (notifier,&Listener::newMessage, *msg);
+//            delete msg;
+//            return;
+//        }
+//        else
+//        {
 
 
             int start1, size1, start2, size2;
@@ -106,8 +106,13 @@ public:
             }
 
             fifo.finishedWrite (size1 );
+        if(forceSendNow){
+            handleAsyncUpdate();
+        }
+        else{
             triggerAsyncUpdate();
         }
+//        }
 
     }
 

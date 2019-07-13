@@ -28,6 +28,7 @@ GenericParameterContainerEditor::GenericParameterContainerEditor (ParameterConta
     InspectorEditor(),
 parentBT (juce::translate("Up"), juce::translate("Go back to parent container"))
 {
+    LGMLUIUtils::optionallySetBufferedToImage(&parentBT);
 
     parentBT.addListener (this);
 
@@ -48,6 +49,10 @@ GenericParameterContainerEditor::~GenericParameterContainerEditor()
 
     parentBT.removeListener (this);
     if(innerContainer.get())innerContainer->clear();
+}
+
+void GenericParameterContainerEditor::paint(Graphics & g){
+    LGMLUIUtils::fillBackground(this,g);
 }
 
 void GenericParameterContainerEditor::setCurrentInspectedContainer (ParameterContainer* cc, bool forceUpdate,    int recursiveInspectionLevel, bool canInspectChildContainersBeyondRecursion)
@@ -180,8 +185,10 @@ CCInnerContainerUI::CCInnerContainerUI (GenericParameterContainerEditor* _editor
     canAccessLowerContainers (_canAccessLowerContainers),
     containerLabel ("containerLabel", _container->getNiceName())
 {
+//    setPaintingIsUnclipped(true);
+    setOpaque(true);
     container->addControllableContainerListener (this);
-
+//    containerLabel.setPaintingIsUnclipped(true);
     addAndMakeVisible (containerLabel);
     containerLabel.setFont (containerLabel.getFont().withHeight (10));
     containerLabel.setColour (containerLabel.backgroundColourId, findColour (ResizableWindow::backgroundColourId).brighter (.2f));
@@ -270,6 +277,7 @@ void CCInnerContainerUI::addCCLink (ParameterContainer* cc)
 
 
         CCLinkBT* bt = new CCLinkBT (cc);
+    LGMLUIUtils::optionallySetBufferedToImage(bt);
         bt->addListener (this);
         addAndMakeVisible (bt);
         lowerContainerLinks.add (bt);
@@ -389,7 +397,8 @@ int CCInnerContainerUI::getContentHeight() const
 void CCInnerContainerUI::paint (Graphics& g)
 {
     //if (level == 0) return;
-    g.setColour (findColour (ResizableWindow::backgroundColourId).brighter (.3f));
+    g.setColour(LGMLUIUtils::getCurrentBackgroundColor(this).brighter(.3f));
+//    g.setColour (findColour (ResizableWindow::backgroundColourId).brighter (.3f));
     g.drawRoundedRectangle (getLocalBounds().toFloat(), 4, 2);
 }
 
@@ -580,6 +589,9 @@ CCInnerContainerUI::CCLinkBT::CCLinkBT (ParameterContainer* _targetContainer) :
     targetContainer (_targetContainer),
     TextButton ("[ "+juce::translate("Inspect")+" " + _targetContainer->getNiceName() + " >> ]")
 {
+    LGMLUIUtils::optionallySetBufferedToImage(this);
+    setPaintingIsUnclipped(true);
 }
 
 #endif
+

@@ -15,7 +15,7 @@
 
 #include "ParameterProxy.h"
 #include "../ControllableContainer.h"
-#include "../../Engine.h"
+#include "../../Engine.h" // for root
 
 #include "ParameterFactory.h"
 REGISTER_PARAM_TYPE (ParameterProxy)
@@ -101,7 +101,7 @@ void ParameterProxy::setValueInternal (const var& _value)
 void ParameterProxy::parameterValueChanged ( ParameterBase* p, ParameterBase::Listener * notifier)
 {
     jassert (p == linkedParam);
-    proxyListeners.call (&ParameterProxyListener::linkedParamValueChanged, this);
+    proxyListeners.call (&ParameterProxyListener::linkedParamValueChanged, this,notifier);
 }
 
 void ParameterProxy::parameterRangeChanged ( ParameterBase* p)

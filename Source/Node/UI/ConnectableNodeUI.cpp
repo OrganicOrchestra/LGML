@@ -16,7 +16,10 @@
 #if !ENGINE_HEADLESS
 
 #include "ConnectableNodeUI.h"
-#include "ConnectableNodeHeaderUI.h"
+#include "ConnectableNodeHeaderUI.hpp"
+#include "ConnectableNodeAudioCtlUI.hpp"
+
+#include "ConnectorContainerComponent.hpp"
 #include "../NodeContainer/NodeContainer.h"
 #include "../Impl/ContainerInNode.h"
 #include "../Impl/ContainerOutNode.h"
@@ -105,13 +108,14 @@ ConnectableNodeUI::ConnectableNodeUI (ConnectableNode* cn,ConnectableNodeUIParam
 InspectableComponent (cn, "node"),
 ConnectableNodeUIParams(params),
 connectableNode (cn),
-inputContainer (ConnectorComponent::ConnectorIOType::INPUT),
-outputContainer (ConnectorComponent::ConnectorIOType::OUTPUT),
 mainComponentContainer (this, contentUI, headerUI),
 resizer (this, &constrainer),
 isDraggingFromUI (false)
 {
-    
+    inputContainer  = new ConnectorContainerComponent(ConnectorComponent::ConnectorIOType::INPUT);
+    outputContainer = new ConnectorContainerComponent(ConnectorComponent::ConnectorIOType::OUTPUT);
+    setPaintingIsUnclipped(true);
+    setOpaque(false);
 
     constrainer.setMinimumWidth (50);
     constrainer.setMinimumHeight (50);
@@ -121,13 +125,13 @@ isDraggingFromUI (false)
 
     if (connectableNode->userCanAccessInputs)
     {
-        inputContainer.setConnectorsFromNode (connectableNode);
+        inputContainer->setConnectorsFromNode (connectableNode);
         addAndMakeVisible (inputContainer);
     }
 
     if (connectableNode->userCanAccessOutputs)
     {
-        outputContainer.setConnectorsFromNode (connectableNode);
+        outputContainer->setConnectorsFromNode (connectableNode);
         addAndMakeVisible (outputContainer);
     }
 
@@ -148,7 +152,8 @@ isDraggingFromUI (false)
     isMiniMode = miniModeParam->boolValue();
     //connectableNode->miniMode->isHidenInEditor = true;
 
-
+    resizer.setPaintingIsUnclipped(true);
+//    setBufferedToImage(true);
 
 
 }
@@ -216,8 +221,8 @@ void ConnectableNodeUI::setMiniMode (bool value)
 int ConnectableNodeUI::getMiniModeWidth (bool forMiniMode)
 {
     return forMiniMode ? 130 : (getContentContainer()->getWidth() +
-                                inputContainer.isVisible()*inputContainer.getWidth() +
-                                outputContainer.isVisible()*outputContainer.getWidth() +
+                                inputContainer->isVisible()*inputContainer->getWidth() +
+                                outputContainer->isVisible()*outputContainer->getWidth() +
                                 (mainComponentContainer.audioCtlUIContainer ? mainComponentContainer.audioCtlUIContainer->getWidth() +
                                  ConnectableNodeUI::MainComponentContainer::audioCtlContainerPadRight : 0));
 }
@@ -227,9 +232,9 @@ int ConnectableNodeUI::getMiniModeHeight (bool forMiniMode)
     return getHeaderContainer()->getBottom() + (forMiniMode ? 10 : getContentContainer()->getHeight());
 }
 
-void ConnectableNodeUI::paint (Graphics&)
+void ConnectableNodeUI::paint (Graphics& g)
 {
-
+//    LGMLUIUtils::fillBackground(this,g);
 }
 
 void ConnectableNodeUI::resized()
@@ -249,24 +254,24 @@ void ConnectableNodeUI::resized()
 
     if (connectableNode->userCanAccessInputs)
     {
-        jassert(inputContainer.isVisible());
+        jassert(inputContainer->isVisible());
         Rectangle<int> inputBounds = r.removeFromLeft (connectorWidth);
-        inputContainer.setBounds (inputBounds);
+        inputContainer->setBounds (inputBounds);
     }
 
     if (connectableNode->userCanAccessOutputs)
     {
-        jassert(outputContainer.isVisible());
+        jassert(outputContainer->isVisible());
         Rectangle<int> outputBounds = r.removeFromRight (connectorWidth);
-        outputContainer.setBounds (outputBounds);
+        outputContainer->setBounds (outputBounds);
     }
 
 
     mainComponentContainer.setBounds(r);
-    resizer.setBounds (r.removeFromRight (10).removeFromBottom (10));
+    resizer.setBounds (r.removeFromRight (10).removeFromBottom (10).reduced(1));
 
     isDraggingFromUI = true;
-    nodeSize->setPoint(mainComponentContainer.contentContainer->getWidth(),mainComponentContainer.contentContainer->getHeight() ,this);
+    nodeSize->setPointFrom(this,mainComponentContainer.contentContainer->getWidth(),mainComponentContainer.contentContainer->getHeight() );
     isDraggingFromUI = false;
 }
 
@@ -299,7 +304,7 @@ void ConnectableNodeUI::onContainerParameterChanged( ParameterBase*p){
 
 }
 
-void ConnectableNodeUI::nodeParameterChanged (ConnectableNode*, ParameterBase* p)
+void ConnectableNodeUI::nodeParameterChangedAsync (ConnectableNode*, ParameterBase* p)
 {
 
     if (p == connectableNode->enabledParam)
@@ -351,8 +356,8 @@ void ConnectableNodeUI::childBoundsChanged (Component* c)
     // if changes in this layout take care to update  childBounds changed to update when child resize itself (ConnectableNodeContentUI::init()
     if (c == &mainComponentContainer)
     {
-        int sPad = ((inputContainer.isVisible()?1:0) +
-                    (outputContainer.isVisible()?1:0))* connectorWidth;
+        int sPad = ((inputContainer->isVisible()?1:0) +
+                    (outputContainer->isVisible()?1:0))* connectorWidth;
 
         Point<int> destS = {mainComponentContainer.getWidth() + sPad,
             mainComponentContainer.getHeight()};
@@ -434,6 +439,9 @@ miniMode (false)
 
     addAndMakeVisible (headerContainer);
     addAndMakeVisible (contentContainer);
+    LGMLUIUtils::markHasNewBackground(this,2);
+    setPaintingIsUnclipped(true);
+    setOpaque(true);
 
 }
 
@@ -456,8 +464,11 @@ void ConnectableNodeUI::MainComponentContainer::setNodeAndNodeUI (ConnectableNod
 void ConnectableNodeUI::MainComponentContainer::paint (Graphics& g)
 {
     if (!connectableNodeUI->connectableNode.get())return;
-
-    g.setColour (connectableNodeUI->connectableNode->enabledParam->boolValue() ? findColour (LGMLColors::elementBackground) : findColour (LGMLColors::elementBackground).darker (.7f));
+    auto bgColor = LGMLUIUtils::getCurrentBackgroundColor(this);
+    if(!connectableNodeUI->connectableNode->enabledParam->boolValue()){
+        bgColor = bgColor.darker(.7f);
+    }
+    g.setColour ( bgColor);
     g.fillRoundedRectangle (getLocalBounds().toFloat(), 4);
 
     g.setColour (connectableNodeUI->isSelected ? findColour (TextButton::buttonOnColourId) : findColour (TextButton::textColourOffId));
@@ -484,7 +495,9 @@ void ConnectableNodeUI::MainComponentContainer::resized()
             r.removeFromRight (audioCtlContainerPadRight);
             audioCtlUIContainer->setBounds (r.removeFromRight (audioCtlContainerWidth));
         }
+
         contentContainer->setBounds (r);
+
         Point<int> tp = {contentContainer->getWidth(), contentContainer->getHeight()};
         connectableNodeUI->nodeSize->setPoint (tp);
 
@@ -545,94 +558,17 @@ String ConnectableNodeUI::MainComponentContainer::getTooltip() {
 
 
 
-// ======= CONNECTOR CONTAINER AND CONNECTOR COMPONENT ===================
-ConnectableNodeUI::ConnectorContainer::ConnectorContainer (ConnectorComponent::ConnectorIOType type) : type (type), displayLevel (ConnectorComponent::MINIMAL)
-{
-    setInterceptsMouseClicks (false, true);
-
-}
-
-void ConnectableNodeUI::ConnectorContainer::setConnectorsFromNode (ConnectableNode* _node)
-{
-    connectors.clear();
-
-    ConnectableNode* targetNode = _node;
-
-    if (targetNode == nullptr)
-    {
-        DBG ("Target Node nullptr !");
-        return;
-    }
-
-
-    addConnector (type, NodeConnection::ConnectionType::AUDIO, targetNode);
-    
-
-    resized();
-
-}
-
-void ConnectableNodeUI::ConnectorContainer::addConnector (ConnectorComponent::ConnectorIOType ioType, NodeConnection::ConnectionType dataType, ConnectableNode* _node)
-{
-    ConnectorComponent* c = new ConnectorComponent (ioType, dataType, _node);
-    connectors.add (c);
-    addChildComponent (c);
-
-    c->addConnectorListener (this);
-}
-
-void ConnectableNodeUI::ConnectorContainer::connectorVisibilityChanged (ConnectorComponent*)
-{
-    resized();
-}
-
-
-void ConnectableNodeUI::ConnectorContainer::resized()
-{
-    Rectangle<int> r = getLocalBounds();
-
-    r.removeFromTop (10);
-
-    for (auto& c : connectors)
-    {
-        if (!c->isVisible()) continue;
-
-        c->setBounds (r.removeFromTop (r.getWidth()));
-        r.removeFromTop (15);
-
-    }
-}
-
-ConnectorComponent* ConnectableNodeUI::ConnectorContainer::getFirstConnector (NodeConnection::ConnectionType dataType)
-{
-    for (int i = 0; i < connectors.size(); i++)
-    {
-        if (connectors.getUnchecked (i)->dataType == dataType) return connectors.getUnchecked (i);
-    }
-
-    return nullptr;
-}
-
-bool ConnectableNodeUI::ConnectorContainer::hitTest(int x, int y) {
-    for(auto c:connectors){
-        if(c->getBoundsInParent().contains(x,y))
-            return true;
-    }
-    return false;
-}
-
-
 
 Array<ConnectorComponent*> ConnectableNodeUI::getComplementaryConnectors (ConnectorComponent* baseConnector)
 {
     Array<ConnectorComponent*> result;
 
 
-    ConnectorContainer* checkSameCont = baseConnector->ioType == ConnectorComponent::ConnectorIOType::INPUT ? &inputContainer : &outputContainer;
+    ConnectorContainerComponent* checkSameCont = baseConnector->ioType == ConnectorComponent::ConnectorIOType::INPUT ? inputContainer : outputContainer;
 
     if (checkSameCont->getIndexOfChildComponent (baseConnector) != -1) return result;
 
-    ConnectorContainer* complCont = checkSameCont == &inputContainer ? &outputContainer : &inputContainer;
+    ConnectorContainerComponent* complCont = checkSameCont == inputContainer ? outputContainer : inputContainer;
 
     for (int i = 0; i < complCont->connectors.size(); i++)
     {
@@ -653,11 +589,11 @@ ConnectorComponent* ConnectableNodeUI::getFirstConnector (NodeConnection::Connec
 {
     if (ioType == ConnectorComponent::INPUT)
     {
-        return inputContainer.getFirstConnector (connectionType);
+        return inputContainer->getFirstConnector (connectionType);
     }
     else
     {
-        return outputContainer.getFirstConnector (connectionType);
+        return outputContainer->getFirstConnector (connectionType);
     }
 }
 
@@ -666,13 +602,13 @@ bool ConnectableNodeUI::hitTest(int x, int y){
     if (mainComponentContainer.getBoundsInParent().contains(x,y))
         return true;
 
-    if(outputContainer.isVisible() && outputContainer.getBoundsInParent().contains(x, y)){
-        auto lp =outputContainer.getLocalPoint(this, Point<int> (x, y));
-        return outputContainer.hitTest(lp.x,lp.y) ;
+    if(outputContainer->isVisible() && outputContainer->getBoundsInParent().contains(x, y)){
+        auto lp =outputContainer->getLocalPoint(this, Point<int> (x, y));
+        return outputContainer->hitTest(lp.x,lp.y) ;
     }
-    if(inputContainer.isVisible() &&inputContainer.getBoundsInParent().contains(x, y)){
-        auto lp =inputContainer.getLocalPoint(this, Point<int> (x, y));
-        return inputContainer.hitTest(lp.x,lp.y) ;
+    if(inputContainer->isVisible() &&inputContainer->getBoundsInParent().contains(x, y)){
+        auto lp =inputContainer->getLocalPoint(this, Point<int> (x, y));
+        return inputContainer->hitTest(lp.x,lp.y) ;
     }
     return false;
 }

@@ -19,10 +19,13 @@
 #include "../BoolParameter.h"
 #include "../UndoableHelper.h"
 
+#include "CachedNameLabel.hpp"
 //==============================================================================
 BoolToggleUI::BoolToggleUI ( ParameterBase* parameter) :
-    ParameterUI (parameter)
+    ParameterUI (parameter),
+   labelComp (new CachedNameLabel(this))
 {
+    addAndMakeVisible(labelComp);
     setSize (10, 10);
 
 }
@@ -34,7 +37,7 @@ BoolToggleUI::~BoolToggleUI()
 
 void BoolToggleUI::paint (Graphics& g)
 {
-
+    ParameterUI::paint(g);
     // we are on component deletion
     if (shouldBailOut())return;
 
@@ -47,23 +50,20 @@ void BoolToggleUI::paint (Graphics& g)
     bool valCheck = ((BoolParameter*)parameter.get())->invertVisuals ? !parameter->boolValue() : parameter->boolValue();
     Colour c =  valCheck ? onColour  : findColour (TextButton::buttonColourId);
 
-    const float fontHeight=10.0f;
+
 
     if(!parameter->isEditable){
+        const float ledHeight=10.0f;
         g.setColour(c);
         auto tbound = getLocalBounds()
-                                    .removeFromLeft(fontHeight)
-                                    .withSizeKeepingCentre(fontHeight, fontHeight)
+                                    .removeFromLeft(ledHeight)
+                                    .withSizeKeepingCentre(ledHeight, ledHeight)
                                     .reduced(1).toFloat() ;
 
-//        if(valCheck){
+
             g.setColour(c);
             g.fillEllipse(tbound);
-//        }
-//        else{
-//            g.setColour(Colours::black);
-//            g.drawEllipse(tbound,1);
-//        }
+
 
     }
     else{
@@ -71,19 +71,22 @@ void BoolToggleUI::paint (Graphics& g)
         g.fillRoundedRectangle (getLocalBounds().toFloat(), 2);
     }
 
-    g.setFont (fontHeight);
-    g.setColour (findColour(valCheck?TextButton::textColourOnId : TextButton::textColourOffId));
 
-    if(showLabel){
-    if (customTextDisplayed.isNotEmpty())
-    {
-        g.drawText (customTextDisplayed, getLocalBounds().reduced (2).toFloat(), Justification::centred);
+    if(showLabel != labelComp->isVisible()){
+        labelComp->setVisible(showLabel);
     }
-    else
-    {
-        g.drawText (juce::translate(parameter->niceName), getLocalBounds().reduced (2).toFloat(), Justification::centred);
-    }
-    }
+//    g.setFont (fontHeight);
+//    g.setColour (findColour(valCheck?TextButton::textColourOnId : TextButton::textColourOffId));
+
+//    if (customTextDisplayed.isNotEmpty())
+//    {
+//        g.drawText (customTextDisplayed, getLocalBounds().reduced (2).toFloat(), Justification::centred);
+//    }
+//    else
+//    {
+//        g.drawText (juce::translate(parameter->niceName), getLocalBounds().reduced (2).toFloat(), Justification::centred);
+//    }
+//    }
 }
 
 void BoolToggleUI::mouseDown (const MouseEvent& e)
@@ -98,7 +101,9 @@ void BoolToggleUI::mouseDown (const MouseEvent& e)
         
     }
 }
-
+void BoolToggleUI::resized(){
+    labelComp->setBounds(getLocalBounds());
+}
 void BoolToggleUI::mouseUp (const MouseEvent& e)
 {
     ParameterUI::mouseUp (e);

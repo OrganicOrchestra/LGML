@@ -105,8 +105,11 @@ Result OSCJsController::processMessageInternal (const OSCMessage& m)
 {
 
     Result r1  = OSCDirectController::processMessageInternal (m);
+    {
+        const ScopedLock lk (jsOSCListeners.getLock());
+        for (auto& l : jsOSCListeners) {if(l)l->processMessage (m);}
+    }
 
-    for (auto& l : jsOSCListeners) {l->processMessage (m);}
 
     Result r2 (Result::fail ("no valid js file"));
 
@@ -264,6 +267,7 @@ var OSCJsController::createJsOSCListener (const var::NativeFunctionArgs& a)
     auto * originEnv= castPtrFromJSEnv<OSCJsController> (a);
 
     {
+
         JsOSCListener* ob = new JsOSCListener (originEnv, oscPattern);
         originEnv->jsOSCListeners.add (ob);
         return ob->object;

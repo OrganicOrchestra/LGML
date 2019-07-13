@@ -319,7 +319,7 @@ int Presetable::getNumPresets()
     return pm->getNumPresetForFilter (getPresetFilter());
 }
 
-bool Presetable::resetToPreset()
+bool Presetable::resetToCurrentPreset()
 {
     if (!hasPresetLoaded()) return false;
 

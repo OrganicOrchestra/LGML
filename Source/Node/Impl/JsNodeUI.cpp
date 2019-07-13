@@ -12,7 +12,8 @@
  *
  */
 
-#if !ENGINE_HEADLESS
+#if !ENGINE_HEADLESS && !NON_INCREMENTAL_COMPILATION
+
 #include "JsNodeUI.h"
 
 #include "JsNode.h"

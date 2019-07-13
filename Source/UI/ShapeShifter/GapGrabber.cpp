@@ -23,6 +23,7 @@
 struct MiniHandle : public Component,SettableTooltipClient{
     MiniHandle(GapGrabber * o,bool dir):owner(o),direction(dir){
         setRepaintsOnMouseActivity (true);
+        setPaintingIsUnclipped(true);
         bool isH = owner->direction==GapGrabber::Direction::HORIZONTAL;
         if(isH){
             if(dir){
@@ -52,14 +53,26 @@ struct MiniHandle : public Component,SettableTooltipClient{
 
         g.setColour(c);
         auto r = getLocalBounds();
-
+        const int lineSize = 5;
+        const int gap = lineSize;
         if(owner->direction==GapGrabber::Direction::VERTICAL){
             int yh = r.getY() + r.getHeight()/2;
-            g.drawLine(r.getX(), yh, r.getRight(), yh);
+            int numLines = r.getWidth()/(lineSize + gap);
+            for(int i = 0 ; i < numLines ; i++){
+                int lineStart = r.getX()+(lineSize + gap)*i;
+                g.drawLine(lineStart, yh, lineStart+lineSize, yh);
+            }
+
         }
         else{
             int x = r.getX() + r.getWidth()/2;
-            g.drawLine(x, r.getY()  , x, r.getBottom());
+            int numLines = r.getHeight()/(lineSize + gap);
+            for(int i = 0 ; i < numLines ; i++){
+                int lineStart = r.getY()+(lineSize + gap)*i;
+                g.drawLine(x, lineStart, x, lineStart+lineSize);
+            }
+
+
         }
 
     }
@@ -91,6 +104,7 @@ struct MiniHandle : public Component,SettableTooltipClient{
 struct StretchHandle : public Component{
     StretchHandle(GapGrabber * o):owner(o){
         setRepaintsOnMouseActivity (true);
+        setPaintingIsUnclipped(true);
         setMouseCursor (owner->direction == GapGrabber::Direction::HORIZONTAL ?
                         MouseCursor::LeftRightResizeCursor :
                         MouseCursor::UpDownResizeCursor);
@@ -98,7 +112,7 @@ struct StretchHandle : public Component{
 
     void paint(Graphics & g)final{
         Rectangle<int> r = getLocalBounds().reduced(1);
-        Colour c = findColour (ResizableWindow::backgroundColourId).brighter (.1f);
+        Colour c = Colours::transparentWhite;//findColour (ResizableWindow::backgroundColourId).brighter (.1f);
         if (isMouseOver(false)){ c = findColour (TextButton::buttonOnColourId);}
         if (isMouseButtonDown()){c = c.brighter();}
         g.setColour (c);
@@ -123,10 +137,17 @@ GapGrabber::GapGrabber (Direction _direction) : direction (_direction)
     addAndMakeVisible(goMiniHandle2);
     stretchHandle = new StretchHandle(this);
     addAndMakeVisible(stretchHandle );
+    setPaintingIsUnclipped(true);
+    setOpaque(true);
 
 }
 
 GapGrabber::~GapGrabber(){}
+
+void GapGrabber::paint(Graphics & g){
+    g.setColour(Colours::black);//LGMLUIUtils::getCurrentBackgroundColor(this).darker(1.f));
+    g.fillRect(getLocalBounds());
+}
 
 void GapGrabber::resized() {
     Rectangle<int> r = getLocalBounds().reduced (1);

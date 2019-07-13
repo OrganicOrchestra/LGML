@@ -18,6 +18,7 @@
 
 #if !ENGINE_HEADLESS
 #include "LGMLDragger.h"
+#include "../Controller/Controller.h"
 #include "MainComponent.h"
 
 juce_ImplementSingleton (LGMLDragger);

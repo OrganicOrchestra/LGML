@@ -28,7 +28,7 @@ ParameterProxyUI::ParameterProxyUI (ParameterProxy* proxy) :
     setMappingDest (true);
     chooser.addControllableReferenceUIListener (this);
     addAndMakeVisible (&chooser);
-
+    chooser.setPaintingIsUnclipped(true);
     if(paramProxy){
         paramProxy->addParameterProxyListener (this);
         chooser.setTooltip(juce::translate(paramProxy->description));
@@ -132,11 +132,11 @@ void ParameterProxyUI::choosedControllableChanged (ControllableReferenceUI*, Con
 
 }
 
-void ParameterProxyUI::controllableNameChanged (Controllable* c)
-{
-    ParameterUI::controllableNameChanged (c);
-
-
-}
+//void ParameterProxyUI::controllableNameChanged (Controllable* c)
+//{
+//    ParameterUI::controllableNameChanged (c);
+//
+//
+//}
 
 #endif

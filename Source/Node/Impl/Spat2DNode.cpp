@@ -51,7 +51,7 @@ alphaFilter(1)
     globalTargetPosition = addNewParameter<Point2DParameter<floatParamType>> ("Global Target Position", "Position of the Global Target",0,0,Array<var>{minSpatX,minSpatX},Array<var>{maxSpatX,maxSpatX});
     globalTargetRadius = addNewParameter<FloatParameter> ("Global Target Radius", "Radius for the global target", .5f, 0.f, 1.f);
     useLogCurve = addNewParameter<BoolParameter>("logCurve", "use log curve for volume", false);
-    constantPower = addNewParameter<BoolParameter>("constantPower", "in a perfect rosace the sum of the squares of the volumes stay to one", false);
+    constantPower = addNewParameter<BoolParameter>("constantPower", "in a perfect rosace the sum of the squares of the volumes stay to one", true);
     setPreferedNumAudioInput (numSpatInputs->intValue());
     setPreferedNumAudioOutput (numSpatOutputs->intValue() );
 
@@ -76,11 +76,12 @@ void Spat2DNode::setTargetPosition (int index, const Point<floatParamType>& posi
 {
     if (index == -1)
     {
-        globalTargetPosition->setPoint (position);
+        globalTargetPosition->setPointFrom (this,position);
+        computeAllInfluences();
     }
     else
     {
-        targetPositions[index]->setPoint (position);
+        targetPositions[index]->setPointFrom (this,position);
         computeInfluencesForTarget (index);
     }
 }
@@ -97,12 +98,15 @@ void Spat2DNode::updateTargetsFromShape()
             //do nothing
             break;
 
-        case  ShapeMode::CIRCLE:
-            for (int i = 0; i < numSpatOutputs->intValue(); i++)
+        case  ShapeMode::CIRCLE:{
+            float angleStart = circleRotation->floatValue() / 360.f * float_Pi * 2;
+            float angleStep = float_Pi * 2.f / (numSpatOutputs->intValue());
+            float hRadius = circleRadius->floatValue()*.5f;
+            for (int i = jmin(targetPositions.size(),numSpatOutputs->intValue())-1; i >=0 ; i--)
             {
                 Point2DParameter<floatParamType>* p = targetPositions[i];
-                float angle = (i * 1.f / (numSpatOutputs->intValue()) + circleRotation->floatValue() / 360.f) * float_Pi * 2;
-                p->setPoint (.5f + cosf (angle)*circleRadius->floatValue()*.5f, .5f + sinf (angle)*circleRadius->floatValue()*.5f);
+                float angle = angleStart + i *  angleStep;
+                p->setPointFrom (this,.5f + cosf (angle)*hRadius, .5f + sinf (angle)*hRadius);
             }
 
             if (useGlobalTarget->boolValue())
@@ -112,6 +116,7 @@ void Spat2DNode::updateTargetsFromShape()
 
             computeAllInfluences();
             break;
+        }
     }
 
 
@@ -151,9 +156,10 @@ void Spat2DNode::computeInfluencesForTarget (int targetIndex)
 
 void Spat2DNode::computeInfluence (int sourceIndex, int targetIndex)
 {
-    if (sourceIndex >= inputsPositionsParams.size()) return;
+    if (sourceIndex >= inputsPositionsParams.size()){jassertfalse; return;}
 
-    if (targetIndex >= outputsIntensities.size()) return;
+    if (targetIndex >= outputsIntensities.size()) {jassertfalse; return;}
+    
 
     Point2DParameter<floatParamType>* inputPos = inputsPositionsParams.getReference(sourceIndex);
     Point<floatParamType> sPos = inputPos->getPoint();
@@ -171,11 +177,11 @@ void Spat2DNode::computeInfluence (int sourceIndex, int targetIndex)
         Point<floatParamType> tPos = targetPositions[targetIndex]->getPoint();
 
         float val = jmax<float> (minValue, getValueForSourceAndTargetPos (sPos, tPos, targetRadius->floatValue()));
-        outputVal->setValue (val);
+        outputVal->setValueFrom (this,val);
     }
     else
     {
-        outputVal->setValue (0);
+        outputVal->setValueFrom (this,0);
     }
 }
 
@@ -320,7 +326,7 @@ void Spat2DNode::processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer&)
     {
 
         float lastInfluence = influences[i];
-        float influence = (1-alphaFilter)*lastInfluence + (alphaFilter)*computeGain(outputsIntensities.getReference(i)->floatValue(),logCurve,constantP);
+        float influence = (1.f-alphaFilter)*lastInfluence + (alphaFilter)*computeGain(outputsIntensities.getUnchecked(i)->floatValue(),logCurve,constantP);
 
         for(int j = 0 ; j < numIn ; j++ ){
             buffer.copyFromWithRamp (i, 0, tempBuf.getReadPointer (j), numSamples, lastInfluence,influence);

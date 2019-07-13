@@ -12,11 +12,7 @@
 *
 */
 
-
-#ifndef VSTNODEUI_H_INCLUDED
-#define VSTNODEUI_H_INCLUDED
-
-
+#pragma once
 
 #include "../../Controllable/Parameter/UI/SliderUI.h"
 #include "../../MIDI/MIDIUIHelper.h"
@@ -74,4 +70,6 @@ private:
 };
 
 
-#endif  // VSTNODEUI_H_INCLUDED
+#if NON_INCREMENTAL_COMPILATION
+    #include "VSTNodeUI.cpp"
+#endif

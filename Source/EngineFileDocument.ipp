@@ -17,24 +17,27 @@
  */
 
 
-
+//
 #include "Node/Impl/AudioDeviceInNode.h"
 #include "Node/Impl/AudioDeviceOutNode.h"
 #include "Controller/Impl/OSCJsController.h"
-
-
-#include "Engine.h"
-
+//
+//
+//#include "Engine.h"
+//
 #if !ENGINE_HEADLESS
 #include "UI/Inspector/Inspector.h"
 #include "Node/Manager/UI/NodeManagerUI.h"
 #endif
+//
+///*================================
+// this file implements all methods that are related to saving/loading : basicly iherited from FileBasedDocument
+// */
+//
+extern ApplicationProperties* getAppProperties();
 
-/*================================
- this file implements all methods that are related to saving/loading : basicly iherited from FileBasedDocument
- */
 
-ApplicationProperties* getAppProperties();
+
 
 AudioDeviceManager& getAudioDeviceManager();
 String lastFileListKey ("lastFileList");

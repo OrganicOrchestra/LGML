@@ -17,7 +17,7 @@
 
 #include "../../UI/Style.h"
 #include "../ControllerFactory.h"
-#include "../../UI/Inspector/Inspector.h"
+
 #include "../../UI/ShapeShifter/ShapeShifterManager.h"
 #include "../../Utils/FactoryUIHelpers.h"
 #include "../../Controllable/ControllableUIHelpers.h"
@@ -26,8 +26,9 @@
 ControllerManagerUI::ControllerManagerUI (const String & contentName, ControllerManager* _manager):
     manager (_manager),
 InspectableComponent(_manager),
-ShapeShifterContent (this,contentName,
-                              "Communicate with the real world\nAdd your controllers here\n OSC / MIDI / Serial"),
+ShapeShifterContent (this,
+                     contentName,
+                     "Communicate with the real world\nAdd your controllers here\n OSC / MIDI / Serial"),
 controllersUI(new StackedContainerUI<ControllerUI, Controller>
               (
                [](ControllerUI *ui){return ui->controller;},
@@ -137,10 +138,6 @@ void ControllerManagerUI::resized()
     }
 }
 
-void ControllerManagerUI::paint (Graphics&)
-{
-    //ContourComponent::paint(g);
-}
 
 int ControllerManagerUI::getContentHeight() const
 {
