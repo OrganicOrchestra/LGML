@@ -583,6 +583,9 @@
     <ClCompile Include="..\..\Source\Controllable\Parameter\ParameterContainerSync.cpp">
       <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\ParameterUIHelpers.cpp">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Controllable\Parameter\UI\FileParameterUI.cpp">
       <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClCompile>
@@ -730,15 +733,6 @@
     <ClCompile Include="..\..\Source\MIDI\MIDIUIHelper.cpp">
       <Filter>LGML\Source\MIDI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Node\Connection\UI\NodeConnectionEditor.cpp">
-      <Filter>LGML\Source\Node\Connection\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Node\Connection\UI\NodeConnectionEditorDataSlot.cpp">
-      <Filter>LGML\Source\Node\Connection\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Node\Connection\UI\NodeConnectionEditorLink.cpp">
-      <Filter>LGML\Source\Node\Connection\UI</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Node\Connection\UI\NodeConnectionUI.cpp">
       <Filter>LGML\Source\Node\Connection\UI</Filter>
     </ClCompile>
@@ -796,9 +790,6 @@
     <ClCompile Include="..\..\Source\Node\Impl\Spat2DNodeUI.cpp">
       <Filter>LGML\Source\Node\Impl</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Node\Impl\Spat2DViewerUI.cpp">
-      <Filter>LGML\Source\Node\Impl</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Node\Impl\VSTNode.cpp">
       <Filter>LGML\Source\Node\Impl</Filter>
     </ClCompile>
@@ -832,13 +823,7 @@
     <ClCompile Include="..\..\Source\Node\UI\NodeUIFactory.cpp">
       <Filter>LGML\Source\Node\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Node\UI\ConnectableNodeAudioCtlUI.cpp">
-      <Filter>LGML\Source\Node\UI</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Node\UI\ConnectableNodeContentUI.cpp">
-      <Filter>LGML\Source\Node\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Node\UI\ConnectableNodeHeaderUI.cpp">
       <Filter>LGML\Source\Node\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Node\UI\ConnectableNodeUI.cpp">
@@ -998,9 +983,6 @@
       <Filter>LGML\Source\Utils</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Engine.cpp">
-      <Filter>LGML\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\EngineFileDocument.cpp">
       <Filter>LGML\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Main.cpp">
@@ -3063,6 +3045,12 @@
     <ClInclude Include="..\..\Source\Controllable\Parameter\ParameterContainerSync.h">
       <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\ParameterUIHelpers.h">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\CachedNameLabel.hpp">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Controllable\Parameter\UI\FileParameterUI.h">
       <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClInclude>
@@ -3216,13 +3204,13 @@
     <ClInclude Include="..\..\Source\MIDI\MIDIUIHelper.h">
       <Filter>LGML\Source\MIDI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Node\Connection\UI\NodeConnectionEditor.h">
+    <ClInclude Include="..\..\Source\Node\Connection\UI\NodeConnectionEditor.hpp">
       <Filter>LGML\Source\Node\Connection\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Node\Connection\UI\NodeConnectionEditorDataSlot.h">
+    <ClInclude Include="..\..\Source\Node\Connection\UI\NodeConnectionEditorDataSlot.hpp">
       <Filter>LGML\Source\Node\Connection\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Node\Connection\UI\NodeConnectionEditorLink.h">
+    <ClInclude Include="..\..\Source\Node\Connection\UI\NodeConnectionEditorLink.hpp">
       <Filter>LGML\Source\Node\Connection\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Node\Connection\UI\NodeConnectionUI.h">
@@ -3282,7 +3270,7 @@
     <ClInclude Include="..\..\Source\Node\Impl\Spat2DNodeUI.h">
       <Filter>LGML\Source\Node\Impl</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Node\Impl\Spat2DViewerUI.h">
+    <ClInclude Include="..\..\Source\Node\Impl\Spat2DViewerUI.hpp">
       <Filter>LGML\Source\Node\Impl</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Node\Impl\VSTNode.h">
@@ -3315,16 +3303,19 @@
     <ClInclude Include="..\..\Source\Node\NodeContainer\NodeContainer.h">
       <Filter>LGML\Source\Node\NodeContainer</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Node\UI\ConnectorContainerComponent.hpp">
+      <Filter>LGML\Source\Node\UI</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Node\UI\NodeUIFactory.h">
       <Filter>LGML\Source\Node\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Node\UI\ConnectableNodeAudioCtlUI.h">
+    <ClInclude Include="..\..\Source\Node\UI\ConnectableNodeAudioCtlUI.hpp">
       <Filter>LGML\Source\Node\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Node\UI\ConnectableNodeContentUI.h">
       <Filter>LGML\Source\Node\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Node\UI\ConnectableNodeHeaderUI.h">
+    <ClInclude Include="..\..\Source\Node\UI\ConnectableNodeHeaderUI.hpp">
       <Filter>LGML\Source\Node\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Node\UI\ConnectableNodeUI.h">
@@ -5728,6 +5719,24 @@
     </None>
     <None Include="..\..\Resources\wolf_footprint_debug.png">
       <Filter>LGML\Assets</Filter>
+    </None>
+    <None Include="..\..\Source\Node\Connection\UI\NodeConnectionEditor.ipp">
+      <Filter>LGML\Source\Node\Connection\UI</Filter>
+    </None>
+    <None Include="..\..\Source\Node\Connection\UI\NodeConnectionEditorDataSlot.ipp">
+      <Filter>LGML\Source\Node\Connection\UI</Filter>
+    </None>
+    <None Include="..\..\Source\Node\Connection\UI\NodeConnectionEditorLink.ipp">
+      <Filter>LGML\Source\Node\Connection\UI</Filter>
+    </None>
+    <None Include="..\..\Source\Node\Impl\Spat2DViewerUI.ipp">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </None>
+    <None Include="..\..\Source\Node\UI\ConnectableNodeHeaderUI.ipp">
+      <Filter>LGML\Source\Node\UI</Filter>
+    </None>
+    <None Include="..\..\Source\EngineFileDocument.ipp">
+      <Filter>LGML\Source</Filter>
     </None>
     <None Include="..\..\..\JUCE\modules\juce_audio_formats\codecs\flac\Flac Licence.txt">
       <Filter>JUCE Modules\juce_audio_formats\codecs\flac</Filter>

@@ -294,6 +294,7 @@
     <ClCompile Include="..\..\Source\Controllable\Parameter\FileParameter.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\UndoableHelper.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\ParameterContainerSync.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\ParameterUIHelpers.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\UI\FileParameterUI.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\UI\ParameterListUI.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\UI\GenericParameterContainerEditor.cpp"/>
@@ -343,9 +344,6 @@
     <ClCompile Include="..\..\Source\MIDI\MIDIListener.cpp"/>
     <ClCompile Include="..\..\Source\MIDI\MIDIManager.cpp"/>
     <ClCompile Include="..\..\Source\MIDI\MIDIUIHelper.cpp"/>
-    <ClCompile Include="..\..\Source\Node\Connection\UI\NodeConnectionEditor.cpp"/>
-    <ClCompile Include="..\..\Source\Node\Connection\UI\NodeConnectionEditorDataSlot.cpp"/>
-    <ClCompile Include="..\..\Source\Node\Connection\UI\NodeConnectionEditorLink.cpp"/>
     <ClCompile Include="..\..\Source\Node\Connection\UI\NodeConnectionUI.cpp"/>
     <ClCompile Include="..\..\Source\Node\Connection\NodeConnection.cpp"/>
     <ClCompile Include="..\..\Source\Node\Impl\PdNodeUI.cpp"/>
@@ -365,7 +363,6 @@
     <ClCompile Include="..\..\Source\Node\Impl\LooperTrack.cpp"/>
     <ClCompile Include="..\..\Source\Node\Impl\Spat2DNode.cpp"/>
     <ClCompile Include="..\..\Source\Node\Impl\Spat2DNodeUI.cpp"/>
-    <ClCompile Include="..\..\Source\Node\Impl\Spat2DViewerUI.cpp"/>
     <ClCompile Include="..\..\Source\Node\Impl\VSTNode.cpp"/>
     <ClCompile Include="..\..\Source\Node\Impl\VSTNodeUI.cpp"/>
     <ClCompile Include="..\..\Source\Node\Impl\JsNode.cpp"/>
@@ -377,9 +374,7 @@
     <ClCompile Include="..\..\Source\Node\NodeContainer\UI\NodeContainerViewer.cpp"/>
     <ClCompile Include="..\..\Source\Node\NodeContainer\NodeContainer.cpp"/>
     <ClCompile Include="..\..\Source\Node\UI\NodeUIFactory.cpp"/>
-    <ClCompile Include="..\..\Source\Node\UI\ConnectableNodeAudioCtlUI.cpp"/>
     <ClCompile Include="..\..\Source\Node\UI\ConnectableNodeContentUI.cpp"/>
-    <ClCompile Include="..\..\Source\Node\UI\ConnectableNodeHeaderUI.cpp"/>
     <ClCompile Include="..\..\Source\Node\UI\ConnectableNodeUI.cpp"/>
     <ClCompile Include="..\..\Source\Node\UI\ConnectorComponent.cpp"/>
     <ClCompile Include="..\..\Source\Node\ConnectableNode.cpp"/>
@@ -433,7 +428,6 @@
     <ClCompile Include="..\..\Source\Utils\NetworkUtils.cpp"/>
     <ClCompile Include="..\..\Source\Utils\ProgressNotifier.cpp"/>
     <ClCompile Include="..\..\Source\Engine.cpp"/>
-    <ClCompile Include="..\..\Source\EngineFileDocument.cpp"/>
     <ClCompile Include="..\..\Source\Main.cpp"/>
     <ClCompile Include="..\..\third_party\serial\src\impl\list_ports\list_ports_linux.cc"/>
     <ClCompile Include="..\..\third_party\serial\src\impl\list_ports\list_ports_osx.cc"/>
@@ -2300,6 +2294,8 @@
     <ClInclude Include="..\..\Source\Controllable\Parameter\FileParameter.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\UndoableHelper.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\ParameterContainerSync.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\ParameterUIHelpers.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\CachedNameLabel.hpp"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\UI\FileParameterUI.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\UI\ParameterListUI.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\UI\GenericParameterContainerEditor.h"/>
@@ -2351,9 +2347,9 @@
     <ClInclude Include="..\..\Source\MIDI\MIDIListener.h"/>
     <ClInclude Include="..\..\Source\MIDI\MIDIManager.h"/>
     <ClInclude Include="..\..\Source\MIDI\MIDIUIHelper.h"/>
-    <ClInclude Include="..\..\Source\Node\Connection\UI\NodeConnectionEditor.h"/>
-    <ClInclude Include="..\..\Source\Node\Connection\UI\NodeConnectionEditorDataSlot.h"/>
-    <ClInclude Include="..\..\Source\Node\Connection\UI\NodeConnectionEditorLink.h"/>
+    <ClInclude Include="..\..\Source\Node\Connection\UI\NodeConnectionEditor.hpp"/>
+    <ClInclude Include="..\..\Source\Node\Connection\UI\NodeConnectionEditorDataSlot.hpp"/>
+    <ClInclude Include="..\..\Source\Node\Connection\UI\NodeConnectionEditorLink.hpp"/>
     <ClInclude Include="..\..\Source\Node\Connection\UI\NodeConnectionUI.h"/>
     <ClInclude Include="..\..\Source\Node\Connection\NodeConnection.h"/>
     <ClInclude Include="..\..\Source\Node\Impl\PdNodeUI.h"/>
@@ -2373,7 +2369,7 @@
     <ClInclude Include="..\..\Source\Node\Impl\LooperTrack.h"/>
     <ClInclude Include="..\..\Source\Node\Impl\Spat2DNode.h"/>
     <ClInclude Include="..\..\Source\Node\Impl\Spat2DNodeUI.h"/>
-    <ClInclude Include="..\..\Source\Node\Impl\Spat2DViewerUI.h"/>
+    <ClInclude Include="..\..\Source\Node\Impl\Spat2DViewerUI.hpp"/>
     <ClInclude Include="..\..\Source\Node\Impl\VSTNode.h"/>
     <ClInclude Include="..\..\Source\Node\Impl\VSTNodeUI.h"/>
     <ClInclude Include="..\..\Source\Node\Impl\JsNode.h"/>
@@ -2384,10 +2380,11 @@
     <ClInclude Include="..\..\Source\Node\NodeContainer\UI\NodeContainerContentUI.h"/>
     <ClInclude Include="..\..\Source\Node\NodeContainer\UI\NodeContainerViewer.h"/>
     <ClInclude Include="..\..\Source\Node\NodeContainer\NodeContainer.h"/>
+    <ClInclude Include="..\..\Source\Node\UI\ConnectorContainerComponent.hpp"/>
     <ClInclude Include="..\..\Source\Node\UI\NodeUIFactory.h"/>
-    <ClInclude Include="..\..\Source\Node\UI\ConnectableNodeAudioCtlUI.h"/>
+    <ClInclude Include="..\..\Source\Node\UI\ConnectableNodeAudioCtlUI.hpp"/>
     <ClInclude Include="..\..\Source\Node\UI\ConnectableNodeContentUI.h"/>
-    <ClInclude Include="..\..\Source\Node\UI\ConnectableNodeHeaderUI.h"/>
+    <ClInclude Include="..\..\Source\Node\UI\ConnectableNodeHeaderUI.hpp"/>
     <ClInclude Include="..\..\Source\Node\UI\ConnectableNodeUI.h"/>
     <ClInclude Include="..\..\Source\Node\UI\ConnectorComponent.h"/>
     <ClInclude Include="..\..\Source\Node\ConnectableNode.h"/>
@@ -3190,6 +3187,12 @@
     <None Include="..\..\Resources\grandlouloup.png"/>
     <None Include="..\..\Resources\wolf_footprint.png"/>
     <None Include="..\..\Resources\wolf_footprint_debug.png"/>
+    <None Include="..\..\Source\Node\Connection\UI\NodeConnectionEditor.ipp"/>
+    <None Include="..\..\Source\Node\Connection\UI\NodeConnectionEditorDataSlot.ipp"/>
+    <None Include="..\..\Source\Node\Connection\UI\NodeConnectionEditorLink.ipp"/>
+    <None Include="..\..\Source\Node\Impl\Spat2DViewerUI.ipp"/>
+    <None Include="..\..\Source\Node\UI\ConnectableNodeHeaderUI.ipp"/>
+    <None Include="..\..\Source\EngineFileDocument.ipp"/>
     <None Include="..\..\..\JUCE\modules\juce_audio_formats\codecs\flac\Flac Licence.txt"/>
     <None Include="..\..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\Ogg Vorbis Licence.txt"/>
     <None Include="..\..\..\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\LICENSE.txt"/>

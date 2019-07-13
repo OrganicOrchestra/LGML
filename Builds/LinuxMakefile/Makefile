@@ -79,6 +79,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/FileParameter_be7c65ea.o \
   $(JUCE_OBJDIR)/UndoableHelper_584c3b19.o \
   $(JUCE_OBJDIR)/ParameterContainerSync_5c3cffa0.o \
+  $(JUCE_OBJDIR)/ParameterUIHelpers_9e991cc0.o \
   $(JUCE_OBJDIR)/FileParameterUI_18aa3fb3.o \
   $(JUCE_OBJDIR)/ParameterListUI_d20d268d.o \
   $(JUCE_OBJDIR)/GenericParameterContainerEditor_282bb6ae.o \
@@ -128,9 +129,6 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/MIDIListener_a0441724.o \
   $(JUCE_OBJDIR)/MIDIManager_1adad6c7.o \
   $(JUCE_OBJDIR)/MIDIUIHelper_d188beb2.o \
-  $(JUCE_OBJDIR)/NodeConnectionEditor_1ec9be45.o \
-  $(JUCE_OBJDIR)/NodeConnectionEditorDataSlot_6a41472d.o \
-  $(JUCE_OBJDIR)/NodeConnectionEditorLink_71b5fd5f.o \
   $(JUCE_OBJDIR)/NodeConnectionUI_a5c1994c.o \
   $(JUCE_OBJDIR)/NodeConnection_6099998d.o \
   $(JUCE_OBJDIR)/PdNodeUI_d3851c75.o \
@@ -150,7 +148,6 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/LooperTrack_77e01bd9.o \
   $(JUCE_OBJDIR)/Spat2DNode_e112298f.o \
   $(JUCE_OBJDIR)/Spat2DNodeUI_262e7ba3.o \
-  $(JUCE_OBJDIR)/Spat2DViewerUI_adbb1db3.o \
   $(JUCE_OBJDIR)/VSTNode_ae29fbd8.o \
   $(JUCE_OBJDIR)/VSTNodeUI_c9adfac.o \
   $(JUCE_OBJDIR)/JsNode_c528b136.o \
@@ -162,9 +159,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/NodeContainerViewer_1d2d2ed4.o \
   $(JUCE_OBJDIR)/NodeContainer_3fa0a9eb.o \
   $(JUCE_OBJDIR)/NodeUIFactory_e1b69887.o \
-  $(JUCE_OBJDIR)/ConnectableNodeAudioCtlUI_6c41d3b2.o \
   $(JUCE_OBJDIR)/ConnectableNodeContentUI_619ae6be.o \
-  $(JUCE_OBJDIR)/ConnectableNodeHeaderUI_52edc2da.o \
   $(JUCE_OBJDIR)/ConnectableNodeUI_fd5534ed.o \
   $(JUCE_OBJDIR)/ConnectorComponent_6241d4e7.o \
   $(JUCE_OBJDIR)/ConnectableNode_839a1f42.o \
@@ -218,7 +213,6 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/NetworkUtils_dca78ea.o \
   $(JUCE_OBJDIR)/ProgressNotifier_4baee7ba.o \
   $(JUCE_OBJDIR)/Engine_7f3228cb.o \
-  $(JUCE_OBJDIR)/EngineFileDocument_abfb722.o \
   $(JUCE_OBJDIR)/Main_90ebc5c2.o \
   $(JUCE_OBJDIR)/list_ports_linux_5c85ed4.o \
   $(JUCE_OBJDIR)/list_ports_osx_ba915334.o \
@@ -309,6 +303,11 @@ $(JUCE_OBJDIR)/UndoableHelper_584c3b19.o: ../../Source/Controllable/Parameter/Un
 $(JUCE_OBJDIR)/ParameterContainerSync_5c3cffa0.o: ../../Source/Controllable/Parameter/ParameterContainerSync.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling ParameterContainerSync.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/ParameterUIHelpers_9e991cc0.o: ../../Source/Controllable/Parameter/UI/ParameterUIHelpers.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling ParameterUIHelpers.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/FileParameterUI_18aa3fb3.o: ../../Source/Controllable/Parameter/UI/FileParameterUI.cpp
@@ -556,21 +555,6 @@ $(JUCE_OBJDIR)/MIDIUIHelper_d188beb2.o: ../../Source/MIDI/MIDIUIHelper.cpp
 	@echo "Compiling MIDIUIHelper.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/NodeConnectionEditor_1ec9be45.o: ../../Source/Node/Connection/UI/NodeConnectionEditor.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling NodeConnectionEditor.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/NodeConnectionEditorDataSlot_6a41472d.o: ../../Source/Node/Connection/UI/NodeConnectionEditorDataSlot.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling NodeConnectionEditorDataSlot.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/NodeConnectionEditorLink_71b5fd5f.o: ../../Source/Node/Connection/UI/NodeConnectionEditorLink.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling NodeConnectionEditorLink.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
 $(JUCE_OBJDIR)/NodeConnectionUI_a5c1994c.o: ../../Source/Node/Connection/UI/NodeConnectionUI.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling NodeConnectionUI.cpp"
@@ -666,11 +650,6 @@ $(JUCE_OBJDIR)/Spat2DNodeUI_262e7ba3.o: ../../Source/Node/Impl/Spat2DNodeUI.cpp
 	@echo "Compiling Spat2DNodeUI.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/Spat2DViewerUI_adbb1db3.o: ../../Source/Node/Impl/Spat2DViewerUI.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling Spat2DViewerUI.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
 $(JUCE_OBJDIR)/VSTNode_ae29fbd8.o: ../../Source/Node/Impl/VSTNode.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling VSTNode.cpp"
@@ -726,19 +705,9 @@ $(JUCE_OBJDIR)/NodeUIFactory_e1b69887.o: ../../Source/Node/UI/NodeUIFactory.cpp
 	@echo "Compiling NodeUIFactory.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/ConnectableNodeAudioCtlUI_6c41d3b2.o: ../../Source/Node/UI/ConnectableNodeAudioCtlUI.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling ConnectableNodeAudioCtlUI.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
 $(JUCE_OBJDIR)/ConnectableNodeContentUI_619ae6be.o: ../../Source/Node/UI/ConnectableNodeContentUI.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling ConnectableNodeContentUI.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/ConnectableNodeHeaderUI_52edc2da.o: ../../Source/Node/UI/ConnectableNodeHeaderUI.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling ConnectableNodeHeaderUI.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/ConnectableNodeUI_fd5534ed.o: ../../Source/Node/UI/ConnectableNodeUI.cpp
@@ -1004,11 +973,6 @@ $(JUCE_OBJDIR)/ProgressNotifier_4baee7ba.o: ../../Source/Utils/ProgressNotifier.
 $(JUCE_OBJDIR)/Engine_7f3228cb.o: ../../Source/Engine.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling Engine.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/EngineFileDocument_abfb722.o: ../../Source/EngineFileDocument.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling EngineFileDocument.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/Main_90ebc5c2.o: ../../Source/Main.cpp
