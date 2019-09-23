@@ -78,6 +78,9 @@ void Spat2DViewer::updateNumSources()
         updateSourcePosition (i);
     }
 
+    for(auto s:sources){
+        s->toFront (false); //keep sources on top)
+    }
 //    resized();
 }
 
@@ -110,6 +113,9 @@ void Spat2DViewer::updateNumTargets()
         updateTargetPosition (i);
     }
     updateTargetRadius();
+    for(auto s:sources){
+        s->toFront (false); //keep sources on top)
+    }
 //    resized();
 }
 
@@ -153,7 +159,7 @@ void Spat2DViewer::resized()
     for (auto& s : sources)
     {
         s->setFloatPosition (s->position);
-        s->toFront (false); //keep sources on top
+
     }
 
 
@@ -231,7 +237,7 @@ void Spat2DViewer::nodeParameterChangedAsync (ConnectableNode*, ParameterBase* p
     }
     else if (p == node->targetRadius){ if(!isTimerRunning()){Timer::startTimer(REPAINT_INTERVAL_MS);}}
     // heavy repainters
-    else if (p == node->circleRadius){if(!isTimerRunning()){Timer::startTimer(REPAINT_INTERVAL_MS);}}
+    else if (p == node->circleDiameter){if(!isTimerRunning()){Timer::startTimer(REPAINT_INTERVAL_MS);}}
     else if (p == node->circleRotation){if(!isTimerRunning()){Timer::startTimer(REPAINT_INTERVAL_MS);}}
     else if(node->outputsIntensities.contains((FloatParameter*)p)){
         if(!isTimerRunning()){Timer::startTimer(REPAINT_INTERVAL_MS);}
@@ -339,13 +345,11 @@ void Spat2DTarget::paint (Graphics& g)
 
 Spat2DElement::Spat2DElement (Type _type, int _index,  Colour _color) : type (_type), index (_index), color (_color),handle(this)
 {
-//    setRepaintsOnMouseActivity (true);
-//    setInterceptsMouseClicks(false,true);
+
+    setInterceptsMouseClicks(false,true);
     addAndMakeVisible(handle);
-//    setBufferedToImage(true);
     setPaintingIsUnclipped(true);
 
-//    resized();
 }
 
 Spat2DElement::~Spat2DElement()

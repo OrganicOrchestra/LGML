@@ -41,7 +41,7 @@ public:
     ScopedPointer<ParameterUI> globalRadiusUI;
 
     ScopedPointer<ParameterUI> shapeModeUI;
-    ScopedPointer<ParameterUI> circleRadiusUI;
+    ScopedPointer<ParameterUI> circleDiameterUI;
     ScopedPointer<ParameterUI> circleRotationUI;
 
     void resized() override;

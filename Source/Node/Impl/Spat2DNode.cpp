@@ -38,9 +38,10 @@ alphaFilter(1)
 
 
     //circle
-    circleRadius = addNewParameter<FloatParameter> ("Circle Radius", "Radius of the circle to place the targets, if shape is set to circle", .8f, 0.f, 1.f);
-    circleRotation = addNewParameter<FloatParameter> ("Circle Rotation", "Rotation of the circle to place the targets, if shape is set to circle", 0.f, 0.f, 360.f);
-
+    circleDiameter = addNewParameter<FloatParameter> ("Circle Diameter", "Diameter of the circle to place the targets", .8f, 0.f, 1.f);
+    circleDiameter->setSavable(false); // we store only final positions
+    circleRotation = addNewParameter<FloatParameter> ("Circle Rotation", "Rotation of the circle to place the targets", 0.f, 0.f, 360.f);
+    circleRotation->setSavable(false); // we store only final positions
     targetRadius = addNewParameter<FloatParameter> ("Target Radius", "Radius for all targets", .5f, 0.f, 1.f);
 
     numSpatInputs = addNewParameter<IntParameter> ("Num Inputs", "Number of inputs to spacialize", 1, 0, 16);
@@ -101,7 +102,7 @@ void Spat2DNode::updateTargetsFromShape()
         case  ShapeMode::CIRCLE:{
             float angleStart = circleRotation->floatValue() / 360.f * float_Pi * 2;
             float angleStep = float_Pi * 2.f / (numSpatOutputs->intValue());
-            float hRadius = circleRadius->floatValue()*.5f;
+            float hRadius = circleDiameter->floatValue()*.5f;
             for (int i = jmin(targetPositions.size(),numSpatOutputs->intValue())-1; i >=0 ; i--)
             {
                 Point2DParameter<floatParamType>* p = targetPositions[i];
@@ -176,7 +177,7 @@ void Spat2DNode::computeInfluence (int sourceIndex, int targetIndex)
     {
         Point<floatParamType> tPos = targetPositions[targetIndex]->getPoint();
 
-        float val = jmax<float> (minValue, getValueForSourceAndTargetPos (sPos, tPos, targetRadius->floatValue()));
+        float val = jmax<float> (minValue, getValueForSourceAndTargetPos (sPos, tPos, targetRadius->floatValue()+minValue));
         outputVal->setValueFrom (this,val);
     }
     else
@@ -276,7 +277,7 @@ void Spat2DNode::onContainerParameterChanged ( ParameterBase* p)
         updateChannelNames();
         updateTargetsFromShape();
     }
-    else if (p == shapeMode || p == circleRadius || p == circleRotation)
+    else if (p == shapeMode || p == circleDiameter || p == circleRotation)
     {
         updateTargetsFromShape();
     }

@@ -53,15 +53,15 @@ void Spat2DNodeContentUI::resized()
         r.removeFromTop (5);
     }
 
-
-    shapeModeUI->setBounds (r.removeFromTop (15));
+    if(shapeModeUI)
+        shapeModeUI->setBounds (r.removeFromTop (15));
 
     bool circleMode = (int)spatNode->shapeMode->getFirstSelectedValue() == Spat2DNode::ShapeMode::CIRCLE ;
 
     if (circleMode)
     {
         r.removeFromTop (5);
-        circleRadiusUI->setBounds (r.removeFromTop (15));
+        circleDiameterUI->setBounds (r.removeFromTop (15));
         r.removeFromTop (2);
         circleRotationUI->setBounds (r.removeFromTop (15));
     }
@@ -106,11 +106,12 @@ void Spat2DNodeContentUI::init()
         addAndMakeVisible (globalRadiusUI);
     }
 
-    shapeModeUI = ParameterUIFactory::createDefaultUI (spatNode->shapeMode);
-    addAndMakeVisible (shapeModeUI);
+    shapeModeUI =nullptr;
+//    shapeModeUI = ParameterUIFactory::createDefaultUI (spatNode->shapeMode);
+//    addAndMakeVisible (shapeModeUI);
 
-    circleRadiusUI = new FloatSliderUI (spatNode->circleRadius);
-    addChildComponent (circleRadiusUI);
+    circleDiameterUI = new FloatSliderUI (spatNode->circleDiameter);
+    addChildComponent (circleDiameterUI);
 
     circleRotationUI = new FloatSliderUI (spatNode->circleRotation);
     addChildComponent (circleRotationUI);
@@ -124,7 +125,7 @@ void Spat2DNodeContentUI::init()
 void Spat2DNodeContentUI::updateShapeModeView()
 {
     bool circleMode = (int)spatNode->shapeMode->getFirstSelectedValue() == Spat2DNode::ShapeMode::CIRCLE;
-    circleRadiusUI->setVisible (circleMode);
+    circleDiameterUI->setVisible (circleMode);
     circleRotationUI->setVisible (circleMode);
     resized();
 }

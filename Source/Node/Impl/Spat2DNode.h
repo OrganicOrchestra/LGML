@@ -37,7 +37,7 @@ public:
     FloatParameter* targetRadius;
 
     //Circle shape
-    FloatParameter* circleRadius;
+    FloatParameter* circleDiameter;
     FloatParameter* circleRotation;
     BoolParameter * useLogCurve;
 
