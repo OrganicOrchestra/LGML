@@ -43,7 +43,7 @@ namespace ProjectInfo
 {
     const char* const  projectName    = "LGML";
     const char* const  companyName    = "Organic Orchestra";
-    const char* const  versionString  = "1.3.8";
-    const int          versionNumber  = 0x10308;
+    const char* const  versionString  = "1.3.9";
+    const int          versionNumber  = 0x10309;
 }
 #endif
