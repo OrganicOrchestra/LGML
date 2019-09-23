@@ -123,6 +123,7 @@ void FastMapper::clear()
 
 }
 
+
 FastMap* FastMapper::addFastMap()
 {
 
@@ -213,6 +214,20 @@ void FastMapper::removeFastmap (FastMap* f)
     maps.removeObject (f);
 }
 
+
+bool FastMapper::removeMappingIncluding(ParameterBase *p){
+    Array<FastMap*> toRemove;
+    for(auto & m:maps){
+        if(m && m->getProxyForParameter(p)){
+            toRemove.add(m);
+        }
+    }
+
+    for(auto m:toRemove){
+        removeFastmap(m);
+    }
+    return toRemove.size()>0;
+}
 
 ParameterContainer*   FastMapper::addContainerFromObject (const String& /*name*/, DynamicObject*   fData)
 {

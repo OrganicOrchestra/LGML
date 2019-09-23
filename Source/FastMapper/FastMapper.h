@@ -57,6 +57,7 @@ public:
 
     FastMap* addFastMap();
     void removeFastmap (FastMap* f);
+    bool removeMappingIncluding(ParameterBase *);
 
 
     ParameterContainer*   addContainerFromObject (const String& name, DynamicObject*   fData) override;

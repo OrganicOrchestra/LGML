@@ -511,7 +511,7 @@ Colour getColourForSeverity(const LogElement::Severity & s){
         case LogElement::Severity::LOG_DBG:
             return Colours::black;
         default:
-            break;
+            return Colours::black;
     }
 }
 

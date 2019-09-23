@@ -371,7 +371,7 @@ void  ParameterUI::setMappingState (const bool  b)
             setInterceptsMouseClicks (true, false);
         }
     }
-
+    
 
     mappingState = s;
     updateOverlayEffect();

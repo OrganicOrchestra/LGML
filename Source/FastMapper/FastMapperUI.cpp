@@ -23,6 +23,7 @@
 #include "../Controllable/Parameter/UI/ParameterUIFactory.h"
 #include "../Utils/FactoryUIHelpers.h"
 
+
 FastMapperUI::FastMapperUI (const String& contentName,FastMapper* _fastMapper, ContainerType* _viewFilterContainer) :
 ShapeShifterContent (this,contentName,"Link parameters together\nAdd FastMap here\nCmd+m toggles mapping mode"),
 InspectableComponent(_fastMapper),
@@ -73,8 +74,9 @@ mapsUI(new StackedContainerUI<FastMapUI, FastMap>(
 
     LGMLDragger::getInstance()->addSelectionListener(this);
 
-
+   
 }
+
 
 FastMapperUI::~FastMapperUI()
 {

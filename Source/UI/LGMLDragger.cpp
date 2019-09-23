@@ -25,7 +25,7 @@ juce_ImplementSingleton (LGMLDragger);
 
 #include "../Controllable/Parameter/UI/ParameterProxyUI.h"
 
-
+#include "../FastMapper/FastMapper.h"
 
 /////////////////////
 // DraggedComponent
@@ -140,7 +140,7 @@ void LGMLDragger::setMainComponent (Component* c)
     selected = nullptr;
     mainComp = c;
 
-//    mainComp->addMouseListener (this, true);
+    //    mainComp->addMouseListener (this, true);
 
     setMappingActive (false);
 }
@@ -275,9 +275,9 @@ void LGMLDragger::setMappingActive (bool b)
 {
     
     isMappingActive = b;
-    setAllComponentMappingState (mainComp, b);
+    setAllComponentMappingState (mainComp, isMappingActive);
 
-    if (!b)
+    if (!isMappingActive)
     {
         unRegisterDragCandidate (nullptr);
         mainComp->removeKeyListener(this);
@@ -292,7 +292,7 @@ void LGMLDragger::setMappingActive (bool b)
             registerDragCandidate (c);
         }
     }
-    listeners.call (&Listener::mappingModeChanged, b);
+    listeners.call (&Listener::mappingModeChanged, isMappingActive);
     for(auto c: getEngine()->getContainersOfType<Controller>(true)){
         c->setMappingMode(b);
     }
@@ -312,10 +312,17 @@ void LGMLDragger::toggleMappingMode()
 
 bool LGMLDragger::keyPressed (const KeyPress& key,
                               Component* /*originatingComponent*/){
-    if(key==KeyPress::escapeKey && isMappingActive){
-        setMappingActive(false);
-        return true;
+    if(isMappingActive){
+        if(key==KeyPress::escapeKey ){
+            setMappingActive(false);
+            return true;
+        }
+        else if(key == KeyPress::backspaceKey && selected.get()){
+            FastMapper::getInstance()->removeMappingIncluding(selected->parameter);
+        }
+
     }
+    
     return false;
 }
 
