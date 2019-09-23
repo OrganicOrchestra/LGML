@@ -300,7 +300,7 @@ inline String namespaceToString (const NamedValueSet & v, int indentlevel = 0, b
 
     for (int i = 0 ; i < v.size() ; i++)
     {
-        var* vv = v.getVarPointerAt (i);
+        const var* vv = v.getVarPointerAt (i);
 
 
         if (!vv->isObject() && !vv->isArray())
@@ -319,7 +319,7 @@ inline String namespaceToString (const NamedValueSet & v, int indentlevel = 0, b
 
     for (int i = 0 ; i < v.size() ; i++)
     {
-        var* vv = v.getVarPointerAt (i);
+        const var* vv = v.getVarPointerAt (i);
         Identifier name = v.getName (i);
 
 

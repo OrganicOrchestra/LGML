@@ -41,10 +41,10 @@ public:
 //    TextButton VSTListShowButton;
     
 
-    ScopedPointer<ParameterUI> midiDeviceChooser;
-    ScopedPointer<ParameterUI> fileChooser;
+    std::unique_ptr<ParameterUI> midiDeviceChooser;
+    std::unique_ptr<ParameterUI> fileChooser;
 
-    ScopedPointer<ParameterUI> activityBlink;
+    std::unique_ptr<ParameterUI> activityBlink;
 
 
     void init() override;

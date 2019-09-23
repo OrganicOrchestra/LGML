@@ -33,10 +33,10 @@ JsNodeUI::~JsNodeUI()
 void JsNodeUI::init()
 {
     JsNode* jsNode = (JsNode*) node.get();
-    jsUI = new JsEnvironmentUI (((JsEnvironment*)jsNode)->jsParameters);
+    jsUI = std::make_unique< JsEnvironmentUI> (((JsEnvironment*)jsNode)->jsParameters.get());
     jsNode->addControllableContainerListener (this);
 
-    addAndMakeVisible (jsUI);
+    addAndMakeVisible (jsUI.get());
 
 
     jsNode->jsParameters->scriptPath->addFileListener (this);

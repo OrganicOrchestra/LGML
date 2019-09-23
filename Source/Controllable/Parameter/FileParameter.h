@@ -93,10 +93,10 @@ private:
     friend class FileLoaderJob;
     WeakReference<FileLoaderJob> fileLoaderJob;
     LoadingState loadingState;
-    ScopedPointer<FileWatcher> fileWatcher;
+    std::unique_ptr<FileWatcher> fileWatcher;
     WeakReference<FileParameter>::Master masterReference;
     friend class WeakReference<FileParameter>;
 
-    ScopedPointer<FilePostponedLoader> filePostponedLoader;
+    std::unique_ptr<FilePostponedLoader> filePostponedLoader;
     friend struct FilePostponedLoader;
 };

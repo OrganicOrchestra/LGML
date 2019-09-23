@@ -56,7 +56,7 @@ public:
 
 
 private:
-    ScopedPointer<LatestVersionChecker>  latestVChecker ;
+    std::unique_ptr<LatestVersionChecker>  latestVChecker ;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainWindow)
 

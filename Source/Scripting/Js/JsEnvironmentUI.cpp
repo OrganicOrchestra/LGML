@@ -28,10 +28,10 @@ JsEnvironmentUI::JsEnvironmentUI (JSEnvContainer* _cont) : cont (_cont)
 
     
     logEnvB = ParameterUIFactory::createDefaultUI (cont->logT);
-    addAndMakeVisible (logEnvB);
+    addAndMakeVisible (logEnvB.get());
 
     filePathUI = ParameterUIFactory::createDefaultUI (cont->scriptPath);
-    addAndMakeVisible (filePathUI);
+    addAndMakeVisible (filePathUI.get());
 
 
 }

@@ -100,7 +100,7 @@ public :
 
     IntParameter* quantizedBarFraction;
 
-    ScopedPointer<LinkImpl> linkPimpl;
+    std::unique_ptr<LinkImpl> linkPimpl;
     friend class LinkPimpl;
     FloatParameter* linkLatencyParam;
 
@@ -262,7 +262,7 @@ private:
 
     bool hasJumped;
 
-    ScopedPointer<FadeInOut> clickFader;
+    std::unique_ptr<FadeInOut> clickFader;
     bool updateAndNotifyTimeJumpedIfNeeded();
 
     bool isAnyoneBoundToTime();

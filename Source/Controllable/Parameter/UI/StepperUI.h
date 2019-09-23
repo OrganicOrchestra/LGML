@@ -30,7 +30,7 @@ public:
 
 
 
-    ScopedPointer<BetterStepper> slider;
+    std::unique_ptr<BetterStepper> slider;
 
     void resized() override;
 

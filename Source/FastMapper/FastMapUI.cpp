@@ -38,7 +38,7 @@ FastMapUI (FastMap* f) :
     addMouseListener (this, true);
 
     enabledUI = ParameterUIFactory::createDefaultUI (fastMap->enabledParam);
-    addAndMakeVisible (enabledUI);
+    addAndMakeVisible (enabledUI.get());
 
 
     invertUI = ParameterUIFactory::createDefaultUI (fastMap->invertParam);
@@ -50,12 +50,12 @@ FastMapUI (FastMap* f) :
     f->referenceIn->addParameterProxyListener (this);
     addChildComponent (inRangeUI);
     addAndMakeVisible (targetUI);
-    addAndMakeVisible (toggleUI);
+    addAndMakeVisible (toggleUI.get());
     f->referenceOut->addParameterProxyListener (this);
 
     addChildComponent (outRangeUI);
-    addAndMakeVisible (invertUI);
-    addAndMakeVisible(fullSyncUI);
+    addAndMakeVisible (invertUI.get());
+    addAndMakeVisible(fullSyncUI.get());
     Image removeImage = ImageCache::getFromMemory (BinaryData::removeBT_png, BinaryData::removeBT_pngSize);
 
     removeBT.setImages (false, true, true, removeImage,

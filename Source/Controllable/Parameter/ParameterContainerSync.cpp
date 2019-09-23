@@ -78,7 +78,7 @@ void ParameterContainerSync::controllableContainerAdded (ControllableContainer* 
 
 void ParameterContainerSync::checkContExists(ParameterContainer * fromRoot){
 
-    ScopedPointer<ParameterContainer> toCreate = createContainerFromContainer(fromRoot);
+    std::unique_ptr<ParameterContainer> toCreate =  createContainerFromContainer(fromRoot);
     if(!toCreate){
         return;
     }
@@ -109,7 +109,7 @@ void ParameterContainerSync::checkContExists(ParameterContainer * fromRoot){
                     target->setNiceName(fromRoot->getNiceName());
                 }
                 else{
-                    target =createContainerFromContainer(source);
+                    target =createContainerFromContainer(source).release();
                     if(!target){
                         jassertfalse;
                         return;

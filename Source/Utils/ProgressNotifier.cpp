@@ -254,7 +254,7 @@ void ProgressNotifier::taskStarted (ProgressTask* t)
 
     currentTask = t;
     (new StartCallbackMessage (&progressListeners, currentTask))->post();
-    fakeProgress = new FakeProgress (currentTask, 5000);
+    fakeProgress = std::make_unique<FakeProgress>( currentTask, 5000);
 };
 
 void ProgressNotifier::taskEnded (ProgressTask* )
@@ -270,7 +270,7 @@ void ProgressNotifier::taskProgress (ProgressTask*, float p)
 
 
 
-ScopedPointer<FakeProgress> fakeProgress;
+std::unique_ptr<FakeProgress> fakeProgress;
 
 
 

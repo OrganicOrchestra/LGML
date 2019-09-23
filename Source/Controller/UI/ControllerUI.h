@@ -30,17 +30,17 @@ public:
     ControllerUI (Controller* controller);
     virtual ~ControllerUI();
 
-    ScopedPointer<StringParameterUI> nameTF;
-    ScopedPointer<ParameterUI> enabledBT;
-    ScopedPointer<ParameterUI> isConnectedUI;
+    std::unique_ptr<StringParameterUI> nameTF;
+    std::unique_ptr<ParameterUI> enabledBT;
+    std::unique_ptr<ParameterUI> isConnectedUI;
     ImageButton removeBT;
 
-    ScopedPointer<TriggerBlinkUI> inActivityBlink,outActivityBlink;
+    std::unique_ptr<TriggerBlinkUI> inActivityBlink,outActivityBlink;
 
     Controller* controller;
-    ScopedPointer<Outliner> userParamsUI;
+    std::unique_ptr<Outliner> userParamsUI;
     int getTargetHeight();
-    ScopedPointer<DrawableButton> showUserParams;
+    std::unique_ptr<DrawableButton> showUserParams;
 
     virtual void paint (Graphics& g) override;
     virtual void resized() override;
@@ -49,7 +49,7 @@ public:
     virtual void buttonClicked (Button*) override;
     bool keyPressed (const KeyPress& e) override;
 
-    virtual InspectorEditor* createEditor() override;
+    virtual std::unique_ptr<InspectorEditor> createEditor() override;
 
 private:
     void componentMovedOrResized (Component& component,

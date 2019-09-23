@@ -69,13 +69,13 @@ ControllerUI::ControllerUI (Controller* controller) :
         MessageManagerLock ml;
         addMouseListener (this, true);
     }
-    nameTF = new StringParameterUI (controller->nameParam);
+    nameTF = std::make_unique< StringParameterUI> (controller->nameParam);
     nameTF->valueLabel.setEditable(false,true);
     nameTF->setBackGroundIsTransparent (true);
-    addAndMakeVisible (nameTF);
+    addAndMakeVisible (nameTF.get());
 
     enabledBT = ParameterUIFactory::createDefaultUI (controller->enabledParam);
-    addAndMakeVisible (enabledBT);
+    addAndMakeVisible (enabledBT.get());
 
     Image removeImage = ImageCache::getFromMemory (BinaryData::removeBT_png, BinaryData::removeBT_pngSize);
 
@@ -90,23 +90,23 @@ ControllerUI::ControllerUI (Controller* controller) :
     if(auto *c = controller->isConnected){
         isConnectedUI = ParameterUIFactory::createDefaultUI(( ParameterBase*)c);
         isConnectedUI->showLabel = false;
-        addAndMakeVisible(isConnectedUI);
+        addAndMakeVisible(isConnectedUI.get());
     }
 
-    inActivityBlink = new TriggerBlinkUI (controller->inActivityTrigger);
-    outActivityBlink = new TriggerBlinkUI (controller->outActivityTrigger);
+    inActivityBlink = std::make_unique< TriggerBlinkUI> (controller->inActivityTrigger);
+    outActivityBlink = std::make_unique< TriggerBlinkUI> (controller->outActivityTrigger);
 
     inActivityBlink->showLabel = false;
-    addAndMakeVisible (inActivityBlink);
+    addAndMakeVisible (inActivityBlink.get());
     outActivityBlink->showLabel = false;
-    addAndMakeVisible (outActivityBlink);
-    userParamsUI = new Outliner("usr_"+controller->shortName,&controller->userContainer,false);
+    addAndMakeVisible (outActivityBlink.get());
+    userParamsUI = std::make_unique< Outliner>("usr_"+controller->shortName,&controller->userContainer,false);
     userParamsUI->showUserContainer = true;
-    addAndMakeVisible(userParamsUI);
+    addAndMakeVisible(userParamsUI.get());
     userParamsUI->treeView.getViewport()->getViewedComponent()->addComponentListener(this);
     userParamsUI->treeView.setOpenCloseButtonsVisible(false);
-    showUserParams = getArrowButton("showParams");
-    addAndMakeVisible(showUserParams);
+    showUserParams.reset(getArrowButton("showParams"));
+    addAndMakeVisible(showUserParams.get());
     showUserParams->setTooltip(juce::translate("show this controller registered parameters"));
     showUserParams->setToggleState(false, dontSendNotification);
     showUserParams->addListener(this);
@@ -175,7 +175,7 @@ void ControllerUI::buttonClicked (Button* b)
         auto cmui = findParentComponentOfClass<ControllerManagerUI>();
         cmui->removeControllerUndoable(controller);
     }
-    else if(b==showUserParams){
+    else if(b==showUserParams.get()){
         setSize(getWidth(),getTargetHeight());
         
     }
@@ -197,9 +197,9 @@ bool ControllerUI::keyPressed (const KeyPress& key)
 
 
 //TODO add factory to handle custom Editor
-InspectorEditor* ControllerUI::createEditor()
+std::unique_ptr<InspectorEditor> ControllerUI::createEditor()
 {
-    return new GenericParameterContainerEditor(controller);
+    return std::make_unique< GenericParameterContainerEditor>(controller);
 }
 
 #endif

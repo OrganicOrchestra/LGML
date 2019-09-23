@@ -39,7 +39,7 @@ public:
     {
 
     }
-    ScopedPointer<LooperNode> currentLooper;
+    std::unique_ptr<LooperNode> currentLooper;
     AudioBuffer<float> testBuffer;
 
     int blockSize = 256;

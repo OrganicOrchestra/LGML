@@ -144,7 +144,7 @@ Component * StackedContainerBase::getRelatedStackedComponent(Component * c){
 void StackedContainerBase::mouseDown(const MouseEvent & e) {
     auto oc = getRelatedStackedComponent(e.originalComponent);
     if(draggedUI==nullptr && oc){
-        draggedUI = new SwapComponents(oc,this,e.getEventRelativeTo(oc).getPosition());
+        draggedUI = std::make_unique<SwapComponents>(oc,this,e.getEventRelativeTo(oc).getPosition());
     }
 
 }

@@ -58,16 +58,17 @@ NodeContainer::NodeContainer (StringRef name):NodeContainer(name,false){
 
 }
 NodeContainer::NodeContainer (StringRef name,bool _isRoot) :
-containerInNode (nullptr),
-containerOutNode (nullptr),
-NodeBase (name, false),
-nodeChangeNotifier (10000),
-rebuildTimer (this),
-isRoot(_isRoot)
+containerInNode (nullptr)
+,containerOutNode (nullptr)
+,NodeBase (name, false)
+,nodeChangeNotifier (10000)
+,rebuildTimer (this)
+,isRoot(_isRoot)
+,innerGraph( new AudioProcessorGraph())
 {
     canHaveUserDefinedContainers = true;
 
-    innerGraph = new AudioProcessorGraph();
+
     innerGraph->releaseResources();
     setBuildSessionGraph(false);
     setPreferedNumAudioOutput (2);
@@ -186,7 +187,7 @@ void NodeContainer::addToAudioGraph (NodeBase* n)
 {
     DBGGRAPH(getNiceName()+" : adding "+(dynamic_cast<NodeContainer*>(n)?"Container":"Node")+" to graph "+n->getNiceName()+(isBuildingSession.get()?"(building)":""));
     if(auto * g = getAudioGraph()){
-        n->audioNode = g->addNode (n->getAudioProcessor());
+        n->audioNode = g->addNode (std::unique_ptr<AudioProcessor>(n->getAudioProcessor()));
         updateAudioGraph();
     }
     //    jassert(g->getSampleRate()!=0 && g->getBlockSize()!=0);
@@ -291,7 +292,7 @@ void NodeContainer::updateAudioGraph (bool force)
                 gWatcher->startBuild();
             }
             else{
-            gWatcher = new GraphBuildWatcher(this);
+                gWatcher = std::make_unique< GraphBuildWatcher>(this);
             }
         }
         cancelPendingUpdate();
@@ -376,7 +377,7 @@ void NodeContainer::configureFromObject (DynamicObject* data)
 void NodeContainer::setConnectionFromObject(const Array<var> & connectionsData){
     // save connection and remove them from object to pass valid object to NodeBaseParsing
 
-        for (var& cData : connectionsData)
+        for (const var& cData : connectionsData)
         {
 
             ConnectableNode* srcNode = (ConnectableNode*) (getControllableContainerByShortName(cData.getDynamicObject()->getProperty ("srcNode").toString())) ;

@@ -283,14 +283,14 @@ void NodeConnectionEditor::createEditingLink (NodeConnectionEditorDataSlot* base
 
     if (baseSlot->ioType == NodeConnectionEditorDataSlot::IOType::OUTPUT)
     {
-        editingLink = new NodeConnectionEditorLink (baseSlot, nullptr);
+        editingLink = std::make_unique<NodeConnectionEditorLink> (baseSlot, nullptr);
     }
     else
     {
-        editingLink = new NodeConnectionEditorLink (nullptr, baseSlot);
+        editingLink = std::make_unique<NodeConnectionEditorLink> (nullptr, baseSlot);
     }
 
-    addAndMakeVisible (editingLink);
+    addAndMakeVisible (editingLink.get());
 }
 
 void NodeConnectionEditor::updateEditingLink()
@@ -366,7 +366,7 @@ void NodeConnectionEditor::finishEditingLink()
 
     }
 
-    removeChildComponent (editingLink);
+    removeChildComponent (editingLink.get());
     editingLink = nullptr;
 }
 

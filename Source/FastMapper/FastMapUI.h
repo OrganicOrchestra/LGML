@@ -39,7 +39,7 @@ public:
 
 
 
-    ScopedPointer<ParameterUI> enabledUI,fullSyncUI;
+    std::unique_ptr<ParameterUI> enabledUI,fullSyncUI;
 
     ParameterProxyUI refUI;
     RangeParameterUI inRangeUI;
@@ -47,8 +47,8 @@ public:
 
     ParameterProxyUI targetUI;
     RangeParameterUI outRangeUI;
-    ScopedPointer<ParameterUI> invertUI;
-    ScopedPointer<ParameterUI> toggleUI;
+    std::unique_ptr<ParameterUI> invertUI;
+    std::unique_ptr<ParameterUI> toggleUI;
 
 
 

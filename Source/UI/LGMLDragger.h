@@ -58,7 +58,7 @@ public:
 
 
 
-    ScopedPointer<DraggedComponent> dragCandidate;
+    std::unique_ptr<DraggedComponent> dragCandidate;
     void setMappingActive (bool isActive);
     void toggleMappingMode();
     bool isMappingActive;

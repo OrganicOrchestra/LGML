@@ -38,7 +38,7 @@ public:
 
     ParameterContainer* getRelatedParameterContainer();
     ParameterBase * getRelatedParameter();
-    virtual InspectorEditor* createEditor();
+    virtual std::unique_ptr<InspectorEditor> createEditor();
 
 
     int recursiveInspectionLevel;

@@ -469,6 +469,6 @@ bool OSCClientRecord::hasValidPort(){return port!=noPort;};
 NetworkUtils::NetworkUtils()
 {
     IPAddress::findAllAddresses (localIps, false);
-    pimpl = new Pimpl (this);
+    pimpl = std::make_unique< Pimpl> (this);
 
 }

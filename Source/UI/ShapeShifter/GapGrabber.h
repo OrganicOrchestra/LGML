@@ -42,7 +42,7 @@ public:
     void addGrabberListener (Listener* newListener) { listeners.add (newListener); }
     void removeGrabberListener (Listener* listener) { listeners.remove (listener); }
     void paint(Graphics & g)override;
-    ScopedPointer<Component> goMiniHandle,goMiniHandle2,stretchHandle;
+    std::unique_ptr<Component> goMiniHandle,goMiniHandle2,stretchHandle;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GapGrabber)
 };
 

@@ -48,7 +48,7 @@ SliderUI<T>::SliderUI ( ParameterBase* parameter) :
     scaleFactor = 1;
     jassert (parameter->getAs<MinMaxParameter>() || !parameter);
     if(parameter->isEditable){
-        valueBox = new Label();
+        valueBox = std::make_unique<Label>();
         valueBox->setEditable(true);
         valueBox->addListener(this);
         valueBox->setColour(TextEditor::backgroundColourId,Colours::black);
@@ -56,7 +56,7 @@ SliderUI<T>::SliderUI ( ParameterBase* parameter) :
         valueBox->setJustificationType(Justification::centred);
         valueBox->addMouseListener(this, false);
         valueBox->setPaintingIsUnclipped(true);
-        addChildComponent(valueBox);
+        addChildComponent(valueBox.get());
     }
 
     nameCachedLabel.setBorderSize({0,4,0,0});
@@ -106,7 +106,7 @@ void SliderUI<T>::paint (Graphics& g)
     ParameterUI::paint(g);
     Rectangle<int> sliderBounds = getLocalBounds();
 
-    const float corner = 2;
+//    const float corner = 2;
     auto bgColor =findColour (Slider::backgroundColourId);
     g.setColour (bgColor);
     g.FILL_RECT_FUNC (sliderBounds, corner);
@@ -379,7 +379,7 @@ void SliderUI<T>::mouseUp (const MouseEvent& me)
         if(valueBox && !valueBox->isVisible()){
             valueBox->setText(String((T)parameter->value), dontSendNotification);
             valueBox->setVisible(true);
-            if(auto p =getParentComponent())p->addAndMakeVisible(valueBox);
+            if(auto p =getParentComponent())p->addAndMakeVisible(valueBox.get());
             valueBox->showEditor();
             auto vb = getBoundsInParent();
             int w = vb.getWidth();
@@ -459,7 +459,7 @@ void SliderUI<T>::labelTextChanged (Label* labelThatHasChanged) {
 template<class T>
 void SliderUI<T>::editorHidden (Label*, TextEditor&) {
     if(auto p = getParentComponent()){
-        p->removeChildComponent(valueBox);
+        p->removeChildComponent(valueBox.get());
     }
     valueBox->setVisible(false);
     repaint();

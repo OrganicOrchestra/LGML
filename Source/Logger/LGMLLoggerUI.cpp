@@ -72,7 +72,7 @@ startDisplayedIdx(0)
     thc->addColumn (juce::translate("Content"), 3, 400);
 
 
-    logListComponent = new TableListBox ("LGMLLogger", &logList);
+    logListComponent = std::make_unique< TableListBox> ("LGMLLogger", &logList);
     logListComponent->setOpaque(true);
     logListComponent->setRowHeight (13);
     logListComponent->setHeaderHeight (20);
@@ -80,7 +80,7 @@ startDisplayedIdx(0)
 
     logListComponent->setColour (TableListBox::backgroundColourId, findColour (ResizableWindow::backgroundColourId));
     logListComponent->setHeader (thc);
-    addAndMakeVisible (logListComponent);
+    addAndMakeVisible (logListComponent.get());
 
     LOG (l->getWelcomeMessage());
 #if USE_FILE_LOGGER
@@ -281,7 +281,7 @@ bool LGMLLoggerUI::keyPressed (const KeyPress& k)            {
 }
 
 void LGMLLoggerUI::mouseDown  (const MouseEvent& me) {
-    auto pos = me.getEventRelativeTo(logListComponent);
+    auto pos = me.getEventRelativeTo(logListComponent.get());
     auto rowUnderMouse =  logListComponent->getRowContainingPosition(pos.x,pos.y);
     logListComponent->selectRow(rowUnderMouse);
     grabKeyboardFocus();
@@ -289,7 +289,7 @@ void LGMLLoggerUI::mouseDown  (const MouseEvent& me) {
 };
 
 void LGMLLoggerUI::mouseDrag  (const MouseEvent& me) {
-    auto pos = me.getEventRelativeTo(logListComponent);
+    auto pos = me.getEventRelativeTo(logListComponent.get());
     auto rowUnderMouse =  logListComponent->getRowContainingPosition(pos.x,pos.y);
     auto rowStart =logListComponent->getRowContainingPosition(pos.getMouseDownX(),pos.getMouseDownY());
     logListComponent->selectRangeOfRows(rowStart, rowUnderMouse);

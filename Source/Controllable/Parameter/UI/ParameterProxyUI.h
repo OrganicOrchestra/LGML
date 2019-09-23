@@ -33,7 +33,7 @@ public:
 
     WeakReference<ParameterProxy> paramProxy;
 
-    ScopedPointer<Component> linkedParamUI;
+    std::unique_ptr<Component> linkedParamUI;
 
 
     void resized()override ;

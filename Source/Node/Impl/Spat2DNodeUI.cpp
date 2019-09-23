@@ -83,38 +83,38 @@ void Spat2DNodeContentUI::init()
     spatNode->addConnectableNodeListener (this);
 
 
-    viewer2D = new Spat2DViewer (spatNode);
-    addAndMakeVisible (viewer2D);
+    viewer2D = std::make_unique< Spat2DViewer> (spatNode);
+    addAndMakeVisible (viewer2D.get());
 
     spatModeUI = ParameterUIFactory::createDefaultUI (spatNode->spatMode);
-    addAndMakeVisible (spatModeUI);
+    addAndMakeVisible (spatModeUI.get());
 
-    inputStepper = new NamedParameterUI (ParameterUIFactory::createDefaultUI (spatNode->numSpatInputs), 80);
-    addAndMakeVisible (inputStepper);
-    outputStepper = new NamedParameterUI (ParameterUIFactory::createDefaultUI (spatNode->numSpatOutputs), 80);
-    addAndMakeVisible (outputStepper);
+    inputStepper = std::make_unique< NamedParameterUI> (ParameterUIFactory::createDefaultUI (spatNode->numSpatInputs), 80);
+    addAndMakeVisible (inputStepper.get());
+    outputStepper = std::make_unique< NamedParameterUI> (ParameterUIFactory::createDefaultUI (spatNode->numSpatOutputs), 80);
+    addAndMakeVisible (outputStepper.get());
 
-    radiusUI = new FloatSliderUI (spatNode->targetRadius);
-    addAndMakeVisible (radiusUI);
+    radiusUI = std::make_unique< FloatSliderUI> (spatNode->targetRadius);
+    addAndMakeVisible (radiusUI.get());
 
     useGlobalUI = ParameterUIFactory::createDefaultUI (spatNode->useGlobalTarget);
-    addAndMakeVisible (useGlobalUI);
+    addAndMakeVisible (useGlobalUI.get());
 
     if (spatNode->useGlobalTarget->boolValue() && globalRadiusUI != nullptr)
     {
-        globalRadiusUI = new FloatSliderUI (spatNode->globalTargetRadius);
-        addAndMakeVisible (globalRadiusUI);
+        globalRadiusUI = std::make_unique< FloatSliderUI> (spatNode->globalTargetRadius);
+        addAndMakeVisible (globalRadiusUI.get());
     }
 
     shapeModeUI =nullptr;
 //    shapeModeUI = ParameterUIFactory::createDefaultUI (spatNode->shapeMode);
 //    addAndMakeVisible (shapeModeUI);
 
-    circleDiameterUI = new FloatSliderUI (spatNode->circleDiameter);
-    addChildComponent (circleDiameterUI);
+    circleDiameterUI = std::make_unique< FloatSliderUI> (spatNode->circleDiameter);
+    addChildComponent (circleDiameterUI.get());
 
-    circleRotationUI = new FloatSliderUI (spatNode->circleRotation);
-    addChildComponent (circleRotationUI);
+    circleRotationUI = std::make_unique< FloatSliderUI> (spatNode->circleRotation);
+    addChildComponent (circleRotationUI.get());
 
     updateShapeModeView();
     setDefaultSize (300, 400);
@@ -137,13 +137,13 @@ void Spat2DNodeContentUI::nodeParameterChangedAsync (ConnectableNode*, Parameter
     {
         if (spatNode->useGlobalTarget->boolValue())
         {
-            globalRadiusUI = new FloatSliderUI (spatNode->globalTargetRadius);
-            addAndMakeVisible (globalRadiusUI);
+            globalRadiusUI = std::make_unique< FloatSliderUI> (spatNode->globalTargetRadius);
+            addAndMakeVisible (globalRadiusUI.get());
 
         }
         else
         {
-            removeChildComponent (globalRadiusUI);
+            removeChildComponent (globalRadiusUI.get());
             globalRadiusUI = nullptr;
         }
 

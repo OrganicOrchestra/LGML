@@ -83,7 +83,7 @@ public:
         void timerCallback()override;
         Engine * engine;
         int timerTicks;
-        ScopedPointer< GlobalListener > globalListener;
+        std::unique_ptr< GlobalListener > globalListener;
     };
 
 
@@ -175,14 +175,14 @@ public:
 
 
 
-    ScopedPointer< EngineStats> engineStats;
+    std::unique_ptr< EngineStats> engineStats;
 
 
     ThreadPool threadPool;
 
 private:
 
-    ScopedPointer<AudioFucker> stimulator;
+    std::unique_ptr<AudioFucker> stimulator;
 
     // our Saving methods
     DynamicObject* createObject() override;
@@ -264,7 +264,7 @@ private:
     Array<EngineFileSaver*> fileSavers;
     void handleAsyncUpdate()override;
 
-    ScopedPointer<FileLoader> fileLoader;
+    std::unique_ptr<FileLoader> fileLoader;
     friend class FileLoader;
 
 

@@ -33,7 +33,7 @@ public:
 
     //VARIABLES
     TextButton addParameterBT;
-    ScopedPointer<GenericParameterContainerEditor> editor;
+    std::unique_ptr<GenericParameterContainerEditor> editor;
     void buttonClicked (Button* b) override;
 
 };

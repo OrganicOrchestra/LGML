@@ -98,7 +98,7 @@ public:
 
     OwnedArray<Spat2DSource> sources;
     OwnedArray<Spat2DTarget> targets;
-    ScopedPointer<Spat2DTarget> globalTarget;
+    std::unique_ptr<Spat2DTarget> globalTarget;
 
     Spat2DNode* node;
 

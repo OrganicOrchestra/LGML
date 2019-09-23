@@ -26,8 +26,8 @@ public:
     JsEnvironmentUI (JSEnvContainer* _env);
     ~JsEnvironmentUI();
 
-    ScopedPointer<ParameterUI> filePathUI;
-    ScopedPointer<ParameterUI> logEnvB;
+    std::unique_ptr<ParameterUI> filePathUI;
+    std::unique_ptr<ParameterUI> logEnvB;
 
     
     void resized()override;

@@ -42,7 +42,7 @@ _presetSavingIsRecursive(true)
     containSavableObjects = addNewParameter<BoolParameter>("Contains Savable Objects", "this container is allowed to add customObjects", false);
     containSavableObjects->setInternalOnlyFlags(false,true);
     containSavableObjects->isPresettable = false;
-    presetable = new Presetable(this);
+    presetable = std::make_unique<Presetable>(this);
 
 
     // init once all are created to avoid uninitialized values

@@ -31,7 +31,7 @@ public:
     void resized() override;
 
     void loadingEnded(FileParameter * ) override;
-    ScopedPointer<JsEnvironmentUI> jsUI;
+    std::unique_ptr<JsEnvironmentUI> jsUI;
 
     OwnedArray<ParameterUI> varUI;
     void layoutUI();

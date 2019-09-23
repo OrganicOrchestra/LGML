@@ -50,7 +50,7 @@ public:
 
     Engine* engine;
 
-    ScopedPointer<ProgressWindow> fileProgressWindow;
+    std::unique_ptr<ProgressWindow> fileProgressWindow;
 
     // from engineListener
     void startLoadFile() override;
@@ -100,7 +100,7 @@ private:
     TooltipWindow tooltipWindow;
 
 
-    ScopedPointer<UndoWatcher> undoWatcher;
+    std::unique_ptr<UndoWatcher> undoWatcher;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainContentComponent)
 };

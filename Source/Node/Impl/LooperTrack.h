@@ -211,7 +211,7 @@ public:
             stringParameter->setValue (trackStateToString (_trackState), false, true);
         }
     };
-    ScopedPointer<AsyncTrackStateStringSynchronizer> stateParameterStringSynchronizer;
+    std::unique_ptr<AsyncTrackStateStringSynchronizer> stateParameterStringSynchronizer;
 
 
     TrackState trackState, desiredState;

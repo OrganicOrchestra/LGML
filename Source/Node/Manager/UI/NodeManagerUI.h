@@ -43,7 +43,7 @@ public:
     ~NodeManagerUI();
 
     NodeManager* nodeManager;
-    ScopedPointer<NodeContainerViewer> currentViewer;
+    std::unique_ptr<NodeContainerViewer> currentViewer;
 
     void clear();
 
@@ -76,7 +76,7 @@ public:
     void alignOnGrid(Point<int> &toAlign);
     IntParameter * gridSize;
     
-    ScopedPointer<UISync> uiSync;
+    std::unique_ptr<UISync> uiSync;
     bool isMiniMode;
     ParameterContainer * addContainerFromObject(const String &,DynamicObject * d) override;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeManagerUI)
@@ -92,7 +92,7 @@ public :
     NodeManagerUIViewport (const String& contentName, NodeManagerUI* _nmui): nmui (_nmui), ShapeShifterContentComponent (contentName,"Patch your Audio here")
     {
         gridSizeUI =ParameterUIFactory::createDefaultUI(nmui->gridSize);
-        addAndMakeVisible(gridSizeUI);
+        addAndMakeVisible(gridSizeUI.get());
         vp.setViewedComponent (nmui, false);
         vp.setScrollBarsShown (true, true);
         vp.setScrollOnDragEnabled (false);
@@ -125,8 +125,8 @@ public :
 //
 //    }
 
-    ScopedPointer<ParameterUI> minimizeAllUI;
-    ScopedPointer<ParameterUI> gridSizeUI;
+    std::unique_ptr<ParameterUI> minimizeAllUI;
+    std::unique_ptr<ParameterUI> gridSizeUI;
     OwnedArray<TextButton> pathButtons;
 
     void reconstructViewerPath()
@@ -143,7 +143,7 @@ public :
         NodeContainer* c = nmui->currentViewer->nodeContainer;
         minimizeAllUI = ParameterUIFactory::createDefaultUI(nmui->currentViewer->minimizeAll);
 
-        addAndMakeVisible(minimizeAllUI);
+        addAndMakeVisible(minimizeAllUI.get());
 
             
         while (c != nullptr)
@@ -180,7 +180,7 @@ public :
     void mouseUp(const MouseEvent & e)override{
         if(nmui->currentViewer) {
             auto nb = nmui->currentViewer->getNodesBoundingBox();
-            auto maxP = vp.getLocalArea(nmui->currentViewer,nb);
+            auto maxP = vp.getLocalArea(nmui->currentViewer.get(),nb);
             nmui->currentViewer->resizeToFitNodes(maxP.getTopLeft());
         }
 //        beginDragAutoRepeat(-1);
@@ -258,7 +258,7 @@ public :
         if (b == &addNodeBt)
         {
             
-            ScopedPointer<PopupMenu> menu (FactoryUIHelpers::getFactoryTypesMenu<NodeFactory> ());
+            std::unique_ptr<PopupMenu> menu (FactoryUIHelpers::getFactoryTypesMenu<NodeFactory> ());
 
             int result = menu->show();
             Point<int> destPos = vp.getViewArea().getCentre();

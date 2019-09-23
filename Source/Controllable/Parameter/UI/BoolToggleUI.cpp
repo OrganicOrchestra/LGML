@@ -25,7 +25,7 @@ BoolToggleUI::BoolToggleUI ( ParameterBase* parameter) :
     ParameterUI (parameter),
    labelComp (new CachedNameLabel(this))
 {
-    addAndMakeVisible(labelComp);
+    addAndMakeVisible(labelComp.get());
     setSize (10, 10);
 
 }

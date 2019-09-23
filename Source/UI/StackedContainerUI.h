@@ -56,7 +56,7 @@ protected:
     bool _isHorizontal;
     int gap;
     int minElemSize;;
-    ScopedPointer<Component> draggedUI;
+    std::unique_ptr<Component> draggedUI;
 private:
     void endDrag();
     void updateDrag(const MouseEvent & e);
@@ -137,7 +137,7 @@ public:
     explicit StackedContainerViewport(StackedContainerUI<UIT,T> * _stUI):
     stUI(_stUI){
 
-        setViewedComponent (stUI, false);
+        setViewedComponent (stUI.get(), false);
         bool isH = stUI->isHorizontal();
         setScrollBarsShown (!isH,isH,!isH,isH);
         setScrollOnDragEnabled (false);
@@ -163,7 +163,7 @@ public:
     void clear()                {stUI->clear();}
 
 
-    ScopedPointer<StackedContainerUI<UIT, T> > stUI;
+    std::unique_ptr<StackedContainerUI<UIT, T> > stUI;
 
 protected:
 

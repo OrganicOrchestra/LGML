@@ -26,7 +26,7 @@ class ConnectableNode;
 class NodeUIFactory: public FactoryBase<ConnectableNodeUI>
 {
 public:
-    static ConnectableNodeUI* createDefaultUI (ConnectableNode* t,ConnectableNodeUIParams *uip);
+    static std::unique_ptr<ConnectableNodeUI> createDefaultUI (ConnectableNode* t,ConnectableNodeUIParams *uip);
 };
 
 #define REGISTER_NODEUI_TYPE(T,NICENAME) REGISTER_OBJ_TYPE(ConnectableNodeUI,T,NICENAME)

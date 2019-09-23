@@ -23,7 +23,7 @@ class ParameterUIFactory
 {
 public:
     // used for generating editor
-    static ParameterUI* createDefaultUI ( ParameterBase* targetControllable = nullptr);
+    static std::unique_ptr<ParameterUI>createDefaultUI ( ParameterBase* targetControllable = nullptr);
 
 
 

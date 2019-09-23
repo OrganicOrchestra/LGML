@@ -42,11 +42,11 @@ _hasValidJsFile (false),
 _isInSyncWithLGML (false),
 isLoadingFile (false),
 isEnabled (true)
-
+,jsParameters ( new JSEnvContainer (this))
 {
-    jsParameters = new JSEnvContainer (this);
 
-    linkedContainer->addChildControllableContainer (jsParameters);
+
+    linkedContainer->addChildControllableContainer (jsParameters.get());
 
     linkedContainer->nameParam->addParameterListener(this);
     localEnv = new DynamicObject();
@@ -138,7 +138,7 @@ void JsEnvironment::clearNamespace()
     JsHelpers::clearRefsFromObj(localEnv);
     localEnv->clear();
 
-    jsEngine = new JavascriptEngine();
+    jsEngine.reset(new JavascriptEngine());
 
 
     static Identifier createParamListenerId ("createParameterListener");

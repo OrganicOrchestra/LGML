@@ -38,7 +38,7 @@ public:
     static bool saveToFile;
     static void init(){
         if(getCrashFile().existsAsFile()){
-            ScopedPointer<InputStream> in = getCrashFile().createInputStream();
+            std::unique_ptr<InputStream> in ( getCrashFile().createInputStream());
             if(in){
                 VersionTriplet ver(VersionTriplet::getCurrentVersion());
                 String bt = "LGMLv"+ver.toString()+"\n";
@@ -75,7 +75,7 @@ public:
 
         auto bt = SystemStats::getStackBacktrace();
         if(saveToFile){
-            ScopedPointer<OutputStream> out ( getCrashFile().createOutputStream());
+            std::unique_ptr<OutputStream> out ( getCrashFile().createOutputStream());
             if(out){
                 if(!out->writeString(bt))
                     LOGE(juce::translate("Crash Reporter can't write to file"));
@@ -97,11 +97,11 @@ public:
     LGMLApplication() {}
 
     ApplicationCommandManager commandManager;
-    ScopedPointer<ApplicationProperties> appProperties;
+    std::unique_ptr<ApplicationProperties> appProperties;
     AudioDeviceManager deviceManager;
     UndoManager undoManager;
 
-    ScopedPointer<Engine> engine;
+    std::unique_ptr<Engine> engine;
 
 
     const String getApplicationName() override       { return VersionTriplet::getProductName(); }
@@ -128,7 +128,7 @@ public:
         options.filenameSuffix      = "settings";
         options.osxLibrarySubFolder = "Preferences";
 
-        appProperties = new ApplicationProperties();
+        appProperties.reset(new ApplicationProperties());
         appProperties->setStorageParameters (options);
 
 
@@ -136,7 +136,7 @@ public:
 
         Process::setPriority (Process::HighPriority);
 
-        engine = new Engine();
+        engine = std::make_unique<Engine>();
 #if LGML_UNIT_TESTS
 
         UnitTestRunner tstRunner;
@@ -178,8 +178,8 @@ public:
 #else
 
 #if !ENGINE_HEADLESS
-        LookAndFeel::setDefaultLookAndFeel (lookAndFeelOO = new LookAndFeelOO);
-        mainWindow = new MainWindow (getApplicationName(), engine);
+        LookAndFeel::setDefaultLookAndFeel ((lookAndFeelOO = std::make_unique< LookAndFeelOO>()).get());
+        mainWindow = std::make_unique< MainWindow> (getApplicationName(), engine.get());
 
 #endif
         engine->parseCommandline (commandLinesElements);
@@ -241,8 +241,8 @@ public:
     }
 
 #if !ENGINE_HEADLESS
-    ScopedPointer<MainWindow> mainWindow;
-    ScopedPointer<LookAndFeel> lookAndFeelOO;
+    std::unique_ptr<MainWindow> mainWindow;
+    std::unique_ptr<LookAndFeel> lookAndFeelOO;
 #endif
 
 };
@@ -250,10 +250,10 @@ public:
 
 static LGMLApplication* getApp()                 { return dynamic_cast<LGMLApplication*> (JUCEApplication::getInstance()); }
 ApplicationCommandManager& getCommandManager()      { return getApp()->commandManager; }
-ApplicationProperties * getAppProperties()           { return getApp()->appProperties; }
+ApplicationProperties * getAppProperties()           { return getApp()->appProperties.get(); }
 AudioDeviceManager& getAudioDeviceManager()        { return getApp()->deviceManager;}
 UndoManager& getAppUndoManager()                      { return getApp()->undoManager;}
-Engine* getEngine()                              { return getApp()->engine;}
+Engine* getEngine()                              { return getApp()->engine.get();}
 ThreadPool* getEngineThreadPool()                              { return &getEngine()->threadPool;}
 bool  isEngineLoadingFile()                            {if (getEngine()) {return getEngine()->isLoadingFile;} else {return false;}}
 //==============================================================================

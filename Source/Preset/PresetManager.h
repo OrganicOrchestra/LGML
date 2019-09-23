@@ -83,7 +83,7 @@ private:
 
     OwnedArray<Preset> presets;
 
-    ScopedPointer<EngineSync> engineSync;
+    std::unique_ptr<EngineSync> engineSync;
     friend class EngineSync;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PresetManager)

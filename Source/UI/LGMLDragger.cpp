@@ -151,9 +151,9 @@ void LGMLDragger::registerDragCandidate (ParameterUI* c)
 {
     //    unRegisterForDrag(nullptr);
 
-    dragCandidate = new DraggedComponent (c);
+    dragCandidate = std::make_unique< DraggedComponent> (c);
 
-    mainComp->addAndMakeVisible (dragCandidate);
+    mainComp->addAndMakeVisible (dragCandidate.get());
     dragCandidate->toFront (false);
 
 }

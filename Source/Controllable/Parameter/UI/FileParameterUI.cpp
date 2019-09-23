@@ -19,14 +19,15 @@ void openFile(FileParameter* fp);
 FileParameterUI::FileParameterUI (FileParameter* p): ParameterUI (p)
 ,options("options",DrawableButton::ButtonStyle::ImageFitted)
 ,hoveredByFile(false)
+,fnComponent(new StringParameterUI(p))
 {
     options.addListener(this);
     options.setImages(AddElementButton::createDrawable());
     addAndMakeVisible(options);
     valueChanged(p->value);
-    fnComponent  = new StringParameterUI(p);
+    
     fnComponent->trimStart = true;
-    addAndMakeVisible (fnComponent);
+    addAndMakeVisible (fnComponent.get());
     p->addFileListener(this);
     addAndMakeVisible(errorLed);
     loadingEnded(p);
@@ -146,8 +147,8 @@ void show(FileParameter * fp){
     fp->getFile().startAsProcess();
 }
 
-ScopedPointer<FileChooser> getFcForFp(FileParameter * fp,String && name){
-    return new FileChooser (name,//    const String& chooserBoxTitle,
+std::unique_ptr<FileChooser> getFcForFp(FileParameter * fp,String && name){
+    return std::make_unique< FileChooser> (name,//    const String& chooserBoxTitle,
                    getEngine()->getCurrentProjectFolder(),//    const File& currentFileOrDirectory,
                    fp->getAllowedExtensionsFilter(true),//    const String& fileFilters,
                    true,//    const bool useNativeBox,

@@ -38,8 +38,9 @@ ParameterUI::ParameterUI ( ParameterBase* _parameter) :
     isMappingDest (false),
     isDraggable (true),
     wasShowing(true)
+,defferTimer  (new DefferTimer(this))
 {
-    defferTimer = new DefferTimer(this);
+
     LGMLUIUtils::optionallySetBufferedToImage(this);
     setPaintingIsUnclipped(true);
     setOpaque(true);
@@ -382,14 +383,14 @@ void ParameterUI::updateOverlayEffect(){
     {
         Colour c =isMappingDest ? Colours::red : Colours::blue;
         if (isSelected) c = Colours::green;
-        mapEffect  = new MapEffect (c, isSelected? 100:50, getName(),FastMapper::getInstance()->isParameterMapped(parameter));
+        mapEffect  = std::make_unique<MapEffect> (c, isSelected? 100:50, getName(),FastMapper::getInstance()->isParameterMapped(parameter));
     }
     else
     {
         mapEffect = nullptr;
     }
 
-    setComponentEffect (mapEffect);
+    setComponentEffect (mapEffect.get());
     repaint();
 
 }
@@ -424,31 +425,31 @@ void ParameterUI::newMessage (const ParameterBase::ParamWithValue& p)
 // NamedParameterUI
 
 
-NamedParameterUI::NamedParameterUI (ParameterUI* ui, int _labelWidth, bool labelA):
-    ParameterUI (ui->parameter),
-    ownedParameterUI (ui),
-    labelWidth (_labelWidth),
-    labelAbove (labelA),
-    controllableLabel(new LabelLinkedTooltip(ui))
+NamedParameterUI::NamedParameterUI (std::unique_ptr<ParameterUI>  ui_, int _labelWidth, bool labelA):
+    ParameterUI (ui_->parameter)
+,ownedParameterUI (std::move(ui_))
+    ,labelWidth (_labelWidth)
+    ,labelAbove (labelA)
+    ,controllableLabel(new LabelLinkedTooltip(ownedParameterUI.get()))
 {
-    ui->showLabel = false;
+    ownedParameterUI->showLabel = false;
     // prevent mapping state for named parameterUI -> inner will handle it
     setMappingState(false);
     setPaintingIsUnclipped(true);
-    addAndMakeVisible (controllableLabel);
+    addAndMakeVisible (controllableLabel.get());
 
 
-    controllableLabel->setText (ui->visibleName, dontSendNotification);
+    controllableLabel->setText (ownedParameterUI->visibleName, dontSendNotification);
 
-    if (ui->parameter->isUserDefined)
+    if (ownedParameterUI->parameter->isUserDefined)
     {
         controllableLabel->setEditable (true);
         controllableLabel->addListener (this);
     }
-    LGMLUIUtils::optionallySetBufferedToImage(controllableLabel);
+    LGMLUIUtils::optionallySetBufferedToImage(controllableLabel.get());
 
-    addAndMakeVisible (ui);
-    ui->toFront (false);
+    addAndMakeVisible (ownedParameterUI.get());
+    ownedParameterUI->toFront (false);
 //    setBounds (ownedParameterUI->getBounds()
 //               .withTrimmedRight (-labelWidth)
 //               .withHeight (jmax ((int)controllableLabel.getFont().getHeight() + 4, ownedParameterUI->getHeight())));

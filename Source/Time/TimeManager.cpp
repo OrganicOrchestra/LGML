@@ -95,13 +95,13 @@ TimeManager::TimeManager():
 
 #if LINK_SUPPORT
 
-    linkPimpl = new LinkImpl (this);
+    linkPimpl = std::make_unique< LinkImpl> (this);
 
 #endif
     linkLatencyParam = addNewParameter<FloatParameter> ("Link Latency", "Link latency to add for lgml (ms)", 10.f, 0.f, 1000.f);
     linkLatencyParam->setInternalOnlyFlags(true,false);
 
-    clickFader = new FadeInOut (10000, 10000, true, 1.0 / 3.0);
+    clickFader = std::make_unique< FadeInOut> (10000, 10000, true, 1.0 / 3.0);
 
 
 }

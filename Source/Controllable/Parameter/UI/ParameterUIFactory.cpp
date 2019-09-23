@@ -45,22 +45,22 @@
 
 
 
-#define CHKNRETURN(p,classN,UIN)  if(p->isType< classN >()) {return new UIN((classN*)p);}
+#define CHKNRETURN(p,classN,UIN)  if(p->isType< classN >()) {return std::make_unique<UIN>((classN*)p);}
 
 #define CHKNRETURNSLIDER(p,classN,UIN)      if(auto s = dynamic_cast<classN *>(t)){ \
                                                 if(s->hasFiniteBounds()){ \
-                                                    return new UIN(s); \
+                                                    return std::make_unique<UIN>(s); \
                                                 } \
 }
 
 #define CHKNRETURNSTEPOR(p,classN,UIN)      if(auto s = dynamic_cast<classN *>(t)){ \
 if(s->hasFiniteBounds()){ \
-return new UIN(s); \
+return std::make_unique<UIN>(s); \
 } \
 }
 
 //#define REG(cls,meth)
-ParameterUI* ParameterUIFactory::createDefaultUI ( ParameterBase* t)
+std::unique_ptr<ParameterUI> ParameterUIFactory::createDefaultUI ( ParameterBase* t)
 {
 
     CHKNRETURN (t, BoolParameter, BoolToggleUI)
@@ -68,7 +68,7 @@ ParameterUI* ParameterUIFactory::createDefaultUI ( ParameterBase* t)
 
     CHKNRETURN (t, Trigger, TriggerBlinkUI)
     if(auto s = dynamic_cast<FloatParameter *>(t)){
-        if(s->hasFiniteBounds()){ return new FloatSliderUI(s);} else{return new FloatStepperUI(s);
+        if(s->hasFiniteBounds()){ return std::make_unique<FloatSliderUI>(s);} else{return std::make_unique<FloatStepperUI>(s);
         }
     }
 
@@ -82,7 +82,7 @@ ParameterUI* ParameterUIFactory::createDefaultUI ( ParameterBase* t)
     CHKNRETURNSLIDER(t,ParameterList<floatParamType>, ParameterListUI<floatParamType>)
     
     //jassertfalse;
-    return new StringParameterUI(t);
+    return std::make_unique< StringParameterUI>(t);
 
 
 

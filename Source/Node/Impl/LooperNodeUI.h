@@ -24,13 +24,13 @@ class LooperNodeContentUI: public ConnectableNodeContentUI, public LooperNode::L
 {
 public:
 
-    ScopedPointer<ParameterUI>   recPlaySelectedButton;
-    ScopedPointer<ParameterUI>   clearSelectedButton;
-    ScopedPointer<ParameterUI>   stopSelectedButton;
-    ScopedPointer<ParameterUI>    volumeSelectedSlider;
-    ScopedPointer<ParameterUI>   clearAllButton;
-    ScopedPointer<ParameterUI>   stopAllButton;
-    ScopedPointer<ParameterUI>     monitoringButton;
+    std::unique_ptr<ParameterUI>   recPlaySelectedButton;
+    std::unique_ptr<ParameterUI>   clearSelectedButton;
+    std::unique_ptr<ParameterUI>   stopSelectedButton;
+    std::unique_ptr<ParameterUI>    volumeSelectedSlider;
+    std::unique_ptr<ParameterUI>   clearAllButton;
+    std::unique_ptr<ParameterUI>   stopAllButton;
+    std::unique_ptr<ParameterUI>     monitoringButton;
 
 
     LooperNodeContentUI();
@@ -63,14 +63,14 @@ public:
 
         LooperTrack* track;
 
-        ScopedPointer<ParameterUI> recPlayButton;
-        ScopedPointer<ParameterUI> clearButton;
-        ScopedPointer<ParameterUI> stopButton;
+        std::unique_ptr<ParameterUI> recPlayButton;
+        std::unique_ptr<ParameterUI> clearButton;
+        std::unique_ptr<ParameterUI> stopButton;
 
-        ScopedPointer<ParameterUI> muteButton;
-        ScopedPointer<ParameterUI> soloButton;
-        ScopedPointer<ParameterUI> selectMeButton;
-        ScopedPointer<EnumParameterUI> sampleChoiceDDL;
+        std::unique_ptr<ParameterUI> muteButton;
+        std::unique_ptr<ParameterUI> soloButton;
+        std::unique_ptr<ParameterUI> selectMeButton;
+        std::unique_ptr<ParameterUI> sampleChoiceDDL;
 
 
         class TimeStateUI : public juce::Component, public LooperTrack::TrackTimeListener
@@ -89,7 +89,7 @@ public:
 
         float headerHackHeight = .2f;
         float volumeWidth = .2f;
-        ScopedPointer<FloatSliderUI> volumeSlider;
+        std::unique_ptr<FloatSliderUI> volumeSlider;
         bool isTrackSelected;
     };
 

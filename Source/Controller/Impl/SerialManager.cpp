@@ -133,7 +133,7 @@ SerialPort* SerialManager::getPort (SerialPortInfo* portInfo, bool createIfNotTh
 
     if (createIfNotThere)
     {
-        ScopedPointer<Serial> newSerial = new Serial ("", openBaudRate, serial::Timeout::simpleTimeout (1000));
+        auto newSerial = std::make_unique<Serial> ("", openBaudRate, serial::Timeout::simpleTimeout (1000));
         try {
             newSerial->setPort(portInfo->port.toStdString());
             newSerial->open();

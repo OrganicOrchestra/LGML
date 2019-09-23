@@ -39,19 +39,19 @@ void PdNodeContentUI::init()
 {
 
     pdNode = (PdNode*)node.get();
-    addAndMakeVisible (midiDeviceChooser);
+    addAndMakeVisible (midiDeviceChooser.get());
 
 
     activityBlink = ParameterUIFactory::createDefaultUI (pdNode->midiActivityTrigger);
     activityBlink->showLabel = false;
-    addAndMakeVisible (activityBlink);
+    addAndMakeVisible (activityBlink.get());
 
     midiDeviceChooser = ParameterUIFactory::createDefaultUI(pdNode->midiChooser.getDeviceInEnumParameter());
-    addAndMakeVisible(midiDeviceChooser);
+    addAndMakeVisible(midiDeviceChooser.get());
     jassert(midiDeviceChooser);
 
     fileChooser = ParameterUIFactory::createDefaultUI(pdNode->pdPath);
-    addAndMakeVisible(fileChooser);
+    addAndMakeVisible(fileChooser.get());
 
 
 
@@ -77,7 +77,7 @@ void PdNodeContentUI::updatePdParameters()
 
     for (auto& p : pdNode->pdParameters)
     {
-        ParameterUI * pui = ParameterUIFactory::createDefaultUI(p);
+        auto pui = ParameterUIFactory::createDefaultUI(p).release();
 
         if(pui){
             paramSliders.add (pui);

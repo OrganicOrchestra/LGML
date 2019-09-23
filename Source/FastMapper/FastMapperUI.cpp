@@ -56,8 +56,8 @@ mapsUI(new StackedContainerUI<FastMapUI, FastMap>(
     potentialOut = ParameterUIFactory::createDefaultUI (fastMapper->potentialOut);
     candidateLabel.setText(juce::translate("candidate"), dontSendNotification);
     addAndMakeVisible(candidateLabel);
-    addAndMakeVisible (potentialIn);
-    addAndMakeVisible (potentialOut);
+    addAndMakeVisible (potentialIn.get());
+    addAndMakeVisible (potentialOut.get());
 
     addAndMakeVisible(mapsUI);
 

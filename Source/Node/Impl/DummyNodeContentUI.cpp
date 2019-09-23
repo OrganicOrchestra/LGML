@@ -52,23 +52,23 @@ void DummyNodeContentUI::init()
 
     dummyNode = (DummyNode*)node.get();
 
-    freq1Slider = new FloatSliderUI (dummyNode->freq1Param);
-    addAndMakeVisible (freq1Slider);
+    freq1Slider = std::make_unique< FloatSliderUI> (dummyNode->freq1Param);
+    addAndMakeVisible (freq1Slider.get());
 
-    freq2Slider = new FloatSliderUI (dummyNode->freq2Param);
-    addAndMakeVisible (freq2Slider);
+    freq2Slider = std::make_unique< FloatSliderUI> (dummyNode->freq2Param);
+    addAndMakeVisible (freq2Slider.get());
 
-    pxSlider = new FloatSliderUI (dummyNode->pxParam);
-    addAndMakeVisible (pxSlider);
+    pxSlider = std::make_unique< FloatSliderUI> (dummyNode->pxParam);
+    addAndMakeVisible (pxSlider.get());
 
-    pySlider = new FloatSliderUI (dummyNode->pyParam);
-    addAndMakeVisible (pySlider);
+    pySlider = std::make_unique< FloatSliderUI> (dummyNode->pyParam);
+    addAndMakeVisible (pySlider.get());
 
     testTriggerButton = ParameterUIFactory::createDefaultUI (dummyNode->testTrigger);
-    addAndMakeVisible (testTriggerButton);
+    addAndMakeVisible (testTriggerButton.get());
 
     modeUI = ParameterUIFactory::createDefaultUI (dummyNode->enumParam);
-    addAndMakeVisible (modeUI);
+    addAndMakeVisible (modeUI.get());
     setDefaultSize (250, 200);
 
 

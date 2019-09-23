@@ -51,7 +51,7 @@ public:
 private:
 
     
-    ScopedPointer<Component> cachedLabel;
+    std::unique_ptr<Component> cachedLabel;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TriggerBlinkUI)
 };
 

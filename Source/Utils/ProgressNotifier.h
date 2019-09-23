@@ -121,7 +121,7 @@ public:
     void addListener (ProgressListener* l) {progressListeners.add (l);}
     void removeListener (ProgressListener* l) {progressListeners.remove (l);}
 
-    ScopedPointer<FakeProgress> fakeProgress;
+    std::unique_ptr<FakeProgress> fakeProgress;
 
 
 

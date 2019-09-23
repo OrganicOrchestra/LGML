@@ -28,8 +28,8 @@ ControllerEditor::ControllerEditor (Controller* _controller, bool generateAuto) 
 
     if (generateAuto)
     {
-        editor = new GenericParameterContainerEditor (controller);
-        addAndMakeVisible (editor);
+        editor = std::make_unique<GenericParameterContainerEditor> (controller);
+        addAndMakeVisible (editor.get());
     }
 
     addAndMakeVisible (addParameterBT);

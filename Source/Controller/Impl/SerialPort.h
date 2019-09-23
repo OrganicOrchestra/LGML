@@ -97,7 +97,7 @@ public:
 
 #if SERIALSUPPORT
     SerialPort (Serial* port, SerialPortInfo* info, PortMode mode = LINES);
-    ScopedPointer<Serial> port;
+    std::unique_ptr<Serial> port;
 #else
     SerialPort (SerialPortInfo* info, PortMode mode = LINES);
 #endif

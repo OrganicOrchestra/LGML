@@ -32,8 +32,8 @@ Spat2DViewer::Spat2DViewer (Spat2DNode* _node) : node (_node)
 
     if (node->useGlobalTarget->boolValue())
     {
-        globalTarget = new Spat2DTarget (-1, Colours::green);
-        addAndMakeVisible (globalTarget);
+        globalTarget = std::make_unique< Spat2DTarget> (-1, Colours::green);
+        addAndMakeVisible (globalTarget.get());
         globalTarget->radius = node->globalTargetRadius->floatValue();
         globalTarget->addSpatElementListener (this);
         globalTarget->setFloatPosition (node->globalTargetPosition->getPoint());
@@ -210,8 +210,8 @@ void Spat2DViewer::nodeParameterChangedAsync (ConnectableNode*, ParameterBase* p
     {
         if (node->useGlobalTarget->boolValue())
         {
-            globalTarget = new Spat2DTarget (-1, Colours::green);
-            addAndMakeVisible (globalTarget);
+            globalTarget = std::make_unique< Spat2DTarget> (-1, Colours::green);
+            addAndMakeVisible (globalTarget.get());
             globalTarget->radius = node->globalTargetRadius->floatValue();
             globalTarget->setFloatPosition (node->globalTargetPosition->getPoint());
             globalTarget->addSpatElementListener (this);
@@ -219,7 +219,7 @@ void Spat2DViewer::nodeParameterChangedAsync (ConnectableNode*, ParameterBase* p
         else
         {
             globalTarget->removeSpatElementListener (this);
-            removeChildComponent (globalTarget);
+            removeChildComponent (globalTarget.get());
             globalTarget = nullptr;
         }
 

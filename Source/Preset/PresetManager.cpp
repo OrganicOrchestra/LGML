@@ -59,7 +59,7 @@ public:
             }
             tf.create();
             var data = p->createObject();
-            ScopedPointer<OutputStream> os ( tf.createOutputStream());
+            std::unique_ptr<OutputStream> os ( tf.createOutputStream());
             JSON::writeToStream (*os, data);
             os->flush();
         }

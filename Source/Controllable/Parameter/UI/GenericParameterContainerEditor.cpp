@@ -63,7 +63,7 @@ void GenericParameterContainerEditor::setCurrentInspectedContainer (ParameterCon
     {
         if (!forceUpdate && cc == innerContainer->container) return;
 
-        removeChildComponent (innerContainer);
+        removeChildComponent (innerContainer.get());
         innerContainer = nullptr;
     }
 
@@ -80,9 +80,9 @@ void GenericParameterContainerEditor::setCurrentInspectedContainer (ParameterCon
     }
 
     
-    innerContainer = new CCInnerContainerUI (this, cc, 0, ccLevel == 0 ? recursiveInspectionLevel : 0, canInspectChildContainersBeyondRecursion);
+        innerContainer = std::make_unique<CCInnerContainerUI> (this, cc, 0, ccLevel == 0 ? recursiveInspectionLevel : 0, canInspectChildContainersBeyondRecursion);
 
-    addAndMakeVisible (innerContainer);
+    addAndMakeVisible (innerContainer.get());
 
     parentBT.setVisible (ccLevel > 0);
 
@@ -216,8 +216,8 @@ void CCInnerContainerUI::rebuild()
 
     if (container->canHavePresets())
     {
-        presetChooser = new PresetChooserUI (container);
-        addAndMakeVisible (presetChooser);
+        presetChooser = std::make_unique<PresetChooserUI> (container);
+        addAndMakeVisible (presetChooser.get());
     }
 
     for (auto& c : container->getControllablesOfType<ParameterBase> (false))
@@ -301,9 +301,10 @@ void CCInnerContainerUI::addParameterUI ( ParameterBase* c)
     if ( c->isHidenInEditor) return;
 
 
-    NamedParameterUI* cui = new NamedParameterUI (ParameterUIFactory::createDefaultUI (c), 100);
-    parametersUI.add (cui);
-    addAndMakeVisible (cui);
+    auto cui = std::make_unique<NamedParameterUI> (ParameterUIFactory::createDefaultUI (c), 100);
+    addAndMakeVisible (cui.get());
+    parametersUI.add (std::move(cui));
+
 }
 
 void CCInnerContainerUI::removeParameterUI ( ParameterBase* c)
@@ -313,7 +314,7 @@ void CCInnerContainerUI::removeParameterUI ( ParameterBase* c)
     if (cui == nullptr) return;
 
     removeChildComponent (cui);
-    parametersUI.removeObject (cui);
+    parametersUI.removeObject(cui);//[cui](auto & p){return p.get()==cui;}) ;
 
 }
 

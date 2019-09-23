@@ -75,7 +75,7 @@ public:
 
 private:
     class Pimpl;
-    ScopedPointer<Pimpl> pimpl;
+    std::unique_ptr<Pimpl> pimpl;
 
     friend class Pimpl;
     void addOSCRecord (OSCClientRecord& o);

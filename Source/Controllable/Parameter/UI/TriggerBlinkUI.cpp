@@ -1,16 +1,16 @@
 /* Copyright © Organic Orchestra, 2017
-*
-* This file is part of LGML.  LGML is a software to manipulate sound in realtime
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation (version 3 of the License).
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*/
+ *
+ * This file is part of LGML.  LGML is a software to manipulate sound in realtime
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation (version 3 of the License).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
 
 #if !ENGINE_HEADLESS
 
@@ -26,12 +26,13 @@ static int refreshPeriod (40);
 #include "CachedNameLabel.hpp"
 
 TriggerBlinkUI::TriggerBlinkUI (Trigger* t) :
-    ParameterUI (t),
-    intensity (0),
-    animateIntensity (false)
+ParameterUI (t),
+intensity (0),
+animateIntensity (false)
+,cachedLabel(new CachedNameLabel(this))
 {
-    cachedLabel = new CachedNameLabel(this);
-    addAndMakeVisible(cachedLabel);
+
+    addAndMakeVisible(cachedLabel.get());
     setSize (30, 20);
     setOpaque(true);
 
@@ -60,8 +61,8 @@ void TriggerBlinkUI::paint (Graphics& g)
         auto onColor  =findColour (TextButton::buttonOnColourId);
         g.setColour (offColor.interpolatedWith (onColor, intensity));
         g.fillRoundedRectangle (getLocalBounds().toFloat(), 4);
-//        g.setFont (10);
-//        g.setColour (Colours::white.darker (.1f));
+        //        g.setFont (10);
+        //        g.setColour (Colours::white.darker (.1f));
 
 
     }

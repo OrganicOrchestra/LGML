@@ -193,7 +193,7 @@ void FileParameter::startLoading(){
         return;
     }
     if(isEngineLoadingFile()){
-        filePostponedLoader = new FilePostponedLoader(this);
+        filePostponedLoader = std::make_unique<FilePostponedLoader>(this);
         return;
     }
     loadingState = LOADING;
@@ -237,7 +237,7 @@ void FileParameter::triggerFileChange(ParameterBase::Listener * from){
 
 void FileParameter::setIsWatching(bool s){
     isWatching = s;
-    fileWatcher = isWatching? new FileWatcher(this):nullptr;
+    fileWatcher = isWatching? std::make_unique<FileWatcher>(this):nullptr;
 
 
 }

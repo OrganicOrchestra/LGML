@@ -52,7 +52,7 @@ public:
     BufferBlockList tmpStretchBuf;
 
 
-    ScopedPointer<RubberBand::RubberBandStretcher> stretcher;
+    std::unique_ptr<RubberBand::RubberBandStretcher> stretcher;
 
     CriticalSection jobLock;
     

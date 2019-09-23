@@ -294,7 +294,7 @@ void NodeConnection::configureFromObject (DynamicObject* data)
         {
             removeAllAudioGraphConnections();
 
-            for (var& linkVar : *links)
+            for (const var& linkVar : *links)
             {
                 int sourceChannel = linkVar.getProperty ("sourceChannel", var());
                 int destChannel = linkVar.getProperty ("destChannel", var());

@@ -77,7 +77,7 @@ void ParameterProxyUI::setLinkedParamUI ( ParameterBase* p)
 
         if (cUI && p && cUI->parameter == p) return;
 
-        removeChildComponent (linkedParamUI);
+        removeChildComponent (linkedParamUI.get());
         linkedParamUI = nullptr;
     }
 
@@ -87,9 +87,9 @@ void ParameterProxyUI::setLinkedParamUI ( ParameterBase* p)
     if (auto prox = dynamic_cast<ParameterProxy*> (p))
     {
         //encapsulate ui if proxy of proxy to show it explicitly
-        auto* eUI =  new NamedParameterUI (ParameterUIFactory::createDefaultUI (prox->linkedParam), 20);
-//        eUI->controllableLabel.setText ("proxy : " + p->niceName, dontSendNotification);
-        linkedParamUI = eUI;
+        linkedParamUI =  std::make_unique< NamedParameterUI> (ParameterUIFactory::createDefaultUI (prox->linkedParam), 20);
+//        linkedParamUI->controllableLabel.setText ("proxy : " + p->niceName, dontSendNotification);
+
     }
     else
     {
@@ -99,7 +99,7 @@ void ParameterProxyUI::setLinkedParamUI ( ParameterBase* p)
 
     if (linkedParamUI != nullptr)
     {
-        addAndMakeVisible (linkedParamUI);
+        addAndMakeVisible (linkedParamUI.get());
     }
 
 //    chooser.setVisible (linkedParamUI == nullptr);

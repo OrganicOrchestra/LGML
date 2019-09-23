@@ -255,7 +255,7 @@ void ShapeShifterManager::loadLayout (var layout)
     {
         for (auto& wd : *wData)
         {
-            ScopedPointer<DynamicObject> d = wd.getDynamicObject();
+            std::unique_ptr<DynamicObject> d ( wd.getDynamicObject());
             ShapeShifterPanel* p = createPanel (nullptr);
             p->loadLayout (d->getProperty ("panel"));
             Rectangle<int> bounds (d->getProperty ("x"), d->getProperty ("y"), d->getProperty ("width"), d->getProperty ("height"));
@@ -310,7 +310,7 @@ void ShapeShifterManager::loadLayoutFromFile (int fileIndexInLayoutFolder)
 
 void ShapeShifterManager::loadLayoutFromFile (const File& fromFile)
 {
-    ScopedPointer<InputStream> is (fromFile.createInputStream());
+    std::unique_ptr<InputStream> is (fromFile.createInputStream());
     var data = JSON::parse (*is);
     loadLayout (data);
 }
@@ -390,7 +390,7 @@ void ShapeShifterManager::saveCurrentLayoutToFile (const File& toFile)
 
     jassert (toFile.create());
 
-    if (auto os = ScopedPointer<OutputStream> (toFile.createOutputStream()))
+    if (auto os = std::unique_ptr<OutputStream> (toFile.createOutputStream()))
     {
         JSON::writeToStream (*os, getCurrentLayout());
         os->flush();

@@ -513,15 +513,15 @@ void LooperNode::onContainerTriggerTriggered (Trigger* t)
                     while (destFile.exists());
                 }
 
-                ScopedPointer<FileOutputStream> fp;
+                std::unique_ptr<FileOutputStream> fp ( destFile.createOutputStream());
 
-                if (!isOutsideFile && (fp = destFile.createOutputStream()))
+                if (!isOutsideFile && (fp ))
                 {
-                    ScopedPointer<AudioFormatWriter> afw = format.createWriterFor (fp,
+                    std::unique_ptr<AudioFormatWriter> afw ( format.createWriterFor (fp.get(),
                                                                                    getSampleRate(),
                                                                                    tr->playableBuffer.getNumChannels(),
                                                                                    24,
-                                                                                   StringPairArray(), 0);
+                                                                                   StringPairArray(), 0));
 
                     if (afw)
                     {
@@ -592,11 +592,11 @@ void LooperNode::onContainerParameterChanged ( ParameterBase* p)
     if (p == numberOfTracks)
     {
         int oldIdx = trackGroup.selectedTrack ? trackGroup.selectedTrack->trackIdx : 0;
-        ScopedPointer<ScopedLock> lkp;
+        std::unique_ptr<ScopedLock> lkp;
 
         if (parentNodeContainer)
         {
-            lkp = new ScopedLock (parentNodeContainer->getAudioGraph()->getCallbackLock());
+            lkp = std::make_unique< ScopedLock> (parentNodeContainer->getAudioGraph()->getCallbackLock());
         }
 
         trackGroup.setNumTracks (numberOfTracks->intValue());
@@ -640,11 +640,11 @@ void LooperNode::onContainerParameterChanged ( ParameterBase* p)
     }
     else if (p == numberOfAudioChannelsIn)
     {
-        ScopedPointer<ScopedLock> lkp;
+        std::unique_ptr<ScopedLock> lkp;
 
         if (parentNodeContainer)
         {
-            lkp = new ScopedLock (parentNodeContainer->getAudioGraph()->getCallbackLock());
+            lkp = std::make_unique< ScopedLock> (parentNodeContainer->getAudioGraph()->getCallbackLock());
         }
 
         setPreferedNumAudioInput (numberOfAudioChannelsIn->intValue());

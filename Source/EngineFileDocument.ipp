@@ -95,7 +95,7 @@ Result Engine::loadDocument (const File& file)
     // force clear on main thread, safer for ui related stuffs
     if(getAppProperties()->getUserSettings()->getBoolValue("multiThreadedLoading",true)){
         clear();
-        fileLoader = new FileLoader (this, file);
+        fileLoader = std::make_unique<FileLoader> (this, file);
         fileLoader->startThread (10);
     }
     else
@@ -121,7 +121,7 @@ void Engine::loadDocumentAsync (const File& file)
     ProgressTask* loadTask = addTask (juce::translate("loading"));
 
 
-    ScopedPointer<InputStream> is ( file.createInputStream());
+    std::unique_ptr<InputStream> is ( file.createInputStream());
     parseTask->start();
     var jsonData = JSON::parse (*is);
     parseTask->end();
@@ -241,7 +241,7 @@ Result Engine::saveDocument (const File& file)
         file.deleteFile();
 
     {
-        ScopedPointer<OutputStream> os ( file.createOutputStream());
+        std::unique_ptr<OutputStream> os ( file.createOutputStream());
         JSON::writeToStream (*os, data);
         os->flush();
     }

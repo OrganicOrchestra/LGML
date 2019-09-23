@@ -43,11 +43,11 @@ public:
     Label containerLabel;
 
     WeakReference<ParameterContainer> container;
-    ScopedPointer<PresetChooserUI> presetChooser;
+    std::unique_ptr<PresetChooserUI> presetChooser;
 
     OwnedArray<NamedParameterUI > parametersUI;
     OwnedArray<CCInnerContainerUI> innerContainers;
-    ScopedPointer<Component> customEditor;
+    std::unique_ptr<Component> customEditor;
     OwnedArray<Component> lowerContainerLinks;
 
     GenericParameterContainerEditor* editor;
@@ -95,7 +95,7 @@ public :
     TextButton parentBT;
 
     WeakReference<ParameterContainer> sourceContainer;
-    ScopedPointer<CCInnerContainerUI> innerContainer;
+    std::unique_ptr<CCInnerContainerUI> innerContainer;
 
     void setCurrentInspectedContainer (ParameterContainer*, bool forceUpdate = false, int recursiveInspectionLevel = 1, bool canInspectChildContainersBeyondRecursion = true);
 

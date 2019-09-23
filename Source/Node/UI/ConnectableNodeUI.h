@@ -81,9 +81,9 @@ public:
         ConnectableNodeUI* connectableNodeUI;
 
         //containers
-        ScopedPointer<ConnectableNodeHeaderUI> headerContainer;
-        ScopedPointer<ConnectableNodeContentUI> contentContainer;
-        ScopedPointer<ConnectableNodeAudioCtlUI> audioCtlUIContainer;
+        std::unique_ptr<ConnectableNodeHeaderUI> headerContainer;
+        std::unique_ptr<ConnectableNodeContentUI> contentContainer;
+        std::unique_ptr<ConnectableNodeAudioCtlUI> audioCtlUIContainer;
 
         static constexpr int audioCtlContainerPadRight = 3;
         static constexpr int audioCtlContainerWidth = 10;
@@ -115,11 +115,11 @@ public:
 
 
     MainComponentContainer mainComponentContainer;
-    ConnectableNodeContentUI* getContentContainer() { return mainComponentContainer.contentContainer; }
-    ConnectableNodeHeaderUI* getHeaderContainer() { return mainComponentContainer.headerContainer; }
+    ConnectableNodeContentUI* getContentContainer() { return mainComponentContainer.contentContainer.get(); }
+    ConnectableNodeHeaderUI* getHeaderContainer() { return mainComponentContainer.headerContainer.get(); }
 
-    ScopedPointer<ConnectorContainerComponent> inputContainer;
-    ScopedPointer<ConnectorContainerComponent> outputContainer;
+    std::unique_ptr<ConnectorContainerComponent> inputContainer;
+    std::unique_ptr<ConnectorContainerComponent> outputContainer;
 
 
     // receives x y position from node parameters

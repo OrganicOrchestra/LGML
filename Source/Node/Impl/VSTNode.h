@@ -123,7 +123,7 @@ public:
     CriticalSection pluginStateMutex;
     void processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;
     void processBlockBypassed (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;
-    ScopedPointer<AudioPluginInstance> innerPlugin;
+    std::unique_ptr<AudioPluginInstance> innerPlugin;
 
 
     ///// MIDI
@@ -163,7 +163,7 @@ private:
     
     ParameterBase * generateFromVST(const AudioProcessorParameter* param);
 
-    ScopedPointer<VSTLoaderPostponer> vstLoaderPostponer;
+    std::unique_ptr<VSTLoaderPostponer> vstLoaderPostponer;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (VSTNode)
 };
 

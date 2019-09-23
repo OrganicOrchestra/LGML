@@ -97,7 +97,7 @@ private:
     void setHasMappedParameter(bool s);
     MappingState mappingState;
     bool hasValidControllable;
-    ScopedPointer<ImageEffectFilter> mapEffect;
+    std::unique_ptr<ImageEffectFilter> mapEffect;
 
 
 
@@ -123,7 +123,7 @@ private:
 
     bool wasShowing;
     bool hasMappedParameter;
-    ScopedPointer<DefferTimer> defferTimer;
+    std::unique_ptr<DefferTimer> defferTimer;
     friend class DefferTimer;
 
 };
@@ -135,13 +135,14 @@ private:
 class NamedParameterUI : public ParameterUI, public Label::Listener
 {
 public:
-    NamedParameterUI (ParameterUI* ui, int _labelWidth, bool labelAbove = false);
+    NamedParameterUI (std::unique_ptr<ParameterUI> ui, int _labelWidth, bool labelAbove = false);
     void resized()override;
+    std::unique_ptr <ParameterUI > ownedParameterUI; // take care of order of init with controllablelabel
     bool labelAbove;
     void labelTextChanged (Label* labelThatHasChanged) override;
-    ScopedPointer<Label> controllableLabel;
+    std::unique_ptr<Label> controllableLabel;
     int labelWidth;
-    ScopedPointer <ParameterUI > ownedParameterUI;
+
     void controllableControlAddressChanged (Controllable*)override;
 
     

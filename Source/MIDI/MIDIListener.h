@@ -40,7 +40,7 @@ public :
     virtual void setCurrentDevice (const String& deviceName);
 
     //Output
-    ScopedPointer<MidiOutput> midiOutDevice;
+    std::unique_ptr<MidiOutput> midiOutDevice;
     void sendNoteOn (int channel, int pitch, int velocity);
     void sendNoteOff (int channel, int pitch, int velocity);
     void sendCC (int channel, int number, int value);

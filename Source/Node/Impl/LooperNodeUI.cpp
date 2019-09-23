@@ -47,12 +47,12 @@ void LooperNodeContentUI::init()
     volumeSelectedSlider = ParameterUIFactory::createDefaultUI (looperNode->volumeSelected);
     monitoringButton = ParameterUIFactory::createDefaultUI (looperNode->isMonitoring);
 
-    headerContainer.addAndMakeVisible (recPlaySelectedButton);
-    headerContainer.addAndMakeVisible (clearSelectedButton);
-    headerContainer.addAndMakeVisible (stopSelectedButton);
-    headerContainer.addAndMakeVisible (clearAllButton);
-    headerContainer.addAndMakeVisible (stopAllButton);
-    headerContainer.addAndMakeVisible (monitoringButton);
+    headerContainer.addAndMakeVisible (recPlaySelectedButton.get());
+    headerContainer.addAndMakeVisible (clearSelectedButton.get());
+    headerContainer.addAndMakeVisible (stopSelectedButton.get());
+    headerContainer.addAndMakeVisible (clearAllButton.get());
+    headerContainer.addAndMakeVisible (stopAllButton.get());
+    headerContainer.addAndMakeVisible (monitoringButton.get());
 
 
     addAndMakeVisible (headerContainer);
@@ -201,7 +201,7 @@ bool LooperNodeContentUI::isInterestedInFileDrag (const StringArray& files) {
 void LooperNodeContentUI::fileDragEnter (const StringArray& files, int x, int y) {
     int numFilesToDrop  = jmin(files.size(),tracksUI.size());
     for(int i = 0 ; i < numFilesToDrop ; i++){
-        EnumParameterUI* ddl = tracksUI.getUnchecked(i)->sampleChoiceDDL.get();
+        EnumParameterUI* ddl = (EnumParameterUI*)tracksUI.getUnchecked(i)->sampleChoiceDDL.get();
         StringArray af{files[i]};
         ddl->fileDragEnter(af,x,y);
     }
@@ -218,7 +218,7 @@ void LooperNodeContentUI::fileDragExit (const StringArray& files) {
 
     int numFilesToDrop  = jmin(files.size(),tracksUI.size());
     for(int i = 0 ; i < numFilesToDrop ; i++){
-        EnumParameterUI* ddl = tracksUI.getUnchecked(i)->sampleChoiceDDL.get();
+        EnumParameterUI* ddl = (EnumParameterUI*)tracksUI.getUnchecked(i)->sampleChoiceDDL.get();
         StringArray af{files[i]};
         ddl->fileDragExit(af);
     }
@@ -226,7 +226,7 @@ void LooperNodeContentUI::fileDragExit (const StringArray& files) {
 void LooperNodeContentUI::filesDropped (const StringArray& files, int x, int y) {
     int numFilesToDrop  = jmin(files.size(),tracksUI.size());
     for(int i = 0 ; i < numFilesToDrop ; i++){
-        EnumParameterUI*  ddl = tracksUI.getUnchecked(i)->sampleChoiceDDL.get();
+        EnumParameterUI*  ddl = (EnumParameterUI*)tracksUI.getUnchecked(i)->sampleChoiceDDL.get();
         StringArray af{files[i]};
         ddl->filesDropped(af,x,y);
     }
@@ -254,7 +254,7 @@ isTrackSelected (track->isSelected), timeStateUI (track)
     stopButton->setCustomText (CharPointer_UTF8 ("■"));
     muteButton = ParameterUIFactory::createDefaultUI (track->mute);
     soloButton = ParameterUIFactory::createDefaultUI (track->solo);
-    sampleChoiceDDL = (EnumParameterUI*)ParameterUIFactory::createDefaultUI (track->sampleChoice);
+    sampleChoiceDDL = ParameterUIFactory::createDefaultUI (track->sampleChoice);
     selectMeButton = ParameterUIFactory::createDefaultUI(track->selectTrig);
     selectMeButton->setCustomText("_");
     selectMeButton->setColour(TextButton::buttonColourId, Colours::white.withAlpha (0.f));
@@ -262,17 +262,17 @@ isTrackSelected (track->isSelected), timeStateUI (track)
 
     track->addTrackListener (this);
 
-    addAndMakeVisible (recPlayButton);
-    addAndMakeVisible (clearButton);
-    volumeSlider = new FloatSliderUI (track->volume);
+    addAndMakeVisible (recPlayButton.get());
+    addAndMakeVisible (clearButton.get());
+    volumeSlider = std::make_unique< FloatSliderUI> (track->volume);
     volumeSlider->orientation = FloatSliderUI::VERTICAL;
-    addAndMakeVisible (volumeSlider);
-    addAndMakeVisible (stopButton);
-    addAndMakeVisible (muteButton);
-    addAndMakeVisible (soloButton);
+    addAndMakeVisible (volumeSlider.get());
+    addAndMakeVisible (stopButton.get());
+    addAndMakeVisible (muteButton.get());
+    addAndMakeVisible (soloButton.get());
     addAndMakeVisible (timeStateUI);
-    addAndMakeVisible (sampleChoiceDDL);
-    addAndMakeVisible(selectMeButton);
+    addAndMakeVisible (sampleChoiceDDL.get());
+    addAndMakeVisible(selectMeButton.get());
     selectMeButton->toBack();
 
     // manual triggering of listeners on creation

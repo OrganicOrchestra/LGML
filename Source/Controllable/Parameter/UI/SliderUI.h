@@ -67,7 +67,7 @@ protected:
     void valueChanged (const var&) override ;
     bool scrollWheelAllowed;
     Time lastMouseWheelTime;
-    ScopedPointer<Label> valueBox;
+    std::unique_ptr<Label> valueBox;
     Label nameCachedLabel,valueCachedLabel;
     void labelTextChanged (Label* labelThatHasChanged) override;
     void editorHidden (Label*, TextEditor&) override;

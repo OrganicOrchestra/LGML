@@ -43,7 +43,7 @@ public :
     OwnedArray<ConnectableNodeUI> nodesUI;
     OwnedArray<NodeConnectionUI>  connectionsUI;
     NodeConnectionUI* editingConnection;
-    ScopedPointer<NodeConnection::Model> editingModel;
+    std::unique_ptr<NodeConnection::Model> editingModel;
     void clear();
 
     void resized() override;
@@ -103,7 +103,7 @@ private:
 
 //    void changeListenerCallback (ChangeBroadcaster* source) override;
     LassoComponent<SelectedUIType> lassoSelectionComponent;
-    ScopedPointer<Component> nodesLayer;
+    std::unique_ptr<Component> nodesLayer;
     bool resultOfMouseDownSelectMethod,hasDraggedDuringClick;
     void findLassoItemsInArea (Array<SelectedUIType>& itemsFound,
                                const Rectangle<int>& area) override;

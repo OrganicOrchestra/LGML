@@ -44,9 +44,9 @@ public:
 
     void setNodeAndNodeUI (ConnectableNode* _node, ConnectableNodeUI* _nodeUI){
             jassert (_node->hasAudioOutputs());
-            outputVolume = new FloatSliderUI (_node->outputVolume);
+        outputVolume = std::make_unique< FloatSliderUI> (_node->outputVolume);
             outputVolume->orientation = FloatSliderUI::Direction::VERTICAL;
-            addAndMakeVisible (outputVolume);
+            addAndMakeVisible (outputVolume.get());
             //bypassUI = node->bypass->createToggle();
             //addAndMakeVisible(bypassUI);
 
@@ -62,8 +62,8 @@ public:
         if (outputVolume)outputVolume->setBounds (outCtl);
     }
 
-    ScopedPointer<SliderUI<floatParamType> >  outputVolume;
-    //ScopedPointer<BoolToggleUI>  bypassUI;
+    std::unique_ptr<SliderUI<floatParamType> >  outputVolume;
+    //std::unique_ptr<BoolToggleUI>  bypassUI;
 
 
 

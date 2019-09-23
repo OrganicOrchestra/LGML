@@ -38,7 +38,7 @@ private:
 
     void paintOverChildren(Graphics & g) override;
     void buttonClicked (Button*) override;
-    ScopedPointer<StringParameterUI> fnComponent;
+    std::unique_ptr<StringParameterUI> fnComponent;
     DrawableButton options;
     DrawablePath  errorLed;
 

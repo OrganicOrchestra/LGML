@@ -53,7 +53,7 @@ void NodeManager::clear()
 void NodeManager::configureFromObject (DynamicObject* data)
 {
     jassert (isLoading == false);
-    jobsWatcher = new JobsWatcher (this);
+    jobsWatcher = std::make_unique<JobsWatcher> (this);
     isLoading = true;
 //    clear();
     NodeContainer::configureFromObject (data);

@@ -176,12 +176,12 @@ void MainContentComponent::startLoadFile()
     getAppUndoManager().clearUndoHistory();
     if (fileProgressWindow != nullptr)
     {
-        removeChildComponent (fileProgressWindow);
+        removeChildComponent (fileProgressWindow.get());
         fileProgressWindow = nullptr;
     }
 
-    fileProgressWindow = new ProgressWindow ("Loading File...", engine);
-    addAndMakeVisible (fileProgressWindow);
+    fileProgressWindow = std::make_unique< ProgressWindow> ("Loading File...", engine);
+    addAndMakeVisible (fileProgressWindow.get());
     fileProgressWindow->setSize (getWidth(), getHeight());
     //  startTimerHz(10);
     //repaint();
@@ -207,7 +207,7 @@ void MainContentComponent::endLoadFile()
 
     if (fileProgressWindow != nullptr)
     {
-        removeChildComponent (fileProgressWindow);
+        removeChildComponent (fileProgressWindow.get());
         fileProgressWindow = nullptr;
     }
 

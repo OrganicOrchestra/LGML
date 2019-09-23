@@ -42,7 +42,7 @@ OSCJsController::~OSCJsController()
 
 void OSCJsController::buildLocalEnv()
 {
-    ScopedPointer<DynamicObject>  oscObj = createOSCJsObject();
+    std::unique_ptr<DynamicObject>  oscObj ( createOSCJsObject());
 
     setLocalNamespace (*oscObj);
 

@@ -25,14 +25,13 @@ public:
         setRoot(c);
     }
 
-    ParameterContainer* createContainerFromContainer(ParameterContainer * o) override{
-        ParameterContainer* res (nullptr);
+    std::unique_ptr<ParameterContainer> createContainerFromContainer(ParameterContainer * o) override{
         if(dynamic_cast<ConnectableNode*>(o)){
-            auto pc = new ConnectableNodeUIParams(o->shortName);
+            auto pc = std::make_unique<ConnectableNodeUIParams>(o->shortName);
 //            all.add(pc);
-            res = pc;
+            return pc;
         }
-        return res;
+        return nullptr;
     }
 //    OwnedArray<ConnectableNodeUIParams> all;
 
@@ -71,10 +70,11 @@ NodeManagerUI::NodeManagerUI (NodeManager* _nodeManager) :
     currentViewer (nullptr),
 ParameterContainer("NodeManagerUI"),
 isMiniMode(true)
+,uiSync ( new UISync("UI",nodeManager,this))
 {
     canHaveUserDefinedContainers = true;
     
-    uiSync = new UISync("UI",nodeManager,this);
+
     auto p =getRoot(true)->getControllableContainerByName("NodesUI");
     if(!p){
         NodeManagerUIFactory * np = new NodeManagerUIFactory();
@@ -173,7 +173,7 @@ void NodeManagerUI::setCurrentViewedContainer (NodeContainer* c)
         isMiniMode = currentViewer->minimizeAll->boolValue();
         if (currentViewer->nodeContainer == c) return;
 
-        removeChildComponent (currentViewer);
+        removeChildComponent (currentViewer.get());
         currentViewer = nullptr;
     }
 
@@ -185,10 +185,10 @@ void NodeManagerUI::setCurrentViewedContainer (NodeContainer* c)
             addChildControllableContainer(p);
             jassertfalse;
         }
-        currentViewer = new NodeContainerViewer (c,p);
+        currentViewer = std::make_unique< NodeContainerViewer> (c,p);
         currentViewer->minimizeAll->setValue(isMiniMode);
         
-        addAndMakeVisible (currentViewer);
+        addAndMakeVisible (currentViewer.get());
         currentViewer->setMouseCursor(MouseCursor::CrosshairCursor);
         currentViewer->setTopLeftPosition (0, 0);
         currentViewer->selectThis();

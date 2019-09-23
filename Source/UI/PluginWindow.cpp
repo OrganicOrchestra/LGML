@@ -92,7 +92,7 @@ PluginWindow* PluginWindow::getWindowFor (VSTNode* const node,
             && activePluginWindows.getUnchecked (i)->type == type)
             return activePluginWindows.getUnchecked (i);
 
-    AudioProcessor* processor = node->innerPlugin;
+    AudioProcessor* processor = node->innerPlugin.get();
     jassert(node->innerPlugin);
     if (!processor)return nullptr;
 

@@ -94,15 +94,15 @@ public :
 
     };
 
-    ScopedPointer<ParameterUI>  bpmStepper;
-    ScopedPointer<ParameterUI> quantizStepper;
-    ScopedPointer<ParameterUI> playTrig, stopTrig, tapTempo;
-    ScopedPointer<ParameterUI> click;
-    ScopedPointer<ParameterUI> clickVolumeUI;
+    std::unique_ptr<ParameterUI>  bpmStepper;
+    std::unique_ptr<ParameterUI> quantizStepper;
+    std::unique_ptr<ParameterUI> playTrig, stopTrig, tapTempo;
+    std::unique_ptr<ParameterUI> click;
+    std::unique_ptr<ParameterUI> clickVolumeUI;
 
 
-    ScopedPointer<ParameterUI> linkEnabled;
-    ScopedPointer<ParameterUI> linkNumPeers;
+    std::unique_ptr<ParameterUI> linkEnabled;
+    std::unique_ptr<ParameterUI> linkNumPeers;
 
 
 

@@ -257,7 +257,7 @@ void MIDIManager::enableInputDevice (const String& deviceName)
 
 }
 
-MidiOutput* MIDIManager::enableOutputDevice (const String& deviceName)
+std::unique_ptr<MidiOutput> MIDIManager::enableOutputDevice (const String& deviceName)
 {
     if(deviceName==ComputerKeyboardMIDIDevice::deviceName){
         return nullptr;
@@ -276,7 +276,7 @@ MidiOutput* MIDIManager::enableOutputDevice (const String& deviceName)
 
     StringArray inD = MidiOutput::getDevices();
     StringRef dRef (deviceName);
-    MidiOutput* out = MidiOutput::openDevice (inD.indexOf (dRef));
+    std::unique_ptr<MidiOutput> out = MidiOutput::openDevice (inD.indexOf (dRef));
 
     if (out)
     {

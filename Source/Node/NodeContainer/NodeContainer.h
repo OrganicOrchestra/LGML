@@ -101,8 +101,8 @@ public:
     //Container nodes, not removable by user, handled separately
     ContainerInNode* containerInNode;
     ContainerOutNode* containerOutNode;
-    ScopedPointer<AudioProcessorGraph> innerGraph;
-    AudioProcessorGraph* getAudioGraph() {return innerGraph;};
+    std::unique_ptr<AudioProcessorGraph> innerGraph;
+    AudioProcessorGraph* getAudioGraph() {return innerGraph.get();};
     void addToAudioGraph(NodeBase * );
     void removeFromAudioGraph(NodeBase *);
 
@@ -208,7 +208,7 @@ public:
         MidiBuffer* midiMess;
         AudioProcessorGraph* graph;
     };
-    ScopedPointer<GraphJob> graphJob;
+    std::unique_ptr<GraphJob> graphJob;
     NodeManager* nodeManager;
 #endif
 
@@ -261,7 +261,7 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeContainer)
 
-    ScopedPointer<GraphBuildWatcher> gWatcher;
+    std::unique_ptr<GraphBuildWatcher> gWatcher;
     friend class GraphBuildWatcher;
     friend class Presetable; // setBuildSessionGraph
 

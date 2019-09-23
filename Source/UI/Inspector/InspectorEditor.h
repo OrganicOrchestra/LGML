@@ -57,7 +57,7 @@ private:
     int getContentHeight() const override{return height;}
 
     int height;
-    ScopedPointer<Component> component;
+    std::unique_ptr<Component> component;
 };
 
 #endif  // INSPECTOREDITOR_H_INCLUDED

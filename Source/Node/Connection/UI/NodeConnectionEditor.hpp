@@ -56,7 +56,7 @@ public:
 
     int getContentHeight() const override;
 
-    ScopedPointer<NodeConnectionEditorLink> editingLink;
+    std::unique_ptr<NodeConnectionEditorLink> editingLink;
 
 
     void mouseEnter (const MouseEvent&) override;

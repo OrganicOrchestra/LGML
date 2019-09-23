@@ -97,7 +97,7 @@ hasDefaultOSCControl(false)
     loadSession->isHidenInEditor = true;
     closeEngine = addNewParameter<Trigger>("close","close engine");
     closeEngine->isHidenInEditor = true;
-    addChildControllableContainer(engineStats=new EngineStats(this));
+    addChildControllableContainer((engineStats=std::make_unique< EngineStats>(this)).get());
 
     loadingStartTime = 0;
     initAudio();
@@ -277,8 +277,8 @@ void Engine::initAudio()
 {
 
     graphPlayer.setProcessor (NodeManager::getInstance()->getAudioGraph());
-    ScopedPointer<XmlElement> savedAudioState (getAppProperties()->getUserSettings()->getXmlValue ("audioDeviceState"));
-    getAudioDeviceManager().initialise (64, 64, savedAudioState, true);
+    std::unique_ptr<XmlElement> savedAudioState (getAppProperties()->getUserSettings()->getXmlValue ("audioDeviceState"));
+    getAudioDeviceManager().initialise (64, 64, savedAudioState.get(), true);
     getAudioDeviceManager().addChangeListener (&audioSettingsHandler);
     // timeManager should be the first audio Callback added to ensure that time is updated each new block
     getAudioDeviceManager().addAudioCallback (TimeManager::getInstance());
@@ -363,13 +363,13 @@ void Engine::stimulateAudio ( bool s)
 {
     if (s)
     {
-        stimulator = new AudioFucker (&getAudioDeviceManager());
-        getAudioDeviceManager().addAudioCallback (stimulator);
+        stimulator = std::make_unique< AudioFucker> (&getAudioDeviceManager());
+        getAudioDeviceManager().addAudioCallback (stimulator.get());
 
     }
     else
     {
-        getAudioDeviceManager().removeAudioCallback (stimulator);
+        getAudioDeviceManager().removeAudioCallback (stimulator.get());
         stimulator = nullptr;
     }
 
@@ -392,7 +392,7 @@ void Engine::MultipleAudioSettingsHandler::timerCallback()
 
     if (lastConfigName == configName) {return;}
 
-    ScopedPointer<XmlElement> oldSetupXml = getAppProperties()->getUserSettings()->getXmlValue (oldSettingsId);
+    std::unique_ptr<XmlElement> oldSetupXml = getAppProperties()->getUserSettings()->getXmlValue (oldSettingsId);
 
     if (!oldSetupXml)return;
 
@@ -438,11 +438,11 @@ String Engine::MultipleAudioSettingsHandler::getConfigName()
 
 void Engine::MultipleAudioSettingsHandler::saveCurrent()
 {
-    ScopedPointer<XmlElement> audioState (getAudioDeviceManager().createStateXml());
-    getAppProperties()->getUserSettings()->setValue ("audioDeviceState", audioState);
-    ScopedPointer<XmlElement> oldXml = getAppProperties()->getUserSettings()->getXmlValue (oldSettingsId);
+    std::unique_ptr<XmlElement> audioState (getAudioDeviceManager().createStateXml());
+    getAppProperties()->getUserSettings()->setValue ("audioDeviceState", audioState.get());
+    std::unique_ptr<XmlElement> oldXml = getAppProperties()->getUserSettings()->getXmlValue (oldSettingsId);
 
-    if (!oldXml) {oldXml = new XmlElement (oldSettingsId);}
+    if (!oldXml) {oldXml = std::make_unique< XmlElement> (oldSettingsId);}
 
     String configName = getConfigName();
     XmlElement* oldConfig = oldXml->getChildByName (configName);
@@ -450,10 +450,10 @@ void Engine::MultipleAudioSettingsHandler::saveCurrent()
     if (oldConfig) {oldXml->removeChildElement (oldConfig, true);}
 
     oldConfig = oldXml->createNewChildElement (configName) ;
-    oldConfig->addChildElement (getAudioDeviceManager().createStateXml());
+    oldConfig->addChildElement (getAudioDeviceManager().createStateXml().get());
 
 
-    getAppProperties()->getUserSettings()->setValue (oldSettingsId.toString(), oldXml);
+    getAppProperties()->getUserSettings()->setValue (oldSettingsId.toString(), oldXml.get());
     getAppProperties()->getUserSettings()->saveIfNeeded();
 
 }
@@ -606,11 +606,11 @@ void Engine::EngineStats::GlobalListener::controllableFeedbackUpdate(Controllabl
 void Engine::EngineStats::activateGlobalStats(bool s){
     isListeningGlobal = s;
     if(s){
-        globalListener = new GlobalListener(this);
-        engine->addControllableContainerListener(globalListener);
+        globalListener = std::make_unique< GlobalListener>(this);
+        engine->addControllableContainerListener(globalListener.get());
     }
     else{
-        engine->removeControllableContainerListener(globalListener);
+        engine->removeControllableContainerListener(globalListener.get());
         globalListener = nullptr;
     }
 }

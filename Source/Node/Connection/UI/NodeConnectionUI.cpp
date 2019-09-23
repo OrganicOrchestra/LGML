@@ -521,9 +521,9 @@ bool NodeConnectionUI::finishEditing()
     return success;
 }
 
-InspectorEditor* NodeConnectionUI::createEditor()
+std::unique_ptr<InspectorEditor> NodeConnectionUI::createEditor()
 {
-    return new NodeConnectionEditor (this);
+    return std::make_unique< NodeConnectionEditor> (this);
 }
 
 void NodeConnectionUI::handleCommandMessage (int /*commandId*/)

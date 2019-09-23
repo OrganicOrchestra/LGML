@@ -36,9 +36,9 @@ public:
     TextButton VSTListShowButton;
     TextButton showPluginWindowButton;
 
-    ScopedPointer<ParameterUI> midiDeviceChooser;
+    std::unique_ptr<ParameterUI> midiDeviceChooser;
 
-    ScopedPointer<ParameterUI> activityBlink;
+    std::unique_ptr<ParameterUI> activityBlink;
 
     void init() override;
     void resized()override;

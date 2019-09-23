@@ -114,9 +114,9 @@ void AudioDeviceInNodeContentUI::addVuMeter()
 
     int curVuMeterNum = muteToggles.size();
     jassert (curVuMeterNum < audioInNode->volumes.size() );
-    auto b = ParameterUIFactory::createDefaultUI (audioInNode->inMutes[curVuMeterNum]);
+    auto b = muteToggles.add (ParameterUIFactory::createDefaultUI (audioInNode->inMutes[curVuMeterNum]));
     b->setCustomText(String(v->targetChannel+1));
-    muteToggles.add (b);
+
     addAndMakeVisible (b);
 
 

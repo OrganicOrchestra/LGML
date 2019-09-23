@@ -130,7 +130,7 @@ public:
     }
     void setMini(){
         for(auto o:s->parentShifterContainer->shifters){
-            if(o->miniTimer && o->miniTimer!=this){
+            if(o->miniTimer && o->miniTimer.get()!=this){
                 o->setMini(true,false);
                 o->miniTimer = nullptr;
             }
@@ -216,7 +216,7 @@ bool ShapeShifter::isInAutoMiniMode(){
 void ShapeShifter::mouseEnter(const juce::MouseEvent &me){
     if(miniTimer){miniTimer->stopTimers();}
     if(isMini){
-        miniTimer = new MiniTimer(this);
+        miniTimer = std::make_unique< MiniTimer>(this);
     }
 
 }

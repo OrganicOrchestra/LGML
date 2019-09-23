@@ -73,8 +73,8 @@ hadOnset(false)
     mute->invertVisuals = true;
 
     stateParameterString = addNewParameter<StringParameter> ("state", "track state", "cleared");
-    stateParameterStringSynchronizer = new AsyncTrackStateStringSynchronizer (stateParameterString);
-    addTrackListener (stateParameterStringSynchronizer);
+    stateParameterStringSynchronizer = std::make_unique< AsyncTrackStateStringSynchronizer> (stateParameterString);
+    addTrackListener (stateParameterStringSynchronizer.get());
     stateParameterString->setInternalOnlyFlags(true,false);
     stateParameterString->isControllableExposed = true;
 
@@ -92,7 +92,7 @@ hadOnset(false)
 LooperTrack::~LooperTrack()
 {
     sampleChoice->removeAsyncEnumParameterListener (this);
-    removeTrackListener (stateParameterStringSynchronizer);
+    removeTrackListener (stateParameterStringSynchronizer.get());
 }
 
 bool LooperTrack::isBusy(){
@@ -978,7 +978,7 @@ void LooperTrack::loadAudioSample (const String& path)
 
         AudioFormatManager formatManager;
         formatManager.registerBasicFormats();
-        ScopedPointer<AudioFormatReader> audioReader = formatManager.createReaderFor (audioFile);
+        std::unique_ptr<AudioFormatReader> audioReader (formatManager.createReaderFor (audioFile));
 
         if (audioReader )
         {

@@ -33,7 +33,7 @@ public:
 
 protected:
     void valueChanged (const var& ) override;
-    ScopedPointer<Component> labelComp;
+    std::unique_ptr<Component> labelComp;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BoolToggleUI)
 };
 

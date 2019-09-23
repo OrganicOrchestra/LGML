@@ -155,8 +155,8 @@ void ControllerManagerUI::mouseDown (const MouseEvent& event)
         if (event.mods.isRightButtonDown())
         {
 
-            ScopedPointer<PopupMenu> menu ( new PopupMenu());
-            ScopedPointer<PopupMenu> addNodeMenu ( FactoryUIHelpers::getFactoryTypesMenu<ControllerFactory>());
+            std::unique_ptr<PopupMenu> menu ( new PopupMenu());
+            std::unique_ptr<PopupMenu> addNodeMenu ( FactoryUIHelpers::getFactoryTypesMenu<ControllerFactory>());
             menu->addSubMenu ("Add Controller", *addNodeMenu);
 
             int result = menu->show();
@@ -178,7 +178,7 @@ void ControllerManagerUI::buttonClicked (Button* b )
 {
     if (b == &addControllerBt)
     {
-        ScopedPointer<PopupMenu> addNodeMenu ( FactoryUIHelpers::getFactoryTypesMenu<ControllerFactory>());
+        std::unique_ptr<PopupMenu> addNodeMenu ( FactoryUIHelpers::getFactoryTypesMenu<ControllerFactory>());
 
         int result = addNodeMenu->show();
 

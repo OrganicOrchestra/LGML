@@ -118,8 +118,9 @@ LogElement::LogElement(const String& log):
 source (DebugHelpers::getLogSource (log)),
 content (DebugHelpers::getLogContent (log)),
 numAppearances(1)
+,_arr (new StringArray())
 {
-    _arr = new StringArray();
+
     time = Time::getCurrentTime();
     _arr->addTokens (content, StringRef ("\r\n"), StringRef("\""));
 

@@ -100,7 +100,7 @@ public:
     bool presetSavingIsRecursive() const{return _presetSavingIsRecursive;}
 
     friend class PresetManager;
-    ScopedPointer<Presetable> presetable;
+    std::unique_ptr<Presetable> presetable;
 
     
 private:

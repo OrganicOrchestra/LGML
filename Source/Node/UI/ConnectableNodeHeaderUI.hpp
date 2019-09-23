@@ -41,16 +41,16 @@ public:
     ConnectableNode* node;
     ConnectableNodeUI* nodeUI;
 
-    ScopedPointer<StringParameterUI> titleUI;
-    ScopedPointer<StringParameterUI> descriptionUI;
-    ScopedPointer<ParameterUI> enabledUI;
-    ScopedPointer<VuMeter> vuMeterIn;
-    ScopedPointer<VuMeter> vuMeterOut;
+    std::unique_ptr<StringParameterUI> titleUI;
+    std::unique_ptr<StringParameterUI> descriptionUI;
+    std::unique_ptr<ParameterUI> enabledUI;
+    std::unique_ptr<VuMeter> vuMeterIn;
+    std::unique_ptr<VuMeter> vuMeterOut;
 
 
     
     TextButton miniModeBT;
-    ScopedPointer<PresetChooserUI> presetChooser;
+    std::unique_ptr<PresetChooserUI> presetChooser;
 
 
     virtual void setNodeAndNodeUI (ConnectableNode* node, ConnectableNodeUI* nodeUI);

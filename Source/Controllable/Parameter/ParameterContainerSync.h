@@ -24,7 +24,7 @@ public:
     
     virtual void clear() ;
 
-    virtual ParameterContainer * createContainerFromContainer(ParameterContainer *p) = 0;
+    virtual std::unique_ptr<ParameterContainer> createContainerFromContainer(ParameterContainer *p) = 0;
     ParameterContainer * getSlaveContainer();
     ParameterContainer * getSlaveRelatedContainer(ParameterContainer *c,bool useLastName=false);
     ParameterContainer * getRootRelatedContainer(ParameterContainer *c);

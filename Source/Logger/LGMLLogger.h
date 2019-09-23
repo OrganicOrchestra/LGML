@@ -48,7 +48,7 @@ public:
 
 private:
     int numAppearances;
-    ScopedPointer<StringArray> _arr;
+    std::unique_ptr<StringArray> _arr;
     friend class LinkedListPointer<LogElement>;
     LogElement * nextItem;
 };
@@ -139,7 +139,7 @@ class LGMLLogger : public Logger
 
         void newMessage (const String& s) override {if (fileLog && !s.isEmpty()) {fileLog->logMessage (s);}}
         String getFilePath() {return fileLog->getLogFile().getFullPathName();}
-        ScopedPointer<FileLogger> fileLog;
+        std::unique_ptr<FileLogger> fileLog;
     };
 
     FileWriter fileWriter;

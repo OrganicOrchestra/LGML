@@ -19,14 +19,16 @@
 
 
 template<class T>
-StepperUI<T>::StepperUI ( ParameterBase* _parameter) : ParameterUI (_parameter)
+StepperUI<T>::StepperUI ( ParameterBase* _parameter) :
+ParameterUI (_parameter)
+,slider(new BetterStepper(this))
 {
 
-    slider = new BetterStepper (this);
+
     
     MinMaxParameter* fp = parameter->getAs<MinMaxParameter>();
     jassert (fp);
-    addAndMakeVisible (slider);
+    addAndMakeVisible (slider.get());
     stepInterval =(T)(.1)==0?1:0.01;
     T minimumValue = fp->minimumValue.isUndefined()?std::numeric_limits<T>::min():(T)fp->minimumValue;
     T maximumValue = fp->maximumValue.isUndefined()?std::numeric_limits<T>::max():(T)fp->maximumValue;

@@ -232,7 +232,7 @@ namespace{
         }
         void start(){
             count = 0;
-            latestVChecker = new LatestVersionChecker(true);
+            latestVChecker = std::make_unique< LatestVersionChecker>(true);
             startTimer(100);
         }
         void timerCallback() override{
@@ -250,7 +250,7 @@ namespace{
             }
 
         }
-        ScopedPointer<LatestVersionChecker>  latestVChecker;
+        std::unique_ptr<LatestVersionChecker>  latestVChecker;
         WeakReference<Component> bt;
         int count{};
     };
@@ -334,7 +334,7 @@ class PrefPanel : public PreferencesPanel{
 // AppPropertiesUI
 //////////////
 
-static ScopedPointer<DrawableComposite>  createIcon(const String &n,PrefPanel * parent,const int color = 0){
+static DrawableComposite *  createIcon(const String &n,PrefPanel * parent,const int color = 0){
     DrawableComposite * res = new DrawableComposite();
 
     //    DrawablePath * border = new DrawablePath();
@@ -373,16 +373,16 @@ void createForPageName(const String & pageName,PrefPanel * prefPanel){
 AppPropertiesUI::AppPropertiesUI():ResizableWindow(juce::translate("Settings"),true){
 
 
-    prefPanel = new PrefPanel();
+    prefPanel = std::make_unique<PrefPanel>();
 
     //    const int downColorId = TextButton::ColourIds::textColourOnId;
-    createForPageName(GeneralPageName,prefPanel);
-    createForPageName(AudioPageName,prefPanel);
+    createForPageName(GeneralPageName,prefPanel.get());
+    createForPageName(AudioPageName,prefPanel.get());
 
-    createForPageName(PluginsPageName,prefPanel);
+    createForPageName(PluginsPageName,prefPanel.get());
 
 
-    createForPageName(AdvancedPageName,prefPanel);
+    createForPageName(AdvancedPageName,prefPanel.get());
 
 
 #ifdef JUCE_MAC
@@ -391,7 +391,7 @@ AppPropertiesUI::AppPropertiesUI():ResizableWindow(juce::translate("Settings"),t
     setUsingNativeTitleBar(false);
 #endif
 
-    setContentNonOwned(prefPanel, false);
+    setContentNonOwned(prefPanel.get(), false);
     auto mainScreenB = Desktop::getInstance().getDisplays().getMainDisplay().userArea;
     auto area = mainScreenB.withSizeKeepingCentre(mainScreenB.getWidth()/3, mainScreenB.getHeight()/2);
     setBounds(area);

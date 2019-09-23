@@ -111,9 +111,10 @@ connectableNode (cn),
 mainComponentContainer (this, contentUI, headerUI),
 resizer (this, &constrainer),
 isDraggingFromUI (false)
+,inputContainer (new ConnectorContainerComponent(ConnectorComponent::ConnectorIOType::INPUT))
+,outputContainer (new ConnectorContainerComponent(ConnectorComponent::ConnectorIOType::OUTPUT))
 {
-    inputContainer  = new ConnectorContainerComponent(ConnectorComponent::ConnectorIOType::INPUT);
-    outputContainer = new ConnectorContainerComponent(ConnectorComponent::ConnectorIOType::OUTPUT);
+
     setPaintingIsUnclipped(true);
     setOpaque(false);
 
@@ -126,13 +127,13 @@ isDraggingFromUI (false)
     if (connectableNode->userCanAccessInputs)
     {
         inputContainer->setConnectorsFromNode (connectableNode);
-        addAndMakeVisible (inputContainer);
+        addAndMakeVisible (inputContainer.get());
     }
 
     if (connectableNode->userCanAccessOutputs)
     {
         outputContainer->setConnectorsFromNode (connectableNode);
-        addAndMakeVisible (outputContainer);
+        addAndMakeVisible (outputContainer.get());
     }
 
     //    getHeaderContainer()->addMouseListener (this, true); // (true, true);
@@ -432,13 +433,13 @@ audioCtlUIContainer (nullptr),
 miniMode (false)
 {
 
-    if (headerContainer == nullptr) headerContainer = new ConnectableNodeHeaderUI();
+    if (headerContainer == nullptr) headerContainer = std::make_unique< ConnectableNodeHeaderUI>();
 
-    if (contentContainer == nullptr) contentContainer = new ConnectableNodeContentUI();
+    if (contentContainer == nullptr) contentContainer = std::make_unique<ConnectableNodeContentUI>();
 
 
-    addAndMakeVisible (headerContainer);
-    addAndMakeVisible (contentContainer);
+    addAndMakeVisible (headerContainer.get());
+    addAndMakeVisible (contentContainer.get());
     LGMLUIUtils::markHasNewBackground(this,2);
     setPaintingIsUnclipped(true);
     setOpaque(true);
@@ -450,8 +451,8 @@ void ConnectableNodeUI::MainComponentContainer::setNodeAndNodeUI (ConnectableNod
     if (_node->hasAudioOutputs() && _node->hasMainAudioControl)
     {
         jassert (audioCtlUIContainer == nullptr);
-        audioCtlUIContainer = new ConnectableNodeAudioCtlUI();
-        addAndMakeVisible (audioCtlUIContainer);
+        audioCtlUIContainer = std::make_unique<  ConnectableNodeAudioCtlUI>();
+        addAndMakeVisible (audioCtlUIContainer.get());
         audioCtlUIContainer->setNodeAndNodeUI (_node, _nodeUI);
     }
 
@@ -512,15 +513,15 @@ void ConnectableNodeUI::MainComponentContainer::setMiniMode (bool value)
 
     if (miniMode)
     {
-        removeChildComponent (contentContainer);
+        removeChildComponent (contentContainer.get());
 
-        if (audioCtlUIContainer) removeChildComponent (audioCtlUIContainer);
+        if (audioCtlUIContainer) removeChildComponent (audioCtlUIContainer.get());
     }
     else
     {
-        addChildComponent (contentContainer);
+        addChildComponent (contentContainer.get());
 
-        if (audioCtlUIContainer) addChildComponent (audioCtlUIContainer);
+        if (audioCtlUIContainer) addChildComponent (audioCtlUIContainer.get());
     }
 
     headerContainer->setMiniMode (miniMode);
@@ -529,7 +530,7 @@ void ConnectableNodeUI::MainComponentContainer::setMiniMode (bool value)
 
 void ConnectableNodeUI::MainComponentContainer::childBoundsChanged (Component* c)
 {
-    if (c == contentContainer )
+    if (c == contentContainer.get() )
     {
 
         Point <int> destS = {
@@ -564,11 +565,11 @@ Array<ConnectorComponent*> ConnectableNodeUI::getComplementaryConnectors (Connec
     Array<ConnectorComponent*> result;
 
 
-    ConnectorContainerComponent* checkSameCont = baseConnector->ioType == ConnectorComponent::ConnectorIOType::INPUT ? inputContainer : outputContainer;
+    ConnectorContainerComponent* checkSameCont = baseConnector->ioType == ConnectorComponent::ConnectorIOType::INPUT ? inputContainer.get() : outputContainer.get();
 
     if (checkSameCont->getIndexOfChildComponent (baseConnector) != -1) return result;
 
-    ConnectorContainerComponent* complCont = checkSameCont == inputContainer ? outputContainer : inputContainer;
+    ConnectorContainerComponent* complCont = checkSameCont == inputContainer.get() ? outputContainer.get() : inputContainer.get();
 
     for (int i = 0; i < complCont->connectors.size(); i++)
     {

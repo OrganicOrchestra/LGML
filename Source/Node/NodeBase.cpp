@@ -376,11 +376,11 @@ bool NodeBase::setPreferedNumAudioOutput (int num)
     int oldNumChannels = getTotalNumOutputChannels();
     {
 
-        ScopedPointer<ScopedLock> lkp;
+        std::unique_ptr<ScopedLock> lkp;
 
         if (parentNodeContainer != nullptr)
         {
-            lkp = new ScopedLock (parentNodeContainer->getAudioGraph()->getCallbackLock());
+            lkp = std::make_unique<ScopedLock> (parentNodeContainer->getAudioGraph()->getCallbackLock());
         }
 
         setPlayConfigDetails (getTotalNumInputChannels(), num,

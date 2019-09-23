@@ -144,7 +144,7 @@ public:
 
     Component* getNodeManagerUI() { return (Component*)findParentComponentOfClass<NodeManagerUI>(); }
     String getTooltip() override;
-    InspectorEditor* createEditor() override;
+    std::unique_ptr<InspectorEditor> createEditor() override;
     void handleCommandMessage (int cId)override;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeConnectionUI);
 

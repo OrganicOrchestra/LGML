@@ -63,7 +63,7 @@ inline bool isInvalidName(const String & s){
 #endif
 }
 
-int getUsedSize(const OwnedArray<AudioProcessorParameter>& a){
+int getUsedSize(const Array<AudioProcessorParameter *>& a){
 #if REMOVE_VSTPARAMS
     int i = 0 ;
     for(auto & p:a){
@@ -82,7 +82,7 @@ struct VSTLoaderPostponer : private Engine::EngineListener{
     void endLoadFile() override{
         if(owner.get()){
             if(auto vn = dynamic_cast<VSTNode*>(owner.get())){
-                vn->audioProcessorChanged(vn->innerPlugin);
+                vn->audioProcessorChanged(vn->innerPlugin.get());
             }
         }
     }
@@ -150,7 +150,7 @@ void VSTNode::onContainerParameterChanged ( ParameterBase* p)
         if (identifierString->value != "")
         {
             jassert (!identifierString->checkValueIsTheSame (identifierString->value, identifierString->lastValue));
-            PluginDescription* pd = VSTManager::getInstance()->knownPluginList.getTypeForIdentifierString (identifierString->value);
+            auto pd = VSTManager::getInstance()->knownPluginList.getTypeForIdentifierString (identifierString->value);
 
             if (pd)
             {
@@ -158,12 +158,12 @@ void VSTNode::onContainerParameterChanged ( ParameterBase* p)
                 NodeManager::getInstance()->addJob (new VSTLoaderJob (pd, this), true);
 #else
                 suspendProcessing (true);
-                generatePluginFromDescription (pd);
+                generatePluginFromDescription (pd.get());
                 DBG ("VST generated");
                 if(stateInfoPluginID==pd->createIdentifierString())
                     setVSTState();
                 else{
-                    initParametersFromProcessor(innerPlugin);
+                    initParametersFromProcessor(innerPlugin.get());
                     getVSTState();
                 }
                 suspendProcessing (false);
@@ -224,7 +224,7 @@ void VSTNode::onContainerParameterChanged ( ParameterBase* p)
 
         if (blockFeedback)return;
 
-        const OwnedArray<juce::AudioProcessorParameter>& vstParams (innerPlugin->getParameters());
+        const Array<juce::AudioProcessorParameter * >& vstParams (innerPlugin->getParameters());
         if(VSTParameters.size()>vstParams.size()){
             //jassertfalse;
             return;
@@ -291,8 +291,8 @@ void VSTNode::setVSTState(){
 
         if (inOutChanged && parentNodeContainer)  parentNodeContainer->updateAudioGraph();
         
-        if (numParamChanged)   initParametersFromProcessor (innerPlugin);
-        else updateParametersFromProcessor(innerPlugin);
+        if (numParamChanged)   initParametersFromProcessor (innerPlugin.get());
+        else updateParametersFromProcessor(innerPlugin.get());
         
         
         
@@ -467,8 +467,8 @@ void VSTNode::generatePluginFromDescription (PluginDescription* desc)
 
     getAudioDeviceManager().getAudioDeviceSetup (result);
 
-    if (AudioPluginInstance* instance = VSTManager::getInstance()->formatManager.createPluginInstance
-        (*desc, result.sampleRate, result.bufferSize, errorMessage))
+    if ( ( innerPlugin = VSTManager::getInstance()->formatManager.createPluginInstance
+        (*desc, result.sampleRate, result.bufferSize, errorMessage) ) )
     {
         // try to align the precision of the processor and the graph
 
@@ -476,23 +476,23 @@ void VSTNode::generatePluginFromDescription (PluginDescription* desc)
         // if it triggers an assert it's that vst is wrongly implemened (and there are a lot...)
         // ignoring the assert seems fair enough for now (juce_VSTPluginFormat.cpp l:794 while checking doubleprecision)
 
-        instance->setProcessingPrecision (singlePrecision);
-        instance->prepareToPlay (result.sampleRate, result.bufferSize);
+        innerPlugin->setProcessingPrecision (singlePrecision);
+        innerPlugin->prepareToPlay (result.sampleRate, result.bufferSize);
 
-        int numIn = instance->getTotalNumInputChannels();
-        int numOut = instance->getTotalNumOutputChannels();
+        int numIn = innerPlugin->getTotalNumInputChannels();
+        int numOut = innerPlugin->getTotalNumOutputChannels();
         //        NodeBase::setPlayConfigDetails(numIn, numOut, result.sampleRate, result.bufferSize);
         setPreferedNumAudioInput (numIn);
         setPreferedNumAudioOutput (numOut);
 
-        innerPluginTotalNumInputChannels = instance->getTotalNumInputChannels();
-        innerPluginTotalNumOutputChannels = instance->getTotalNumOutputChannels();
+        innerPluginTotalNumInputChannels = innerPlugin->getTotalNumInputChannels();
+        innerPluginTotalNumOutputChannels = innerPlugin->getTotalNumOutputChannels();
         innerPluginMaxCommonChannels = jmin (innerPluginTotalNumInputChannels, innerPluginTotalNumOutputChannels);
-        DBG ("buffer sizes" + String (instance->getTotalNumInputChannels()) + ',' + String (instance->getTotalNumOutputChannels()));
+        DBG ("buffer sizes" + String (innerPlugin->getTotalNumInputChannels()) + ',' + String (innerPlugin->getTotalNumOutputChannels()));
 
-        instance->setPlayHead (getPlayHead());
+        innerPlugin->setPlayHead (getPlayHead());
 
-        innerPlugin = instance;
+
         messageCollector.reset (result.sampleRate);
 
 
@@ -512,9 +512,9 @@ void VSTNode::generatePluginFromDescription (PluginDescription* desc)
 
 void VSTNode::audioProcessorChanged (juce::AudioProcessor* p )
 {
-    if (!innerPlugin || p != innerPlugin) return;
+    if (!innerPlugin || p != innerPlugin.get()) return;
     if(isEngineLoadingFile()){
-        vstLoaderPostponer = new VSTLoaderPostponer(this);
+        vstLoaderPostponer = std::make_unique<VSTLoaderPostponer>(this);
         return;
     }
     getVSTState();
@@ -526,7 +526,7 @@ void VSTNode::audioProcessorChanged (juce::AudioProcessor* p )
              .replace("456",String(VSTParameters.size()))
              );
         jassertfalse;
-        initParametersFromProcessor (innerPlugin);
+        initParametersFromProcessor (innerPlugin.get());
 
     }
     else
@@ -535,7 +535,7 @@ void VSTNode::audioProcessorChanged (juce::AudioProcessor* p )
         if(parameterHaveChanged()){
 
             //        updateParametersToProcessor(innerPlugin);
-            updateParametersFromProcessor(innerPlugin);
+            updateParametersFromProcessor(innerPlugin.get());
         }
         else{ // try to sync parameters
               //            int commonPS = jmin(p->getParameters().size(),VSTParameters.size());
@@ -575,11 +575,11 @@ void VSTNode::audioProcessorParameterChanged (AudioProcessor* p,
                                               int parameterIndex,
                                               float newValue)
 {
-    if (p == innerPlugin)
+    if (p == innerPlugin.get())
     {
         jassert (parameterIndex < VSTParameters.size());
         blockFeedback = true;
-        const OwnedArray<AudioProcessorParameter>& innerPL ( innerPlugin->getParameters());
+        const Array<AudioProcessorParameter * >& innerPL ( innerPlugin->getParameters());
         if (parameterIndex < VSTParameters.size() && parameterIndex<innerPL.size()){
 
             auto * localP = VSTParameters.getUnchecked (parameterIndex);

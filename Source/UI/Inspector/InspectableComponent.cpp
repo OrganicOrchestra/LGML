@@ -84,12 +84,12 @@ InspectableComponent::~InspectableComponent()
 
 }
 
-InspectorEditor* InspectableComponent::createEditor()
+std::unique_ptr<InspectorEditor> InspectableComponent::createEditor()
 {
     if(relatedParameterContainer)
-        return new GenericParameterContainerEditor (relatedParameterContainer);
+        return std::make_unique< GenericParameterContainerEditor> (relatedParameterContainer);
     else if (relatedParameter)
-        return new ComponentInspectorEditor(new NamedParameterUI(ParameterUIFactory::createDefaultUI(relatedParameter),100),25);
+        return std::make_unique< ComponentInspectorEditor>(new NamedParameterUI(ParameterUIFactory::createDefaultUI(relatedParameter),100),25);
 
     return nullptr;
 }

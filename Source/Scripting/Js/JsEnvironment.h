@@ -39,7 +39,7 @@ public:
 
 
 
-    ScopedPointer<JSEnvContainer> jsParameters;
+    std::unique_ptr<JSEnvContainer> jsParameters;
     FileParameter * getJsFileParameter();
 
     // should be implemented to build localenv
@@ -228,7 +228,7 @@ private:
     };
     Array<FunctionIdentifier> userDefinedFunctions;
 
-    ScopedPointer<JavascriptEngine> jsEngine;
+    std::unique_ptr<JavascriptEngine> jsEngine;
     CriticalSection engineLock;
 
     void timerCallback (int timerID)override;

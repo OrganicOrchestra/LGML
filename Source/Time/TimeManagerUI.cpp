@@ -41,30 +41,30 @@ TimeManagerUI::TimeManagerUI (const String& contentName, TimeManager* _timeManag
     timeManager->linkEnabled->addAsyncParameterListener (this);
 
     addAndMakeVisible (timeBar);
-    bpmStepper = new FloatSliderUI (timeManager->BPM);
+    bpmStepper = std::make_unique< FloatSliderUI> (timeManager->BPM);
     //  bpmStepper->assignOnMousePosDirect = true;
     //  bpmStepper->changeParamOnMouseUpOnly = true;
 
-    addAndMakeVisible (bpmStepper);
+    addAndMakeVisible (bpmStepper.get());
 
 
     quantizStepper = ParameterUIFactory::createDefaultUI (timeManager->quantizedBarFraction);
 
-    addAndMakeVisible (quantizStepper);
+    addAndMakeVisible (quantizStepper.get());
 
     playTrig = ParameterUIFactory::createDefaultUI (timeManager->playTrigger);
-    addAndMakeVisible (playTrig);
+    addAndMakeVisible (playTrig.get());
     stopTrig = ParameterUIFactory::createDefaultUI (timeManager->stopTrigger);
-    addAndMakeVisible (stopTrig);
+    addAndMakeVisible (stopTrig.get());
     tapTempo = ParameterUIFactory::createDefaultUI (timeManager->tapTempo);
-    addAndMakeVisible (tapTempo);
+    addAndMakeVisible (tapTempo.get());
     click = ParameterUIFactory::createDefaultUI (timeManager->click);
-    addAndMakeVisible (click);
+    addAndMakeVisible (click.get());
     clickVolumeUI = ParameterUIFactory::createDefaultUI (timeManager->clickVolume);
-    addAndMakeVisible (clickVolumeUI);
+    addAndMakeVisible (clickVolumeUI.get());
 
     linkEnabled = ParameterUIFactory::createDefaultUI (timeManager->linkEnabled);
-    addAndMakeVisible (linkEnabled);
+    addAndMakeVisible (linkEnabled.get());
 
 
     //    linkNumPeers = ParameterUIFactory::createDefaultUI(timeManager->linkNumPeers);

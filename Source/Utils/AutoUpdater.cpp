@@ -155,13 +155,13 @@ public:
         const int maxRedirects = 5;
 
         // we need to do the redirecting manually due to inconsistencies on the way headers are handled on redirects
-        ScopedPointer<InputStream> in;
+        std::unique_ptr<InputStream> in;
 
         for (int redirect = 0; redirect < maxRedirects; ++redirect)
         {
             StringPairArray responseHeaders;
 
-            in = url.createInputStream (false, nullptr, nullptr, headers, 10000, &responseHeaders, &statusCode, 0);
+            in.reset(url.createInputStream (false, nullptr, nullptr, headers, 10000, &responseHeaders, &statusCode, 0));
             if (in == nullptr || statusCode != 302)
                 break;
 
@@ -223,37 +223,37 @@ public:
 
         VersionTriplet currentVersion (VersionTriplet::getCurrentVersion());
 
-        addAndMakeVisible (titleLabel = new Label ("Title Label",
-                                                   juce::translate("Download LGML version 123?").replace ("123", version.toString())));
+        addAndMakeVisible ((titleLabel = std::make_unique<Label> ("Title Label",
+                                                   juce::translate("Download LGML version 123?").replace ("123", version.toString()))).get());
 
         titleLabel->setFont (Font (15.00f, Font::bold));
         titleLabel->setJustificationType (Justification::centredLeft);
         titleLabel->setEditable (false, false, false);
 
-        addAndMakeVisible (contentLabel = new Label ("Content Label",
+        addAndMakeVisible ((contentLabel = std::make_unique< Label> ("Content Label",
                                                      juce::translate("A new version of LGML is available - would you like to download it?")
-                                                     ));
+                                                     )).get());
         contentLabel->setFont (Font (15.00f, Font::plain));
         contentLabel->setJustificationType (Justification::topLeft);
         contentLabel->setEditable (false, false, false);
 
-        addAndMakeVisible (okButton = new TextButton ("OK Button"));
+        addAndMakeVisible ((okButton = std::make_unique< TextButton> ("OK Button")).get());
         okButton->setButtonText (juce::translate("Download page"));
         okButton->addListener (this);
 
         if(hasDirectDownload){
-            addAndMakeVisible (dlButton = new TextButton ("DL Button"));
+            addAndMakeVisible ((dlButton = std::make_unique< TextButton> ("DL Button")).get());
             dlButton->setButtonText (juce::translate("Download now"));
             dlButton->addListener (this);
         }
 
-        addAndMakeVisible(dontBotherMeCheck = new TextButton("StopBothering"));
+        addAndMakeVisible((dontBotherMeCheck = std::make_unique< TextButton>("StopBothering")).get());
         dontBotherMeCheck->setButtonText (juce::translate("Don't check"));
         dontBotherMeCheck->setClickingTogglesState(true);
         dontBotherMeCheck->addListener (this);
 
 
-        addAndMakeVisible (cancelButton = new TextButton ("Cancel Button"));
+        addAndMakeVisible ((cancelButton = std::make_unique< TextButton> ("Cancel Button")).get());
         cancelButton->setButtonText (juce::translate("Cancel"));
         cancelButton->addListener (this);
 
@@ -263,13 +263,13 @@ public:
             titleLabel->setText(juce::translate("you have the latest version : 123 re-download it?").replace("123", version.toString()), dontSendNotification);
             contentLabel->setText("", dontSendNotification);
         }
-        addAndMakeVisible (changeLogLabel = new Label ("Change Log Label",
-                                                       juce::translate("Release Notes:")));
+        addAndMakeVisible ((changeLogLabel = std::make_unique<Label> ("Change Log Label",
+                                                       juce::translate("Release Notes:"))).get());
         changeLogLabel->setFont (Font (15.00f, Font::plain));
         changeLogLabel->setJustificationType (Justification::topLeft);
         changeLogLabel->setEditable (false, false, false);
 
-        addAndMakeVisible (changeLog = new TextEditor ("Change Log"));
+        addAndMakeVisible ((changeLog = std::make_unique<TextEditor> ("Change Log")).get());
         changeLog->setMultiLine (true);
         changeLog->setReturnKeyStartsNewLine (true);
         changeLog->setReadOnly (true);
@@ -334,10 +334,10 @@ public:
     {
         if (DialogWindow* parentDialog = findParentComponentOfClass<DialogWindow>())
         {
-            if      (clickedButton == okButton) parentDialog->exitModalState (1);
-            else if (clickedButton == dlButton)        parentDialog->exitModalState (2);
-            else if (clickedButton == cancelButton)    parentDialog->exitModalState (-1);
-            else if(clickedButton==dontBotherMeCheck){
+            if      (clickedButton == okButton.get()) parentDialog->exitModalState (1);
+            else if (clickedButton == dlButton.get())        parentDialog->exitModalState (2);
+            else if (clickedButton == cancelButton.get())    parentDialog->exitModalState (-1);
+            else if(clickedButton==dontBotherMeCheck.get()){
                 getAppProperties()->getUserSettings()->setValue("check for updates",!dontBotherMeCheck->getToggleState());
                 getAppProperties()->getUserSettings()->saveIfNeeded();
             }
@@ -369,11 +369,11 @@ public:
 
 private:
     bool hasOverwriteButton;
-    ScopedPointer<Label> titleLabel, contentLabel, changeLogLabel, overwriteLabel, overwritePath;
-    ScopedPointer<TextButton> okButton, cancelButton, dontBotherMeCheck,dlButton;
-    ScopedPointer<TextEditor> changeLog;
-    ScopedPointer<TextButton> overwriteButton;
-    ScopedPointer<Drawable> juceIcon;
+    std::unique_ptr<Label> titleLabel, contentLabel, changeLogLabel, overwriteLabel, overwritePath;
+    std::unique_ptr<TextButton> okButton, cancelButton, dontBotherMeCheck,dlButton;
+    std::unique_ptr<TextEditor> changeLog;
+    std::unique_ptr<TextButton> overwriteButton;
+    std::unique_ptr<Drawable> juceIcon;
 
     void lookAndFeelChanged() override
     {
@@ -580,7 +580,7 @@ void LatestVersionChecker::checkForNewVersion()
 
         const int numRedirects = 0;
 
-        const ScopedPointer<InputStream> in (updateURL.createInputStream (false, nullptr, nullptr,
+        const std::unique_ptr<InputStream> in (updateURL.createInputStream (false, nullptr, nullptr,
                                                                           extraHeaders, maxTimeOut*0.5f, &responseHeaders,
                                                                           &statusCode, numRedirects));
 

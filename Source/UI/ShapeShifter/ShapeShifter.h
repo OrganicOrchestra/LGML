@@ -59,7 +59,7 @@ public :
     void mouseUp(const MouseEvent & )override;
     void mouseExit(const MouseEvent & )override;
     void mouseEnter(const MouseEvent &) override;
-    ScopedPointer <MiniTimer> miniTimer;
+    std::unique_ptr <MiniTimer> miniTimer;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ShapeShifter)
     
 private:

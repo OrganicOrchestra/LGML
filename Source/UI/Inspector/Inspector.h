@@ -92,7 +92,7 @@ private:
     void parentHierarchyChanged() override;
     
 
-    ScopedPointer<InspectorEditor> currentEditor;
+    std::unique_ptr<InspectorEditor> currentEditor;
 
     // controllableContainer listener
     void controllableContainerRemoved(ControllableContainer * , ControllableContainer * ) override;

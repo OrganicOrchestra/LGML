@@ -131,12 +131,12 @@ struct StretchHandle : public Component{
 
 GapGrabber::GapGrabber (Direction _direction) : direction (_direction)
 {
-    goMiniHandle = new MiniHandle(this,true);
-    addAndMakeVisible(goMiniHandle);
-    goMiniHandle2 = new MiniHandle(this,false);
-    addAndMakeVisible(goMiniHandle2);
-    stretchHandle = new StretchHandle(this);
-    addAndMakeVisible(stretchHandle );
+    goMiniHandle = std::make_unique< MiniHandle>(this,true);
+    addAndMakeVisible(goMiniHandle.get());
+    goMiniHandle2 = std::make_unique< MiniHandle>(this,false);
+    addAndMakeVisible(goMiniHandle2.get());
+    stretchHandle = std::make_unique< StretchHandle>(this);
+    addAndMakeVisible(stretchHandle.get() );
     setPaintingIsUnclipped(true);
     setOpaque(true);
 

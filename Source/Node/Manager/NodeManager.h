@@ -107,7 +107,7 @@ private:
 
 
 
-    ScopedPointer<JobsWatcher> jobsWatcher;
+    std::unique_ptr<JobsWatcher> jobsWatcher;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeManager)
 

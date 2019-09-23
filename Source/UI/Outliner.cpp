@@ -108,8 +108,8 @@ void Outliner::setRoot(ParameterContainer * p,bool saveOpenness){
     if (root.get()){
 
         root->addControllableContainerListener(this);
-        rootItem = new OutlinerItem (root,true);
-        treeView.setRootItem (rootItem);
+        rootItem = std::make_unique< OutlinerItem> (root,true);
+            treeView.setRootItem (rootItem.get());
 
 
         rebuildTree();
@@ -124,7 +124,7 @@ void Outliner::rebuildTree()
 {
     rootItem->clearSubItems();
     if(root.get()){
-        buildTree (rootItem, root.get());
+        buildTree (rootItem.get(), root.get());
         rootItem->setOpen (true);
     }
 
@@ -488,20 +488,20 @@ paramUI (nullptr)
     addAndMakeVisible (&label);
     label.setInterceptsMouseClicks (false, false);
     if(_item->isContainer && _item->container->isUserDefined){
-        addUserParamBt = new AddElementButton();
-        addAndMakeVisible(addUserParamBt);
+        addUserParamBt = std::make_unique< AddElementButton>();
+        addAndMakeVisible(addUserParamBt.get());
         addUserParamBt->addListener(this);
         if(auto p = _item->container->parentContainer){
             if(p->isUserDefined){
-                removeMeBt = new RemoveElementButton();
-                addAndMakeVisible(removeMeBt);
+                removeMeBt = std::make_unique< RemoveElementButton>();
+                addAndMakeVisible(removeMeBt.get());
                 removeMeBt->addListener(this);
             }
         }
     }
     if(!_item->isContainer && _item->parameter->isUserDefined){
-        removeMeBt = new RemoveElementButton();
-        addAndMakeVisible(removeMeBt);
+        removeMeBt = std::make_unique< RemoveElementButton>();
+        addAndMakeVisible(removeMeBt.get());
         removeMeBt->addListener(this);
     }
     if (!_item->isContainer )
@@ -522,7 +522,7 @@ paramUI (nullptr)
     LGMLUIUtils::optionallySetBufferedToImage(&label);
     updateLabelText();
 
-    addAndMakeVisible (paramUI);
+    addAndMakeVisible (paramUI.get());
 }
 
 OutlinerItemComponent::~OutlinerItemComponent(){
@@ -650,7 +650,7 @@ void OutlinerItemComponent::mouseDown (const MouseEvent& e)
 
 
 void OutlinerItemComponent::buttonClicked (Button* b){
-    if(b==addUserParamBt){
+    if(b==addUserParamBt.get()){
         if(item->isContainer){
             item->container->addNewParameter<FloatParameter> ("variable", "Custom Variable");
         }
@@ -658,7 +658,7 @@ void OutlinerItemComponent::buttonClicked (Button* b){
             jassertfalse;
         }
     }
-    else if( b==removeMeBt){
+    else if( b==removeMeBt.get()){
         if(item->isContainer){
             item->container->removeFromParent();
         }

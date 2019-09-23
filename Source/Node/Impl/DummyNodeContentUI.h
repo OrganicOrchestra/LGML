@@ -32,12 +32,12 @@ public:
 
     DummyNode* dummyNode;
 
-    ScopedPointer<FloatSliderUI> freq1Slider;
-    ScopedPointer<FloatSliderUI> freq2Slider;
-    ScopedPointer<FloatSliderUI> pxSlider;
-    ScopedPointer<FloatSliderUI> pySlider;
-    ScopedPointer<ParameterUI> modeUI;
-    ScopedPointer<ParameterUI> testTriggerButton;
+    std::unique_ptr<FloatSliderUI> freq1Slider;
+    std::unique_ptr<FloatSliderUI> freq2Slider;
+    std::unique_ptr<FloatSliderUI> pxSlider;
+    std::unique_ptr<FloatSliderUI> pySlider;
+    std::unique_ptr<ParameterUI> modeUI;
+    std::unique_ptr<ParameterUI> testTriggerButton;
 
     void resized() override;
 

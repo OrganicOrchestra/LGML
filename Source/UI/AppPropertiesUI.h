@@ -42,7 +42,7 @@ private:
     void userTriedToCloseWindow() override;
     int getDesktopWindowStyleFlags() const override;
 
-    ScopedPointer<PrefPanel> prefPanel;
+    std::unique_ptr<PrefPanel> prefPanel;
 
 
 };

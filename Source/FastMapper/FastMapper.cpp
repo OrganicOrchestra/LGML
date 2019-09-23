@@ -127,7 +127,7 @@ FastMap* FastMapper::addFastMap()
 {
 
 
-    ScopedPointer<FastMap> f ( new FastMap());
+    std::unique_ptr<FastMap> f ( new FastMap());
 
     f->nameParam->isEditable = true;
 
@@ -136,16 +136,16 @@ FastMap* FastMapper::addFastMap()
     f->referenceOut->setParamToReferTo (potentialOut->get());
 
 
-    if(!checkDuplicates (f)){
-        addChildControllableContainer (f);
-        maps.add (f);
+    if(!checkDuplicates (f.get())){
+        addChildControllableContainer (f.get());
+        maps.add (f.get());
         f->referenceIn->addParameterProxyListener(this);
         f->referenceOut->addParameterProxyListener(this);
 
         lastFMAddedTime = Time::getMillisecondCounter();
-
-#if !ENGINE_HEADLESS
         auto addedFastMap = f.release();
+#if !ENGINE_HEADLESS
+
         WeakReference<FastMap> wkf(addedFastMap);
         // avoid listener feedback
         MessageManager::callAsync([this,wkf](){

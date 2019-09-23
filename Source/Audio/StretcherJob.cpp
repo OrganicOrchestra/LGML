@@ -65,7 +65,7 @@ void StretcherJob::initStretcher (int sampleRate, int numChannels)
         sampleRate = 44100;
     }
 
-    stretcher = new    RubberBandStretcher (sampleRate, //size_t sampleRate,
+    stretcher = std::make_unique<RubberBandStretcher> (sampleRate, //size_t sampleRate,
                                             numChannels,//size_t channels,
                                             RubberBandStretcher::OptionProcessOffline
                                             | RubberBandStretcher::OptionTransientsCrisp

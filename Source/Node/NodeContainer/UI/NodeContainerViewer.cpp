@@ -71,7 +71,7 @@ nodesLayer(new NodeLayerComponent())
 
     minimizeAll = addNewParameter<BoolParameter>("minimize all", "minimize all visible nodes", true);
 
-    addAndMakeVisible(nodesLayer);
+    addAndMakeVisible(nodesLayer.get());
     nodesLayer->setInterceptsMouseClicks(false,true);
     for (auto& n : nodeContainer->nodes)
     {
@@ -160,13 +160,14 @@ void NodeContainerViewer::addNodeUI (ConnectableNode* node)
         if(!uip){
             uip =  uiParams->addContainerFromObject(node->shortName.toString(), nullptr);
         }
-        ConnectableNodeUI* nui =
+        auto nuip =
         NodeUIFactory::createDefaultUI (node,
                                         dynamic_cast<ConnectableNodeUIParams*>(uip));
 
-        if(nui){
+        if(nuip){
+
+            auto nui =nodesUI.add (std::move(nuip));
             nui->setNiceName(node->shortName.toString());
-            nodesUI.add (nui);
             addChildControllableContainer(nui);
             if(minimizeAll->boolValue()){
                 nui->setMiniMode(true);
@@ -287,7 +288,7 @@ void NodeContainerViewer::createAudioConnectionFromConnector (Connector* baseCon
     }
 
     bool isOutputConnector = baseConnector->ioType == Connector::ConnectorIOType::OUTPUT;
-    editingModel = root ? new NodeConnection::Model (root->model) : nullptr;
+    editingModel = root ? std::make_unique<NodeConnection::Model> (root->model) : nullptr;
 
     if (isOutputConnector)
     {
@@ -386,7 +387,7 @@ void NodeContainerViewer::finishEditingConnection()
 
         if (success)
         {
-            nodeContainer->addConnection (editingConnection->sourceConnector->node, editingConnection->destConnector->node, editingConnection->getBaseConnector()->dataType, editingModel);
+            nodeContainer->addConnection (editingConnection->sourceConnector->node, editingConnection->destConnector->node, editingConnection->getBaseConnector()->dataType, editingModel.get());
         }
     }
 
@@ -445,7 +446,7 @@ void NodeContainerViewer::mouseDown (const MouseEvent& event)
             Point<int> mousePos = getMouseXYRelative();
             PopupMenu   menu;//(new PopupMenu());
 
-            ScopedPointer<PopupMenu> addNodeMenu (FactoryUIHelpers::getFactoryTypesMenu<NodeFactory> ());
+            std::unique_ptr<PopupMenu> addNodeMenu (FactoryUIHelpers::getFactoryTypesMenu<NodeFactory> ());
 
             menu.addSubMenu ("Add Node", *addNodeMenu);
             int result = menu.show();
@@ -475,7 +476,7 @@ void NodeContainerViewer::mouseDown (const MouseEvent& event)
                 for(auto s: getLassoSelection()){
                     if(s.get()){
                         if(auto * nodeUI = dynamic_cast<ConnectableNodeUI*>(s.get())){
-                            Component * tSize = nodeUI->mainComponentContainer.contentContainer;
+                            Component * tSize = nodeUI->mainComponentContainer.contentContainer.get();
                             selectedInitBounds.set(s, s->getBoundsInParent().withSize(tSize->getWidth(), tSize->getHeight()));
                         }
                     }
@@ -599,7 +600,7 @@ void NodeContainerViewer::mouseUp (const MouseEvent& e)
     for(auto& s: getLassoSelection()){
         if(s.get()){
             if(auto * nodeUI = dynamic_cast<ConnectableNodeUI*>(s.get())){
-                Component * tSize = nodeUI->mainComponentContainer.contentContainer;
+                Component * tSize = nodeUI->mainComponentContainer.contentContainer.get();
                 selectedInitBounds.set(s, s->getBoundsInParent().withSize(tSize->getWidth(), tSize->getHeight()));
             }
         }
@@ -618,7 +619,7 @@ bool NodeContainerViewer::keyPressed (const KeyPress& key)
     if (key.getTextCharacter() == 'a')
     {
         Point<int> mousePos = getMouseXYRelative();
-        ScopedPointer<PopupMenu > menu = FactoryUIHelpers::getFactoryTypesMenu<NodeFactory>();
+        std::unique_ptr<PopupMenu > menu ( FactoryUIHelpers::getFactoryTypesMenu<NodeFactory>());
 
 
         int result = menu->show();
@@ -678,7 +679,7 @@ void NodeContainerViewer::onContainerParameterChanged( ParameterBase* p) {
 Rectangle<int> NodeContainerViewer::getNodesBoundingBox(){
     Rectangle<int> _bounds(0, 0, 0,0);
     for (auto &n : nodesLayer->getChildren()) {
-        _bounds = _bounds.getUnion(getLocalArea(nodesLayer,n->getBoundsInParent()));
+        _bounds = _bounds.getUnion(getLocalArea(nodesLayer.get(),n->getBoundsInParent()));
     }
     
     return _bounds;

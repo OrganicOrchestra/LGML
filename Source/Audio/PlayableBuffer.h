@@ -158,7 +158,7 @@ private:
     void initRTStretch();
     void applyStretch();
     bool processPendingRTStretch (AudioBuffer<float>& b, sample_clk_t time);
-    ScopedPointer<RubberBand::RubberBandStretcher> RTStretcher;
+    std::unique_ptr<RubberBand::RubberBandStretcher> RTStretcher;
     int RTStretcherSamplerate;
     float pendingTimeStretchRatio;
     int processedStretch;

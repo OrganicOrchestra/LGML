@@ -27,8 +27,8 @@ ProgressWindow::ProgressWindow (const String& _title, ProgressNotifier* notifier
 {
     DBG ("progressParam " << progressParam.floatValue());
 
-    progressUI = new FloatSliderUI (&progressParam);
-    addAndMakeVisible (progressUI);
+    progressUI = std::make_unique< FloatSliderUI> (&progressParam);
+    addAndMakeVisible (progressUI.get());
     addAndMakeVisible (titleLabel);
     titleLabel.setText (_title, dontSendNotification);
 }

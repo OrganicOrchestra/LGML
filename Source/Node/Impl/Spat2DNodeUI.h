@@ -31,18 +31,18 @@ public:
 
     Spat2DNode* spatNode;
 
-    ScopedPointer<Spat2DViewer> viewer2D;
+    std::unique_ptr<Spat2DViewer> viewer2D;
 
-    ScopedPointer<ParameterUI> spatModeUI;
-    ScopedPointer<NamedParameterUI> inputStepper;
-    ScopedPointer<NamedParameterUI> outputStepper;
-    ScopedPointer<ParameterUI> radiusUI;
-    ScopedPointer<ParameterUI> useGlobalUI;
-    ScopedPointer<ParameterUI> globalRadiusUI;
+    std::unique_ptr<ParameterUI> spatModeUI;
+    std::unique_ptr<NamedParameterUI> inputStepper;
+    std::unique_ptr<NamedParameterUI> outputStepper;
+    std::unique_ptr<ParameterUI> radiusUI;
+    std::unique_ptr<ParameterUI> useGlobalUI;
+    std::unique_ptr<ParameterUI> globalRadiusUI;
 
-    ScopedPointer<ParameterUI> shapeModeUI;
-    ScopedPointer<ParameterUI> circleDiameterUI;
-    ScopedPointer<ParameterUI> circleRotationUI;
+    std::unique_ptr<ParameterUI> shapeModeUI;
+    std::unique_ptr<ParameterUI> circleDiameterUI;
+    std::unique_ptr<ParameterUI> circleRotationUI;
 
     void resized() override;
     void init() override;

@@ -51,7 +51,7 @@ public:
     AddElementButton addFastMapButton;
     void addFastMapUndoable();
     
-    ScopedPointer<Component> potentialIn, potentialOut;
+    std::unique_ptr<Component> potentialIn, potentialOut;
     StackedContainerViewport<FastMapUI,FastMap> mapsUI;
 
     Array<WeakReference<ContainerType> > viewFilterContainers;

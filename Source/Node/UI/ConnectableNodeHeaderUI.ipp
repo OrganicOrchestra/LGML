@@ -1,16 +1,16 @@
 /* Copyright © Organic Orchestra, 2017
-*
-* This file is part of LGML.  LGML is a software to manipulate sound in realtime
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation (version 3 of the License).
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*/
+ *
+ * This file is part of LGML.  LGML is a software to manipulate sound in realtime
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation (version 3 of the License).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
 
 #if !ENGINE_HEADLESS
 
@@ -24,13 +24,14 @@
 #include "../../Controllable/Parameter/UI/ParameterUIFactory.h"
 
 ConnectableNodeHeaderUI::ConnectableNodeHeaderUI() :
-    miniModeBT ("-"),
-    bMiniMode (false)
+miniModeBT ("-"),
+bMiniMode (false)
+,vuMeterIn (new VuMeter (VuMeter::Type::IN))
+,vuMeterOut ( new VuMeter (VuMeter::Type::OUT))
+
 {
     node = nullptr;
     nodeUI = nullptr;
-    vuMeterIn = new VuMeter (VuMeter::Type::IN);
-    vuMeterOut = new VuMeter (VuMeter::Type::OUT);
 
     setInterceptsMouseClicks(false,true);
 
@@ -47,8 +48,8 @@ ConnectableNodeHeaderUI::~ConnectableNodeHeaderUI()
 {
     if (node != nullptr)
     {
-        node->removeRMSListener (vuMeterOut);
-        node->removeRMSListener (vuMeterIn);
+        node->removeRMSListener (vuMeterOut.get());
+        node->removeRMSListener (vuMeterIn.get());
 
         node->removeControllableContainerListener (this);
         node->removeConnectableNodeListener (this);
@@ -69,22 +70,22 @@ void ConnectableNodeHeaderUI::setNodeAndNodeUI (ConnectableNode* _node, Connecta
     node->addConnectableNodeListener (this);
     updateVuMeters();
 
-    titleUI = new StringParameterUI (node->nameParam);
+    titleUI = std::make_unique<StringParameterUI> (node->nameParam);
     titleUI->valueLabel.setEditable(false,true);
     titleUI->setBackGroundIsTransparent (true);
-    LGMLUIUtils::optionallySetBufferedToImage(titleUI);
-    addAndMakeVisible (titleUI);
+    LGMLUIUtils::optionallySetBufferedToImage(titleUI.get());
+    addAndMakeVisible (titleUI.get());
 
-    descriptionUI = new StringParameterUI (node->descriptionParam);
+    descriptionUI = std::make_unique<StringParameterUI> (node->descriptionParam);
     descriptionUI->setBackGroundIsTransparent (true);
     descriptionUI->valueLabel.setEditable(false,true);
-    LGMLUIUtils::optionallySetBufferedToImage(descriptionUI);
-    addAndMakeVisible (descriptionUI);
+    LGMLUIUtils::optionallySetBufferedToImage(descriptionUI.get());
+    addAndMakeVisible (descriptionUI.get());
     descriptionUI->valueLabel.setColour (Label::ColourIds::textColourId, findColour (Label::textColourId).darker (.3f));
 
     enabledUI = ParameterUIFactory::createDefaultUI (node->enabledParam);
     enabledUI->setCustomText("E");
-    addAndMakeVisible (enabledUI);
+    addAndMakeVisible (enabledUI.get());
 
     miniModeBT.setPaintingIsUnclipped(true);
     addAndMakeVisible (miniModeBT);
@@ -92,8 +93,8 @@ void ConnectableNodeHeaderUI::setNodeAndNodeUI (ConnectableNode* _node, Connecta
 
     if (node->canHavePresets())
     {
-        presetChooser = new PresetChooserUI (node);
-        addAndMakeVisible (presetChooser);
+        presetChooser = std::make_unique<PresetChooserUI> (node);
+        addAndMakeVisible (presetChooser.get());
     }
 
     node->addControllableContainerListener (this);
@@ -108,24 +109,24 @@ void ConnectableNodeHeaderUI::updateVuMeters()
 {
     if (!vuMeterOut->isVisible() && node->hasAudioOutputs())
     {
-        node->addRMSListener (vuMeterOut);
-        addAndMakeVisible (vuMeterOut);
+        node->addRMSListener (vuMeterOut.get());
+        addAndMakeVisible (vuMeterOut.get());
 
     }
     else if (vuMeterOut->isVisible() && !node->hasAudioOutputs())
     {
-        node->removeRMSListener (vuMeterOut);
+        node->removeRMSListener (vuMeterOut.get());
         vuMeterOut->setVisible (false);
     }
 
     if (!vuMeterIn->isVisible() && node->hasAudioInputs())
     {
-        node->addRMSListener (vuMeterIn);
-        addAndMakeVisible (vuMeterIn);
+        node->addRMSListener (vuMeterIn.get());
+        addAndMakeVisible (vuMeterIn.get());
     }
     else if (vuMeterIn->isVisible() && !node->hasAudioInputs())
     {
-        node->removeRMSListener (vuMeterIn);
+        node->removeRMSListener (vuMeterIn.get());
         vuMeterIn->setVisible (false);
     }
 }
@@ -213,13 +214,13 @@ void ConnectableNodeHeaderUI::setMiniMode (bool value)
 
     if (bMiniMode)
     {
-        if (node->canHavePresets()) removeChildComponent (presetChooser);
+        if (node->canHavePresets()) removeChildComponent (presetChooser.get());
 
         miniModeBT.setButtonText ("+");
     }
     else
     {
-        if (node->canHavePresets()) addChildComponent (presetChooser);
+        if (node->canHavePresets()) addChildComponent (presetChooser.get());
 
         miniModeBT.setButtonText ("-");
     }

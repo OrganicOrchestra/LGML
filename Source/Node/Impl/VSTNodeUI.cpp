@@ -58,7 +58,7 @@ void VSTNodeContentUI::init()
 {
     
     vstNode = (VSTNode*)node.get();
-    addAndMakeVisible (midiDeviceChooser);
+    addAndMakeVisible (midiDeviceChooser.get());
     
     VSTListShowButton.addListener (this);
     showPluginWindowButton.addListener (this);
@@ -68,10 +68,10 @@ void VSTNodeContentUI::init()
     
     activityBlink = ParameterUIFactory::createDefaultUI (vstNode->midiActivityTrigger);
     activityBlink->showLabel = false;
-    addAndMakeVisible (activityBlink);
+    addAndMakeVisible (activityBlink.get());
     
     midiDeviceChooser = ParameterUIFactory::createDefaultUI(vstNode->midiChooser.getDeviceInEnumParameter());
-    addAndMakeVisible(midiDeviceChooser);
+    addAndMakeVisible(midiDeviceChooser.get());
     jassert(midiDeviceChooser);
     updateVSTParameters();
     setDefaultSize (250, 100);
@@ -103,10 +103,9 @@ void VSTNodeContentUI::updateVSTParameters()
     }
     for (auto& p : vstNode->VSTParameters)
     {
-        
-        ParameterUI* pui = ParameterUIFactory::createDefaultUI(p);
-        paramSliders.add (pui);
-        addAndMakeVisible (pui);
+
+        auto added = paramSliders.add (ParameterUIFactory::createDefaultUI(p));
+        addAndMakeVisible (added);
         pCount++;
         
         if (pCount >= maxParameter)

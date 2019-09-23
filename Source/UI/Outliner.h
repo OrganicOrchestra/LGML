@@ -42,9 +42,9 @@ public:
     WeakReference<OutlinerItem> item;
 
     Label label;
-    ScopedPointer<ParameterUI> paramUI;
-    ScopedPointer<Button> addUserParamBt;
-    ScopedPointer<Button> removeMeBt;
+    std::unique_ptr<ParameterUI> paramUI;
+    std::unique_ptr<Button> addUserParamBt;
+    std::unique_ptr<Button> removeMeBt;
     void paint (Graphics& g) override;
     void mouseDown (const MouseEvent& e) override;
     void resized()override;
@@ -106,7 +106,7 @@ public:
 
 
     TreeView treeView;
-    ScopedPointer<OutlinerItem> rootItem;
+    std::unique_ptr<OutlinerItem> rootItem;
     WeakReference<ParameterContainer> root,baseRoot;
 
     TextEditor filterTextEditor;
@@ -141,9 +141,8 @@ private:
     void restoreCurrentOpenChilds();
     class XmlElementCounted : public ReferenceCountedObject{
     public:
-        XmlElementCounted(XmlElement * e):xml(e){};
-        ~XmlElementCounted(){if(xml){delete xml;}};
-        XmlElement * xml;
+        XmlElementCounted(std::unique_ptr<XmlElement> e):xml(std::move(e)){};
+        std::unique_ptr<XmlElement> xml;
         using Ptr = ReferenceCountedObjectPtr<XmlElementCounted>;
     };
     // we should be using RAII like scoped pointer, but hashmap accessors, cant contains Scoped
