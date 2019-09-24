@@ -2,8 +2,8 @@
 
 <JUCERPROJECT bundleIdentifier="org.anic.orchestra.LGML" companyName="Organic Orchestra"
               companyWebsite="http://www.organic-orchestra.com" cppLanguageStandard="14"
-              displaySplashScreen="1" id="a1hJPO" includeBinaryInAppConfig="1"
-              jucerVersion="5.4.4" name="LGML" projectType="guiapp" reportAppUsage="1"
+              displaySplashScreen="0" id="a1hJPO" includeBinaryInAppConfig="1"
+              jucerVersion="5.4.4" name="LGML" projectType="guiapp" reportAppUsage="0"
               splashScreenColour="Dark" version="1.4.0" companyCopyright="Organic Orchestra"
               headerPath="../../../JUCE/modules/juce_audio_processors/format_types/VST3_SDK/&#10;../../third_party/VST2_SDK/&#10;../../third_party/libpd/pure-data/src&#10;../../third_party/serial/include&#10;../../third_party/rubberband/&#10;../../third_party/link/include/&#10;../../third_party/link/modules/asio-standalone/asio/include">
   <MAINGROUP id="RYpQgZ" name="LGML">
@@ -746,14 +746,14 @@
       <CONFIGURATIONS>
         <CONFIGURATION binaryPath="" cppLanguageStandard="c++11" cppLibType="libc++"
                        headerPath="" isDebug="0" linkTimeOptimisation="1" name="Release"
-                       optimisation="3" osxArchitecture="Native" osxCompatibility="10.8 SDK"
+                       optimisation="3" osxArchitecture="Native" osxCompatibility="10.13 SDK"
                        targetName="LGML" enablePluginBinaryCopyStep="1"/>
         <CONFIGURATION cppLanguageStandard="c++11" cppLibType="libc++" customXcodeFlags="ONLY_ACTIVE_ARCH=1,GCC_PRECOMPILE_PREFIX_HEADER=1,GCC_PREFIX_HEADER=PrefixHeader.pch"
                        defines="" headerPath="" isDebug="1" name="Debug" osxArchitecture="Native"
-                       osxCompatibility="10.7 SDK" targetName="LGML" enablePluginBinaryCopyStep="1"/>
+                       osxCompatibility="10.13 SDK" targetName="LGML" enablePluginBinaryCopyStep="1"/>
         <CONFIGURATION cppLanguageStandard="c++11" cppLibType="libc++" customXcodeFlags="ONLY_ACTIVE_ARCH=1,GCC_PREFIX_HEADER=PrefixHeader.pch"
                        defines="LGML_UNIT_TESTS=1&#10;" headerPath="../../Source" isDebug="1"
-                       name="Test" osxArchitecture="32BitUniversal" osxCompatibility="10.7 SDK"
+                       name="Test" osxArchitecture="32BitUniversal" osxCompatibility="10.13 SDK"
                        targetName="LGMLTest" enablePluginBinaryCopyStep="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
