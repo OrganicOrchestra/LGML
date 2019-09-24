@@ -484,11 +484,20 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                                     if (n && ncv)
                                     {
                                         n->uid = Uuid();// ensure to have different uuid than the one from JSON
-
                                         String oldName = n->shortName.toString();
+                                        String oldPastedName;
+                                        if(auto props = d->getProperty("data").getDynamicObject()){
+                                            props->removeProperty(ConnectableNode::uidIdentifier);
+                                            if(auto pprops =props->getProperty("parameters").getDynamicObject()){
+                                            oldPastedName = pprops->getProperty("Name");
+
+                                            }
+                                        }
+
+
                                         ncv->addNodeUndoable(n, Point<int>(),d->getProperty ("data"));
                                         String newName =n->shortName.toString();
-                                        newNames.set(oldName,newName);
+                                        newNames.set(oldPastedName,newName);
                                         auto nodeUI = ncv->getUIForNode(n);
                                         if(nodeUI){
 
