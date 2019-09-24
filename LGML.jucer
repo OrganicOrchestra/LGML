@@ -745,7 +745,7 @@
                vstFolder="" microphonePermissionNeeded="1" xcodeSubprojects="third_party/libpd/libpd.xcodeproj:libpd-osx-multi">
       <CONFIGURATIONS>
         <CONFIGURATION binaryPath="" cppLanguageStandard="c++11" cppLibType="libc++"
-                       headerPath="" isDebug="1" linkTimeOptimisation="1" name="Release"
+                       headerPath="" isDebug="0" linkTimeOptimisation="1" name="Release"
                        optimisation="3" osxArchitecture="Native" osxCompatibility="10.13 SDK"
                        targetName="LGML" enablePluginBinaryCopyStep="1"/>
         <CONFIGURATION cppLanguageStandard="c++11" cppLibType="libc++" customXcodeFlags="ONLY_ACTIVE_ARCH=1,GCC_PRECOMPILE_PREFIX_HEADER=1,GCC_PREFIX_HEADER=PrefixHeader.pch"
