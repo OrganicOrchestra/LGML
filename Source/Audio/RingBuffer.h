@@ -52,6 +52,7 @@ public:
 
 
         jassert (newBuf.getNumChannels() >= numChannels);
+        int numToChCopy = jmin(newBuf.getNumChannels(),numChannels);
         int toCopy = newBuf.getNumSamples();
 
         // overlap
@@ -60,14 +61,14 @@ public:
             int firstSeg = bufSize - (writeNeedle) ;
             jassert (firstSeg < newBuf.getNumSamples());
 
-            for (int i = numChannels - 1; i >= 0 ; --i)
+            for (int i = numToChCopy - 1; i >= 0 ; --i)
             {
                 safeCopy (newBuf.getReadPointer (i, 0), firstSeg, i);
             }
 
             jassert (writeNeedle == 0);
 
-            for (int i = numChannels - 1; i >= 0 ; --i)
+            for (int i = numToChCopy - 1; i >= 0 ; --i)
             {
                 safeCopy (newBuf.getReadPointer (i, firstSeg), toCopy - firstSeg, i);
             }
@@ -75,7 +76,7 @@ public:
         }
         else
         {
-            for (int i = numChannels - 1; i >= 0 ; --i)
+            for (int i = numToChCopy - 1; i >= 0 ; --i)
             {
                 safeCopy (newBuf.getReadPointer (i), toCopy, i);
             }
