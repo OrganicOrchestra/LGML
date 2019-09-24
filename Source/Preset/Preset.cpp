@@ -273,7 +273,17 @@ DynamicObject * Presetable::createPresetObject(ParameterContainer * p){
         return  p->
         createObjectFiltered(
                              [p](ParameterBase * c){
-                                 bool isValid = c->isPresettable && c!=p->presetable->currentPresetName;
+                                 bool isValid = c->isPresettable;
+                                 if(c->parentContainer==p){
+                                     bool isRootPresetName = c==p->presetable->currentPresetName; // don't save root preset
+                                     bool isRootEnable = false;
+                                     if(auto n = dynamic_cast<NodeBase*>(p)){
+                                         isRootEnable = c==n->enabledParam; // don't save root enabled state
+                                     }
+                                     isValid &=!(isRootEnable || isRootPresetName);
+
+                                 }
+
                                  if(auto *pp = dynamic_cast<ParameterContainer*>(c->parentContainer.get())){
                                      if(c->parentContainer->parentContainer==p){ // sub containers at depth 1
                                          String presetN = pp->presetable->currentPresetName->stringValue();
@@ -285,13 +295,10 @@ DynamicObject * Presetable::createPresetObject(ParameterContainer * p){
                                  }
                                  return isValid;
                              },
-                             [p](ParameterContainer * cc){
-                                 if(auto *nc=dynamic_cast<NodeContainer*>(cc)){
-                                     return p->getDepthDistance(nc)<=1;
-                                 }
+                             [](ParameterContainer * cc){
                                  return cc->canHavePresets();
                              },
-                             -1,false,true);
+                             1,false,true);
     }
     return nullptr;
 }
