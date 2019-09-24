@@ -89,15 +89,9 @@ void JsNodeUI::childControllableAdded (ControllableContainer*, Controllable* c)
     ParameterUI* comp = new NamedParameterUI (ParameterUIFactory::createDefaultUI ( ParameterBase::fromControllable (c)), 100);
     varUI.add (comp);
     addAndMakeVisible (comp);
+    
+    layoutUI();
 
-    if (varUI.size() * 20 > getHeight() - jsUI->getHeight())
-    {
-        setSize ( getWidth(), varUI.size() * 20 + 5 + jsUI->getHeight());
-    }
-    else
-    {
-        layoutUI();
-    }
 
 }
 void JsNodeUI::childControllableRemoved (ControllableContainer*, Controllable* c)

@@ -761,7 +761,14 @@ void NodeContainerViewer::addOrRemoveNodeUndoable(const String & tid,const Point
                                  [=](NodeBase* c){
                                      if(c)
                                      {
-                                         ConnectableNode* n = (ConnectableNode*)nodeContainer->addNode (c,"",dobjVar.getDynamicObject());
+                                         String targetName = "";
+                                         if(auto props = dobjVar.getDynamicObject()){
+                                             if(auto paramProps = props->getProperty("parameters").getDynamicObject()){
+                                             targetName = paramProps->getProperty("Name");
+
+                                             }
+                                         }
+                                         ConnectableNode* n = (ConnectableNode*)nodeContainer->addNode (c,targetName,dobjVar.getDynamicObject());
                                          jassert (n != nullptr);
 
                                          if(auto m = getUIForNode(n)){
@@ -789,7 +796,7 @@ void NodeContainerViewer::addOrRemoveNodeUndoable(const String & tid,const Point
                                      }
                                  },
                                  [=](NodeBase *c){nodeContainer->removeNode(c);},
-                                 originNodeToRemove,
+                                 isRemove?originNodeToRemove:nullptr,
                                  isRemove
                                  ));
 

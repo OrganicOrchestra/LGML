@@ -731,7 +731,7 @@ void PlayableBuffer::setTimeRatio (const double ratio,bool now)
            RTStretcher->getChannelCount()!=targetNumChannel ||
            RTStretcherSamplerate!=sampleRate){
             RTStretcherSamplerate = sampleRate;
-            RTStretcher = std::make_unique<RubberBandStretcher>  (sampleRate,//size_t sampleRate,
+            RTStretcher.reset(new RubberBandStretcher  (sampleRate,//size_t sampleRate,
                                                     bufferBlockList.getAllocatedNumChannels(),//size_t channels,
                                                     RubberBandStretcher::OptionProcessRealTime
                                                     //
@@ -749,7 +749,7 @@ void PlayableBuffer::setTimeRatio (const double ratio,bool now)
                                                     //Options options = DefaultOptions,
                                                     //double initialTimeRatio = 1.0,
                                                     //double initialPitchScale = 1.0
-                                                    );
+                                                    ));
 
         }
         else{

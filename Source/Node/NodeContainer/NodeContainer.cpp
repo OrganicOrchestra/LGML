@@ -156,7 +156,7 @@ ConnectableNode* NodeContainer::addNodeFromJSONData (DynamicObject* data)
 
 ConnectableNode* NodeContainer::addNode (ConnectableNode* n, const String& nodeName, DynamicObject* nodeData)
 {
-    DBGGRAPH(getNiceName()+" : adding Node"+n->getNiceName() + ": " + nodeName);
+    DBGGRAPH(getNiceName()+" : adding Node "+n->getNiceName() + ": " + nodeName);
     nodes.add ((NodeBase*)n);
 
 
