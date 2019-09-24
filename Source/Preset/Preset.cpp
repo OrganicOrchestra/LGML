@@ -300,9 +300,12 @@ DynamicObject * Presetable::createPresetObject(ParameterContainer * p){
                                  return isValid;
                              },
                              [](ParameterContainer * cc){
+                                 if(dynamic_cast<NodeContainer*>(cc)){
+                                     return false;
+                                 }
                                  return cc->canHavePresets();
                              },
-                             1,false,true);
+                             -1,false,true);
     }
     return nullptr;
 }

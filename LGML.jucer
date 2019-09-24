@@ -757,8 +757,8 @@
                        name="Test" osxArchitecture="32BitUniversal" osxCompatibility="10.13 SDK"
                        targetName="LGMLTest" enablePluginBinaryCopyStep="1"/>
         <CONFIGURATION binaryPath="" cppLanguageStandard="c++11" cppLibType="libc++"
-                       headerPath="" isDebug="1" linkTimeOptimisation="1" name="PreRelease"
-                       optimisation="3" osxArchitecture="Native" osxCompatibility="10.13 SDK"
+                       headerPath="" isDebug="0" linkTimeOptimisation="0" name="PreRelease"
+                       optimisation="1" osxArchitecture="Native" osxCompatibility="10.13 SDK"
                        targetName="LGML" enablePluginBinaryCopyStep="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
