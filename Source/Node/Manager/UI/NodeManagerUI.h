@@ -174,7 +174,7 @@ public :
             Rectangle<int> r = vp.getLocalArea(c->getParentComponent(),c->getBoundsInParent());
             Point<int> mouse = vp.getLocalPoint(e.originalComponent,e.position).toInt();
 //            DBG(String(r.getRight()) +"::::" +String(mouse.x));
-            vp.autoScroll(jmax(r.getRight(),mouse.x),jmax(r.getBottom(),mouse.y),140,10);
+            vp.autoScroll(jmax(r.getRight(),mouse.x),jmax(r.getBottom(),mouse.y),40,10);
         }
     }
     void mouseUp(const MouseEvent & e)override{
