@@ -76,17 +76,19 @@ struct MiniHandle : public Component,SettableTooltipClient{
         }
 
     }
+    ShapeShifter * getReducable(){
+        ShapeShifterContainer * parent = findParentComponentOfClass<ShapeShifterContainer>();
+        if(!parent){jassertfalse;return nullptr;}
+
+        return parent->shifters[parent->grabbers.indexOf(owner)+(direction?1:0)];
+    }
     void mouseUp (const MouseEvent& e) {
         if(e.getDistanceFromDragStart()>0)return;
 
         ShapeShifterContainer * parent = findParentComponentOfClass<ShapeShifterContainer>();
-        if(!parent){
-            jassertfalse;
-            return;
-        }
-
+        if(!parent){jassertfalse;return;}
         bool otherMinimized = false;
-        ShapeShifter * toReduce = parent->shifters[parent->grabbers.indexOf(owner)+(direction?1:0)];
+        ShapeShifter * toReduce =getReducable();
         for(auto & s:parent->shifters){if(s!=toReduce)otherMinimized|=s->isMini;}
         if(!otherMinimized){
             toReduce->setMini(!toReduce->isInAutoMiniMode());
