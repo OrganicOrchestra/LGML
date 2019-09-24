@@ -39,7 +39,7 @@ AudioDeviceOutNode::AudioDeviceOutNode (StringRef name) :
     AudioIODevice* ad = getAudioDeviceManager().getCurrentAudioDevice();
 
     desiredNumAudioOutput = addNewParameter<IntParameter> ("numAudioOutput", "desired numAudioOutputs (independent of audio settings)",
-                                                           ad ? jmax(2,ad->getActiveInputChannels().countNumberOfSetBits()) : 2, 2, 32);
+                                                           ad ? jmax(1,ad->getActiveInputChannels().countNumberOfSetBits()) : 2, 1, 32);
     lastNumberOfOutputs = 0;
 
     setPreferedNumAudioInput (desiredNumAudioOutput->intValue());

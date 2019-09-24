@@ -47,8 +47,14 @@ public:
     void removeVolMute();
     void numChannelsChanged (bool isInput)override;
 
+    void addDeviceChannelListener(RMSChannelListener* l){ rmsDeviceListeners.add(l);}
+    void removeDeviceChannelListener(RMSChannelListener* l){ rmsDeviceListeners.remove(l);}
+    ListenerList<RMSChannelListener> rmsDeviceListeners;
+    Array<float> deviceRmsValues;
+    int curSamplesForRMSDeviceUpdate = 0;
 
 
+    std::unique_ptr<Timer> rmsDeviceTimer;
 
 private:
     int lastNumberOfInputs;

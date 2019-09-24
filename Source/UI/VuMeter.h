@@ -73,7 +73,12 @@ public:
 
         if (voldB > 0)
         {
+            if(isActive){
             g.setGradientFill (ColourGradient (colorLow, 0.f, r.getHeight()*.5f, colorHigh, 0.f, r.getHeight() * 0.1f, false));
+            }
+            else{
+                g.setColour(Colours::blue);
+            }
             //      g.fillRoundedRectangle(r.removeFromBottom((int)(r.getHeight()*(voldB))).toFloat(), 2.f);
             g.fillRect (r.removeFromBottom ((int) (r.getHeight() * (voldB))).toFloat());
         }
@@ -82,7 +87,7 @@ public:
 
     void updateValue (float value)
     {
-        if (!isActive) {setVoldB (0); return;}
+//        if (!isActive) {setVoldB (0); return;}
 
         // allow a +6dB headRoom
         float newVoldB = rmsToDB_6dBHR (value); //jmap<float>(20.0f*log10(value / 0.74f), 0.0f, 6.0f, 0.85f, 1.0f);

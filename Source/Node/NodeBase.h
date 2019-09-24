@@ -134,9 +134,11 @@ private:
     bool wasEnabled;
     AudioBuffer<float> crossFadeBuffer;
 
+protected:
     //RMS
     const float alphaRMS = 0.05f;
     const int samplesBeforeRMSUpdate = 512;
+private:
     int curSamplesForRMSInUpdate = 0;
     int curSamplesForRMSOutUpdate = 0;
 

@@ -29,7 +29,7 @@ VSTManager::VSTManager()
     formatManager.addDefaultFormats();
     auto appProps = getAppProperties();
 
-    std::unique_ptr<XmlElement> savedPluginList = appProps->getUserSettings()->getXmlValue (pluginListKey);
+    std::unique_ptr<XmlElement> savedPluginList (appProps->getUserSettings()->getXmlValue (pluginListKey));
 
     if (savedPluginList != nullptr)
         knownPluginList.recreateFromXml (*savedPluginList);
@@ -39,6 +39,7 @@ VSTManager::VSTManager()
 
 
     knownPluginList.addChangeListener (this);
+//    savedPluginList.release(); // TODO weird bug on getXmlValue
 }
 VSTManager::~VSTManager()
 {

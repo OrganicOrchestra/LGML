@@ -19,13 +19,40 @@
 #include "../../Audio/AudioHelpers.h"
 #include "../Manager/NodeManager.h"
 
+#include "../../Audio/AudioHelpers.h"
+
 REGISTER_NODE_TYPE (AudioDeviceInNode)
 
 AudioDeviceManager& getAudioDeviceManager();
 
+
+class RMSDeviceTimer : public Timer
+{
+public:
+    RMSDeviceTimer (AudioDeviceInNode* n): owner (n)
+    {
+        startTimerHz (30);
+    }
+    void timerCallback()override
+    {
+//        owner->ConnectableNode::rmsListeners.call (&ConnectableNode::RMSListener::RMSChanged, owner->globalRMSValueIn, owner->globalRMSValueOut);
+
+        for (int i = 0; i < owner->deviceRmsValues.size(); i++)
+        {
+            owner->rmsDeviceListeners.call (&ConnectableNode::RMSChannelListener::channelRMSInChanged, owner, owner->deviceRmsValues[i], i);
+        }
+
+    }
+    AudioDeviceInNode* owner;
+};
+
+
+
+
 AudioDeviceInNode::AudioDeviceInNode (StringRef name) :
     NodeBase (name,false),
     AudioGraphIOProcessor (AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioInputNode)
+,rmsDeviceTimer(new RMSDeviceTimer(this))
 {
 
     {
@@ -34,7 +61,7 @@ AudioDeviceInNode::AudioDeviceInNode (StringRef name) :
     }
     AudioIODevice* ad = getAudioDeviceManager().getCurrentAudioDevice();
     desiredNumAudioInput = addNewParameter<IntParameter> ("numAudioInput", "desired numAudioInputs (independent of audio settings)",
-                                                          ad ? jmax(2,ad->getActiveInputChannels().countNumberOfSetBits()) : 2, 2, 32);
+                                                          ad ? jmax(1,ad->getActiveInputChannels().countNumberOfSetBits()) : 2, 1, 32);
 
 
     lastNumberOfInputs = 0;
@@ -60,14 +87,24 @@ void AudioDeviceInNode::processBlockInternal (AudioBuffer<float>& buffer, MidiBu
 
 
     AudioProcessorGraph::AudioGraphIOProcessor::processBlock (buffer, midiMessages);
+    int numChannelsToProcess = jmin (NodeBase::getTotalNumOutputChannels(), channelsAvailable);
 
-
+    if (rmsDeviceListeners.size() )
+    {
+        curSamplesForRMSDeviceUpdate += numSamples;
+        float fakeGlobalRMS = 0;
+        if (curSamplesForRMSDeviceUpdate >= samplesBeforeRMSUpdate)
+        {
+            updateRMS (buffer, fakeGlobalRMS, deviceRmsValues, numChannelsToProcess, rmsDeviceListeners.size() == 0);
+            curSamplesForRMSDeviceUpdate = 0;
+        }
+    }
     //  totalNumOutputChannels = NodeBase::tot();
 
 
     float enabledFactor = enabledParam->boolValue() ? 1.f : 0.f;
 
-    int numChannelsToProcess = jmin (NodeBase::getTotalNumOutputChannels(), channelsAvailable);
+
 
     for (int i = 0; i < numChannelsToProcess; i++)
     {

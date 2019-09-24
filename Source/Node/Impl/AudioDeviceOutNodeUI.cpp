@@ -158,7 +158,7 @@ void AudioDeviceOutNodeContentUI::nodeParameterChangedAsync (ConnectableNode*, P
     {
         if (p == m->parameter)
         {
-            if (p && p->boolValue()) vuMeters[index]->setVoldB (0);
+             vuMeters[index]->isActive = p &&  !p->boolValue();
         }
 
         index++;

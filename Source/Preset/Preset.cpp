@@ -292,7 +292,7 @@ DynamicObject * Presetable::createPresetObject(ParameterContainer * p){
                                          bool isCurrentPresetNameParam = c==pp->presetable->currentPresetName;
                                          bool isEnableParam = false;
                                          if(auto n = dynamic_cast<NodeBase*>(pp)){
-                                             isEnableParam = c==n->enabledParam; // don't save root enabled state
+                                             isEnableParam = c==n->enabledParam;
                                          }
                                          isValid&= (isPresetLoaded==isCurrentPresetNameParam || isEnableParam);
                                      }

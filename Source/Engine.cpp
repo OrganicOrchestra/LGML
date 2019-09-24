@@ -441,7 +441,7 @@ void Engine::MultipleAudioSettingsHandler::saveCurrent()
     std::unique_ptr<XmlElement> audioState (getAudioDeviceManager().createStateXml());
     getAppProperties()->getUserSettings()->setValue ("audioDeviceState", audioState.get());
     std::unique_ptr<XmlElement> oldXml (getAppProperties()->getUserSettings()->getXmlValue (oldSettingsId));
-    bool oldNeedRelease = !oldXml;
+//    bool oldNeedRelease = !oldXml;
     if (!oldXml) {
         oldXml.reset(new XmlElement(oldSettingsId));
 

@@ -106,9 +106,9 @@ void AudioDeviceInNodeContentUI::updateVuMeters()
 
 void AudioDeviceInNodeContentUI::addVuMeter()
 {
-    auto * v = new VuMeter (VuMeter::Type::OUT);
+    auto * v = new VuMeter (VuMeter::Type::IN);
     v->targetChannel = vuMeters.size();
-    audioInNode->addRMSChannelListener (v);
+    audioInNode->addDeviceChannelListener (v);
     addAndMakeVisible (v);
     vuMeters.add (v);
 
@@ -130,7 +130,7 @@ void AudioDeviceInNodeContentUI::removeLastVuMeter()
 {
     int curVuMeterNum = vuMeters.size() - 1;
     VuMeter* v = vuMeters[curVuMeterNum];
-    audioInNode->removeRMSChannelListener (v);
+    audioInNode->removeDeviceChannelListener (v);
     removeChildComponent (v);
     vuMeters.removeLast();
 
@@ -147,9 +147,9 @@ void AudioDeviceInNodeContentUI::nodeParameterChangedAsync (ConnectableNode*, Pa
 
     for (auto& m : muteToggles)
     {
-        if (p && (p == m->parameter.get()))
+        if (p == m->parameter.get())
         {
-            if (p->boolValue()) vuMeters[index]->setVoldB (0);
+            vuMeters[index]->isActive = p && !p->boolValue();
         }
 
         index++;
