@@ -440,9 +440,12 @@ void Engine::MultipleAudioSettingsHandler::saveCurrent()
 {
     std::unique_ptr<XmlElement> audioState (getAudioDeviceManager().createStateXml());
     getAppProperties()->getUserSettings()->setValue ("audioDeviceState", audioState.get());
-    std::unique_ptr<XmlElement> oldXml = getAppProperties()->getUserSettings()->getXmlValue (oldSettingsId);
+    std::unique_ptr<XmlElement> oldXml (getAppProperties()->getUserSettings()->getXmlValue (oldSettingsId));
+    bool oldNeedRelease = !oldXml;
+    if (!oldXml) {
+        oldXml.reset(new XmlElement(oldSettingsId));
 
-    if (!oldXml) {oldXml = std::make_unique< XmlElement> (oldSettingsId);}
+    }
 
     String configName = getConfigName();
     XmlElement* oldConfig = oldXml->getChildByName (configName);
@@ -450,12 +453,15 @@ void Engine::MultipleAudioSettingsHandler::saveCurrent()
     if (oldConfig) {oldXml->removeChildElement (oldConfig, true);}
 
     oldConfig = oldXml->createNewChildElement (configName) ;
-    oldConfig->addChildElement (getAudioDeviceManager().createStateXml().get());
+//    auto nEl = getAudioDeviceManager().createStateXml();
+    oldConfig->addChildElement (audioState.get());
 
 
     getAppProperties()->getUserSettings()->setValue (oldSettingsId.toString(), oldXml.get());
     getAppProperties()->getUserSettings()->saveIfNeeded();
-
+//    if(oldNeedRelease){
+    oldXml.release(); // TODO : weird bug if not released...
+//    }
 }
 
 const int Engine::getElapsedMillis()const {
