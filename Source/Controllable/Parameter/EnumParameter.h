@@ -45,7 +45,7 @@ public:
     const NamedValueSet getProperties()noexcept;
 
     // can be overriden to force a refresh
-    virtual void refresh(){};
+    virtual void refresh(){}
 
 
 
@@ -53,7 +53,7 @@ public:
     class Listener
     {
     public:
-        virtual ~Listener() {};
+        virtual ~Listener() {}
         virtual void modelOptionAdded (EnumParameterModel*, Identifier&) = 0;
         virtual void modelOptionRemoved (EnumParameterModel*, Identifier&) = 0;
     };
@@ -156,9 +156,9 @@ public:
         /** Destructor. */
         virtual ~EnumListener() {}
 
-        virtual void enumOptionAdded (EnumParameter*, const Identifier&) {};
-        virtual void enumOptionRemoved (EnumParameter*, const Identifier&) {};
-        virtual void enumOptionSelectionChanged (EnumParameter*, bool /*isSelected*/, bool /*isValid*/, const Identifier&) {};
+        virtual void enumOptionAdded (EnumParameter*, const Identifier&) {}
+        virtual void enumOptionRemoved (EnumParameter*, const Identifier&) {}
+        virtual void enumOptionSelectionChanged (EnumParameter*, bool /*isSelected*/, bool /*isValid*/, const Identifier&) {}
     };
 
 

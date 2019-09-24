@@ -13,8 +13,7 @@
 */
 
 
-#ifndef SHAPESHIFTERCONTENT_H_INCLUDED
-#define SHAPESHIFTERCONTENT_H_INCLUDED
+#pragma once
 
 #include "../../JuceHeaderUI.h"//keep
 #include "../Inspector/InspectableComponent.h"
@@ -56,4 +55,3 @@ public:
     Label infoLabel;
 };
 
-#endif  // SHAPESHIFTERCONTENT_H_INCLUDED

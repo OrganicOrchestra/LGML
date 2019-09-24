@@ -13,8 +13,7 @@
 */
 
 
-#ifndef GAPGRABBER_H_INCLUDED
-#define GAPGRABBER_H_INCLUDED
+#pragma once
 
 #include "../../JuceHeaderUI.h"//keep
 
@@ -46,4 +45,3 @@ public:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GapGrabber)
 };
 
-#endif  // GAPGRABBER_H_INCLUDED

@@ -16,8 +16,7 @@
  ==============================================================================
  */
 
-#ifndef LOOKANDFEELOO_H_INCLUDED
-#define LOOKANDFEELOO_H_INCLUDED
+#pragma once
 
 #pragma warning( disable : 4505 )
 
@@ -75,4 +74,3 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LookAndFeelOO)
 };
 
-#endif  // LOOKANDFEELOO_H_INCLUDED

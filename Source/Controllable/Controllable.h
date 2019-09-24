@@ -125,10 +125,10 @@ public:
     public:
         /** Destructor. */
         virtual ~Listener() {}
-        virtual void controllableStateChanged (Controllable* ) {};
-        virtual void controllableControlAddressChanged (Controllable* ) {};
-        virtual void controllableNameChanged (Controllable*) {};
-        virtual void controllableRemoved (Controllable* ) {};
+        virtual void controllableStateChanged (Controllable* ) {}
+        virtual void controllableControlAddressChanged (Controllable* ) {}
+        virtual void controllableNameChanged (Controllable*) {}
+        virtual void controllableRemoved (Controllable* ) {}
     };
 
 

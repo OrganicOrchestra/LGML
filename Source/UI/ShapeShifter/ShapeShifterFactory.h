@@ -12,9 +12,7 @@
 *
 */
 
-
-#ifndef SHAPESHIFTERFACTORY_H_INCLUDED
-#define SHAPESHIFTERFACTORY_H_INCLUDED
+#pragma once
 
 #include "../../JuceHeaderUI.h"//keep
 
@@ -32,4 +30,3 @@ public:
 
 
 
-#endif  // SHAPESHIFTERFACTORY_H_INCLUDED

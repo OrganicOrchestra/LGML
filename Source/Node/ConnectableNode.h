@@ -73,8 +73,8 @@ public:
         virtual ~ConnectableNodeListener() {}
         virtual void nodeParameterChanged (ConnectableNode*, ParameterBase*) {}
         virtual void nodeParameterChangedAsync(ConnectableNode*, ParameterBase*) {}
-        virtual void numAudioInputChanged (ConnectableNode*, int /*newNumInput*/) {};
-        virtual void numAudioOutputChanged (ConnectableNode*, int /*newNumOutput*/) {};
+        virtual void numAudioInputChanged (ConnectableNode*, int /*newNumInput*/) {}
+        virtual void numAudioOutputChanged (ConnectableNode*, int /*newNumOutput*/) {}
 
         virtual void audioInputAdded (ConnectableNode*, int /*channel*/) {}
         virtual void audioInputRemoved (ConnectableNode*, int /*channel*/) {}

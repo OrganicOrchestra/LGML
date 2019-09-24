@@ -341,29 +341,29 @@ void ShapeShifterManager::loadLastSessionLayoutFile()
 
 void ShapeShifterManager::loadDefaultLayoutFile()
 {
-//    File defaultFile = defaultFolder.getChildFile ("default." + appLayoutExtension);
-//    bool hasDefaultFile = defaultFile.exists();
-//    if (hasDefaultFile)
-//    {
-//        loadLayoutFromFile (defaultFile);
-//    }
-//    bool hasLoadedSuccessfully = mainShifterContainer.shifters.size()!=0;
-//
-//    // move corrupted file to .bak sibling
-//    if(!hasLoadedSuccessfully && hasDefaultFile){
-//        String bkName = defaultFile.getFileNameWithoutExtension()+".bak."+appLayoutExtension;
-//        File bkFile = defaultFile.getParentDirectory().getChildFile(bkName);
-//        LOGE(juce::translate("default layout file not valid moving to :") << bkFile.getFullPathName());
-//        if(!defaultFile.moveFileTo(bkFile)){
-//            LOGE(juce::translate("can't move default layout file"));
-//        }
-//    }
-//    //load from app
-//    if(!hasDefaultFile || !hasLoadedSuccessfully)
-//    {
+    File defaultFile = defaultFolder.getChildFile ("default." + appLayoutExtension);
+    bool hasDefaultFile = defaultFile.exists();
+    if (hasDefaultFile)
+    {
+        loadLayoutFromFile (defaultFile);
+    }
+    bool hasLoadedSuccessfully = mainShifterContainer.shifters.size()!=0;
+
+    // move corrupted file to .bak sibling
+    if(!hasLoadedSuccessfully && hasDefaultFile){
+        String bkName = defaultFile.getFileNameWithoutExtension()+".bak."+appLayoutExtension;
+        File bkFile = defaultFile.getParentDirectory().getChildFile(bkName);
+        LOGE(juce::translate("default layout file not valid moving to :") << bkFile.getFullPathName());
+        if(!defaultFile.moveFileTo(bkFile)){
+            LOGE(juce::translate("can't move default layout file"));
+        }
+    }
+    //load from app
+    if(!hasDefaultFile || !hasLoadedSuccessfully)
+    {
         String defaultLayoutFileData = String::fromUTF8 (BinaryData::default_lgmllayout);
         loadLayout (JSON::parse (defaultLayoutFileData));
-//    }
+    }
 }
 
 void ShapeShifterManager::saveCurrentLayout()

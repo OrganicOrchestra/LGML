@@ -58,7 +58,7 @@ bool KeyboardController::keyPressed (const KeyPress& key, Component* /*originati
     const String paramName =getPNameFromKey(key);
     if (Controllable* c = userContainer.getControllableByName(paramName))
     {
-        (( ParameterBase*)c)->setValue(key.isCurrentlyDown());
+        (( ParameterBase*)c)->setValueFrom((Controller*)this,key.isCurrentlyDown());
         return true;
     }
     else if(autoAddParams){
@@ -97,7 +97,7 @@ bool KeyboardController::keyStateChanged (const bool /*isKeyDown*/, Component* /
             const String paramName=getPNameFromKey(key);
             if (Controllable* c = userContainer.getControllableByName(paramName))
             {
-                (( ParameterBase*)c)->setValue(key.isCurrentlyDown());
+                (( ParameterBase*)c)->setValueFrom((Controller*)this,key.isCurrentlyDown());
             }
             keysDown.remove(i);
             nWasDown++;

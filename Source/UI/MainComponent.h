@@ -16,9 +16,7 @@
  ==============================================================================
  */
 
-#ifndef MAINCOMPONENT_H_INCLUDED
-#define MAINCOMPONENT_H_INCLUDED
-
+#pragma once
 #pragma warning( disable : 4244 4100)
 
 
@@ -107,7 +105,3 @@ private:
 
 
 
-
-
-
-#endif  // MAINCOMPONENT_H_INCLUDED

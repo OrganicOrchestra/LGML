@@ -13,8 +13,7 @@
 */
 
 
-#ifndef SHAPESHIFTERPANELTAB_H_INCLUDED
-#define SHAPESHIFTERPANELTAB_H_INCLUDED
+#pragma once
 
 #include "ShapeShifterContent.h"//keep
 class ShapeShifterPanelTab :
@@ -63,4 +62,3 @@ private:
 };
 
 
-#endif  // SHAPESHIFTERPANELTAB_H_INCLUDED

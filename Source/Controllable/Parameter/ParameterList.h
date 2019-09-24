@@ -66,7 +66,7 @@ public:
     NumericParameter<T>* getXParam();
     NumericParameter<T>* getYParam();
 
-    DECLARE_OBJ_TYPE (Point2DParameter<T>,"2D Point Parameter");
+    DECLARE_OBJ_TYPE (Point2DParameter<T>,"2D Point Parameter")
 private:
 
 

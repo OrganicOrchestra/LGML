@@ -13,8 +13,7 @@
 */
 
 
-#ifndef INSPECTOREDITOR_H_INCLUDED
-#define INSPECTOREDITOR_H_INCLUDED
+#pragma once
 
 #include "../../JuceHeaderUI.h"//keep
 
@@ -60,4 +59,3 @@ private:
     std::unique_ptr<Component> component;
 };
 
-#endif  // INSPECTOREDITOR_H_INCLUDED

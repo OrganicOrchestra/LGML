@@ -59,7 +59,7 @@ public:
 
 class JsPtrStore{
 public:
-    juce_DeclareSingleton(JsPtrStore, true);
+    juce_DeclareSingleton(JsPtrStore, true)
 
 
     typedef JsObject* SP;

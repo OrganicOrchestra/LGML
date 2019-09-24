@@ -13,8 +13,7 @@
 */
 
 
-#ifndef INSPECTABLECOMPONENT_H_INCLUDED
-#define INSPECTABLECOMPONENT_H_INCLUDED
+#pragma once
 
 #include "../../JuceHeaderUI.h"//keep
 
@@ -79,4 +78,3 @@ private:
 
 
 
-#endif  // INSPECTABLECOMPONENT_H_INCLUDED

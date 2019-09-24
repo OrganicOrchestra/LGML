@@ -65,7 +65,7 @@ public :
     public:
         /** Destructor. */
         virtual ~Listener() {}
-        virtual void choosedControllableChanged (ControllableReferenceUI*, Controllable*) {};
+        virtual void choosedControllableChanged (ControllableReferenceUI*, Controllable*) {}
     };
 
     ListenerList<Listener> listeners;

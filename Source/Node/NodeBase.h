@@ -51,12 +51,12 @@ public:
 
     //  TODO:  this should not be implemented in Node to avoid overriding this method
     void onContainerParameterChanged ( ParameterBase* p) override;
-    void onContainerParameterChangedAsync ( ParameterBase*, const var& /*value*/)override {};
+    void onContainerParameterChangedAsync ( ParameterBase*, const var& /*value*/)override {}
 
 
     virtual void clear() override;
     /** can be oerriden to react to clear */
-    virtual void clearInternal() {};
+    virtual void clearInternal() {}
 
 
 
@@ -72,12 +72,12 @@ public:
     virtual bool setPreferedNumAudioInput (int num);
     virtual bool setPreferedNumAudioOutput (int num);
     // this will be called with audio locked so that one can safely update internal variables used by processBlockInternal
-    void numChannelsChanged() override {numChannelsChanged (true); numChannelsChanged (false);};
-    virtual void numChannelsChanged (bool /*isInput*/) {};
+    void numChannelsChanged() override {numChannelsChanged (true); numChannelsChanged (false);}
+    virtual void numChannelsChanged (bool /*isInput*/) {}
 
 
-    virtual void prepareToPlay (double, int) override {};
-    virtual void releaseResources() override {};
+    virtual void prepareToPlay (double, int) override {}
+    virtual void releaseResources() override {}
 
     //bool silenceInProducesSilenceOut() const override { return false; }
 
@@ -91,7 +91,7 @@ public:
     int getCurrentProgram() override { return 0; }
     void setCurrentProgram (int) override {}
     const String getProgramName (int) override { return "NoProgram"; }
-    void changeProgramName (int, const String&) override {};
+    void changeProgramName (int, const String&) override {}
     double getTailLengthSeconds() const override { return 0; }
     bool acceptsMidi() const override { return false; }
     bool producesMidi() const override { return false; }
@@ -99,11 +99,11 @@ public:
 
 
     // save procedures from host
-    void getStateInformation (juce::MemoryBlock&) final {};
-    void setStateInformation (const void*, int) final {};
+    void getStateInformation (juce::MemoryBlock&) final {}
+    void setStateInformation (const void*, int) final {}
 
     virtual void processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages) override;
-    virtual void processBlockInternal (AudioBuffer<float>& /*buffer*/, MidiBuffer& /*midiMessage*/ ) {};
+    virtual void processBlockInternal (AudioBuffer<float>& /*buffer*/, MidiBuffer& /*midiMessage*/ ) {}
     virtual void processBlockBypassed (AudioBuffer<float>& buffer, MidiBuffer& midiMessages) override;
 
 

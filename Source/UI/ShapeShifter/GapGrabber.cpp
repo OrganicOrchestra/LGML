@@ -182,8 +182,9 @@ void GapGrabber::updateMiniHandleVisibility(){
         return;
     }
 
-
-    for(int i = 0 ; i < parent->grabbers.size() ; i++){
+    jassert(parent->shifters.size()-1==parent->grabbers.size());
+    
+    for(int i = 0 ; i < parent->shifters.size()-1 ; i++){
         auto s = parent->shifters.getUnchecked(i);
         auto s2 = parent->shifters.getUnchecked(i+1);
         goMiniHandle ->setVisible(!s->isInAutoMiniMode());

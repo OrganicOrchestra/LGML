@@ -107,16 +107,16 @@ public:
     static const Identifier& getFactoryTypeIdForInstance (CLASSNAME* i )
     {
         return i->getFactoryTypeId();
-    };
+    }
     static const String& getFactoryTypeNameForInstance (CLASSNAME* i )
     {
         return i->getFactoryTypeId().toString();
-    };
+    }
 
     static const String getFactoryNiceNameForInstance (CLASSNAME* i )
     {
         return typeToNiceName(i->getFactoryTypeId().toString());
-    };
+    }
 
 
 

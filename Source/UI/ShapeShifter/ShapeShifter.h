@@ -13,8 +13,8 @@
 */
 
 
-#ifndef SHAPESHIFTER_H_INCLUDED
-#define SHAPESHIFTER_H_INCLUDED
+#pragma once
+
 
 #include "../../JuceHeaderUI.h"//keep
 
@@ -69,4 +69,3 @@ private:
 };
 
 
-#endif  // SHAPESHIFTER_H_INCLUDED

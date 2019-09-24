@@ -29,7 +29,7 @@ public:
     {
 
     }
-    virtual ~MinMaxParameter() {};
+    virtual ~MinMaxParameter() {}
 
     var minimumValue;
     var maximumValue;

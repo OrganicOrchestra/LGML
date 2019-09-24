@@ -145,7 +145,7 @@ public :
     //  uint64 fadeLoopOutPoint;
     //  bool reverseFadeOut;
     Array<int> onsetSamples;
-    bool getIsStretchPending(){return isStretchPending;};
+    bool getIsStretchPending(){return isStretchPending;}
 #if !LGML_UNIT_TESTS
 private:
 #endif
@@ -200,7 +200,7 @@ private:
 
 
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PlayableBuffer);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PlayableBuffer)
 
 };
 

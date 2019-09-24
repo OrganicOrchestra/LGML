@@ -191,7 +191,7 @@ public:
         virtual void controllableContainerAdded (ControllableContainer*, ControllableContainer*) {}
         virtual void controllableContainerRemoved (ControllableContainer*, ControllableContainer*) {}
         virtual void childStructureChanged (ControllableContainer* /*notifier*/, ControllableContainer* /*origin*/,bool /*isAdded*/) {}
-        virtual void childAddressChanged (ControllableContainer* /*notifier*/,ControllableContainer* ) {};
+        virtual void childAddressChanged (ControllableContainer* /*notifier*/,ControllableContainer* ) {}
         virtual void containerWillClear (ControllableContainer* /*origin*/) {}
     private:
         friend class ControllableContainer;
@@ -221,7 +221,7 @@ public:
     template<class OwnerClass>
     class OwnedFeedbackListener : public FeedbackListener{
         public:
-        OwnedFeedbackListener(OwnerClass * o):owner(o){};
+        OwnedFeedbackListener(OwnerClass * o):owner(o){}
         virtual ~OwnedFeedbackListener(){}
         void controllableFeedbackUpdate (ControllableContainer*, Controllable*) ;
         OwnerClass * owner;

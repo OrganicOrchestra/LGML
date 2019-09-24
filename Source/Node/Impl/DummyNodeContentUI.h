@@ -15,14 +15,14 @@
 
 #pragma once
 
-#if JUCE_DEBUG
+
 
 #include "DummyNode.h"//keep
 #include "../UI/ConnectableNodeContentUI.h"
 #include "../../Controllable/Parameter/UI/SliderUI.h"
 
 #include "../../Controllable/Parameter/UI/EnumParameterUI.h"
-
+#if JUCE_DEBUG
 
 class DummyNodeContentUI : public ConnectableNodeContentUI
 {

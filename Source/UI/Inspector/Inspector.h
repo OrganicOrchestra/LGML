@@ -13,8 +13,7 @@
 */
 
 
-#ifndef INSPECTOR_H_INCLUDED
-#define INSPECTOR_H_INCLUDED
+#pragma once
 
 #include "../ShapeShifter/ShapeShifterContent.h"
 #include "InspectableComponent.h"
@@ -148,4 +147,3 @@ public:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (InspectorViewport)
 };
 
-#endif  // INSPECTOR_H_INCLUDED

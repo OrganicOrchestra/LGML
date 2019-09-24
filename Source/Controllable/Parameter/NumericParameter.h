@@ -25,7 +25,7 @@ class NumericParameter : public MinMaxParameter
 {
 public:
     NumericParameter (const String& niceName, const String& description = "", const T initialValue = 0, const T minimumValue = 0, const T maximumValue = 1, bool enabled = true);
-    ~NumericParameter() {};
+    ~NumericParameter() {}
 
     void setValueInternal (const var& _value) override;
 

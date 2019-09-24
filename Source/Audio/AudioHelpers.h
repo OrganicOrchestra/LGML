@@ -172,7 +172,7 @@ public:
     {
         jassert (alpha <= 1);
         jassert (alpha >= 0);
-    };
+    }
     void update()
     {
         if (target != current)

@@ -47,6 +47,10 @@ void ShapeShifterContainer::insertShifterAt (ShapeShifter* shifter, int index, b
         addAndMakeVisible (gg);
         gg->addGrabberListener (this);
     }
+    else{
+
+        grabbers.clear();
+    }
 
 //    DBG ("Insert shifter at : " << shifter->getPreferredWidth());
 
@@ -216,11 +220,13 @@ public:
             jassertfalse;
             return true;
         }
-        if(!resolveFlexible())
-            if(!resolveOverflows())
-                if(!resolveForced())
+        if(!resolveFlexible()){
+            if(!resolveOverflows()){
+                if(!resolveForced()){
                     jassertfalse;
-
+                }
+            }
+        }
         return getOverflow()==0;
     }
 
@@ -396,7 +402,10 @@ void ShapeShifterContainer::resized()
     int totalSpaceWithoutGap = totalSpace - gap * (numShifters - 1);
 
     ShapeShifterResolver sr(shifters,totalSpaceWithoutGap,direction);
-    jassert(sr.resolveAll());
+
+    auto resolved = sr.resolveAll();
+    ignoreUnused(resolved);
+    jassert(resolved);
 
     Rectangle<int> r = getLocalBounds();
     int index = 0;

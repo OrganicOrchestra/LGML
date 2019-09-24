@@ -35,13 +35,13 @@ public:
     virtual DynamicObject* createObject() = 0;
 
     // internals
-    virtual ~FactoryObject() {};
+    virtual ~FactoryObject() {}
     virtual const Identifier & getFactoryTypeId() const =0;
     virtual const String& getFactoryTypeName() const = 0;
     virtual const String & getFactoryInfo() const = 0;
 
     template<class OtherType>
-    bool isType() const {return getFactoryTypeId() == OtherType::typeId(); };
+    bool isType() const {return getFactoryTypeId() == OtherType::typeId(); }
     
 };
 

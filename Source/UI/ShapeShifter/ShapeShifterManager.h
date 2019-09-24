@@ -13,8 +13,7 @@
 */
 
 
-#ifndef SHAPESHIFTERMANAGER_H_INCLUDED
-#define SHAPESHIFTERMANAGER_H_INCLUDED
+#pragma once
 
 #include "ShapeShifterContainer.h"
 #include "ShapeShifterWindow.h"
@@ -109,4 +108,3 @@ public:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ShapeShifterManager)
 };
 
-#endif  // SHAPESHIFTERMANAGER_H_INCLUDED

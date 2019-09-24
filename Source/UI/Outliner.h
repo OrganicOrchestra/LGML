@@ -16,9 +16,7 @@
  ==============================================================================
  */
 
-#ifndef OUTLINER_H_INCLUDED
-#define OUTLINER_H_INCLUDED
-
+#pragma once
 
 #include "ShapeShifter/ShapeShifterContent.h"
 #include "../Controllable/Parameter/ParameterContainer.h"
@@ -153,4 +151,3 @@ private:
 
 };
 
-#endif  // OUTLINER_H_INCLUDED

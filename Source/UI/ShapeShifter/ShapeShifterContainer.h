@@ -13,8 +13,7 @@
 */
 
 
-#ifndef SHAPESHIFTERCONTAINER_H_INCLUDED
-#define SHAPESHIFTERCONTAINER_H_INCLUDED
+#pragma once
 
 #include "ShapeShifterPanel.h"
 #include "GapGrabber.h"
@@ -103,4 +102,3 @@ public:
 
 
 
-#endif  // SHAPESHIFTERCONTAINER_H_INCLUDED

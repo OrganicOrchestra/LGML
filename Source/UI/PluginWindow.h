@@ -16,9 +16,7 @@
  ==============================================================================
  */
 
-#ifndef PluginWindow_H_INCLUDED
-#define PluginWindow_H_INCLUDED
-
+#pragma once
 
 #include "../JuceHeaderUI.h"//keep
 
@@ -85,4 +83,3 @@ inline String toString (PluginWindow::WindowFormatType type)
 }
 
 
-#endif  // PluginWindow_H_INCLUDED

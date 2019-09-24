@@ -18,6 +18,7 @@
 #include "../UI/ConnectableNodeUI.h"
 #include "../../Controllable/Parameter/UI/ParameterUIFactory.h"
 #if JUCE_DEBUG
+
 DummyNodeContentUI::DummyNodeContentUI()
 {
 }

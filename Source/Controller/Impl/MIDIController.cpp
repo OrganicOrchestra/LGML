@@ -21,6 +21,11 @@
 
 extern AudioDeviceManager&   getAudioDeviceManager();
 
+//String messageToParamName(const MidiMessage & m){
+//
+//}
+//stdMidiMessage
+
 #include "../ControllerFactory.h"
 REGISTER_CONTROLLER_TYPE (MIDIController,"MIDI");
 
@@ -76,7 +81,7 @@ void MIDIController::handleIncomingMidiMessage (MidiInput*,
         const String paramName( "CC "+String(message.getControllerNumber()));
         if (Controllable* c = userContainer.getControllableByName(paramName))
         {
-                (( ParameterBase*)c)->setValue(message.getControllerValue()*1.0/127);
+                (( ParameterBase*)c)->setValueFrom((Controller*)this,message.getControllerValue()*1.0/127);
         }
         else if(autoAddParams){
             MessageManager::callAsync([this,message,paramName](){
@@ -108,7 +113,7 @@ void MIDIController::handleIncomingMidiMessage (MidiInput*,
         const String paramName (MidiMessage::getMidiNoteName (message.getNoteNumber(), false, true, 0));//+"_"+String(message.getChannel()));
         if (Controllable* c = userContainer.getControllableByName(paramName))
         {
-            (( ParameterBase*)c)->setValue(isNoteOn?message.getFloatVelocity():0);
+            (( ParameterBase*)c)->setValueFrom((Controller*)this,isNoteOn?message.getFloatVelocity():0);
         }
         else if(autoAddParams && isNoteOn ){
             MessageManager::callAsync([this,message,paramName](){
@@ -139,6 +144,7 @@ void MIDIController::handleIncomingMidiMessage (MidiInput*,
         }
     }
 
+    // call Js
     if (message.isNoteOff())
     {
         callJs (MidiMessage::noteOff (message.getChannel(), message.getNoteNumber(), 0.0f));
@@ -220,6 +226,15 @@ void MIDIController::onContainerParameterChanged ( ParameterBase* p)
     else if(p==midiClockOffset){
         midiClock.delta = midiClockOffset->intValue();
         midiClock.reset();
+    }
+    else if(midiOutDevice.get() && userContainer.controllables.contains(p)){
+        auto pName = p->niceName;
+        if(pName.startsWith("CC ")){
+            sendCC(1, pName.substring(3).getIntValue(), p->floatValue());
+        }
+
+
+
     }
 }
 void MIDIController::startMidiClockIfNeeded(){

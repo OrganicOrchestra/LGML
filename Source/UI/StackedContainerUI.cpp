@@ -21,7 +21,7 @@ class SwapComponents : public DrawableImage{
 public:
     SwapComponents(Component * originComp,StackedContainerBase * rootOfDrag, const Point<int> &_moffset):root(rootOfDrag),moffset(_moffset){
         auto draggedImg = originComp->createComponentSnapshot(originComp->getLocalBounds());
-        draggedImg.multiplyAllAlphas(0.7);
+        draggedImg.multiplyAllAlphas(0.7f);
         setImage(draggedImg);
         root->addAndMakeVisible(this);
 
@@ -40,7 +40,7 @@ public:
         targetSwapLine.setStrokeFill(juce::FillType(Colours::red));
         root->addAndMakeVisible(targetSwapLine);
 
-    };
+    }
 
     ~SwapComponents(){
         if(root.get()){
@@ -55,7 +55,7 @@ public:
             setTopLeftPosition(pos.x,pos.y);
         }
     }
-    void mouseUp(const MouseEvent & e) override{
+    void mouseUp(const MouseEvent & ) override{
         if(root.get()){
             auto sUI = dynamic_cast<StackedContainerBase*>(root.get());
             if(sUI){

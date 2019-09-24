@@ -62,10 +62,10 @@ public:
 
     class Listener{
     public:
-        virtual ~Listener(){};
-        virtual void watchStateChanged(FileParameter *){};
-        virtual void loadingStarted(FileParameter * ){};
-        virtual void loadingEnded(FileParameter * ){};
+        virtual ~Listener(){}
+        virtual void watchStateChanged(FileParameter *){}
+        virtual void loadingStarted(FileParameter * ){}
+        virtual void loadingEnded(FileParameter * ){}
 
     };
 
@@ -80,7 +80,7 @@ public:
 
 
 
-    DECLARE_OBJ_TYPE (FileParameter,"File parameter");
+    DECLARE_OBJ_TYPE (FileParameter,"File parameter")
 
 protected:
     std::function<Result(const File &)>  loaderFunction;

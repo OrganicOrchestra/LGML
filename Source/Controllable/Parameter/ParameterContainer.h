@@ -118,9 +118,9 @@ protected:
     //      adding controllableContainerListener for each implementation
     //      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)
     //
-    virtual void onContainerParameterChanged ( ParameterBase*) {};
-    virtual void onContainerTriggerTriggered (Trigger*) {};
-    virtual void onContainerParameterChangedAsync ( ParameterBase*, const var& /*value*/) {};
+    virtual void onContainerParameterChanged ( ParameterBase*) {}
+    virtual void onContainerTriggerTriggered (Trigger*) {}
+    virtual void onContainerParameterChangedAsync ( ParameterBase*, const var& /*value*/) {}
 
 
 };

@@ -13,8 +13,7 @@
 */
 
 
-#ifndef SHAPESHIFTERWINDOW_H_INCLUDED
-#define SHAPESHIFTERWINDOW_H_INCLUDED
+#pragma once
 
 #include "ShapeShifterPanel.h"
 #include "../Style.h" // for USE_GL
@@ -64,4 +63,3 @@ public:
 };
 
 
-#endif  // SHAPESHIFTERWINDOW_H_INCLUDED

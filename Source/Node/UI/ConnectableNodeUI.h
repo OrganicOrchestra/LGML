@@ -13,8 +13,7 @@
 */
 
 
-#ifndef CONNECTABLENODEUI_H_INCLUDED
-#define CONNECTABLENODEUI_H_INCLUDED
+
 #pragma once
 
 #include "../../UI/Inspector/InspectableComponent.h"
@@ -182,4 +181,3 @@ private:
 };
 
 
-#endif  // CONNECTABLENODEUI_H_INCLUDED

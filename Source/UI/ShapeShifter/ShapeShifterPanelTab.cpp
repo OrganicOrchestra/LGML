@@ -67,7 +67,7 @@ void ShapeShifterPanelTab::paint (Graphics& g)
 {
     if(isTimerRunning()){
         auto pct =  (Time::getCurrentTime() - blinkStartTime).inMilliseconds()*1.0/notificationDurationMs;
-        g.setColour(blinkColour.interpolatedWith(Colours::white, (1+sin(pct * MathConstants<float>::twoPi * 2))/2));
+        g.setColour(blinkColour.interpolatedWith(Colours::white, (1+sinf((float)pct * MathConstants<float>::twoPi * 2))/2));
 
     }
     else{

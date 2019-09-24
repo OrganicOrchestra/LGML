@@ -13,8 +13,7 @@
 */
 
 
-#ifndef SHAPESHIFTERPANELHEADER_H_INCLUDED
-#define SHAPESHIFTERPANELHEADER_H_INCLUDED
+#pragma once
 
 #include "ShapeShifterPanelTab.h"
 #include "../../UI/Style.h"
@@ -68,4 +67,3 @@ public:
 };
 
 
-#endif  // SHAPESHIFTERPANELHEADER_H_INCLUDED

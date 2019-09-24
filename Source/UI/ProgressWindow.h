@@ -16,8 +16,7 @@
  ==============================================================================
  */
 
-#ifndef PROGRESSWINDOW_H_INCLUDED
-#define PROGRESSWINDOW_H_INCLUDED
+#pragma once
 
 #include "../JuceHeaderUI.h"
 #include "../Controllable/Parameter/NumericParameter.h"
@@ -50,4 +49,3 @@ public:
 
 
 
-#endif  // PROGRESSWINDOW_H_INCLUDED

@@ -81,7 +81,7 @@ bool  NumericParameter<T>::checkValueIsTheSame (const var& v1, const var& v2){
 }
 
 template<>
-void  NumericParameter<int>::setPrecision(int p){
+void  NumericParameter<int>::setPrecision(int ){
     jassertfalse; // can't set precision for ints
 }
 
@@ -91,7 +91,7 @@ void  NumericParameter<T>::setPrecision(int p){
         precisionMask = 0;
     }
     else{
-        precisionMask = pow(10,p);
+        precisionMask = (uint32)pow(10,p);
     }
 }
 

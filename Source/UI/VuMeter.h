@@ -16,8 +16,7 @@
  ==============================================================================
  */
 
-#ifndef VUMETER_H_INCLUDED
-#define VUMETER_H_INCLUDED
+
 #pragma once
 
 #include "../Node/NodeBase.h"
@@ -105,7 +104,7 @@ public:
 
         float rms = (type == Type::IN) ? rmsIn : rmsOut;
         updateValue (rms);
-    };
+    }
 
     void channelRMSInChanged (ConnectableNode*, float rms, int channel) override
     {
@@ -136,4 +135,3 @@ public:
 
 
 
-#endif  // VUMETER_H_INCLUDED
