@@ -96,7 +96,7 @@ Array<WeakReference<ParameterBase>> ParameterContainer::getAllParameters (bool r
     return result;
 }
 
-int ParameterContainer::getDepthDistance(ParameterContainer * from){
+int ParameterContainer::getDepthDistanceFromChildContainer(ParameterContainer * from){
     ControllableContainer * insp =from;
     int d = 0;
     while(insp){
@@ -106,6 +106,7 @@ int ParameterContainer::getDepthDistance(ParameterContainer * from){
         insp = insp->parentContainer;
         d++;
     }
+    jassertfalse;
     return -1;
 }
 

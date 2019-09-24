@@ -74,7 +74,7 @@ public:
     static const Identifier uidIdentifier;
 
 
-    int getDepthDistance(ParameterContainer * from);
+    int getDepthDistanceFromChildContainer(ParameterContainer * from);
 
 
     
