@@ -358,11 +358,11 @@ public:
     static String resolveIPFromHostName(const char * hosttarget){
 
         String hostIP = "";
-    struct addrinfo hints, *res = NULL;
+    struct addrinfo hints, *res = nullptr;
     memset (&hints, 0, sizeof (hints));
     hints.ai_family = AF_INET;
 
-    if (getaddrinfo (hosttarget, NULL, &hints, &res) == 0)
+    if (getaddrinfo (hosttarget, nullptr, &hints, &res) == 0)
     {
 
         struct sockaddr_in* addr;
@@ -386,13 +386,13 @@ public:
         freeaddrinfo (res);
 
         return hostIP;
-    };
+    }
 
     static void cb_dns (
-        DNSServiceRef sdRef,
-        DNSServiceFlags flags,
+        DNSServiceRef /*sdRef*/,
+        DNSServiceFlags /*flags*/,
         uint32_t interfaceIndex,
-        DNSServiceErrorType errorCode,
+        DNSServiceErrorType /*errorCode*/,
         const char*                          serviceName,
         const char*                          regtype,
         const char*                          replyDomain,
@@ -401,7 +401,7 @@ public:
     {
 
 
-        DNSServiceRef client (0);
+        DNSServiceRef client (nullptr);
 
         if (DNSServiceResolve (&client, 0, interfaceIndex, serviceName, regtype, replyDomain, cb_resolve, NetworkUtils::getInstance()) == 0)
         {
@@ -414,7 +414,7 @@ public:
         }
 
 
-    };
+    }
 
 
 

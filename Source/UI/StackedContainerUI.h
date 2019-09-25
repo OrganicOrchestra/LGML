@@ -27,7 +27,11 @@
 class SwapComponents;
 class StackedContainerBase : public Component{
 public:
-    explicit StackedContainerBase(int _minElemSize=20,bool isHorizontal=false,int _gap=2):_isHorizontal(isHorizontal),gap(_gap),minElemSize(_minElemSize){
+    explicit StackedContainerBase(int _minElemSize=20,bool isHorizontal=false,int _gap=2,int _padEnd=0):
+    _isHorizontal(isHorizontal)
+    ,gap(_gap)
+    ,minElemSize(_minElemSize)
+    ,padEnd(_padEnd){
         addMouseListener(this,true);
     }
     virtual ~StackedContainerBase(){};
@@ -55,7 +59,8 @@ protected:
     OwnedArray<Component> stackedUIs;
     bool _isHorizontal;
     int gap;
-    int minElemSize;;
+    int padEnd;
+    int minElemSize;
     std::unique_ptr<Component> draggedUI;
 private:
     void endDrag();
@@ -70,9 +75,11 @@ class StackedContainerUI : public StackedContainerBase{
 public:
     typedef std::function<T*(UIT*)> GetTFromUITTYPE;
     typedef std::function<void(int,int)> SwapElemsF;
-    StackedContainerUI(GetTFromUITTYPE f,SwapElemsF sw,int _minElemSize=20,bool isHorizontal=false,int _gap=2):StackedContainerBase(_minElemSize,isHorizontal,_gap),
+    StackedContainerUI(GetTFromUITTYPE f,SwapElemsF sw,int _minElemSize=20,bool isHorizontal=false,int _gap=2,int _padEnd=0):
+    StackedContainerBase(_minElemSize,isHorizontal,_gap,_padEnd),
     toUIT(f),
     swapElemF(std::move(sw))
+
 
     {
 
@@ -129,13 +136,15 @@ private:
 
 
 
+
 };
 
 template<class UIT, class T>
 class StackedContainerViewport : public Viewport{
 public:
     explicit StackedContainerViewport(StackedContainerUI<UIT,T> * _stUI):
-    stUI(_stUI){
+    stUI(_stUI)
+    {
 
         setViewedComponent (stUI.get(), false);
         bool isH = stUI->isHorizontal();
@@ -145,7 +154,7 @@ public:
         setPaintingIsUnclipped(true);
 
     }
-
+    virtual ~StackedContainerViewport(){}
     void resized() override{
         Viewport::resized();
         if(stUI->isHorizontal()){stUI->setSize(stUI->getWidth(),getHeight());}
@@ -166,7 +175,6 @@ public:
     std::unique_ptr<StackedContainerUI<UIT, T> > stUI;
 
 protected:
-
 
 
 };

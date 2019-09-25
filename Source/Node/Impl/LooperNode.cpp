@@ -691,6 +691,7 @@ void LooperNode::onContainerParameterChanged ( ParameterBase* p)
     // TimeManager
     else if (p == TimeManager::getInstance()->playState)
     {
+        if(getQuantization()>0){
         if (!TimeManager::getInstance()->playState->boolValue())
         {
             for (auto& t : trackGroup.tracks)
@@ -698,7 +699,7 @@ void LooperNode::onContainerParameterChanged ( ParameterBase* p)
                 t->stop();
             }
         }
-        else if (!isOneShot->boolValue())
+        else //if (!isOneShot->boolValue())
         {
             // prevent time manager to update track internal state before all tracks are updated
             TimeManager::getInstance()->lockTime (true);
@@ -710,6 +711,7 @@ void LooperNode::onContainerParameterChanged ( ParameterBase* p)
 
             TimeManager::getInstance()->lockTime (false);
         }
+    }
     }
 
 

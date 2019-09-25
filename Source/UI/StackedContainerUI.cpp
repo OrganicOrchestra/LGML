@@ -86,6 +86,7 @@ int StackedContainerBase::getSize()const{
         s+=jmax(minElemSize,_isHorizontal?o->getWidth():o->getHeight()) + gap;
     }
     s+=gap;
+    s+=padEnd;
     return s;
 };
 

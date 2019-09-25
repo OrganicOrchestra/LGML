@@ -154,7 +154,7 @@ void LGMLUIUtils::forceRepaint(Component * c) {
 AddElementButton::AddElementButton(): DrawableButton ("Add",DrawableButton::ButtonStyle::ImageFitted) {
     setImages(createDrawable(),createDrawable(true));
     setPaintingIsUnclipped(true);
-    setOpaque(true);
+    setOpaque(false);
     LGMLUIUtils::optionallySetBufferedToImage(this);
 
 };
@@ -165,7 +165,7 @@ void AddElementButton::parentHierarchyChanged(){
     repaint();// for background
 }
 void AddElementButton::paint(Graphics & g){
-    LGMLUIUtils::fillBackground(this,g);
+//    LGMLUIUtils::fillBackground(this,g);
 }
 
 class ElemDrawables : public DeletedAtShutdown{

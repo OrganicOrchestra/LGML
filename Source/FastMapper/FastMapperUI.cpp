@@ -37,7 +37,8 @@ mapsUI(new StackedContainerUI<FastMapUI, FastMap>(
                                                       _fastMapper->maps.swap(ia,ib);
                                                   },
                                                   30,
-                                                  false)
+                                                  false
+                                                  ,2,40)
        )
 {
     fastMapper->addControllableContainerListener (this);
@@ -210,6 +211,7 @@ void FastMapperUI::resized()
         r.reduce (2, 0);
         mapsUI.setBounds(r);
 //        infoLabel.setVisible(false);
+        r.removeFromRight(15); // scrollbar
         addFastMapButton.setFromParentBounds (r);
     }
 

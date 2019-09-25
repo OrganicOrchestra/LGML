@@ -39,7 +39,8 @@ controllersUI(new StackedContainerUI<ControllerUI, Controller>
                   _manager->controllers.swap(ia,ib);
                },
                20,
-               false)
+               false
+               ,2,40)
               )
 {
 
@@ -134,7 +135,9 @@ void ControllerManagerUI::resized()
     }
     else{
 //        infoLabel.setVisible(false);
-        addControllerBt.setFromParentBounds (getLocalBounds());
+        auto rr =getLocalBounds();
+        rr.removeFromRight(15); // scrollbar
+        addControllerBt.setFromParentBounds (rr);
     }
 }
 
