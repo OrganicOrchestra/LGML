@@ -139,11 +139,11 @@ public:
     public:
         EngineListener();
         virtual ~EngineListener();
-        virtual void startEngine() {};
-        virtual void stopEngine() {};
-        virtual void startLoadFile() {};
-        virtual void fileProgress (float /*percent*/, int /*state*/) {};
-        virtual void endLoadFile() {};
+        virtual void startEngine() {}
+        virtual void stopEngine() {}
+        virtual void startLoadFile() {}
+        virtual void fileProgress (float /*percent*/, int /*state*/) {}
+        virtual void endLoadFile() {}
     };
 
     class EngineFileSaver{

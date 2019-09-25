@@ -56,11 +56,11 @@ public:
     /** Destructor. */
     virtual ~NodeContainerListener() {}
 
-    virtual void nodeAdded (ConnectableNode*) {};
-    virtual void nodeRemoved (ConnectableNode*) {};
+    virtual void nodeAdded (ConnectableNode*) {}
+    virtual void nodeRemoved (ConnectableNode*) {}
 
-    virtual void connectionAdded (NodeConnection*) {};
-    virtual void connectionRemoved (NodeConnection*) {};
+    virtual void connectionAdded (NodeConnection*) {}
+    virtual void connectionRemoved (NodeConnection*) {}
 
 
 

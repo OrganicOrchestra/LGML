@@ -22,21 +22,21 @@
 class InspectorEditor : public juce::Component, public juce::ComponentListener
 {
 public:
-    InspectorEditor(){setOpaque(true);};
-    virtual ~InspectorEditor(){};
+    InspectorEditor(){setOpaque(true);}
+    virtual ~InspectorEditor(){}
 
     void paint(Graphics & g)override;
 
     virtual int getContentHeight() const = 0;
 
-    virtual void clear(){};
+    virtual void clear(){}
 
     class  InspectorEditorListener
     {
     public:
         /** Destructor. */
         virtual ~InspectorEditorListener() {}
-        virtual void contentSizeChanged (InspectorEditor*) {};
+        virtual void contentSizeChanged (InspectorEditor*) {}
     };
 
     ListenerList<InspectorEditorListener> inspectorEditorListeners;

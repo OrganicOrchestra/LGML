@@ -36,7 +36,7 @@ public:
 
     LGMLDragger();
     ~LGMLDragger();
-    juce_DeclareSingleton (LGMLDragger, true);
+    juce_DeclareSingleton (LGMLDragger, true)
 
     void setMainComponent (Component* c);
 

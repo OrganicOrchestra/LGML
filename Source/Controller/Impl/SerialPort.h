@@ -125,10 +125,10 @@ public:
         virtual ~SerialPortListener() {}
 
         //serial data here
-        virtual void portOpened (SerialPort*) {};
-        virtual void portClosed (SerialPort*) {};
-        virtual void portRemoved (SerialPort*) {};
-        virtual void serialDataReceived (const var&) {};
+        virtual void portOpened (SerialPort*) {}
+        virtual void portClosed (SerialPort*) {}
+        virtual void portRemoved (SerialPort*) {}
+        virtual void serialDataReceived (const var&) {}
     };
 
     ListenerList<SerialPortListener> listeners;

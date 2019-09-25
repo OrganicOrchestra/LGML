@@ -59,7 +59,7 @@ class LGMLLogger : public Logger
 {
     public :
 
-    juce_DeclareSingleton (LGMLLogger, true);
+    juce_DeclareSingleton (LGMLLogger, true)
 
     LGMLLogger();
     ~LGMLLogger();
@@ -71,7 +71,7 @@ class LGMLLogger : public Logger
         virtual ~Listener(){cancelPendingUpdate();}
 
         virtual void newMessage(const LogElement * el)  = 0;
-        virtual void logCleared() {};
+        virtual void logCleared() {}
     private:
         void handleAsyncUpdate() final{
             int end = lastIdx.get();
@@ -100,7 +100,7 @@ class LGMLLogger : public Logger
         CoalescedListener(int _time):time(_time),readIdxCoal(0){
 
         }
-        virtual ~CoalescedListener(){stopTimer();};
+        virtual ~CoalescedListener(){stopTimer();}
         virtual void newMessages(int from, int to)  = 0;
 
     private:

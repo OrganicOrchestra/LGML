@@ -35,7 +35,7 @@ public:
     DECLARE_OBJ_TYPE (NodeManager,"Where to create any fancy audio graphs wanted")
     ~NodeManager();
 
-    juce_DeclareSingleton (NodeManager, true);
+    juce_DeclareSingleton (NodeManager, true)
 
 
     void clear()override;
@@ -51,9 +51,9 @@ public:
     {
     public:
         virtual ~NodeManagerListener() {}
-        virtual void managerCleared() {};
+        virtual void managerCleared() {}
         virtual void managerProgressedLoading (float /*progress*/) {}
-        virtual void managerEndedLoading() {};
+        virtual void managerEndedLoading() {}
     };
 
     ListenerList<NodeManagerListener> nodeManagerListeners;

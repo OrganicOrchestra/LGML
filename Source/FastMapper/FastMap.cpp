@@ -110,7 +110,7 @@ void FastMap::process (bool toReferenceOut)
 
                 }
                 else{
-                    float targetToggleValue =outRef->boolValue()?maxIn:minIn;
+                    float targetToggleValue =outRef->boolValue()?maxIn-10e-6:minIn;
                     MessageManager::callAsync([=](){
                         (inRef)->setValueFrom (this,targetToggleValue,false,false);
                     });
