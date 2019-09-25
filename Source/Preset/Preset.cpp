@@ -76,8 +76,8 @@ class PresetSync:public PresetManager::Listener{
             owner->loadPreset(p,false);
         }
     }
-    void presetAdded(Preset * p)final{};
-    void presetRemoved(Preset * p)final{};
+    void presetAdded(Preset * p)final{}
+    void presetRemoved(Preset * p)final{}
     Presetable * owner;
 
 };
@@ -112,7 +112,7 @@ void Presetable::containerWillClear (ControllableContainer* c)
 }
 bool Presetable::isOneOfPresetableParam(ParameterBase * p){return params.contains(p);}
 
-void Presetable::newMessage (const ParameterBase::ParamWithValue& pv)
+void Presetable::newMessage (const ParameterBase::ParamWithValue& )
 {
     //
     //    if (pv.parameter == currentPresetName)
@@ -136,7 +136,7 @@ String getLinkInPresetName(const String & n){
     return "";
 }
 
-void Presetable::parameterValueChanged ( ParameterBase* p, ParameterBase::Listener * notifier){
+void Presetable::parameterValueChanged ( ParameterBase* p, ParameterBase::Listener * ){
     if (p == savePresetTrigger)
     {
         saveCurrentPreset();
@@ -159,8 +159,8 @@ void Presetable::parameterValueChanged ( ParameterBase* p, ParameterBase::Listen
 
 
             Uuid ui(exterUID);
-            if(auto p = ParameterContainer::getForUidGlobal(ui)){
-                preset = pm->getPreset(p->presetable->getPresetFilter(), name);
+            if(auto ppp = ParameterContainer::getForUidGlobal(ui)){
+                preset = pm->getPreset(ppp->presetable->getPresetFilter(), name);
             }
             else{
                 jassertfalse;
@@ -220,7 +220,7 @@ Preset* Presetable::addNamedPreset (const String& name,bool doLoad,void * notif)
 }
 
 
-bool Presetable::loadPreset (Preset* preset,bool sendNotif)
+bool Presetable::loadPreset (Preset* preset,bool /*sendNotif*/)
 {
     if (preset == nullptr)
     {

@@ -44,8 +44,8 @@ public:
     class TabListener
     {
     public:
-        virtual ~TabListener() {};
-        virtual void askForRemoveTab (ShapeShifterPanelTab*) {};
+        virtual ~TabListener() {}
+        virtual void askForRemoveTab (ShapeShifterPanelTab*) {}
     };
 
     ListenerList<TabListener> tabListeners;

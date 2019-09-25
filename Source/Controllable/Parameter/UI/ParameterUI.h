@@ -68,14 +68,14 @@ public:
 protected:
 
     String customTextDisplayed;
-    virtual void displayedTextChangedInternal(){};
+    virtual void displayedTextChangedInternal(){}
     // helper to spot wrong deletion order
     bool shouldBailOut();
 
     // here we are bound to only one parameter so no need to pass parameter*
     // for general behaviour see AsyncListener
-    virtual void valueChanged (const var& ) {};
-    virtual void rangeChanged ( ParameterBase* ) {};
+    virtual void valueChanged (const var& ) {}
+    virtual void rangeChanged ( ParameterBase* ) {}
 
     
     String getTooltip() override;
@@ -87,8 +87,8 @@ private:
     virtual void newMessage (const ParameterBase::ParamWithValue& p) override;
 
     // never change this as value can be changed from other threads
-    void parameterValueChanged ( ParameterBase* , ParameterBase::Listener * /*notifier=nullptr*/) override {};
-    void parameterRangeChanged ( ParameterBase* )override {};
+    void parameterValueChanged ( ParameterBase* , ParameterBase::Listener * /*notifier=nullptr*/) override {}
+    void parameterRangeChanged ( ParameterBase* )override {}
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ParameterUI)
     friend class LGMLDragger;

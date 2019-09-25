@@ -86,13 +86,13 @@ public:
     class Listener
     {
     public:
-        virtual ~Listener() {};
+        virtual ~Listener() {}
         virtual void panelDetach (ShapeShifterPanel*) {}
-        virtual void panelEmptied (ShapeShifterPanel*) {};
-        virtual void panelDestroyed (ShapeShifterPanel*) {};
+        virtual void panelEmptied (ShapeShifterPanel*) {}
+        virtual void panelDestroyed (ShapeShifterPanel*) {}
 
         virtual void headerDrag (ShapeShifterPanel*) {}
-        virtual void tabDrag (ShapeShifterPanel*) {};
+        virtual void tabDrag (ShapeShifterPanel*) {}
         virtual void contentRemoved (ShapeShifterContent*) {}
     };
 

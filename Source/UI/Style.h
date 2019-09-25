@@ -76,7 +76,7 @@ public:
     void parentHierarchyChanged()override;
 
 private:
-    JUCE_LEAK_DETECTOR(AddElementButton);
+    JUCE_LEAK_DETECTOR(AddElementButton)
 };
 
 
@@ -92,7 +92,7 @@ public:
     void paint(Graphics &g) override;
 
 private:
-    JUCE_LEAK_DETECTOR(RemoveElementButton);
+    JUCE_LEAK_DETECTOR(RemoveElementButton)
 };
 
 

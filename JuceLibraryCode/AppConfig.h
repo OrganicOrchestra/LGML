@@ -230,7 +230,7 @@
 #endif
 
 #ifndef    JUCE_USE_CURL
- //#define JUCE_USE_CURL 1
+ #define   JUCE_USE_CURL 0
 #endif
 
 #ifndef    JUCE_LOAD_CURL_SYMBOLS_LAZILY
@@ -291,7 +291,7 @@
 #endif
 
 #ifndef    JUCE_DISABLE_COREGRAPHICS_FONT_SMOOTHING
- //#define JUCE_DISABLE_COREGRAPHICS_FONT_SMOOTHING 0
+ #define   JUCE_DISABLE_COREGRAPHICS_FONT_SMOOTHING 1
 #endif
 
 //==============================================================================
