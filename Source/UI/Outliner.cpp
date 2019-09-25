@@ -108,8 +108,9 @@ void Outliner::setRoot(ParameterContainer * p,bool saveOpenness){
     if (root.get()){
 
         root->addControllableContainerListener(this);
-        rootItem = std::make_unique< OutlinerItem> (root,true);
-            treeView.setRootItem (rootItem.get());
+        auto nRoot = new OutlinerItem (root,true);
+        treeView.setRootItem (nRoot); // first let treeView clean its old root
+        rootItem.reset(nRoot); // then manage the new one and clear old one
 
 
         rebuildTree();
