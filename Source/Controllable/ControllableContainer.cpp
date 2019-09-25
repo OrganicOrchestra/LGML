@@ -552,17 +552,7 @@ bool ControllableContainer::containsControllable (const Controllable* c, int max
 
 
 
-void ControllableContainer::dispatchFeedback (Controllable* c) // from root to notifier
-{
-    directControllableContainerFBListeners.call (&FeedbackListener::controllableFeedbackUpdate, this, c);
-    dispatchFeedbackInternal(c);
-}
-void ControllableContainer::dispatchFeedbackInternal(Controllable *c){
-    if (parentContainer != nullptr) { parentContainer->dispatchFeedbackInternal (c); }
 
-    controllableContainerFBListeners.call (&FeedbackListener::controllableFeedbackUpdate, this, c);
-
-}
 
 
 
@@ -640,21 +630,3 @@ void ControllableContainer::removeControllableContainerListener (Listener* liste
     controllableContainerListeners.remove (listener);
     listener->listenedContainers.removeAllInstancesOf(this);
 }
-void ControllableContainer::addControllableContainerListener (FeedbackListener* newListener,bool listenToDirectChild) {
-    addControllableContainerListener ((Listener*)newListener);
-
-    if(listenToDirectChild){
-        directControllableContainerFBListeners.add(newListener);
-    }
-    else{
-        controllableContainerFBListeners.add (newListener);
-    }
-    newListener->listenedFBContainers.addIfNotAlreadyThere(this);
-}
-void ControllableContainer::removeControllableContainerListener (FeedbackListener* listener) {
-    removeControllableContainerListener((Listener*)listener);
-    controllableContainerFBListeners.remove (listener);
-    directControllableContainerFBListeners.remove(listener);
-    listener->listenedFBContainers.removeAllInstancesOf(this);
-}
-

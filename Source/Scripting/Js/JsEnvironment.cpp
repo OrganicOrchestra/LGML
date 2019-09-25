@@ -555,9 +555,9 @@ Result JsEnvironment::checkUserControllableEventFunction()
                         found = true;
                         break;
                     }
-                    else if (ControllableContainer* cont = candidate->getControllableContainerForAddress (localName))
+                    else if (auto* pCont = dynamic_cast<ParameterContainer*>(candidate->getControllableContainerForAddress (localName)))
                     {
-                        listenedContainers.addIfNotAlreadyThere (cont);
+                        listenedContainers.addIfNotAlreadyThere (pCont);
                         found = true;
                         break;
                     }
@@ -655,18 +655,18 @@ void JsEnvironment::parameterValueChanged ( ParameterBase* p, ParameterBase::Lis
 };
 
 #define NON_BLOCKING 0
-void JsEnvironment::controllableFeedbackUpdate (ControllableContainer* originContainer, Controllable* c)
+void JsEnvironment::parameterFeedbackUpdate (ParameterContainer* originContainer, ParameterBase* p,ParameterBase::Listener * notifier)
 {
     // avoid root callback (only used to reload if
     if (originContainer == getEngine())return;
 
     var v = var::undefined();
 
-    if ( ParameterBase* p = dynamic_cast <ParameterBase*> (c))
+    if (  p)
         v = p->value;
     
 
-    auto sArr = c->getControlAddressRelative (originContainer);
+    auto sArr = p->getControlAddressRelative (originContainer);
     Array<var> add;
     for (auto& s : sArr.getArray()) { add.add (s.toString()); }
 
@@ -712,9 +712,9 @@ void JsEnvironment::sendAllParametersToJS()
     {
         if (t.get())
         {
-            Array<WeakReference<Controllable>> conts = t->getAllControllables();
+            Array<WeakReference<ParameterBase>> conts = t->getControllablesOfType<ParameterBase>(true);
 
-            for (auto& c : conts) { controllableFeedbackUpdate (t, c); }
+            for (auto& c : conts) { parameterFeedbackUpdate (t, c,this); }
         }
     }
 }

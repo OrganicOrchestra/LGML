@@ -1,16 +1,16 @@
 /* Copyright © Organic Orchestra, 2017
-*
-* This file is part of LGML.  LGML is a software to manipulate sound in realtime
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation (version 3 of the License).
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*/
+ *
+ * This file is part of LGML.  LGML is a software to manipulate sound in realtime
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation (version 3 of the License).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
 
 
 #include "MIDIController.h"
@@ -30,10 +30,50 @@ extern AudioDeviceManager&   getAudioDeviceManager();
 REGISTER_CONTROLLER_TYPE (MIDIController,"MIDI");
 
 
+
+
+#define NON_BLOCKING 0
+template<>
+void ParameterContainer::OwnedFeedbackListener<MIDIController>::parameterFeedbackUpdate (ParameterContainer* originContainer, ParameterBase* p,ParameterBase::Listener * notifier){
+
+
+    if (owner->enabledParam->boolValue() && (!owner->blockFeedback->boolValue() || notifier!=(Controller*)owner))
+    {
+#if NON_BLOCKING
+        auto f = [this,c](){
+#endif
+            jassert(originContainer==&owner->userContainer);
+            if(owner->midiOutDevice.get() ){
+
+                if(p){
+                    auto pName = p->niceName;
+                    if(pName.startsWith("CC ")){
+                        owner->sendCC(1, pName.substring(3).getIntValue(), p->floatValue()*127);
+                    }
+                }
+            }
+#if NON_BLOCKING
+        };
+        // avoid locking other threads
+        if(MessageManager::getInstance()->isThisTheMessageThread()){
+            f();
+        }
+        else{
+            MessageManager::callAsync(f);
+        }
+#endif
+    }
+
+
+
+}
+
+
 MIDIController::MIDIController (StringRef name) :
-    Controller (name), JsEnvironment ("controllers.MIDI", this),
+Controller (name), JsEnvironment ("controllers.MIDI", this),
 midiChooser(this,true,false),
-midiClock(false)
+midiClock(false),
+pSync(this)
 {
 
     setNamespaceName ("controllers." + shortName);
@@ -47,6 +87,7 @@ midiClock(false)
     midiClockOffset = addNewParameter<IntParameter>("MIDI clock offset", "offset to apply to midiclock",0, -300,300);
     channelFilter = addNewParameter<IntParameter> ("Channel", "Channel to filter message (0 = accept all channels)", 0, 0, 16);
     midiClock.setOutput(this);
+    userContainer.addFeedbackListener (&pSync);
 }
 
 MIDIController::~MIDIController()
@@ -81,7 +122,7 @@ void MIDIController::handleIncomingMidiMessage (MidiInput*,
         const String paramName( "CC "+String(message.getControllerNumber()));
         if (Controllable* c = userContainer.getControllableByName(paramName))
         {
-                (( ParameterBase*)c)->setValueFrom((Controller*)this,message.getControllerValue()*1.0/127);
+            (( ParameterBase*)c)->setValueFrom((Controller*)this,message.getControllerValue()*1.0/127);
         }
         else if(autoAddParams){
             MessageManager::callAsync([this,message,paramName](){
@@ -107,7 +148,7 @@ void MIDIController::handleIncomingMidiMessage (MidiInput*,
                   .replace("789",String (message.getNoteNumber()))
                   .replace("1011",String (message.getChannel()))
                   );
-                  
+
         }
 
         const String paramName (MidiMessage::getMidiNoteName (message.getNoteNumber(), false, true, 0));//+"_"+String(message.getChannel()));
@@ -227,15 +268,7 @@ void MIDIController::onContainerParameterChanged ( ParameterBase* p)
         midiClock.delta = midiClockOffset->intValue();
         midiClock.reset();
     }
-    else if(midiOutDevice.get() && userContainer.controllables.contains(p)){
-        auto pName = p->niceName;
-        if(pName.startsWith("CC ")){
-            sendCC(1, pName.substring(3).getIntValue(), p->floatValue());
-        }
 
-
-
-    }
 }
 void MIDIController::startMidiClockIfNeeded(){
     if(isConnected->boolValue()){

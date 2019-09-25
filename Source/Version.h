@@ -3,3 +3,4 @@
 #pragma once
 #include "Utils/VersionTriplet.h"
 #define BUILD_VERSION_UID "UnknownBuildUID"
+#define GIT_SHA "unknownGitSHA"

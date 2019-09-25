@@ -111,7 +111,7 @@ void ParameterProxy::parameterRangeChanged ( ParameterBase* p)
 }
 
 
-ParameterBase* ParameterProxy::get()
+ParameterBase* ParameterProxy::getLinkedParam()
 {
     return linkedParam.get();
 }

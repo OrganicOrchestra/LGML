@@ -116,7 +116,13 @@ void ParameterProxyUI::linkedParamChanged (ParameterProxy* p)
 
     if (!MessageManager::getInstance()->isThisTheMessageThread())
     {
-        MessageManager::getInstance()->callAsync ([this, p]() {linkedParamChanged (p);});
+        WeakReference<ParameterProxy> wfp (p);
+        MessageManager::getInstance()->callAsync ([this, wfp]() {
+            if(wfp.get()){
+            linkedParamChanged (wfp.get());
+            }
+
+        });
     }
     else
     {

@@ -21,9 +21,10 @@ class BuilderBase:
 // BUILD_VERSION_UID is only used in auto updater
 #pragma once
 #define BUILD_VERSION_UID \"%s\"
+#define GIT_SHA \"%s\"
 #include "Utils/VersionTriplet.h"
 
-"""%self.getShortUID()
+"""%(self.getShortUID(),self.cfg["git_sha"])
     with open(os.path.join(self.rootPath,"Source","Version.h"),'r') as f:
       content = f.read();
       needUpdate = (content!=targetContent)

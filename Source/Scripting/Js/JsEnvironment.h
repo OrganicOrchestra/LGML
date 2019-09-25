@@ -30,7 +30,7 @@ class JSEnvContainer;
 
 class JsEnvironment : public MultiTimer, //timer for autoWatch & timer for calling update() in scripts
     private ParameterBase::Listener,
-private ControllableContainer::FeedbackListener
+private ParameterContainer::FeedbackListener
 
 {
 public:
@@ -123,7 +123,7 @@ protected :
 
     typedef HashMap<String ,WeakReference<ParameterBase> > ListenedParameterType ;
     ListenedParameterType listenedParameters;
-    Array<WeakReference<ControllableContainer> > listenedContainers;
+    Array<WeakReference<ParameterContainer> > listenedContainers;
     void sendAllParametersToJS();
 
 
@@ -240,7 +240,7 @@ private:
     void parameterValueChanged ( ParameterBase* c, ParameterBase::Listener * notifier=nullptr) override;
 
 
-    void controllableFeedbackUpdate (ControllableContainer* originContainer, Controllable*)     override;
+    void parameterFeedbackUpdate (ParameterContainer* originContainer, ParameterBase*,ParameterBase::Listener * notifier)     override;
     void childStructureChanged (ControllableContainer*, ControllableContainer*,bool isAdded) override;
 
     WeakReference<ParameterContainer> linkedContainer;

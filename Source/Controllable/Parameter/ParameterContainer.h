@@ -102,7 +102,38 @@ public:
     friend class PresetManager;
     std::unique_ptr<Presetable> presetable;
 
-    
+    class FeedbackListener : public ControllableContainer::Listener{
+    public:
+        //        void setDepth(int d){depth=d;};
+        virtual ~FeedbackListener(){
+            while(listenedFBContainers.size()>0){
+                if(auto cc = listenedFBContainers.getLast().get())
+                    cc->removeControllableContainerListener(this);
+                else
+                    listenedFBContainers.removeLast();
+            }
+        }
+        virtual void parameterFeedbackUpdate (ParameterContainer*, ParameterBase*,ParameterBase::Listener * notifier) =0;
+        Array<WeakReference<ControllableContainer>> listenedFBContainers;
+        //        int depth;
+    };
+
+
+
+    // helper class to inject members
+    template<class OwnerClass>
+    class OwnedFeedbackListener : public FeedbackListener{
+    public:
+        OwnedFeedbackListener(OwnerClass * o):owner(o){}
+        virtual ~OwnedFeedbackListener(){}
+        void parameterFeedbackUpdate (ParameterContainer*, ParameterBase*,ParameterBase::Listener * notifier)override ;
+        OwnerClass * owner;
+
+    };
+    ListenerList<FeedbackListener> controllableContainerFBListeners;
+    ListenerList<FeedbackListener> directControllableContainerFBListeners;
+    void addFeedbackListener (FeedbackListener* newListener,bool listenToDirectChild=false) ;
+    void removeFeedbackListener (FeedbackListener* listener) ;
 private:
     WeakReference< ParameterContainer >::Master masterReference;
     friend class WeakReference<ParameterContainer>;
@@ -110,6 +141,9 @@ private:
 
 
 protected:
+    void dispatchFeedback (ParameterBase* c, ParameterBase::Listener * notifier);
+    void dispatchFeedbackInternal (ParameterBase* c, ParameterBase::Listener * notifier);
+    
     bool _canHavePresets;
     bool _presetSavingIsRecursive;
 

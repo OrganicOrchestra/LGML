@@ -602,7 +602,7 @@ float Engine::EngineStats::getAudioCPU() const{
     return audioCpu->getX();
 }
 template<>
-void Engine::EngineStats::GlobalListener::controllableFeedbackUpdate(ControllableContainer * notif,Controllable * c ){
+void Engine::EngineStats::GlobalListener::parameterFeedbackUpdate(ParameterContainer * notif,ParameterBase * c ,ParameterBase::Listener * notifier){
     if(c&& c->parentContainer!=owner){
         const int  t = getEngine()->getElapsedMillis();
         owner->modCounts.getReference(c->controlAddress.toString()).add(t);

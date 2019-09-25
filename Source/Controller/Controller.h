@@ -41,7 +41,7 @@ public:
     BoolParameter *isConnected;
 
     Trigger* inActivityTrigger,*outActivityTrigger;
-
+    BoolParameter* blockFeedback; 
     ParameterContainer  userContainer;
 
 

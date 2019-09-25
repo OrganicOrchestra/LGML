@@ -22,10 +22,10 @@
 
 #define NON_BLOCKING 0
 template<>
-void ControllableContainer::OwnedFeedbackListener<OSCDirectController>::controllableFeedbackUpdate (ControllableContainer* originContainer, Controllable* c){
+void ParameterContainer::OwnedFeedbackListener<OSCDirectController>::parameterFeedbackUpdate (ParameterContainer* originContainer, ParameterBase* c,ParameterBase::Listener * notifier){
 
 
-    if (owner->enabledParam->boolValue())
+    if (owner->enabledParam->boolValue() && (!owner->blockFeedback->boolValue() || notifier!=(Controller*)owner))
     {
 #if NON_BLOCKING
         auto f = [this,c](){
@@ -58,28 +58,28 @@ pSync(this)
     fullSync = addNewParameter<BoolParameter> ("syncAllParameters", "sync every parameter like stats/NodesUI/FastMap...(useful for test and hacking things around)", false);
 
     if(fullSync->boolValue()){
-        ParameterContainer::getRoot(true)->addControllableContainerListener(&pSync);
+        dynamic_cast<ParameterContainer*>(ParameterContainer::getRoot(true))->addFeedbackListener(&pSync);
     }
     else{
-        NodeManager::getInstance()->addControllableContainerListener (&pSync);
+        NodeManager::getInstance()->addFeedbackListener (&pSync);
         if (sendTimeInfo->boolValue())
         {
-        TimeManager::getInstance()->addControllableContainerListener (&pSync);
+        TimeManager::getInstance()->addFeedbackListener (&pSync);
         }
     }
-    userContainer.addControllableContainerListener (&pSync);
+    userContainer.addFeedbackListener (&pSync);
 
 }
 
 OSCDirectController::~OSCDirectController()
 {
     if (NodeManager* nm = NodeManager::getInstanceWithoutCreating())
-        nm->removeControllableContainerListener (&pSync);
+        nm->removeFeedbackListener (&pSync);
 
     if (TimeManager* tm = TimeManager::getInstanceWithoutCreating())
-        tm->removeControllableContainerListener (&pSync);
+        tm->removeFeedbackListener (&pSync);
 
-    userContainer.removeControllableContainerListener (&pSync);
+    userContainer.removeFeedbackListener (&pSync);
 
 }
 
@@ -174,26 +174,26 @@ void OSCDirectController::onContainerParameterChanged ( ParameterBase* p)
     {
         if (sendTimeInfo->boolValue())
         {
-            TimeManager::getInstance()->addControllableContainerListener (&pSync);
+            TimeManager::getInstance()->addFeedbackListener (&pSync);
         }
         else
         {
-            TimeManager::getInstance()->removeControllableContainerListener (&pSync);
+            TimeManager::getInstance()->removeFeedbackListener (&pSync);
         }
 
     }
     if(p==fullSync){
         if(fullSync->boolValue()){
             if(sendTimeInfo->boolValue())
-                TimeManager::getInstance()->removeControllableContainerListener(&pSync);
-            NodeManager::getInstance()->removeControllableContainerListener(&pSync);
-            ParameterContainer::getRoot(true)->addControllableContainerListener(&pSync);
+                TimeManager::getInstance()->removeFeedbackListener(&pSync);
+            NodeManager::getInstance()->removeFeedbackListener(&pSync);
+             dynamic_cast<ParameterContainer*>(ParameterContainer::getRoot(true))->addFeedbackListener(&pSync);
         }
         else{
-            ParameterContainer::getRoot(true)->removeControllableContainerListener(&pSync);
+             dynamic_cast<ParameterContainer*>(ParameterContainer::getRoot(true))->removeFeedbackListener(&pSync);
             if(sendTimeInfo->boolValue())
-                TimeManager::getInstance()->addControllableContainerListener(&pSync);
-            NodeManager::getInstance()->addControllableContainerListener(&pSync);
+                TimeManager::getInstance()->addFeedbackListener(&pSync);
+            NodeManager::getInstance()->addFeedbackListener(&pSync);
 
 
         }

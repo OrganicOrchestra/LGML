@@ -53,7 +53,7 @@ void FastMap::onContainerParameterChanged ( ParameterBase* p)
 {
     if (p == invertParam || p == inputRange || p == outputRange || p == fullSync)
     {
-        if (referenceIn->get() && referenceOut->get())
+        if (referenceIn->getLinkedParam() && referenceOut->getLinkedParam())
         {
             process();
         }
@@ -63,12 +63,12 @@ void FastMap::process (bool toReferenceOut)
 {
     if (!enabledParam->boolValue()) return;
 
-    if (!referenceIn->get() || !referenceOut->get()) return;
+    if (!referenceIn->getLinkedParam() || !referenceOut->getLinkedParam()) return;
 
     if (fastMapIsProcessing) return;
 
 
-    auto inRef = toReferenceOut ? referenceIn->get() : referenceOut->get();
+    auto inRef = toReferenceOut ? referenceIn->getLinkedParam() : referenceOut->getLinkedParam();
     auto sourceVal = (float)inRef->floatValue();
     auto inRange = (toReferenceOut ? inputRange : outputRange);
 
@@ -78,7 +78,7 @@ void FastMap::process (bool toReferenceOut)
 
     if (invertParam->boolValue()) newIsInRange = !newIsInRange;
 
-    auto outRef = (toReferenceOut ? referenceOut : referenceIn)->get();
+    auto outRef = (toReferenceOut ? referenceOut : referenceIn)->getLinkedParam();
 
     while (auto* prox = dynamic_cast<ParameterProxy*> (outRef))
     {

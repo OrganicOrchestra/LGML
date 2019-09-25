@@ -34,7 +34,7 @@ public:
     EngineSync(PresetManager * _pm):EngineFileSaver("PresetManager"),pm(_pm){
         
 
-    };
+    }
 
     Result saveFiles(const File & baseFolder) final{
 
@@ -49,8 +49,8 @@ public:
 
             auto tf =pFolder.getChildFile(p->getType());
             if(!tf.exists()){
-                auto r = tf.createDirectory();
-                if(!r)return r;
+                auto rr = tf.createDirectory();
+                if(!rr)return rr;
             }
             tf = tf.getChildFile(p->getPresetName()+"_"+p->getFilter()+presetExtension);
             if(tf.exists()){

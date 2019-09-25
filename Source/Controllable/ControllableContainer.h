@@ -199,43 +199,16 @@ public:
     };
 
 
-    class FeedbackListener : public Listener{
-    public:
-//        void setDepth(int d){depth=d;};
-        virtual ~FeedbackListener(){
-            while(listenedFBContainers.size()>0){
-                if(auto cc = listenedFBContainers.getLast().get())
-                    cc->removeControllableContainerListener(this);
-                else
-                    listenedFBContainers.removeLast();
-            }
-        }
-        virtual void controllableFeedbackUpdate (ControllableContainer*, Controllable*) =0;
-        Array<WeakReference<ControllableContainer>> listenedFBContainers;
-//        int depth;
-    };
 
-
-
-    // helper class to inject members
-    template<class OwnerClass>
-    class OwnedFeedbackListener : public FeedbackListener{
-        public:
-        OwnedFeedbackListener(OwnerClass * o):owner(o){}
-        virtual ~OwnedFeedbackListener(){}
-        void controllableFeedbackUpdate (ControllableContainer*, Controllable*) ;
-        OwnerClass * owner;
-
-    };
     //  typedef ControllableContainerListener Listener ;
     ListenerList<Listener> controllableContainerListeners;
-    ListenerList<FeedbackListener> controllableContainerFBListeners;
-    ListenerList<FeedbackListener> directControllableContainerFBListeners;
+
+   
+
 
     void addControllableContainerListener (Listener* newListener) ;
     void removeControllableContainerListener (Listener* listener) ;
-    void addControllableContainerListener (FeedbackListener* newListener,bool listenToDirectChild=false) ;
-    void removeControllableContainerListener (FeedbackListener* listener) ;
+
 
 
     virtual DynamicObject* createObject() = 0;
@@ -255,8 +228,6 @@ protected :
 
     bool canHaveUserDefinedContainers;
     
-    void dispatchFeedback (Controllable* c);
-
 
     void updateControlAddress(bool isParentResolved = false);
     void notifyStructureChanged (ControllableContainer* origin,bool isAdded,bool controllableUpdated, bool containerUpdated);
@@ -266,7 +237,7 @@ protected :
 
 
 private:
-    void dispatchFeedbackInternal (Controllable* c);
+    
     WeakReference< ControllableContainer >::Master masterReference;
     friend class WeakReference<ControllableContainer>;
     

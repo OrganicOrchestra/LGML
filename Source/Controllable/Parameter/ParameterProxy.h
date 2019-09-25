@@ -37,7 +37,7 @@ public:
     ControllableContainer* rootOfProxy;
 
     void setRoot (ControllableContainer* );
-    ParameterBase* get();
+    ParameterBase* getLinkedParam();
     void tryToSetValue (const var & _value, bool silentSet, bool force, ParameterBase::Listener * notifier=nullptr )override;
     void setValueInternal (const var& _value) override;
     bool isMappable() override;

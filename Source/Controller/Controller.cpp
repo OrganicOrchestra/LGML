@@ -31,6 +31,7 @@ Controller::Controller (StringRef _name) :
     userContainer.setUserDefined (true);
     userContainer.addControllableContainerListener (this);
     addChildControllableContainer (&userContainer);
+    userContainer.addControllableContainerListener(this);
     userContainer.nameParam->setInternalOnlyFlags(true,true);
 
     enabledParam = addNewParameter<BoolParameter> ("Enabled", "Set whether the controller is enabled or disabled", true);
@@ -44,6 +45,7 @@ Controller::Controller (StringRef _name) :
     inActivityTrigger->setInternalOnlyFlags(true,false);
 
     outActivityTrigger->setInternalOnlyFlags(true,false);
+    blockFeedback = addNewParameter<BoolParameter> ("blockFeedback", "if a message is recieved it's not resent to controller", true);
     
     controllerTypeEnum = 0; //init
 }
@@ -55,6 +57,7 @@ Controller::~Controller()
     {
         parentContainer->removeChildControllableContainer (this);
     }
+    userContainer.removeControllableContainerListener(this);
     Controller::masterReference.clear();
 
     //DBG("Remove Controller");

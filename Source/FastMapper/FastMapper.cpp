@@ -28,16 +28,17 @@ juce_ImplementSingleton (FastMapper)
 IMPL_OBJ_TYPE (FastMapper);
 
 template<>
-void ControllableContainer::OwnedFeedbackListener<FastMapper>::controllableFeedbackUpdate (ControllableContainer* notif, Controllable* ori) {
-
-    if (auto p = ParameterBase::fromControllable (ori))
+void ParameterContainer::OwnedFeedbackListener<FastMapper>::parameterFeedbackUpdate (ParameterContainer* notif, ParameterBase* p,ParameterBase::Listener * notifier) {
+    static uint32 lastAddedTime = 0;
+    if ( p)
     {
         if(owner->autoAddFastMaps){
             if(notif== ControllerManager::getInstance()){
                 auto now=Time::getMillisecondCounter();
-                jassert(now>=owner->lastFMAddedTime);
+//                jassert(now>=owner->lastFMAddedTime);
                 // debounce control changes, to avoid setting potentialOutput back
-                if (p->isUserDefined && now-owner->lastFMAddedTime>500){
+                if (p->isUserDefined && ((now-lastAddedTime)>500)){
+                    lastAddedTime = now;
                     owner->setPotentialInput (p);
                 }
             }
@@ -82,7 +83,7 @@ FastMapper::~FastMapper()
     }
 #endif
     if(auto cm = ControllerManager::getInstanceWithoutCreating()){
-        cm->removeControllableContainerListener(&pSync);
+        cm->removeFeedbackListener(&pSync);
     }
 
     clear();
@@ -92,20 +93,20 @@ FastMapper::~FastMapper()
 
 void FastMapper::setPotentialInput ( ParameterBase* p)
 {
-    if(p!=potentialIn->get()){
+    if( p!=potentialIn->getLinkedParam()){
         potentialIn->setParamToReferTo (p);
 
     }
 }
 void FastMapper::setPotentialOutput ( ParameterBase* p )
 {
-    if(p!=potentialOut->get()){
+    if( p!=potentialOut->getLinkedParam()){
         potentialOut->setParamToReferTo (p);
     }
 }
 void FastMapper::createNewFromPotentials()
 {
-    if (potentialIn->get() && potentialOut->get() )
+    if (potentialIn->getLinkedParam() && potentialOut->getLinkedParam() )
     {
         addFastMap();
 
@@ -128,22 +129,21 @@ FastMap* FastMapper::addFastMap()
 {
 
 
-    std::unique_ptr<FastMap> f ( new FastMap());
-
-    f->nameParam->isEditable = true;
-
-    
-    f->referenceIn->setParamToReferTo (potentialIn->get());
-    f->referenceOut->setParamToReferTo (potentialOut->get());
 
 
-    if(!checkDuplicates (f.get())){
+
+    if(!checkDuplicates (potentialIn->getLinkedParam(),potentialOut->getLinkedParam())){
+        lastFMAddedTime = Time::getMillisecondCounter();
+        std::unique_ptr<FastMap> f ( new FastMap());
+        f->nameParam->isEditable = true;
+        f->referenceIn->setParamToReferTo (potentialIn->getLinkedParam());
+        f->referenceOut->setParamToReferTo (potentialOut->getLinkedParam());
         addChildControllableContainer (f.get());
         maps.add (f.get());
         f->referenceIn->addParameterProxyListener(this);
         f->referenceOut->addParameterProxyListener(this);
 
-        lastFMAddedTime = Time::getMillisecondCounter();
+
         auto addedFastMap = f.release();
 #if !ENGINE_HEADLESS
 
@@ -171,24 +171,24 @@ FastMap* FastMapper::addFastMap()
     }
 }
 
-bool FastMapper::checkDuplicates (FastMap* f)
+bool FastMapper::checkDuplicates (ParameterBase* referenceInParam,ParameterBase* referenceOutParam)
 {
     bool dup = false;
 
-    if (f->referenceIn->get() == nullptr && f->referenceOut->get() == nullptr)
+    if (referenceInParam == nullptr && referenceOutParam == nullptr)
         return false;
 
     for (auto& ff : maps)
     {
-        if (ff == f)continue;
+//        if (ff == f)continue;
 
-        if (ff->referenceIn->get() == f->referenceIn->get() &&
-            ff->referenceOut->get() == f->referenceOut->get())
+        if (ff->referenceIn->getLinkedParam() == referenceInParam &&
+            ff->referenceOut->getLinkedParam() == referenceOutParam)
         {
             dup = true;
         }
-        else if (ff->referenceIn->get() == f->referenceOut->get() &&
-                 ff->referenceOut->get() == f->referenceIn->get())
+        else if (ff->referenceIn->getLinkedParam() == referenceOutParam &&
+                 ff->referenceOut->getLinkedParam() == referenceInParam)
         {
             dup = true;
         }
@@ -196,7 +196,7 @@ bool FastMapper::checkDuplicates (FastMap* f)
         if (dup)
         {
             LOGE(juce::translate("can't duplicate fastMap"));
-            removeFastmap (f);
+
             return true;
 
         }
@@ -261,10 +261,10 @@ void FastMapper::mappingModeChanged(bool state){
     autoAddFastMaps = state;
     if(auto cm = ControllerManager::getInstance()){
         if(state){
-            cm->addControllableContainerListener(&pSync);
+            cm->addFeedbackListener(&pSync);
         }
         else{
-            cm->removeControllableContainerListener(&pSync);
+            cm->removeFeedbackListener(&pSync);
             setPotentialInput(nullptr);
             setPotentialOutput(nullptr);
         }

@@ -295,11 +295,42 @@ void ParameterContainer::parameterValueChanged ( ParameterBase* p, ParameterBase
 
     if ( (p != nullptr && p->parentContainer == this ) ){
         if(p->isControllableExposed)
-            dispatchFeedback (p);
+            dispatchFeedback (p,notifier);
         
     }
 }
 
+void ParameterContainer::addFeedbackListener (FeedbackListener* newListener,bool listenToDirectChild) {
+    addControllableContainerListener ((ControllableContainer::Listener*)newListener);
+
+    if(listenToDirectChild){
+        directControllableContainerFBListeners.add(newListener);
+    }
+    else{
+        controllableContainerFBListeners.add (newListener);
+    }
+    newListener->listenedFBContainers.addIfNotAlreadyThere(this);
+}
+void ParameterContainer::removeFeedbackListener (FeedbackListener* listener) {
+    removeControllableContainerListener((ControllableContainer::Listener*)listener);
+    controllableContainerFBListeners.remove (listener);
+    directControllableContainerFBListeners.remove(listener);
+    listener->listenedFBContainers.removeAllInstancesOf(this);
+}
+
+
+
+void ParameterContainer::dispatchFeedback (ParameterBase* c, ParameterBase::Listener * notifier) // from root to notifier
+{
+    directControllableContainerFBListeners.call (&FeedbackListener::parameterFeedbackUpdate, this, c,notifier);
+    dispatchFeedbackInternal(c,notifier);
+}
+void ParameterContainer::dispatchFeedbackInternal(ParameterBase* c, ParameterBase::Listener * notifier){
+    if (auto pc = dynamic_cast<ParameterContainer*>(parentContainer)) { pc->dispatchFeedbackInternal (c,notifier); }
+
+    controllableContainerFBListeners.call (&FeedbackListener::parameterFeedbackUpdate, this, c,notifier);
+
+}
 void ParameterContainer::configureFromObject (DynamicObject* dyn)
 {
     if (dyn)

@@ -95,6 +95,7 @@ private:
 
     void startMidiClockIfNeeded();
     MIDIClock midiClock;
+    OwnedFeedbackListener<MIDIController> pSync;
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MIDIController)
