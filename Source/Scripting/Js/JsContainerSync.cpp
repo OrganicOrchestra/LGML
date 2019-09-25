@@ -229,35 +229,36 @@ void JsContainerSync::updateControllableNamespace (ControllableContainer* c)
     {
         jassertfalse;
     }
-
+    else{
     if (jsNamespace.size() == 0)
     {
         getEnv()->setProperty (originNs->nsName, createDynamicObjectFromContainer (originNs->container));
     }
     else
     {
-
+        
         DynamicObject* dyn = getEnv()->getProperty (originNs->nsName).getDynamicObject();
-
+        
         bool found = true;
-
+        
         for (int i = jsNamespace.size() - 1 ; i >= 1 ; i--)
         {
             dyn = dyn->getProperty (jsNamespace[i]).getDynamicObject();
-
+            
             if (dyn == nullptr)
             {
                 found = false;
                 DBG ("notFound Dynamic at " + jsNamespace[i].toString());
                 break;
             }
-
+            
             DBG (jsNamespace[i].toString());
         }
-
-
+        
+        
         if (found) dyn->setProperty (jsNamespace[0], createDynamicObjectFromContainer (c));
         else DBG ("proprety not found for Controllable " + c->shortName);
+    }
     }
 
 }

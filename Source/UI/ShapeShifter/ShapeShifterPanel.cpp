@@ -196,14 +196,15 @@ void ShapeShifterPanel::attachTab (ShapeShifterPanelTab* tab)
 
     if(tab && tab->content){
     Component::setName(Component::getName()+":"+tab->content->contentName);
+        header.attachTab (tab);
+
+        contents.add (tab->content);
+        setCurrentContent (tab->content);
     }
     else{
         jassertfalse;
     }
-    header.attachTab (tab);
 
-    contents.add (tab->content);
-    setCurrentContent (tab->content);
 
 }
 
@@ -211,14 +212,12 @@ void ShapeShifterPanel::detachTab (ShapeShifterPanelTab* tab, bool createNewPane
 {
     if(tab && tab->content){
         Component::setName(Component::getName().replaceFirstOccurrenceOf(":"+tab->content->contentName, ""));
-    }
-    else{
-        jassertfalse;
-    }
-    ShapeShifterContent* content = tab->content;
+        ShapeShifterContent* content = tab->content;
 
-    header.removeTab (tab, false);
-    contents.removeObject (content, false);
+        header.removeTab (tab, false);
+        contents.removeObject (content, false);
+
+
 
     if (createNewPanel)
     {
@@ -244,7 +243,10 @@ void ShapeShifterPanel::detachTab (ShapeShifterPanelTab* tab, bool createNewPane
         }
     }
 
-
+    }
+    else{
+        jassertfalse;
+    }
 
 }
 
