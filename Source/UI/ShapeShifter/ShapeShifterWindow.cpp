@@ -64,7 +64,7 @@ checking (false)
     //setUsingNativeTitleBar(true);
     toFront (true);
 
-#if USE_GL_FOR_WINDOWS
+#if USE_GL_FOR_EACH_WINDOW
     auto * rootShapeShifter = ShapeShifterManager::getInstance()->mainShifterContainer.getTopLevelComponent();
     OpenGLContext* context = OpenGLContext::getContextAttachedTo (*rootShapeShifter);
 
@@ -94,7 +94,7 @@ checking (false)
 
 ShapeShifterWindow::~ShapeShifterWindow()
 {
-#if USE_GL_FOR_WINDOWS
+#if USE_GL_FOR_EACH_WINDOW
     openGLContext.detach();
 #endif
     removeMouseListener (this);

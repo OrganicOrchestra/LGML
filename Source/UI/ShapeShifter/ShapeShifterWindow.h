@@ -20,7 +20,7 @@
 
 // significantly slower on osx
 // TODO benchmark use of GL
-#define USE_GL_FOR_WINDOWS 0
+#define USE_GL_FOR_EACH_WINDOW 0
 
 class ShapeShifterWindow :
     public ResizableWindow,
@@ -55,7 +55,7 @@ public:
     void panelEmptied (ShapeShifterPanel*) override;
 
 
-#if USE_GL_FOR_WINDOWS
+#if USE_GL_FOR_EACH_WINDOW
     OpenGLContext openGLContext;
 #endif
 
