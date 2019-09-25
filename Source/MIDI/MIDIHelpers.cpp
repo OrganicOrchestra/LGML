@@ -74,14 +74,14 @@ namespace MIDIHelpers{
             return "CC "+String(message.getControllerNumber());
         }
         else if(message.isNoteOnOrOff()){
-            return MidiMessage::getMidiNoteName (message.getNoteNumber(), true, true, 0);
+            return MidiMessage::getMidiNoteName (message.getNoteNumber(), false, true, 0);
         }
 
             return "";
 
     }
     MidiMessage midiMessageFromParam(const ParameterBase* p,int channel){
-        static const Array<String> sharpNoteNames ( { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" });
+        static const Array<String> flatNoteNames ( { "C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B" });
 //        static int octaveNumForMiddleC = 0;
 
         if(!p)return MidiMessage(); // return sysex if not defined
@@ -91,12 +91,12 @@ namespace MIDIHelpers{
             return MidiMessage::controllerEvent(truChannel, pn.substring(3).getIntValue(), p->floatValue()*127);
         }
         else{
-            int noteIdx = sharpNoteNames.indexOf(pn.substring(0, 1));
+            int noteIdx = flatNoteNames.indexOf(pn.substring(0, 1));
 
             if(noteIdx>=0){
                 int noteNameLength = 1;
-                if(pn[1]=='#'){
-                    noteIdx++;
+                if(pn[1]=='b'){
+                    noteIdx--;
                     noteNameLength++;
                 }
                 int octave = pn.substring(noteNameLength).getIntValue();

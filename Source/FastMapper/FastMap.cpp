@@ -105,6 +105,15 @@ void FastMap::process (bool toReferenceOut)
             else if(toggleParam->boolValue() ){ // toggles only on max for float values
                 if(sourceVal==maxIn){
                     ((BoolParameter*)outRef)->setValueFrom (this,!outRef->boolValue());
+
+
+
+                }
+                else{
+                    float targetToggleValue =outRef->boolValue()?maxIn:minIn;
+                    MessageManager::callAsync([=](){
+                        (inRef)->setValueFrom (this,targetToggleValue,false,false);
+                    });
                 }
 
             }

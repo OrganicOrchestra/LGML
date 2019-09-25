@@ -147,7 +147,7 @@ void ParameterBase::tryToSetValue (const var & _value, bool silentSet, bool forc
 
     if (!shouldBeDeffered (_value, silentSet, force))
     {
-        _isSettingValue = true;
+        _isSettingValue.set( true);
         lastValue = value.clone();
         setValueInternal (_value);
 
@@ -156,7 +156,7 @@ void ParameterBase::tryToSetValue (const var & _value, bool silentSet, bool forc
         if (!silentSet && (force || !checkValueIsTheSame (lastValue, value)))
             notifyValueChanged (false,notifier);
 
-        _isSettingValue = false;
+        _isSettingValue.set(false);
     }
 
 }

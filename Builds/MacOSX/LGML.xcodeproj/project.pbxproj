@@ -4450,6 +4450,7 @@
 				ONLY_ACTIVE_ARCH = "1";
 				OTHER_CPLUSPLUSFLAGS = "-Wall -Wno-unknown-pragmas -Wno-reorder -Wno-inconsistent-missing-destructor-override";
 				OTHER_LDFLAGS = "../../third_party/rubberband/lib/librubberband.a";
+				PRE_RELEASE = "1";
 				PRODUCT_BUNDLE_IDENTIFIER = org.anic.orchestra.LGML;
 				PRODUCT_NAME = "LGML";
 				USE_HEADERMAP = NO;

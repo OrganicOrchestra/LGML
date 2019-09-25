@@ -38,7 +38,9 @@
 
 #define DO_PRAGMA(x) _Pragma (#x)
 #define TODO(x) DO_PRAGMA(message ("TODO - " #x));
-#define JUCE_LOG_ASSERTIONS 1
+#ifdef PRE_RELEASE // TODO use this flag
+    #define JUCE_LOG_ASSERTIONS 1
+#endif
 
 
 // TODO support simd for other platforms when truely needed

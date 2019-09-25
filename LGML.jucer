@@ -759,7 +759,7 @@
         <CONFIGURATION binaryPath="" cppLanguageStandard="c++11" cppLibType="libc++"
                        headerPath="" isDebug="0" linkTimeOptimisation="0" name="PreRelease"
                        optimisation="1" osxArchitecture="Native" osxCompatibility="10.13 SDK"
-                       targetName="LGML" enablePluginBinaryCopyStep="1" customXcodeFlags="ONLY_ACTIVE_ARCH=1,GCC_PRECOMPILE_PREFIX_HEADER=1,GCC_PREFIX_HEADER=PrefixHeader.pch"/>
+                       targetName="LGML" enablePluginBinaryCopyStep="1" customXcodeFlags="ONLY_ACTIVE_ARCH=1,GCC_PRECOMPILE_PREFIX_HEADER=1,GCC_PREFIX_HEADER=PrefixHeader.pch,&#10;PRE_RELEASE=1&#10;"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../JUCE/modules"/>
