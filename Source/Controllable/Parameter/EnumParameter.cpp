@@ -351,7 +351,8 @@ void EnumParameter::setValueInternal (const var& _value)
 
         for (auto& v : *_value.getArray())
         {
-            jassert (selectFromVar (v, true, true));
+            auto r = selectFromVar (v, true, true);
+            jassert (r);
         }
     }
 

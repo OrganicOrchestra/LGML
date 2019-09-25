@@ -212,13 +212,13 @@ public:
     totalSpace(_totalSpace){
     }
 
-    bool resolveAll(){
-        if(totalSpace < (shifters.size())*minElemSize)
+    void resolveAll(){
+        if(totalSpace < (shifters.size())*minElemSize){
             jassertfalse;
+        }
 
         if(shifters.size()==0){
             jassertfalse;
-            return true;
         }
         if(!resolveFlexible()){
             if(!resolveOverflows()){
@@ -227,7 +227,8 @@ public:
                 }
             }
         }
-        return getOverflow()==0;
+        jassert(getOverflow()==0);
+
     }
 
     bool resolveFlexible(){
@@ -260,7 +261,7 @@ public:
                     setLength(lastFlexible, getLength(lastFlexible)+1);
                 }
 
-                if(!cannotResolve)jassert(getOverflow()>=0);
+                if(!cannotResolve){jassert(getOverflow()>=0);}
                 spaceDiff = getOverflow();
                 return spaceDiff==0;
             }
@@ -332,7 +333,7 @@ public:
     }
 
 private:
-    bool isHorizontal(){
+    bool isHorizontal() const{
         return direction==ShapeShifterContainer::HORIZONTAL;
     }
     ShapeShifter * getBigger(){
@@ -360,10 +361,10 @@ private:
         }
         return res;
     }
-    int getLength(ShapeShifter *p){
+    int getLength(ShapeShifter *p) const{
         return isHorizontal() ? p->getPreferredWidth() : p->getPreferredHeight();
     }
-    int getOverflow(){
+    int getOverflow()const {
 
         return getUsedSpace() - totalSpace;
     }
@@ -373,7 +374,7 @@ private:
         else p->setPreferredHeight (l);
     }
 
-    int getUsedSpace(){
+    int getUsedSpace() const{
         int res = 0;
         for(auto l:shifters){
             res+=getLength(l);
@@ -403,9 +404,8 @@ void ShapeShifterContainer::resized()
 
     ShapeShifterResolver sr(shifters,totalSpaceWithoutGap,direction);
 
-    auto resolved = sr.resolveAll();
-    ignoreUnused(resolved);
-    jassert(resolved);
+    sr.resolveAll();
+
 
     Rectangle<int> r = getLocalBounds();
     int index = 0;

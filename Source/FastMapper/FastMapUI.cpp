@@ -68,7 +68,7 @@ FastMapUI (FastMap* f) :
     addAndMakeVisible (&removeBT);
     linkedParamChanged (f->referenceIn);
     linkedParamChanged (f->referenceOut);
-
+    setPaintingIsUnclipped(false);
 //    setSize (100, 40);
 }
 

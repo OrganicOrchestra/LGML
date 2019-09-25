@@ -27,7 +27,8 @@
 FastMapperUI::FastMapperUI (const String& contentName,FastMapper* _fastMapper, ContainerType* _viewFilterContainer) :
 ShapeShifterContent (this,contentName,"Link parameters together\nAdd FastMap here\nCmd+m toggles mapping mode"),
 InspectableComponent(_fastMapper),
-fastMapper (_fastMapper), viewFilterContainers {WeakReference<ContainerType>(_viewFilterContainer)},
+fastMapper (_fastMapper),
+viewFilterContainers {WeakReference<ContainerType>(_viewFilterContainer)},
 mapsUI(new StackedContainerUI<FastMapUI, FastMap>(
                                                   [](FastMapUI* ui){return ui->fastMap;},
                                                   [_fastMapper](int ia, int ib){
@@ -93,7 +94,10 @@ FastMapperUI::~FastMapperUI()
 
 void FastMapperUI::addFastMapUI (FastMap* f)
 {
-    jassert(mapsUI.addFromT (f)!=nullptr);
+    auto added = mapsUI.addFromT (f);
+    ignoreUnused(added);
+    jassert(added!=nullptr);
+
 
 }
 

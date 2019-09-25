@@ -132,7 +132,9 @@ Engine::~Engine()
     engineListeners.clear();
     controllableContainerListeners.clear();
 
-    jassert(fadeAudioOut());
+
+    auto resFade=fadeAudioOut();
+    jassert(resFade);
     closeAudio();
 
     threadPool.removeAllJobs(true, -1);

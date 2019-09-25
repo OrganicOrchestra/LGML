@@ -387,8 +387,8 @@ void ShapeShifterManager::saveCurrentLayoutToFile (const File& toFile)
         toFile.deleteFile();
 
     }
-
-    jassert (toFile.create());
+    auto f = toFile.create();
+    jassert (f);
 
     if (auto os = std::unique_ptr<OutputStream> (toFile.createOutputStream()))
     {
