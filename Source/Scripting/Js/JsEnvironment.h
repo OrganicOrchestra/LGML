@@ -30,6 +30,7 @@ class JSEnvContainer;
 
 class JsEnvironment : public MultiTimer, //timer for autoWatch & timer for calling update() in scripts
     private ParameterBase::Listener,
+private ControllableContainer::Listener,
 private ParameterContainer::FeedbackListener
 
 {
@@ -187,7 +188,7 @@ private:
         {
             splitedName.addTokens (s, "_", "");
             identifier = s;
-        };
+        }
 
         bool compareIdentifier (const Identifier& i)
         {
@@ -294,7 +295,7 @@ public :
     virtual ~JsParameterListenerObject()
     {
         if (parameter.get()) parameter->removeAsyncParameterListener (this);
-    };
+    }
 
 
 
@@ -313,13 +314,13 @@ public :
 
     // overriden in Js
 
-    static var dummyCallback (const var::NativeFunctionArgs& /*a*/) {return var::undefined();};
+    static var dummyCallback (const var::NativeFunctionArgs& /*a*/) {return var::undefined();}
 
     void newMessage (const ParameterBase::ParamWithValue& pv)override
     {
         jsEnv->callFunctionFromIdentifier (parameterChangedFId, var::NativeFunctionArgs (object, &pv.value, 1), true);
 
-    };
+    }
 
 
     JsEnvironment* jsEnv;

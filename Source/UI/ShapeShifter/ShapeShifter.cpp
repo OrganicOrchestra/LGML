@@ -102,7 +102,7 @@ void ShapeShifter::loadLayout (var layout)
 }
 
 
-void ShapeShifter::mouseUp(const MouseEvent & me){
+void ShapeShifter::mouseUp(const MouseEvent & ){
     if(isMini){
         setMini(false);
     }
@@ -189,7 +189,7 @@ void ShapeShifter::setMini(bool s,bool resizeNow){
     ShapeShifterContainer * parent = parentShifterContainer;
     if(parent){
         bool allMinimized = true;
-        for(auto & s:parent->shifters){allMinimized&=s->isMini;}
+        for(auto & sh:parent->shifters){allMinimized&=sh->isMini;}
         if (resizeNow && allMinimized){jassert(!isMini);return;}
 
         if(auto * sp = dynamic_cast<ShapeShifterPanel*>(this)){

@@ -25,6 +25,10 @@ namespace MIDIHelpers{
 
 EnumParameterModel * getGlobalMidiModel();
 
+    String midiMessageToDebugString(const MidiMessage &);
+    String midiMessageToParamName(const MidiMessage &);
+    MidiMessage midiMessageFromParam(const ParameterBase* p,int targetChannel);
+
 struct MIDIIOChooser : EnumParameter::EnumListener{
         MIDIIOChooser(MIDIListener *l,bool autoOut,bool showControllers);
         EnumParameter * getDeviceInEnumParameter();

@@ -98,7 +98,7 @@ void StringParameterUI::setNameLabelVisible (bool visible)
     nameLabelIsVisible = visible;
     nameLabel.setVisible (visible);
 }
-void StringParameterUI::setBackGroundIsTransparent (bool t)
+void StringParameterUI::setBackGroundIsTransparent (bool /*t*/)
 {
 //    valueLabel.setColour (Label::backgroundColourId, Colours::transparentWhite.withAlpha (t ? 0 : 0.1f));
 }

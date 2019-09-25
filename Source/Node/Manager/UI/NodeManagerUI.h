@@ -163,7 +163,7 @@ public :
 
         resized();
     }
-    void mouseDown(const MouseEvent & e)override{
+    void mouseDown(const MouseEvent & )override{
 //        if(nmui->isParentOf(e.originalComponent)) {
 //            beginDragAutoRepeat(40);
 //        }
@@ -177,7 +177,7 @@ public :
             vp.autoScroll(jmax(r.getRight(),mouse.x),jmax(r.getBottom(),mouse.y),40,10);
         }
     }
-    void mouseUp(const MouseEvent & e)override{
+    void mouseUp(const MouseEvent & )override{
         if(nmui->currentViewer) {
             auto nb = nmui->currentViewer->getNodesBoundingBox();
             auto maxP = vp.getLocalArea(nmui->currentViewer.get(),nb);

@@ -145,11 +145,11 @@ SerialPort* SerialManager::getPort (SerialPortInfo* portInfo, bool createIfNotTh
             if(auto* ee = dynamic_cast<const serial::IOException*>(&e)){
                 error = ee->what();
             }
-            else if(auto* ee = dynamic_cast<const serial::PortNotOpenedException*>(&e)){
-                error = ee->what();
+            else if(auto* ee2 = dynamic_cast<const serial::PortNotOpenedException*>(&e)){
+                error = ee2->what();
             }
-            else if(auto* ee = dynamic_cast<const serial::SerialException*>(&e)){
-                error = ee->what();
+            else if(auto* ee3 = dynamic_cast<const serial::SerialException*>(&e)){
+                error = ee3->what();
             }
             LOGE(juce::translate("cannot open serial port ")
                 <<portInfo->port.toStdString()

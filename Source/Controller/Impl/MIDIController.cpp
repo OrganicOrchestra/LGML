@@ -46,9 +46,12 @@ void ParameterContainer::OwnedFeedbackListener<MIDIController>::parameterFeedbac
             if(owner->midiOutDevice.get() ){
 
                 if(p){
-                    auto pName = p->niceName;
-                    if(pName.startsWith("CC ")){
-                        owner->sendCC(1, pName.substring(3).getIntValue(), p->floatValue()*127);
+                    auto msgToSend = MIDIHelpers::midiMessageFromParam(p, owner->channelFilter->intValue());
+                    if(!msgToSend.isSysEx()){
+                        owner->sendMessage(msgToSend);
+                    }
+                    else{
+                        NLOGW("MIDI","user parameter doesnt have a valid midi name to be sent to device");
                     }
                 }
             }
@@ -80,6 +83,8 @@ pSync(this)
 
     logIncoming = addNewParameter<BoolParameter> ("logIncoming", "log Incoming midi message", false);
     logIncoming->setSavable(false);
+    logOutgoing = addNewParameter<BoolParameter> ("logOutgoing", "log Outgoing midi message", false);
+    logOutgoing->setSavable(false);
 
     sendMIDIClock = addNewParameter<BoolParameter> ("send MIDI Clock", "send MIDI Clock",false);
     sendMIDIPosition = addNewParameter<BoolParameter> ("send MIDI Position", "send MIDI Position information",false);
@@ -105,21 +110,19 @@ void MIDIController::handleIncomingMidiMessage (MidiInput*,
 
     if (channelFilter->intValue() > 0 && message.getChannel() != channelFilter->intValue())
     {
+        if (logIncoming->boolValue()){
+            NLOG("MIDI IN", "Ignoring MIDI message Channel filter not valid");
+        }
         return;
     }
-
+    if (logIncoming->boolValue()){
+        NLOG ("MIDI IN",MIDIHelpers::midiMessageToDebugString(message));
+    }
     if (message.isController())
     {
-        if (logIncoming->boolValue())
-        {
-            NLOG ("MIDI", String("CC 123 > 456 (Channel 789)")
-                  .replace("123", String (message.getControllerNumber()))
-                  .replace("456", String (message.getControllerValue()))
-                  .replace("789",String (message.getChannel())));
-        }
 
 
-        const String paramName( "CC "+String(message.getControllerNumber()));
+        const String paramName(MIDIHelpers::midiMessageToParamName(message));
         if (Controllable* c = userContainer.getControllableByName(paramName))
         {
             (( ParameterBase*)c)->setValueFrom((Controller*)this,message.getControllerValue()*1.0/127);
@@ -140,18 +143,8 @@ void MIDIController::handleIncomingMidiMessage (MidiInput*,
     else if (message.isNoteOnOrOff())
     {
         bool isNoteOn = message.isNoteOn();
-        if (logIncoming->boolValue())
-        {
-            NLOG ("MIDI", String("123 : 456 (#789) : Ch 1011")
-                  .replace("123", String (isNoteOn ? "NoteOn" : "NoteOff"))
-                  .replace("456", MidiMessage::getMidiNoteName (message.getNoteNumber(), true, true, 0))
-                  .replace("789",String (message.getNoteNumber()))
-                  .replace("1011",String (message.getChannel()))
-                  );
 
-        }
-
-        const String paramName (MidiMessage::getMidiNoteName (message.getNoteNumber(), false, true, 0));//+"_"+String(message.getChannel()));
+        const String paramName (MIDIHelpers::midiMessageToParamName(message));//+"_"+String(message.getChannel()));
         if (Controllable* c = userContainer.getControllableByName(paramName))
         {
             (( ParameterBase*)c)->setValueFrom((Controller*)this,isNoteOn?message.getFloatVelocity():0);
@@ -172,17 +165,10 @@ void MIDIController::handleIncomingMidiMessage (MidiInput*,
 
     else if (message.isPitchWheel())
     {
-        if (logIncoming->boolValue())
-        {
-            NLOG ("MIDI", "pitch wheel " + String (message.getPitchWheelValue()));
-        }
+
     }
     else
     {
-        if (logIncoming->boolValue())
-        {
-            NLOG ("MIDI", "message : " + message.getDescription());
-        }
     }
 
     // call Js
@@ -287,8 +273,11 @@ void MIDIController::startMidiClockIfNeeded(){
         midiClock.stop();
     }
 }
-void MIDIController::midiMessageSent(){
+void MIDIController::midiMessageSent(const MidiMessage & msg){
     outActivityTrigger->triggerDebounced(activityTriggerDebounceTime);
+    if(logOutgoing->boolValue()){
+        NLOG("MIDI OUT",MIDIHelpers::midiMessageToDebugString(msg));
+    }
 
 };
 

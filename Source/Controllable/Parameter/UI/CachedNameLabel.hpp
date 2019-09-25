@@ -29,7 +29,7 @@ public:
 
     }
 
-    void displayedTextChanged(ParameterUI *pui ) final{
+    void displayedTextChanged(ParameterUI */*pui*/ ) final{
         updateText();
     }
     void resized()override{

@@ -43,7 +43,7 @@ public:
         virtual ~Listener();
         virtual void presetAdded(Preset * p) = 0;
         virtual void presetRemoved(Preset * p) = 0;
-        virtual void presetSaved(Preset * p) {};
+        virtual void presetSaved(Preset * ) {};
     };
 
 

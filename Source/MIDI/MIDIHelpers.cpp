@@ -25,6 +25,96 @@
 
 namespace MIDIHelpers{
 
+
+    String midiMessageToDebugString(const MidiMessage & message){
+        if (message.isController()){
+            return  String("CC 123 > 456 (Channel 789)")
+            .replace("123", String (message.getControllerNumber()))
+            .replace("456", String (message.getControllerValue()))
+            .replace("789",String (message.getChannel()));
+        }
+        else if (message.isNoteOnOrOff())
+        {
+            bool isNoteOn = message.isNoteOn();
+
+            return  String("123 : 456 (#789) : Ch 1011")
+            .replace("123", String (isNoteOn ? "NoteOn" : "NoteOff"))
+            .replace("456", MidiMessage::getMidiNoteName (message.getNoteNumber(), true, true, 0))
+            .replace("789",String (message.getNoteNumber()))
+            .replace("1011",String (message.getChannel()));
+
+        }
+
+        else if (message.isPitchWheel())
+        {
+            return "pitch wheel " + String (message.getPitchWheelValue());
+
+        }
+        else
+        {
+            return  "message : " + message.getDescription();
+        }
+    }
+
+
+//    if (isPositiveAndBelow (note, 128))
+//    {
+//        String s (useSharps ? sharpNoteNames[note % 12]
+//                  : flatNoteNames [note % 12]);
+//
+//        if (includeOctaveNumber)
+//            s << (note / 12 + (octaveNumForMiddleC - 5));
+//
+//            return s;
+//            }
+//
+//            return {};
+    String midiMessageToParamName(const MidiMessage & message){
+        if(message.isController()){
+            return "CC "+String(message.getControllerNumber());
+        }
+        else if(message.isNoteOnOrOff()){
+            return MidiMessage::getMidiNoteName (message.getNoteNumber(), true, true, 0);
+        }
+
+            return "";
+
+    }
+    MidiMessage midiMessageFromParam(const ParameterBase* p,int channel){
+        static const Array<String> sharpNoteNames ( { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" });
+//        static int octaveNumForMiddleC = 0;
+
+        if(!p)return MidiMessage(); // return sysex if not defined
+        String pn = p->niceName;
+        int truChannel = jmax(1,channel);
+        if(pn.startsWith(String("CC "))){
+            return MidiMessage::controllerEvent(truChannel, pn.substring(3).getIntValue(), p->floatValue()*127);
+        }
+        else{
+            int noteIdx = sharpNoteNames.indexOf(pn.substring(0, 1));
+
+            if(noteIdx>=0){
+                int noteNameLength = 1;
+                if(pn[1]=='#'){
+                    noteIdx++;
+                    noteNameLength++;
+                }
+                int octave = pn.substring(noteNameLength).getIntValue();
+                int noteNum = noteIdx+12*(octave+5);
+                if(p->floatValue()>0){
+                    return MidiMessage::noteOn(truChannel,noteNum , p->floatValue());// normalized velocity
+                }
+                else{
+                    return MidiMessage::noteOff(truChannel,noteNum );
+                }
+            }
+
+
+
+        }
+
+    }
+
     class MIDIInModel : public EnumParameterModel,MIDIManager::MIDIManagerListener{
         public :
         MIDIInModel(){

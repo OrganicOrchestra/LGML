@@ -46,7 +46,7 @@ public :
     void sendCC (int channel, int number, int value);
     void sendSysEx (uint8* data, int dataCount);
     void sendMessage(const MidiMessage & msg);
-    virtual void midiMessageSent(){};
+    virtual void midiMessageSent(const MidiMessage & ){};
     virtual void midiInputAdded (String& s) override;
     virtual void midiInputRemoved (String& s) override;
     //    virtual void midiInputsChanged() {}

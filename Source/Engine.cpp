@@ -602,7 +602,7 @@ float Engine::EngineStats::getAudioCPU() const{
     return audioCpu->getX();
 }
 template<>
-void Engine::EngineStats::GlobalListener::parameterFeedbackUpdate(ParameterContainer * notif,ParameterBase * c ,ParameterBase::Listener * notifier){
+void Engine::EngineStats::GlobalListener::parameterFeedbackUpdate(ParameterContainer * notif,ParameterBase * c ,ParameterBase::Listener * ){
     if(c&& c->parentContainer!=owner){
         const int  t = getEngine()->getElapsedMillis();
         owner->modCounts.getReference(c->controlAddress.toString()).add(t);
@@ -612,11 +612,11 @@ void Engine::EngineStats::GlobalListener::parameterFeedbackUpdate(ParameterConta
 void Engine::EngineStats::activateGlobalStats(bool s){
     isListeningGlobal = s;
     if(s){
-        globalListener = std::make_unique< GlobalListener>(this);
-        engine->addControllableContainerListener(globalListener.get());
+        globalListener.reset(new GlobalListener(this));
+        engine->addFeedbackListener(globalListener.get());
     }
     else{
-        engine->removeControllableContainerListener(globalListener.get());
+        engine->removeFeedbackListener(globalListener.get());
         globalListener = nullptr;
     }
 }

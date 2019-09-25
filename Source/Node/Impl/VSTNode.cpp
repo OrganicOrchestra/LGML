@@ -59,6 +59,7 @@ inline bool isInvalidName(const String & s){
 #if REMOVE_VSTPARAMS
     return s.startsWith("{");
 #else
+    ignoreUnused(s);
     return false;
 #endif
 }
@@ -402,7 +403,7 @@ void VSTNode::initParametersFromProcessor (AudioPluginInstance* pi)
     vstNodeListeners.call (&VSTNodeListener::newVSTSelected);
 }
 
-void VSTNode::updateParametersFromProcessor (AudioPluginInstance* pi)
+void VSTNode::updateParametersFromProcessor (AudioPluginInstance* /*pi*/)
 {
     if(!innerPlugin){
         jassert(VSTParameters.size()==0);

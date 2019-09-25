@@ -320,7 +320,7 @@ Spat2DTarget::Spat2DTarget (int _index, Colour c) : Spat2DElement (Type::TARGET,
     radius = .25f;
 }
 
-void Spat2DTarget::setFloatRadius(float r,bool _repaint ){
+void Spat2DTarget::setFloatRadius(float r,bool /*_repaint*/ ){
     radius = r;
     auto sui = findParentComponentOfClass<Spat2DViewer>();
     int ds = radius*2.0*sui->getWidth()  ;

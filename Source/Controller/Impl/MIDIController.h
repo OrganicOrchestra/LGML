@@ -48,6 +48,7 @@ public :
 
 
     BoolParameter* logIncoming;
+    BoolParameter* logOutgoing;
     IntParameter* channelFilter;
     BoolParameter *sendMIDIClock;
     BoolParameter *sendMIDIPosition;
@@ -56,7 +57,7 @@ public :
 
 
 //    void enumOptionSelectionChanged(EnumParameter * ep, bool isSelected, bool isValid, const juce::Identifier & key)override;
-    void midiMessageSent()override;
+    void midiMessageSent(const MidiMessage & msg)override;
 
     void    onContainerParameterChanged ( ParameterBase* )override;
 

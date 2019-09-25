@@ -90,6 +90,7 @@ public:
         auto ui =new UIT(obj);
         addAndMakeVisible(ui);
         stackedUIs.add( ui);
+        //ui->setPaintingIsUnclipped(false);
         updateSize();
         resized();
         return ui;
@@ -122,7 +123,7 @@ public:
         return nullptr;
     }
 
-    void childBoundsChanged (Component* child)override{
+    void childBoundsChanged (Component* )override{
     updateSize();
 
     }

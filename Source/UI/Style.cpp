@@ -164,7 +164,7 @@ AddElementButton::~AddElementButton(){
 void AddElementButton::parentHierarchyChanged(){
     repaint();// for background
 }
-void AddElementButton::paint(Graphics & g){
+void AddElementButton::paint(Graphics & ){
 //    LGMLUIUtils::fillBackground(this,g);
 }
 
@@ -221,9 +221,9 @@ Drawable * AddElementButton::createDrawable(bool isHovered){
 
     return !isHovered?el->normal.get():el->hovered.get();
 }
-void AddElementButton::paintButton (Graphics& g,
-                                    bool isMouseOverButton,
-                                    bool isButtonDown)
+void AddElementButton::paintButton (Graphics& ,
+                                    bool /*isMouseOverButton*/,
+                                    bool /*isButtonDown*/)
 {
 //    auto bgColor = Colours::green;//findColour (TextButton::buttonOnColourId);
 //

@@ -571,7 +571,7 @@ void ShapeShifterContainer::oneShifterRemaining (ShapeShifterContainer* containe
     
 }
 
-void ShapeShifterContainer::paintOverChildren(Graphics & g) {
+void ShapeShifterContainer::paintOverChildren(Graphics & ) {
     //    LGMLUIUtils::drawBounds(this,g);
     
 }

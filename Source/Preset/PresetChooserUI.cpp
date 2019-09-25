@@ -259,18 +259,18 @@ void PresetChooserUI::comboBoxChanged (ComboBox* cb)
 
 }
 
-void PresetChooserUI::controllableContainerPresetLoaded (ControllableContainer*,Preset * p)
+void PresetChooserUI::controllableContainerPresetLoaded (ControllableContainer*,Preset * )
 {
 
     updatePresetComboBox (false);
 }
-void PresetChooserUI::presetRemoved(Preset *p) {
+void PresetChooserUI::presetRemoved(Preset *) {
 
     updatePresetComboBox (false);
 
 
 };
-void PresetChooserUI::presetAdded(Preset *p) {
+void PresetChooserUI::presetAdded(Preset *) {
     updatePresetComboBox (false);
 
 };

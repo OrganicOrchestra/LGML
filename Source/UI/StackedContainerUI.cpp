@@ -154,7 +154,7 @@ void StackedContainerBase::mouseDrag(const MouseEvent & e) {
 
 }
 
-void StackedContainerBase::mouseUp(const MouseEvent & e) {
+void StackedContainerBase::mouseUp(const MouseEvent & ) {
     if(draggedUI!=nullptr){
         endDrag();
     }

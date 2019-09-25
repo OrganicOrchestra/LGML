@@ -115,7 +115,7 @@ private:
 protected:
     
     typedef HashMap<int, String> UICommandType;
-    virtual void processUICommand(int cmd){}
+    virtual void processUICommand(int /*cmd*/){}
     virtual const UICommandType & getUICommands() const;
 private:
     WeakReference<ParameterUI>::Master masterReference;

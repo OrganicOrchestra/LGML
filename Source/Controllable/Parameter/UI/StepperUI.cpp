@@ -83,7 +83,7 @@ void StepperUI<T>::sliderValueChanged (Slider* _slider)
 
 }
 template <class T>
-void StepperUI<T>::rangeChanged ( ParameterBase* p)
+void StepperUI<T>::rangeChanged ( ParameterBase* )
 {
     auto* fp = parameter->getAs<NumericParameter<T>>();
     jassert (fp);

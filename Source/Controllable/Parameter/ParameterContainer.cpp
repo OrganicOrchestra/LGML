@@ -301,7 +301,6 @@ void ParameterContainer::parameterValueChanged ( ParameterBase* p, ParameterBase
 }
 
 void ParameterContainer::addFeedbackListener (FeedbackListener* newListener,bool listenToDirectChild) {
-    addControllableContainerListener ((ControllableContainer::Listener*)newListener);
 
     if(listenToDirectChild){
         directControllableContainerFBListeners.add(newListener);
@@ -312,7 +311,7 @@ void ParameterContainer::addFeedbackListener (FeedbackListener* newListener,bool
     newListener->listenedFBContainers.addIfNotAlreadyThere(this);
 }
 void ParameterContainer::removeFeedbackListener (FeedbackListener* listener) {
-    removeControllableContainerListener((ControllableContainer::Listener*)listener);
+
     controllableContainerFBListeners.remove (listener);
     directControllableContainerFBListeners.remove(listener);
     listener->listenedFBContainers.removeAllInstancesOf(this);

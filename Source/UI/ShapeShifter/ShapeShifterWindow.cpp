@@ -102,7 +102,7 @@ ShapeShifterWindow::~ShapeShifterWindow()
 
 }
 
-void ShapeShifterWindow::paintOverChildren (Graphics& g)
+void ShapeShifterWindow::paintOverChildren (Graphics& )
 {
 
 }
@@ -155,7 +155,7 @@ void ShapeShifterWindow::mouseDrag (const MouseEvent& e)
     setTopLeftPosition(getPosition());
 }
 
-void ShapeShifterWindow::mouseUp(const MouseEvent &e) {
+void ShapeShifterWindow::mouseUp(const MouseEvent &) {
     //ResizableWindow::mouseUp(e);
 
     panel->setTransparentBackground (false);

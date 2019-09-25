@@ -104,7 +104,7 @@ class LGMLLogger : public Logger
         virtual void newMessages(int from, int to)  = 0;
 
     private:
-        void newMessage(const LogElement * el){
+        void newMessage(const LogElement * ){
             if(!isTimerRunning()){
                 startTimer(time);
             }

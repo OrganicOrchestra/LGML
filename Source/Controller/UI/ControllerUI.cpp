@@ -56,12 +56,14 @@ static DrawableButton* getArrowButton(const String& name){
                    &downArrow,// downOn,
                    nullptr// disabledOn
                    );
+//    res->setOpaque(false);
+//    res->setPaintingIsUnclipped(false);
     return res;
 
 }
-ControllerUI::ControllerUI (Controller* controller) :
-    InspectableComponent (controller, "controller"),
-    controller (controller)
+ControllerUI::ControllerUI (Controller* _controller) :
+    InspectableComponent (_controller, "controller"),
+    controller (_controller)
 {
     LGMLUIUtils::markHasNewBackground(this,2);
     canInspectChildContainersBeyondRecursion = true;
@@ -111,7 +113,7 @@ ControllerUI::ControllerUI (Controller* controller) :
     showUserParams->setToggleState(false, dontSendNotification);
     showUserParams->addListener(this);
     showUserParams->setClickingTogglesState(true);
-
+    setPaintingIsUnclipped(false);
 }
 
 ControllerUI::~ControllerUI()

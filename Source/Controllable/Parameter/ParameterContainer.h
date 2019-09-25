@@ -102,14 +102,14 @@ public:
     friend class PresetManager;
     std::unique_ptr<Presetable> presetable;
 
-    class FeedbackListener : public ControllableContainer::Listener{
+    class FeedbackListener{
     public:
         //        void setDepth(int d){depth=d;};
         virtual ~FeedbackListener(){
             while(listenedFBContainers.size()>0){
-                if(auto cc = listenedFBContainers.getLast().get())
-                    cc->removeControllableContainerListener(this);
-                else
+//                if(auto cc = listenedFBContainers.getLast().get())
+//                    cc->removeControllableContainerListener(this);
+//                else
                     listenedFBContainers.removeLast();
             }
         }
