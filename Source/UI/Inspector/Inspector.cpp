@@ -20,8 +20,8 @@
 juce_ImplementSingleton (Inspector)
 
 Inspector::Inspector() :
-    currentEditor (nullptr),
-    isListening (true)
+isListening (true)
+,currentEditor (nullptr)
 {
     setOpaque(true);
     setPaintingIsUnclipped(true);
@@ -247,8 +247,8 @@ void Inspector::itemDeselected (WeakReference<InspectableComponent> c){
 ///////////
 
 InspectorViewport::InspectorViewport (const String& contentName, Inspector* _inspector) :
-inspector (_inspector),
 ShapeShifterContentComponent (contentName, "See inside :\nDisplays info on selected Object")
+,inspector (_inspector)
 {
     vp.setViewedComponent (inspector, false);
     vp.setScrollBarsShown (true, false);

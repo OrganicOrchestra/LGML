@@ -50,32 +50,34 @@ using namespace RubberBand;
 
 PlayableBuffer::PlayableBuffer (int numChannels, int numSamples, float _sampleRate, int _blockSize):
 
-recordNeedle (0),
 
-playNeedle (0), globalPlayNeedle (0),
-state (BUFFER_STOPPED),
-lastState (BUFFER_STOPPED),
-stateChanged (false),
-numTimePlayed (0),
-sampleOffsetBeforeNewState (0),
-multiNeedle (512, 512)
+stateChanged (false)
+,numTimePlayed (0)
+, bufferBlockList (numChannels, numSamples)
+,multiNeedle (512, 512)
 
 #if BUFFER_CAN_STRETCH
 , stretchJob (nullptr)
 #if RT_STRETCH
 , pendingTimeStretchRatio (1)
+, fadePendingStretch (256, 256)
 , isStretchPending (false)
 , isStretchReady (false)
-, fadePendingStretch (256, 256)
 , desiredRatio(1)
 , appliedRatio(1)
 , RTStretcherSamplerate(-1)
 #endif
 #endif
 
-, bufferBlockList (numChannels, numSamples)
+
 , blockSize (_blockSize)
 , sampleRate (_sampleRate)
+,sampleOffsetBeforeNewState (0)
+,state (BUFFER_STOPPED)
+,lastState (BUFFER_STOPPED)
+,recordNeedle (0)
+,playNeedle (0)
+,globalPlayNeedle (0)
 
 {
 

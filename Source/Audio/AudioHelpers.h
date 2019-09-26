@@ -57,13 +57,13 @@ inline float rmsToDB_6dBHR (float rms)
 class FadeInOut
 {
 public:
-    FadeInOut (int _fadeInSamples, int _fadeOutSamples, bool autoCrossFade = false, double _skew = 1): fadeInNumSamples (_fadeInSamples), fadeOutNumSamples (_fadeOutSamples), crossFade (autoCrossFade), skew (_skew)
+    FadeInOut (int _fadeInSamples, int _fadeOutSamples, bool autoCrossFade = false, double _skew = 1): fadeInNumSamples (_fadeInSamples), fadeOutNumSamples (_fadeOutSamples),  skew (_skew),crossFade (autoCrossFade)
     {
         fadeOutCount = 0;
         fadeInCount = -1;
     }
 
-    explicit FadeInOut (int numSample): fadeInNumSamples (numSample), fadeOutNumSamples (numSample), crossFade (false), skew (1.0)
+    explicit FadeInOut (int numSample): fadeInNumSamples (numSample), fadeOutNumSamples (numSample), skew (1.0), crossFade (false)
     {
 
     }

@@ -41,7 +41,7 @@ public:
             slider.setMinAndMaxValues (v[0], v[1]);
         }
 
-    };
+    }
 
     void rangeChanged ( ParameterBase* p)override
     {

@@ -17,9 +17,9 @@ namespace UndoableHelpers{
 class UndoableSetValueAction : public UndoableAction{
 public:
     UndoableSetValueAction( ParameterBase* p,const var & _value, bool _silentSet, bool _force,bool _isResetAction=false):
+    parameter(p),
     silentSet(_silentSet),
     force(_force),
-    parameter(p),
     isResetAction(_isResetAction)
     {
         if(parameter.get()){

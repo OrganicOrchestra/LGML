@@ -52,7 +52,7 @@ public :
     // internal function for taskTree
     bool isASubTaskOf (ProgressTask* pt);
     ProgressTask* getRootTask();
-    ProgressTask* getNextSibling();;
+    ProgressTask* getNextSibling();
     ProgressTask* getLeftMostLeaf();
     int getTotalNumberOfTasks();
     bool isLeaf();
@@ -63,11 +63,11 @@ public :
     class TaskListener
     {
     public:
-        virtual ~TaskListener() {};
-        virtual void taskAdded (ProgressTask*) {};
-        virtual void taskProgress (ProgressTask*, float) {};
-        virtual void taskStarted (ProgressTask*) {};
-        virtual void taskEnded (ProgressTask*) {};
+        virtual ~TaskListener() {}
+        virtual void taskAdded (ProgressTask*) {}
+        virtual void taskProgress (ProgressTask*, float) {}
+        virtual void taskStarted (ProgressTask*) {}
+        virtual void taskEnded (ProgressTask*) {}
     };
     ListenerList<TaskListener> taskListeners;
     void addTaskListener (TaskListener* l) {taskListeners.add (l);}
@@ -105,10 +105,10 @@ public:
         }
         virtual ~ProgressListener() {if (baseNotifier)baseNotifier->removeListener (this);}
 
-        virtual void startedProgress (ProgressTask*) {};
-        virtual void endedProgress (ProgressTask*) {};
-        virtual void newProgress (ProgressTask*, float) {};
-        virtual void totalNumberOfTaskChanged() {};
+        virtual void startedProgress (ProgressTask*) {}
+        virtual void endedProgress (ProgressTask*) {}
+        virtual void newProgress (ProgressTask*, float) {}
+        virtual void totalNumberOfTaskChanged() {}
 
 
         // used for easy handling if only one notifier linked

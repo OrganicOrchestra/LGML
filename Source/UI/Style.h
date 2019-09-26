@@ -60,16 +60,14 @@ enum ColorsIds
 
 }
 
-
+class ElemDrawables;
 class AddElementButton : public DrawableButton
 {
 public:
     AddElementButton();
     ~AddElementButton();
     static Drawable * createDrawable(bool isHovered=false);
-    void paintButton (Graphics& g,
-                      bool isMouseOverButton,
-                      bool isButtonDown)override;
+
     void paint(Graphics &g) override;
     // utility function to share common positioning
     void setFromParentBounds (const Rectangle<int>& area);
@@ -80,18 +78,19 @@ private:
 };
 
 
-class RemoveElementButton : public Button
+class RemoveElementButton : public DrawableButton
 {
 public:
     RemoveElementButton();
     ~RemoveElementButton();
+    static Drawable * createDrawable(bool isHovered=false);
 
-    void paintButton (Graphics& g,
-                      bool isMouseOverButton,
-                      bool isButtonDown)override;
+    void parentHierarchyChanged() override;
     void paint(Graphics &g) override;
 
+
 private:
+    static ElemDrawables * getDrawables();
     JUCE_LEAK_DETECTOR(RemoveElementButton)
 };
 

@@ -32,6 +32,8 @@ public:
 
     enum DragMode { NONE, TAB, PANEL };
 
+    DragMode dragMode;
+
     ShapeShifterPanel* panel;
 
     bool checking;
@@ -44,7 +46,6 @@ public:
     void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
 
-    DragMode dragMode;
 
     void clear();
 

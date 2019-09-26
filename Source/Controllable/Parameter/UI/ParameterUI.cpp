@@ -194,7 +194,7 @@ void ParameterUI::mouseDown (const MouseEvent& e)
     }
 
 }
-void ParameterUI::mouseUp (const MouseEvent& e) {
+void ParameterUI::mouseUp (const MouseEvent& ) {
 
 };
 

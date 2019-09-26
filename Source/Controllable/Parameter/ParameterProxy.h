@@ -53,9 +53,9 @@ public:
     {
     public:
         virtual ~ParameterProxyListener() {}
-        virtual void linkedParamValueChanged (ParameterProxy*,ParameterBase::Listener *) {};
-        virtual void linkedParamChanged (ParameterProxy*) {};
-        virtual void linkedParamRangeChanged(ParameterProxy*) {};
+        virtual void linkedParamValueChanged (ParameterProxy*,ParameterBase::Listener *) {}
+        virtual void linkedParamChanged (ParameterProxy*) {}
+        virtual void linkedParamRangeChanged(ParameterProxy*) {}
     };
 
     ListenerList<ParameterProxyListener> proxyListeners;

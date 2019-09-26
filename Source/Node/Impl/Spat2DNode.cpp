@@ -21,7 +21,6 @@ constexpr float minSpatX = -1.5;
 constexpr float maxSpatX = 2;
 Spat2DNode::Spat2DNode (StringRef name) :
 NodeBase (name),
-numSpatInputs (nullptr), numSpatOutputs (nullptr), spatMode (nullptr), shapeMode (nullptr),
 alphaFilter(1)
 {
     spatMode = addNewParameter<EnumParameter> ("Mode", "Spatialization Mode (2D/3D, Beam/Proxy)");

@@ -119,8 +119,8 @@ class LGMLLogger : public Logger
             // check if any modification occured during this callback
             if(tend == LGMLLogger::getInstance()->getNumLogs()){stopTimer();}
         }
-        int readIdxCoal;
         const int time;
+        int readIdxCoal;
         friend class LGMLLogger;
 
     };

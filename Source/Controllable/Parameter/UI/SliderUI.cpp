@@ -206,7 +206,7 @@ void SliderUI<T>::mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& 
                 if (//maximum > minimum &&
                     ! e.mods.isAnyMouseButtonDown())
                 {
-                    float interval = 0.3;
+                    float interval = 0.3f;
                     if(e.mods.isShiftDown())interval/=10.0;
                     const float value = getParamNormalizedValue();
                     const float delta = (std::abs (wheel.deltaX) > std::abs (wheel.deltaY)

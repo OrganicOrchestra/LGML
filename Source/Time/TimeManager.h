@@ -200,7 +200,7 @@ private:
 
     struct TimeState
     {
-        TimeState(): isJumping (false), nextTime (0), isPlaying (false), time (0) {}
+        TimeState():  isPlaying (false),isJumping (false),nextTime (0), time (0) {}
         bool isPlaying;
         void jumpTo (sample_clk_t t)
         {

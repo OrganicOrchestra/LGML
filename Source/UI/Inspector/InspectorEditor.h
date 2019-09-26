@@ -55,7 +55,8 @@ private:
     void resized() override{component->setBounds(getLocalBounds());}
     int getContentHeight() const override{return height;}
 
-    int height;
+
     std::unique_ptr<Component> component;
+    int height;
 };
 

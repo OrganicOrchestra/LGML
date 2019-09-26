@@ -41,7 +41,7 @@ public:
             std::unique_ptr<InputStream> in ( getCrashFile().createInputStream());
             if(in){
                 VersionTriplet ver(VersionTriplet::getCurrentVersion());
-                String bt = "LGMLv"+ver.toString()+"\n";
+                String bt = "LGMLv"+ver.toString()+"@"+GIT_SHA+"\n";
                 bt+=in->readString();
                 LOG(bt);
 #if !ENGINE_HEADLESS

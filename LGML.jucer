@@ -738,7 +738,7 @@
   </MAINGROUP>
   <EXPORTFORMATS>
     <XCODE_MAC bigIcon="jsU7Hw" documentExtensions="lgml" externalLibraries=""
-               extraCompilerFlags="-Wall&#10;-Wno-unknown-pragmas&#10;-Wno-reorder&#10;-Wno-inconsistent-missing-destructor-override&#10;"
+               extraCompilerFlags="-Wall&#10;-Wno-unknown-pragmas&#10;-Wno-inconsistent-missing-destructor-override&#10;"
                extraDefs="LINK_PLATFORM_MACOSX=1&#10;" extraLinkerFlags="../../third_party/rubberband/lib/librubberband.a"
                keepCustomXcodeSchemes="1" postbuildCommand="" prebuildCommand=""
                smallIcon="jsU7Hw" targetFolder="Builds/MacOSX" vst3Folder="third_party/VST3_SDK"
@@ -748,7 +748,7 @@
                        headerPath="" isDebug="0" linkTimeOptimisation="1" name="Release"
                        optimisation="3" osxArchitecture="Native" osxCompatibility="10.13 SDK"
                        targetName="LGML" enablePluginBinaryCopyStep="1"/>
-        <CONFIGURATION cppLanguageStandard="c++11" cppLibType="libc++" customXcodeFlags="ONLY_ACTIVE_ARCH=1,GCC_PRECOMPILE_PREFIX_HEADER=1,GCC_PREFIX_HEADER=PrefixHeader.pch"
+        <CONFIGURATION cppLanguageStandard="c++11" cppLibType="libc++" customXcodeFlags="ONLY_ACTIVE_ARCH=YES,&#10;GCC_PRECOMPILE_PREFIX_HEADER=YES,&#10;GCC_PREFIX_HEADER=PrefixHeader.pch,"
                        defines="" headerPath="" isDebug="1" name="Debug" osxArchitecture="Native"
                        osxCompatibility="10.13 SDK" targetName="LGML" enablePluginBinaryCopyStep="1"
                        recommendedWarnings="LLVM"/>
@@ -759,7 +759,11 @@
         <CONFIGURATION binaryPath="" cppLanguageStandard="c++11" cppLibType="libc++"
                        headerPath="" isDebug="0" linkTimeOptimisation="0" name="PreRelease"
                        optimisation="1" osxArchitecture="Native" osxCompatibility="10.13 SDK"
-                       targetName="LGML" enablePluginBinaryCopyStep="1" customXcodeFlags="ONLY_ACTIVE_ARCH=1,GCC_PRECOMPILE_PREFIX_HEADER=1,GCC_PREFIX_HEADER=PrefixHeader.pch,&#10;PRE_RELEASE=1&#10;"/>
+                       targetName="LGML" enablePluginBinaryCopyStep="1" customXcodeFlags="ONLY_ACTIVE_ARCH=YES,&#10;GCC_PRECOMPILE_PREFIX_HEADER=YES,&#10;GCC_PREFIX_HEADER=PrefixHeader.pch,&#10;ENABLE_TESTABILITY=YES,&#10;GCC_GENERATE_DEBUGGING_SYMBOLS=YES"
+                       defines="PRE_RELEASE=1"/>
+        <CONFIGURATION cppLanguageStandard="c++11" cppLibType="libc++" customXcodeFlags="ONLY_ACTIVE_ARCH=YES,&#10;GCC_PRECOMPILE_PREFIX_HEADER=YES,&#10;GCC_PREFIX_HEADER=PrefixHeader.pch,&#10;OTHER_CPLUSPLUSFLAGS=-Wno-everything"
+                       defines="" headerPath="" isDebug="1" name="DebugFast" osxArchitecture="Native"
+                       osxCompatibility="10.13 SDK" targetName="LGML" enablePluginBinaryCopyStep="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../JUCE/modules"/>

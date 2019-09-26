@@ -117,12 +117,6 @@ public :
 
 
     bool stateChanged;
-
-
-
-
-
-
     int numTimePlayed;
     AudioSampleBuffer originAudioBuffer;
     BufferBlockList bufferBlockList;

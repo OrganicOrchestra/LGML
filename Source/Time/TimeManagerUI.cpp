@@ -23,10 +23,10 @@
 
 
 TimeManagerUI::TimeManagerUI (const String& contentName, TimeManager* _timeManager) :
-    InspectableComponent(_timeManager),
-    ShapeShifterContent (this,contentName,"Be the master of Time"),
-    timeManager (_timeManager),
-    timeBar (_timeManager)
+InspectableComponent(_timeManager),
+ShapeShifterContent (this,contentName,"Be the master of Time")
+,timeBar (_timeManager)
+,timeManager (_timeManager)
 {
 
     contentIsFlexible = false;

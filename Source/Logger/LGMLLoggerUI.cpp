@@ -65,7 +65,7 @@ totalLogRow (0),
 startDisplayedIdx(0)
 {
 
-    logger->addLogCoalescedListener (this);
+
     TableHeaderComponent* thc = new TableHeaderComponent();
     thc->addColumn (juce::translate("Time"), 1, 60);
     thc->addColumn (juce::translate("Source"), 2, 80);
@@ -80,6 +80,8 @@ startDisplayedIdx(0)
 
     logListComponent->setColour (TableListBox::backgroundColourId, findColour (ResizableWindow::backgroundColourId));
     logListComponent->setHeader (thc);
+    logListComponent->setMouseCursor(MouseCursor::IBeamCursor);
+    logListComponent->setMultipleSelectionEnabled(true);
     addAndMakeVisible (logListComponent.get());
 
     LOG (l->getWelcomeMessage());
@@ -93,11 +95,13 @@ startDisplayedIdx(0)
     copyB.setButtonText(juce::translate("Copy All to Clipboard"));
     copyB.addListener(this);
     addAndMakeVisible(copyB);
-    logListComponent->setMouseCursor(MouseCursor::IBeamCursor);
 
-    logListComponent->setMultipleSelectionEnabled(true);
     setInterceptsMouseClicks(true,false);
     addMouseListener(this, true);
+
+
+
+    logger->addLogCoalescedListener (this);
 
 }
 

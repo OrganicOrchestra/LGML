@@ -105,7 +105,6 @@ void FastMapperUI::removeFastMapUI (FastMapUI* fui)
 {
 
     if (fui == nullptr) return;
-
     mapsUI.removeUI (fui);
 
 }

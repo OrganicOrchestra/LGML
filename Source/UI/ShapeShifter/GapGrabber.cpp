@@ -104,7 +104,7 @@ struct MiniHandle : public Component,SettableTooltipClient{
 };
 
 struct StretchHandle : public Component{
-    StretchHandle(GapGrabber * o):owner(o){
+    StretchHandle(GapGrabber * o):owner(o),_isMouseOver(false){
         setRepaintsOnMouseActivity (true);
         setPaintingIsUnclipped(true);
         setMouseCursor (owner->direction == GapGrabber::Direction::HORIZONTAL ?
@@ -115,7 +115,7 @@ struct StretchHandle : public Component{
     void paint(Graphics & g)final{
         Rectangle<int> r = getLocalBounds().reduced(1);
         Colour c = Colours::transparentWhite;//findColour (ResizableWindow::backgroundColourId).brighter (.1f);
-        if (isMouseOver(false)){ c = findColour (TextButton::buttonOnColourId);}
+        if (_isMouseOver){ c = findColour (TextButton::buttonOnColourId);}
         if (isMouseButtonDown()){c = c.brighter();}
         g.setColour (c);
         g.fillRoundedRectangle (r.toFloat(), 2);
@@ -127,7 +127,10 @@ struct StretchHandle : public Component{
                                owner->direction == GapGrabber::Direction::HORIZONTAL ?
                                e.getPosition().x : e.getPosition().y);
     }
+    void mouseEnter(const MouseEvent& )override{_isMouseOver = true;}
+    void mouseExit(const MouseEvent& )override{_isMouseOver = false;}
     GapGrabber * owner;
+    bool _isMouseOver;
 };
 
 
