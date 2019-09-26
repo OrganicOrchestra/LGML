@@ -31,7 +31,6 @@ Controller::Controller (StringRef _name) :
     userContainer.setUserDefined (true);
     userContainer.addControllableContainerListener (this);
     addChildControllableContainer (&userContainer);
-    userContainer.addControllableContainerListener(this);
     userContainer.nameParam->setInternalOnlyFlags(true,true);
 
     enabledParam = addNewParameter<BoolParameter> ("Enabled", "Set whether the controller is enabled or disabled", true);

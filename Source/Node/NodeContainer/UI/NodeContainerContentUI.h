@@ -23,7 +23,7 @@
 class NodeContainerContentUI :
     public ConnectableNodeContentUI,
     public Button::Listener,
-    public NodeContainerListener
+public ControllableContainer::Listener
 {
 public :
     NodeContainerContentUI();
@@ -42,7 +42,9 @@ public :
 
     void buttonClicked (Button* b) override;
 
-    
+protected:
+     void childControllableAdded (ControllableContainer*, Controllable*)override;
+     void childControllableRemoved (ControllableContainer*, Controllable*)override;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeContainerContentUI)
 };
 

@@ -81,7 +81,7 @@ mapsUI(new StackedContainerUI<FastMapUI, FastMap>(
     contentIsFlexible = true;
 
     
-    resetAndUpdateView();
+
 
 
     LGMLDragger::getInstance()->addSelectionListener(this);
@@ -93,7 +93,7 @@ mapsUI(new StackedContainerUI<FastMapUI, FastMap>(
         return mapPassViewFilter(a->fastMap);
 
     });
-   
+   resetAndUpdateView();
 }
 
 

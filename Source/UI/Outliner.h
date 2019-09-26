@@ -109,6 +109,7 @@ public:
 
     TextEditor filterTextEditor;
     TextButton linkToSelected;
+    TextButton showOnlyUserContainersB;
     String nameFilter;
 
     bool showHiddenContainers; //include or exclude in treeview the "skipInAddress" containers (may be later exposed to user as an option)
@@ -129,7 +130,7 @@ public:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Outliner)
 
     void setRoot(ParameterContainer *,bool saveOpenness=true );
-    bool showUserContainer;
+    bool showOnlyUserContainers;
 
 private:
 

@@ -249,8 +249,9 @@ public:
     RebuildTimer rebuildTimer;
     NodeChangeQueue nodeChangeNotifier;
 
-
+    ParameterContainer userContainer;
 private:
+
 
     WeakReference<NodeContainer>::Master masterReference;
     friend class WeakReference<NodeContainer>;

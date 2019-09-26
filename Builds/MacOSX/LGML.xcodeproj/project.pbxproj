@@ -1786,6 +1786,13 @@
 			path = ../../Source/UI/Inspector/Inspector.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
+		61C6DCADDD42EB9BDBE5D709 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = LayoutUtils.h;
+			path = ../../Source/UI/LayoutUtils.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		627786D65631E5B8E02B4B73 = {
 			isa = PBXFileReference;
 			lastKnownFileType = image.png;
@@ -3948,6 +3955,7 @@
 		3C130290FA7F23D43398D3FA = {
 			isa = PBXGroup;
 			children = (
+				61C6DCADDD42EB9BDBE5D709,
 				08D11AC469B92E2F8EA0C743,
 				0F54201675580FE925117E36,
 				ECBAA3A9BBDFBD2F5EBF0ADF,

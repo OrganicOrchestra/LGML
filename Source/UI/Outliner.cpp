@@ -28,8 +28,8 @@ Identifier Outliner::blockSelectionPropagationId("blockSelectionPropagation");
 
 Outliner::Outliner (const String& contentName,ParameterContainer * _root,bool showFilterText) : ShapeShifterContentComponent (contentName,"Search Parameters in here"),
 baseRoot(_root),
-root(nullptr),
-showUserContainer(true)
+root(nullptr)
+,showOnlyUserContainers(false)
 {
     if(!baseRoot.get()){
         baseRoot = getEngine();
@@ -52,6 +52,11 @@ showUserContainer(true)
         linkToSelected.addListener(this);
         linkToSelected.setClickingTogglesState(true);
         linkToSelected.setToggleState(true,sendNotification);
+        addAndMakeVisible(showOnlyUserContainersB);
+        showOnlyUserContainersB.setButtonText("U");
+        showOnlyUserContainersB.setTooltip(juce::translate("show only custom user parameters"));
+        showOnlyUserContainersB.setClickingTogglesState(true);
+        showOnlyUserContainersB.addListener(this);
     }
     infoLabel.setVisible(false);
     
@@ -86,6 +91,7 @@ void Outliner::resized()
         r.removeFromTop(10);
         auto headerArea = r.removeFromTop(30);
         linkToSelected.setBounds(headerArea.removeFromLeft(headerArea.getHeight()));
+        showOnlyUserContainersB.setBounds(headerArea.removeFromLeft(headerArea.getHeight()));
         filterTextEditor.setBounds (headerArea);
 
     }
@@ -138,7 +144,7 @@ void Outliner::buildTree (OutlinerItem* parentItem, ParameterContainer* parentCo
 
     for (auto& cc : childContainers)
     {
-        if(showUserContainer || !cc->isUserDefined){
+        if(!showOnlyUserContainers || cc->isUserDefined){
 
             OutlinerItem* ccItem = new OutlinerItem (cc,false);
             parentItem->addSubItem (ccItem);
@@ -156,22 +162,23 @@ void Outliner::buildTree (OutlinerItem* parentItem, ParameterContainer* parentCo
 
     }
 
-    auto childControllables = parentContainer->getControllablesOfType<ParameterBase> (false);
+    if(!showOnlyUserContainers || parentContainer->isUserDefined){
+        auto childControllables = parentContainer->getControllablesOfType<ParameterBase> (false);
 
-    for (auto& c : childControllables)
-    {
-        if (c == parentContainer->nameParam || c->isHidenInEditor) continue;
-
-        if (!shouldFilterByName || c->niceName.toLowerCase().contains (nameFilter))
+        for (auto& c : childControllables)
         {
-            OutlinerItem* cItem = new OutlinerItem (c,false);
-            parentItem->addSubItem (cItem);
+            if (c == parentContainer->nameParam || c->isHidenInEditor) continue;
 
+            if (!shouldFilterByName || c->niceName.toLowerCase().contains (nameFilter))
+            {
+                OutlinerItem* cItem = new OutlinerItem (c,false);
+                parentItem->addSubItem (cItem);
+
+            }
         }
-    }
-
+}
     // show every thing on text search
-    if (nameFilter.isNotEmpty())
+    if (nameFilter.isNotEmpty() || showOnlyUserContainers)
     {
         parentItem->setOpen (true);
 
@@ -269,6 +276,13 @@ void Outliner::buttonClicked(Button *b){
             Inspector::getInstance()->removeInspectorListener(this);
             setRoot(baseRoot);
         }
+    }
+    else if(b==&showOnlyUserContainersB){
+
+        showOnlyUserContainers = showOnlyUserContainersB.getToggleState();
+        rebuildTree();
+
+
     }
 }
 void Outliner::selectionChanged (Inspector * i ){

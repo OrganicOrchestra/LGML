@@ -19,12 +19,12 @@
 
 #include "../../../Controllable/Parameter/UI/ParameterUI.h"
 
-
+#include "../../../UI/LayoutUtils.h"
 
 NodeContainerContentUI::NodeContainerContentUI() :
     ConnectableNodeContentUI(),
     editContainerBT ("Edit Container"),
-    addUserParamBT ("Add Param Proxy")
+    addUserParamBT ("Add Variable")
 {
     addAndMakeVisible (&editContainerBT);
     LGMLUIUtils::optionallySetBufferedToImage(&editContainerBT);
@@ -40,7 +40,7 @@ NodeContainerContentUI::NodeContainerContentUI() :
 
 NodeContainerContentUI::~NodeContainerContentUI()
 {
-    nodeContainer->removeNodeContainerListener (this);
+    
 }
 
 void NodeContainerContentUI::resized()
@@ -50,9 +50,9 @@ void NodeContainerContentUI::resized()
 
     editContainerBT.setBounds (r.removeFromTop (20));
     r.removeFromTop (5);
-
     addUserParamBT.setBounds (r.removeFromTop (20));
-    r.removeFromTop (10);
+
+    layoutComponentsInGrid(userParamUI,r);
 
 
 
@@ -68,7 +68,14 @@ void NodeContainerContentUI::init()
     if (!nc) {jassertfalse; return;}
 
     nodeContainer = nc;
-    nodeContainer->addNodeContainerListener (this);
+    nodeContainer->userContainer.addControllableContainerListener(this);
+    auto allP = nodeContainer->userContainer.getControllablesOfType<ParameterBase>(false);
+    for(auto & p:allP){
+        if(p->isUserDefined){
+        childControllableAdded(&nodeContainer->userContainer, p.get());
+        }
+    }
+
 
 
 }
@@ -86,6 +93,47 @@ void NodeContainerContentUI::buttonClicked (Button* b)
             nmui->setCurrentViewedContainer (nodeContainer);
         }
     }
+    else if (b==&addUserParamBT){
+        nodeContainer->userContainer.addNewParameter<FloatParameter> ("variable", "Custom Variable");
+
+    }
+}
+
+void NodeContainerContentUI::childControllableAdded (ControllableContainer* cc, Controllable*c){
+    jassert(nodeContainer && cc==&nodeContainer->userContainer);
+    
+    if(auto p = dynamic_cast<ParameterBase*>(c)){
+        if(!p->isUserDefined){return;}
+        auto added = userParamUI.add (ParameterUIFactory::createDefaultUI(p));
+        addAndMakeVisible (added);
+        resized();
+    }
+    else{
+        jassertfalse;
+    }
+}
+
+void NodeContainerContentUI::childControllableRemoved (ControllableContainer* cc, Controllable* c ){
+    jassert(nodeContainer && cc==&nodeContainer->userContainer);
+    if(auto p = dynamic_cast<ParameterBase*>(c)){
+        if(!p->isUserDefined){return;}
+        Array<ParameterUI*> toRm ;
+        for(auto &pui : userParamUI){
+            if(pui->parameter==c){toRm.add(pui);}
+        }
+        for(auto rm:toRm){
+            userParamUI.removeObject(rm);
+        }
+        if(toRm.size()){
+            resized();
+        }
+
+
+    }
+    else{
+        jassertfalse;
+    }
+
 }
 
 #endif

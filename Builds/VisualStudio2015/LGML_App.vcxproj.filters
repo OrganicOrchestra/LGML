@@ -3378,6 +3378,9 @@
     <ClInclude Include="..\..\Source\Time\TimeMasterCandidate.h">
       <Filter>LGML\Source\Time</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\UI\LayoutUtils.h">
+      <Filter>LGML\Source\UI</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\UI\StackedContainerUI.h">
       <Filter>LGML\Source\UI</Filter>
     </ClInclude>

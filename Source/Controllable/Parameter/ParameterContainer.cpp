@@ -229,14 +229,14 @@ ParameterBase*   ParameterContainer::addParameter ( ParameterBase* p,int idxToIn
         if(idxToInsert==-1)controllables.add (p);
         else controllables.insert( idxToInsert,p);
 
-
+        p->isUserDefined = p->isUserDefined || isUserDefined;
         controllableContainerListeners.call (&ControllableContainerListener::childControllableAdded, this, p);
         notifyStructureChanged (this,true,true,false);
         if(doListen){
             p->addParameterListener (this);
             p->addAsyncParameterListener (this);
         }
-        p->isUserDefined = p->isUserDefined || isUserDefined;
+
 #if JUCE_DEBUG
 //        jassert(!p->isUserDefined);
 #endif

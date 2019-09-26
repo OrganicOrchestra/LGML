@@ -2411,6 +2411,7 @@
     <ClInclude Include="..\..\Source\Time\TimeManager.h"/>
     <ClInclude Include="..\..\Source\Time\TimeManagerUI.h"/>
     <ClInclude Include="..\..\Source\Time\TimeMasterCandidate.h"/>
+    <ClInclude Include="..\..\Source\UI\LayoutUtils.h"/>
     <ClInclude Include="..\..\Source\UI\StackedContainerUI.h"/>
     <ClInclude Include="..\..\Source\UI\AppPropertiesUI.h"/>
     <ClInclude Include="..\..\Source\UI\MainWindow.h"/>

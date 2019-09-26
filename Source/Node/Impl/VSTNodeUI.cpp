@@ -20,6 +20,7 @@
 #include "../UI/ConnectableNodeUI.h"
 #include "../../Controllable/Parameter/UI/ParameterUIFactory.h"
 #include "../../UI/PluginWindow.h"
+#include "../../UI/LayoutUtils.h"
 
 
 VSTNodeContentUI::VSTNodeContentUI():
@@ -167,42 +168,45 @@ void VSTNodeContentUI::resized()
 
 void VSTNodeContentUI::layoutSliderParameters (Rectangle<int> pArea)
 {
-    if (paramSliders.size() == 0) return;
-    if(pArea.getHeight()==0) return;
-    
-    const float targetSliderAR = 4;
-    const float AR = pArea.getWidth()*1.0/pArea.getHeight();
-    
-    int targetNumLine = sqrt(paramSliders.size())*targetSliderAR/AR;
-    targetNumLine = jmax(1,targetNumLine);
-    
-    int numLines = jmin ((int)(targetNumLine), paramSliders.size());
-    int numCols = ceil((paramSliders.size() ) *1.0f/ numLines ) ;
-    
-    int w = pArea.getWidth() / numCols;
-    int h = pArea.getHeight() / numLines;
-    int idx = 0;
-    
-    for (int i = 0 ; i < numCols ; i ++)
-    {
-        Rectangle<int> col = pArea.removeFromLeft (w);
-        
-        for (int j = 0 ; j < numLines ; j++)
-        {
-            paramSliders.getUnchecked (idx)->setBounds (col.removeFromTop (h).reduced (1));
-            idx++;
-            
-            if (idx >= paramSliders.size())
-            {
-                break;
-            }
-        }
-        
-        if (idx >= paramSliders.size())
-        {
-            break;
-        }
-    }
+    layoutComponentsInGrid(paramSliders,pArea);
+
+//{
+//    if (paramSliders.size() == 0) return;
+//    if(pArea.getHeight()==0) return;
+//
+//    const float targetSliderAR = 4;
+//    const float AR = pArea.getWidth()*1.0/pArea.getHeight();
+//
+//    int targetNumLine = sqrt(paramSliders.size())*targetSliderAR/AR;
+//    targetNumLine = jmax(1,targetNumLine);
+//
+//    int numLines = jmin ((int)(targetNumLine), paramSliders.size());
+//    int numCols = ceil((paramSliders.size() ) *1.0f/ numLines ) ;
+//
+//    int w = pArea.getWidth() / numCols;
+//    int h = pArea.getHeight() / numLines;
+//    int idx = 0;
+//
+//    for (int i = 0 ; i < numCols ; i ++)
+//    {
+//        Rectangle<int> col = pArea.removeFromLeft (w);
+//
+//        for (int j = 0 ; j < numLines ; j++)
+//        {
+//            paramSliders.getUnchecked (idx)->setBounds (col.removeFromTop (h).reduced (1));
+//            idx++;
+//
+//            if (idx >= paramSliders.size())
+//            {
+//                break;
+//            }
+//        }
+//
+//        if (idx >= paramSliders.size())
+//        {
+//            break;
+//        }
+//    }
 }
 
 

@@ -65,9 +65,13 @@ containerInNode (nullptr)
 ,rebuildTimer (this)
 ,isRoot(_isRoot)
 ,innerGraph( new AudioProcessorGraph())
+,userContainer ("vars")
 {
     canHaveUserDefinedContainers = true;
-
+    userContainer.setUserDefined (true);
+    userContainer.addControllableContainerListener (this);
+    addChildControllableContainer (&userContainer);
+    userContainer.nameParam->setInternalOnlyFlags(true,true);
 
     innerGraph->releaseResources();
     setBuildSessionGraph(false);

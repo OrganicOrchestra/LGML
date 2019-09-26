@@ -103,7 +103,7 @@ ControllerUI::ControllerUI (Controller* _controller) :
     outActivityBlink->showLabel = false;
     addAndMakeVisible (outActivityBlink.get());
     userParamsUI = std::make_unique< Outliner>("usr_"+controller->shortName,&controller->userContainer,false);
-    userParamsUI->showUserContainer = true;
+    
     addAndMakeVisible(userParamsUI.get());
     userParamsUI->treeView.getViewport()->getViewedComponent()->addComponentListener(this);
     userParamsUI->treeView.setOpenCloseButtonsVisible(false);
