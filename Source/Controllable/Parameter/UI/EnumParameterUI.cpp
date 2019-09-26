@@ -199,8 +199,9 @@ void EnumParameterUI::comboBoxChanged (ComboBox* c)
             }
             else
             {
-                AlertWindow nameWindow ("which element should be added ?", "type the elementName", AlertWindow::AlertIconType::NoIcon, this);
+                AlertWindow nameWindow (juce::translate("which element should be added ?"), juce::translate("type the elementName and leave value empty if you want same than the added element"), AlertWindow::AlertIconType::NoIcon, this);
                 nameWindow.addTextEditor ("paramToAdd", parameter->stringValue());
+                nameWindow.addTextEditor ("valueToAdd", "");
                 nameWindow.addButton ("OK", 1, KeyPress (KeyPress::returnKey));
                 nameWindow.addButton ("Cancel", 0, KeyPress (KeyPress::escapeKey));
 
@@ -213,8 +214,9 @@ void EnumParameterUI::comboBoxChanged (ComboBox* c)
 
                     if (res.isNotEmpty())
                     {
+                        String vres = nameWindow.getTextEditorContents ("valueToAdd") ;
                         Identifier elemToAdd = res;
-                        ep->getModel()->addOption (elemToAdd, elemToAdd.toString(), false);
+                        ep->getModel()->addOption (elemToAdd, vres.isEmpty()?elemToAdd.toString():vres, false);
                         ep->selectId (elemToAdd, true, false);
                         changedFromUI = true;
                     }

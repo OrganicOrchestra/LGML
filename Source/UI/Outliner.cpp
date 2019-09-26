@@ -166,8 +166,8 @@ void Outliner::buildTree (OutlinerItem* parentItem, ParameterContainer* parentCo
             buildTree (ccItem, cc, !cc->getNiceName().toLowerCase().contains (nameFilter));
 
             if ((shouldFilterByName && ccItem->getNumSubItems() == 0 &&
-                !cc->getNiceName().toLowerCase().contains (nameFilter)) ||
-                (showOnlyUserContainers && ccItem->getNumSubItems() == 0)
+                !cc->getNiceName().toLowerCase().contains (nameFilter)) 
+
 
                 )
             {
