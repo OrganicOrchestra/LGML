@@ -83,6 +83,7 @@ int StackedContainerBase::getNumStacked() const{
 int StackedContainerBase::getSize()const{
     int s = gap;
     for(auto o:stackedUIs){
+        if(!o->isVisible()){continue;}
         s+=jmax(minElemSize,_isHorizontal?o->getWidth():o->getHeight()) + gap;
     }
     s+=gap;
@@ -111,6 +112,7 @@ void StackedContainerBase::resized() {
     int step = gap;
     int fixSize = _isHorizontal?getHeight():getWidth();
     for(auto o:stackedUIs){
+        if(!o->isVisible()){continue;}
         int curS=_isHorizontal?o->getWidth():o->getHeight();
         curS = jmax(minElemSize,curS);
         if(_isHorizontal){o->setBounds(step,0,curS,fixSize);}
@@ -123,6 +125,7 @@ int StackedContainerBase::getIdxForPos(Point<int> pos) {
 
     int i=0;
     for(auto o:stackedUIs){
+        if(!o->isVisible()){continue;}
         int ns = _isHorizontal?o->getRight():o->getBottom();
         if(ns>=(_isHorizontal?pos.x:pos.y)){
             return i;
@@ -136,6 +139,7 @@ bool StackedContainerBase::isHorizontal()const {return _isHorizontal;}
 
 Component * StackedContainerBase::getRelatedStackedComponent(Component * c){
     for(auto cc:stackedUIs){
+        if(!cc->isVisible()){continue;}
         if((cc == c )|| (dynamic_cast<Label*>(c) && cc->isParentOf(c))){
             return cc;
         }
@@ -204,3 +208,6 @@ void StackedContainerBase::endDrag(){
         draggedUI = nullptr;
     }
 }
+
+
+

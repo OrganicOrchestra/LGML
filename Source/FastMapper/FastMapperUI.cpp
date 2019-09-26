@@ -24,6 +24,16 @@
 #include "../Utils/FactoryUIHelpers.h"
 
 
+struct CompareFastMaps{
+    static int compareElements(const FastMap * a,const FastMap * b){
+        if(!a->referenceIn->getLinkedParam() || !b->referenceIn->getLinkedParam()){
+            return -100;
+        }
+        return a->referenceIn->getLinkedParam()->niceName.compare( b->referenceIn->getLinkedParam()->niceName);
+    }
+};
+
+
 FastMapperUI::FastMapperUI (const String& contentName,FastMapper* _fastMapper, ContainerType* _viewFilterContainer) :
 ShapeShifterContent (this,contentName,"Link parameters together\nAdd FastMap here\nCmd+m toggles mapping mode"),
 InspectableComponent(_fastMapper),
@@ -37,7 +47,7 @@ mapsUI(new StackedContainerUI<FastMapUI, FastMap>(
                                                       _fastMapper->controllableContainers.swap(iia,iib);
                                                       _fastMapper->maps.swap(ia,ib);
                                                   },
-                                                  30,
+                                                  45,
                                                   false
                                                   ,2,40)
        )
@@ -75,7 +85,14 @@ mapsUI(new StackedContainerUI<FastMapUI, FastMap>(
 
 
     LGMLDragger::getInstance()->addSelectionListener(this);
+    mapsUI.stUI->setSortFunction([](const FastMapUI* a,const FastMapUI * b)->bool{
+        return CompareFastMaps::compareElements(a->fastMap,b->fastMap);
+        
+    });
+    mapsUI.stUI->setFilterFunction([this](FastMapUI * a){
+        return mapPassViewFilter(a->fastMap);
 
+    });
    
 }
 
@@ -94,9 +111,8 @@ FastMapperUI::~FastMapperUI()
 
 void FastMapperUI::addFastMapUI (FastMap* f)
 {
-    auto added = mapsUI.addFromT (f);
-    ignoreUnused(added);
-    jassert(added!=nullptr);
+    mapsUI.addFromT (f);
+
 
 
 }
@@ -109,16 +125,39 @@ void FastMapperUI::removeFastMapUI (FastMapUI* fui)
 
 }
 
-
 void FastMapperUI::resetAndUpdateView()
 {
 
     clear();
-
-    for (auto& f : fastMapper->maps)
-    {
-        if (mapPassViewFilter (f)) addFastMapUI (f);
-    }
+        for (auto& f : fastMapper->maps)
+        {
+            addFastMapUI(f);
+        }
+//    Array<FastMap*> displayedMaps;
+//    Array<String> groupedNames;
+//    for (auto& f : fastMapper->maps)
+//    {
+//        if (mapPassViewFilter (f)){
+//            displayedMaps.add(f);
+//            String nameToAdd = "target";
+//            if(auto p=f->referenceIn->getLinkedParam()){
+//                nameToAdd = p->niceName;
+//            }
+//            groupedNames.add(nameToAdd);
+//        }
+//    }
+//
+//    displayedMaps.sort(compareFastMaps);
+//    int i = 0;
+//    for (auto& f : displayedMaps)
+//    {
+//        bool displayFull = true;
+//        if(i>0){
+//            displayFull = groupedNames[i-1]!=groupedNames[i];
+//        }
+//         addFastMapUI (f,displayFull,true);
+//        i++;
+//    }
 
     resized();
 }
@@ -254,7 +293,8 @@ void FastMapperUI::controllableContainerAdded (ControllableContainer* ori, Contr
         {
             if (wf.get())
             {
-                mapsUI.addFromT((FastMap*)wf.get());
+                auto added = mapsUI.addFromT((FastMap*)wf.get());
+
                 resized();
             }
         });

@@ -31,7 +31,9 @@ FastMapUI (FastMap* f) :
     refUI (f->referenceIn),
     inRangeUI (f->inputRange),
     targetUI (f->referenceOut),
-    outRangeUI (f->outputRange)
+    outRangeUI (f->outputRange),
+    displayRef(true),
+    displayTarget(true)
 
 
 {
@@ -145,17 +147,39 @@ void FastMapUI::linkedParamChanged (ParameterProxy* p )
     }
     else
     {
-        if (p == refUI.parameter)
-        {
-            inRangeUI.setVisible (p->linkedParam && p->linkedParam->getAs<MinMaxParameter>());
-        }
-        else if (p == targetUI.parameter)
-        {
-            outRangeUI.setVisible (p->linkedParam && p->linkedParam->getAs<MinMaxParameter>());
-            toggleUI->setVisible( refUI.parameter &&  !refUI.parameter->getAs<Trigger>() && p->linkedParam && p->linkedParam->getAs<BoolParameter>());
-        }
+        updateComponentsVisibility();
 
         resized();
     }
 };
+
+void FastMapUI::updateRefAndTargetVisibility(bool ref,bool target){
+
+         displayRef=ref;
+    displayTarget = target;
+
+    updateComponentsVisibility();
+
+}
+
+void FastMapUI::updateComponentsVisibility(){
+
+    auto refProxy = refUI.paramProxy;
+    auto targetProxy = targetUI.paramProxy;
+    refUI.setVisible(displayRef);
+    inRangeUI.setVisible (displayRef &&
+                          refProxy->linkedParam &&
+                          refProxy->linkedParam->getAs<MinMaxParameter>());
+
+    targetUI.setVisible(displayTarget);
+
+    outRangeUI.setVisible (displayTarget &&
+                           targetProxy->linkedParam &&
+                           targetProxy->linkedParam->getAs<MinMaxParameter>());
+    toggleUI->setVisible( refUI.parameter &&
+                         !refUI.parameter->getAs<Trigger>() &&
+                         targetProxy->linkedParam &&
+                         targetProxy->linkedParam->getAs<BoolParameter>());
+
+}
 #endif

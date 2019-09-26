@@ -373,7 +373,7 @@ ShapeShifterPanel::AttachZone ShapeShifterPanel::checkAttachZone(ShapeShifterPan
 
     if (fabsf(rx) > 0.5 || fabsf(ry) > 0.5 )
     {
-        jassert(isMini);
+      //  jassert(isMini);
     }
     else
     {

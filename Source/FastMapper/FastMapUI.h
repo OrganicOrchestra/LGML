@@ -67,6 +67,11 @@ public:
     void buttonClicked (Button* b) override;
 
     void linkedParamChanged (ParameterProxy*) override;
+    void updateRefAndTargetVisibility(bool ref,bool target);
+private:
+   void  updateComponentsVisibility();
+    bool displayRef;
+    bool displayTarget;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FastMapUI)
 

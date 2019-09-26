@@ -19,8 +19,14 @@
 #include "../Style.h"
 #include "ShapeShifterContainer.h"
 
+struct HoverableComponent:Component{ // get rids of annoying but harmless message on osx due to call of isMouseOver during paint call
+    HoverableComponent():_isMouseOver(false){}
+    void mouseEnter(const MouseEvent& )override{_isMouseOver = true;}
+    void mouseExit(const MouseEvent& )override{_isMouseOver = false;}
+    bool _isMouseOver;
+};
 
-struct MiniHandle : public Component,SettableTooltipClient{
+struct MiniHandle : public HoverableComponent,SettableTooltipClient{
     MiniHandle(GapGrabber * o,bool dir):owner(o),direction(dir){
         setRepaintsOnMouseActivity (true);
         setPaintingIsUnclipped(true);
@@ -49,7 +55,7 @@ struct MiniHandle : public Component,SettableTooltipClient{
 
     void paint(Graphics & g)final{
         Colour c = findColour (ResizableWindow::backgroundColourId).brighter (.1f);
-        if (isMouseOver(false)){ c = findColour (TextButton::buttonOnColourId);}
+        if (_isMouseOver){ c = findColour (TextButton::buttonOnColourId);}
 
         g.setColour(c);
         auto r = getLocalBounds();
@@ -103,8 +109,8 @@ struct MiniHandle : public Component,SettableTooltipClient{
     bool direction;
 };
 
-struct StretchHandle : public Component{
-    StretchHandle(GapGrabber * o):owner(o),_isMouseOver(false){
+struct StretchHandle : public HoverableComponent{
+    StretchHandle(GapGrabber * o):owner(o){
         setRepaintsOnMouseActivity (true);
         setPaintingIsUnclipped(true);
         setMouseCursor (owner->direction == GapGrabber::Direction::HORIZONTAL ?
@@ -127,10 +133,9 @@ struct StretchHandle : public Component{
                                owner->direction == GapGrabber::Direction::HORIZONTAL ?
                                e.getPosition().x : e.getPosition().y);
     }
-    void mouseEnter(const MouseEvent& )override{_isMouseOver = true;}
-    void mouseExit(const MouseEvent& )override{_isMouseOver = false;}
+
     GapGrabber * owner;
-    bool _isMouseOver;
+
 };
 
 

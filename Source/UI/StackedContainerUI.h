@@ -25,6 +25,7 @@
 
 
 class SwapComponents;
+
 class StackedContainerBase : public Component{
 public:
     explicit StackedContainerBase(int _minElemSize=20,bool isHorizontal=false,int _gap=2,int _padEnd=0):
@@ -34,7 +35,7 @@ public:
     ,padEnd(_padEnd){
         addMouseListener(this,true);
     }
-    virtual ~StackedContainerBase(){};
+    virtual ~StackedContainerBase(){}
     void clear();
     int getNumStacked() const;
     int getSize()const;
@@ -75,22 +76,26 @@ class StackedContainerUI : public StackedContainerBase{
 public:
     typedef std::function<T*(UIT*)> GetTFromUITTYPE;
     typedef std::function<void(int,int)> SwapElemsF;
+    typedef std::function<bool(const UIT*,const UIT*)> SortFType;
+    typedef std::function<bool(UIT*)> FilterFType;
     StackedContainerUI(GetTFromUITTYPE f,SwapElemsF sw,int _minElemSize=20,bool isHorizontal=false,int _gap=2,int _padEnd=0):
     StackedContainerBase(_minElemSize,isHorizontal,_gap,_padEnd),
     toUIT(f),
     swapElemF(std::move(sw))
-
-
     {
 
     }
-
+    virtual ~StackedContainerUI(){}
+    FilterFType filterF;
+    SortFType sortF;
 
     UIT * addFromT(T* obj){
         auto ui =new UIT(obj);
         addAndMakeVisible(ui);
+        
         stackedUIs.add( ui);
         //ui->setPaintingIsUnclipped(false);
+        filterAndSort();
         updateSize();
         resized();
         return ui;
@@ -108,6 +113,15 @@ public:
         swapElemF(ia,ib);
     }
 
+    void setSortFunction(SortFType f){
+        sortF = f;
+        filterAndSort();
+    }
+    void setFilterFunction(FilterFType f){
+        filterF = f;
+        filterAndSort();
+    }
+
     void removeFromT(T* obj){
         UIT * ui= getFromT(obj);
         if(ui){
@@ -123,17 +137,23 @@ public:
         return nullptr;
     }
 
-    void childBoundsChanged (Component* )override{
-    updateSize();
-
-    }
+    void childBoundsChanged (Component* )override{updateSize();}
 
 private:
+    void filterAndSort(){
 
+        if(sortF){
+            std::sort((const UIT**)stackedUIs.begin(),(const UIT**)stackedUIs.end(),sortF);
+        }
+        if(filterF){
+            for(auto o:stackedUIs){o->setVisible(filterF((UIT*)o));}
+        }
+        updateSize();
+    }
     GetTFromUITTYPE toUIT;
 
     SwapElemsF swapElemF;
-
+//    Array<Component*> visibleStackedUIs;
 
 
 
