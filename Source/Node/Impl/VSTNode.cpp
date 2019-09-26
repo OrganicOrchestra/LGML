@@ -159,17 +159,20 @@ void VSTNode::onContainerParameterChanged ( ParameterBase* p)
                 NodeManager::getInstance()->addJob (new VSTLoaderJob (pd, this), true);
 #else
                 suspendProcessing (true);
-                generatePluginFromDescription (pd.get());
-                DBG ("VST generated");
-                if(stateInfoPluginID==pd->createIdentifierString())
+                auto err = generatePluginFromDescription (pd.get());
+                if(!err.isEmpty()){
+                        NLOGW("VST", "can't load vst "+pd->createIdentifierString()+"\n"+err);
+                }
+                DBG ("VST found");
+                if(stateInfoPluginID==pd->createIdentifierString()){
                     setVSTState();
+                }
                 else{
                     initParametersFromProcessor(innerPlugin.get());
                     getVSTState();
                 }
                 suspendProcessing (false);
                 parentNodeContainer->updateAudioGraph();
-
 
 #endif
             }
@@ -453,7 +456,7 @@ void VSTNode::updateParametersFromProcessor (AudioPluginInstance* /*pi*/)
 
 
 
-void VSTNode::generatePluginFromDescription (PluginDescription* desc)
+String VSTNode::generatePluginFromDescription (PluginDescription* desc)
 {
 
     //  closePluginWindow();
@@ -508,7 +511,9 @@ void VSTNode::generatePluginFromDescription (PluginDescription* desc)
         innerPlugin = nullptr;
         LOGE(errorMessage);
         jassertfalse;
+
     }
+    return errorMessage;
 }
 
 void VSTNode::audioProcessorChanged (juce::AudioProcessor* p )

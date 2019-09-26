@@ -105,7 +105,7 @@ public:
         else return nullptr;
     }
 
-    void generatePluginFromDescription (PluginDescription* desc);
+    String generatePluginFromDescription (PluginDescription* desc);
 
 
     void numChannelsChanged (bool isInput)override;
