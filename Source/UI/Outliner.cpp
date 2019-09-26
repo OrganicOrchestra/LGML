@@ -36,7 +36,7 @@ root(nullptr)
     }
 
 
-    showHiddenContainers = false;
+    
     treeView.setIndentSize(10);
     setRoot(baseRoot);
     addAndMakeVisible (treeView);
@@ -144,15 +144,32 @@ void Outliner::buildTree (OutlinerItem* parentItem, ParameterContainer* parentCo
 
     for (auto& cc : childContainers)
     {
-        if(!showOnlyUserContainers || cc->isUserDefined){
+        bool buildSubtree = true;
+        if(showOnlyUserContainers){
+            if(!cc->isUserDefined){ // check if child has
+            auto childsC = cc->getAllControllableContainers(true);
+            buildSubtree = false;
+            for(auto c:childsC){
+                if(c && c->isUserDefined){
+                    buildSubtree=true;
+                    break;
+                }
+            }
 
+            }
+
+        }
+        if(buildSubtree){
             OutlinerItem* ccItem = new OutlinerItem (cc,false);
             parentItem->addSubItem (ccItem);
             
             buildTree (ccItem, cc, !cc->getNiceName().toLowerCase().contains (nameFilter));
 
-            if (shouldFilterByName && ccItem->getNumSubItems() == 0 &&
-                !cc->getNiceName().toLowerCase().contains (nameFilter))
+            if ((shouldFilterByName && ccItem->getNumSubItems() == 0 &&
+                !cc->getNiceName().toLowerCase().contains (nameFilter)) ||
+                (showOnlyUserContainers && ccItem->getNumSubItems() == 0)
+
+                )
             {
                 parentItem->removeSubItem (ccItem->getIndexInParent());
             }
@@ -168,15 +185,17 @@ void Outliner::buildTree (OutlinerItem* parentItem, ParameterContainer* parentCo
         for (auto& c : childControllables)
         {
             if (c == parentContainer->nameParam || c->isHidenInEditor) continue;
-
+            if(!showOnlyUserContainers || c->isUserDefined){
             if (!shouldFilterByName || c->niceName.toLowerCase().contains (nameFilter))
             {
                 OutlinerItem* cItem = new OutlinerItem (c,false);
                 parentItem->addSubItem (cItem);
 
             }
+            }
         }
-}
+
+    }
     // show every thing on text search
     if (nameFilter.isNotEmpty() || showOnlyUserContainers)
     {

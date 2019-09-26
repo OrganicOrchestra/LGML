@@ -112,7 +112,7 @@ public:
     TextButton showOnlyUserContainersB;
     String nameFilter;
 
-    bool showHiddenContainers; //include or exclude in treeview the "skipInAddress" containers (may be later exposed to user as an option)
+    
 
     void resized() override;
 
