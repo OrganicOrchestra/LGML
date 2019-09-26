@@ -92,10 +92,10 @@ public:
         }
 
         isDragging = false;
-        if(originComp.get())
+        if(originComp.get()){
             originComp->repaint();
 
-        LGMLDragger::getInstance()->unRegisterDragCandidate (originComp);
+        LGMLDragger::getInstance()->unRegisterDragCandidate (originComp);}
 
     }
     void paint (Graphics& g) override
