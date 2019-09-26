@@ -124,6 +124,10 @@ void Outliner::setRoot(ParameterContainer * p,bool saveOpenness){
         treeView.setRootItemVisible(root->isUserDefined);
         //        resized();
     }
+    else{
+        treeView.setRootItem (nullptr); // first let treeView clean its old root
+        rootItem.reset(nullptr);
+    }
 
 }
 
