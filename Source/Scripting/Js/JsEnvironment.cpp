@@ -35,6 +35,7 @@ const JsEnvironment::JsTimerType JsEnvironment::onUpdateTimer (1, 20);
 
 DynamicObject::Ptr JsEnvironment::getGlobalEnv() {return JsGlobalEnvironment::getInstance()->getEnv();}
 
+Array<Identifier> defaultRootFunctionNames;
 JsEnvironment::JsEnvironment (const String& ns, ParameterContainer* _linkedContainer) :
 linkedContainer (_linkedContainer),
 localNamespace (ns),
@@ -55,6 +56,11 @@ isEnabled (true)
     //  addToNamespace(localNamespace, localEnv, getGlobalEnv());
 
     JsGlobalEnvironment::getInstance();
+    if(defaultRootFunctionNames.size()==0){
+        for(auto n:getRootObjectProperties()){
+            defaultRootFunctionNames.add(n.name);
+        }
+    }
     triesToLoad = 5;
 
 }
@@ -284,7 +290,7 @@ void JsEnvironment::clearListeners()
 
     for (auto& c : listenedContainers)
     {
-        if (c.get())c->removeControllableContainerListener (this);
+        if (c.get())c->removeFeedbackListener (this);
     }
 
     listenedContainers.clear();
@@ -303,7 +309,10 @@ bool JsEnvironment::functionIsDefined (const juce::String& s)
 
     for (auto& f : userDefinedFunctions)
     {
-        if (f.compare (arr)) {return true;}
+        if (f.compare (arr)) {
+            return true;
+
+        }
     }
 
     return false;
@@ -313,7 +322,10 @@ bool JsEnvironment::functionIdentifierIsDefined (const Identifier& i)
 {
     for (auto& f : userDefinedFunctions)
     {
-        if (f.compareIdentifier (i)) {return true;}
+        if (f.compareIdentifier (i)) {
+            return true;
+
+        }
     }
 
     return false;
@@ -598,7 +610,7 @@ Result JsEnvironment::checkUserControllableEventFunction()
 
     for (auto& cont : listenedContainers)
     {
-        cont->addControllableContainerListener (this);
+        cont->addFeedbackListener (this);
     }
 
     return res;
@@ -611,7 +623,9 @@ void JsEnvironment::updateUserDefinedFunctions()
 
     for (int i = 0; i < root.size(); i++)
     {
+        if(defaultRootFunctionNames.indexOf(root.getName(i))<0){
         userDefinedFunctions.add (FunctionIdentifier (root.getName (i).toString()));
+        }
     }
 
 }
