@@ -108,6 +108,7 @@ void ShapeShifter::mouseUp(const MouseEvent & ){
     }
 
 }
+#define HAS_MINI_TIMER 0
 class MiniTimer : private MultiTimer{
 public:
     MiniTimer(ShapeShifter * _s):s(_s){
@@ -120,7 +121,7 @@ public:
         startTimer(2,200);
     }
     bool isRunning(){
-        return isTimerRunning(1) || isTimerRunning(2);
+        return (HAS_MINI_TIMER) && (isTimerRunning(1) || isTimerRunning(2));
     }
 
     void stopTimers(){
@@ -139,7 +140,7 @@ public:
         s->parentShifterContainer->resized();
     }
     void timerCallback(int id) override{
-
+#if HAS_MINI_TIMER
         if(s.get()){
             if(id==1){
                 setMini();
@@ -168,6 +169,7 @@ public:
         else{
             stopTimers();
         }
+#endif
     }
     int mouseTruelyOutTime = 0;
     WeakReference<ShapeShifter> s;

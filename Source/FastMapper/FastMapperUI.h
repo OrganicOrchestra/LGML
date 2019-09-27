@@ -42,7 +42,7 @@ public:
     typedef ParameterContainer ContainerType;
     typedef ParameterBase ControllableType;
 
-    FastMapperUI (const String& contentName, FastMapper* fastMapper, ContainerType* viewFilterContainer = nullptr);
+    FastMapperUI (const String& contentName, FastMapper* fastMapper);
     virtual ~FastMapperUI();
 
     FastMapper* fastMapper;

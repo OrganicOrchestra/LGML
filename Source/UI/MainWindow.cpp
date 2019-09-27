@@ -92,7 +92,7 @@ latestVChecker(nullptr)
 
 
 
-    ShapeShifterManager::getInstance()->loadLastSessionLayoutFile();
+    ShapeShifterManager::getInstance()->loadDefaultLayoutFile();
     LGMLDragger::getInstance()->setMainComponent (mainComponent);
 
 

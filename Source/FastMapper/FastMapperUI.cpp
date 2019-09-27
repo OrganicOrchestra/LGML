@@ -34,11 +34,10 @@ struct CompareFastMaps{
 };
 
 
-FastMapperUI::FastMapperUI (const String& contentName,FastMapper* _fastMapper, ContainerType* _viewFilterContainer) :
+FastMapperUI::FastMapperUI (const String& contentName,FastMapper* _fastMapper) :
 ShapeShifterContent (this,contentName,"Link parameters together\nAdd FastMap here\nCmd+m toggles mapping mode"),
 InspectableComponent(_fastMapper),
 fastMapper (_fastMapper),
-viewFilterContainers {WeakReference<ContainerType>(_viewFilterContainer)},
 mapsUI(new StackedContainerUI<FastMapUI, FastMap>(
                                                   [](FastMapUI* ui){return ui->fastMap;},
                                                   [_fastMapper](int ia, int ib){
@@ -52,6 +51,7 @@ mapsUI(new StackedContainerUI<FastMapUI, FastMap>(
                                                   ,2,40)
        )
 {
+
     fastMapper->addControllableContainerListener (this);
 
     linkToSelection.setButtonText (juce::translate("Show from selected"));
@@ -93,6 +93,7 @@ mapsUI(new StackedContainerUI<FastMapUI, FastMap>(
         return mapPassViewFilter(a->fastMap);
 
     });
+    
    resetAndUpdateView();
 }
 
@@ -293,7 +294,7 @@ void FastMapperUI::controllableContainerAdded (ControllableContainer* ori, Contr
         {
             if (wf.get())
             {
-                auto added = mapsUI.addFromT((FastMap*)wf.get());
+                mapsUI.addFromT((FastMap*)wf.get());
 
                 resized();
             }

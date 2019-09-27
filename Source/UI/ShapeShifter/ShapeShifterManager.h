@@ -20,7 +20,7 @@
 #include "ShapeShifterFactory.h"
 #include "../../Logger/LGMLLogger.h"
 
-
+class LastLayoutSaver;
 class ShapeShifterManager :
     public ShapeShifterPanel::Listener,
     private LGMLLogger::CoalescedListener
@@ -32,7 +32,7 @@ public:
 
     ShapeShifterContainer mainShifterContainer;
 
-    File lastFile;
+
     File defaultFolder;
 
     template<typename T>
@@ -105,6 +105,8 @@ public:
 
     //LGML Logger to blink tabs
     void newMessages(int from,int to)final;
+
+    std::unique_ptr<LastLayoutSaver> lastLayoutSaver;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ShapeShifterManager)
 };
 

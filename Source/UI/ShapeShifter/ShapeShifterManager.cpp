@@ -18,18 +18,67 @@
 #include "ShapeShifterFactory.h"
 #include "../../Utils/DebugHelpers.h"
 
-
+#include "../../Engine.h"
 juce_ImplementSingleton (ShapeShifterManager);
 
 
 const String appLayoutExtension = "lgmllayout";
 const String appSubFolder = "LGML/layouts";
 
+class LastLayoutSaver: public Engine::EngineFileSaver{
+public:
+    static String lastSessionFileName;
+    LastLayoutSaver(ShapeShifterManager* _owner):Engine::EngineFileSaver("layoutSaver"),owner(_owner){
+
+    }
+
+    Result saveFiles(const File&  sessionFolder) override{
+        auto lastFile = sessionFolder.getChildFile (lastSessionFileName + appLayoutExtension);
+        owner->saveCurrentLayoutToFile(lastFile);
+        return Result::ok();
+    }
+
+    Result loadFiles(const File&  sessionFolder)override{
+        if(!sessionFolder.exists()){
+            jassertfalse;
+            return Result::fail("Layouts : wrong session folder ");
+        }
+        auto lastFile = sessionFolder.getChildFile (lastSessionFileName + appLayoutExtension);
+        bool hasFile =lastFile.exists();
+        if (hasFile)
+        {
+            owner->loadLayoutFromFile (lastFile);
+        }
+        bool hasLoadedSuccessfully = owner->mainShifterContainer.shifters.size()!=0;
+
+        if(!hasFile || !hasLoadedSuccessfully)
+        {
+            if(!hasLoadedSuccessfully && hasFile){
+                String bkName = lastFile.getFileNameWithoutExtension()+".bak."+appLayoutExtension;
+                File bkFile = lastFile.getParentDirectory().getChildFile(bkName);
+                LOGE(juce::translate("last layout file not valid moving to :") << bkFile.getFullPathName());
+                if(!lastFile.moveFileTo(bkFile)){
+                    LOGE(juce::translate("can't move last layout file"));
+                }
+            }
+            owner->loadDefaultLayoutFile();
+        }
+        return Result::ok();
+    }
+    bool isDirty() override{return true;}
+
+
+    ShapeShifterManager * owner;
+
+};
+String LastLayoutSaver::lastSessionFileName ("_lastSession.");
+
 
 ShapeShifterManager::ShapeShifterManager() :
 CoalescedListener(30),
 mainShifterContainer (ShapeShifterContainer::Direction::VERTICAL),
-currentCandidatePanel (nullptr)
+currentCandidatePanel (nullptr),
+lastLayoutSaver( new LastLayoutSaver(this))
 {
     defaultFolder = File::getSpecialLocation (File::SpecialLocationType::userDocumentsDirectory).getChildFile (appSubFolder);
 
@@ -37,8 +86,6 @@ currentCandidatePanel (nullptr)
     {
         LOGE(juce::translate("can't create default layout directory at : ") + defaultFolder.getFullPathName());
     }
-
-    lastFile = defaultFolder.getChildFile ("_lastSession." + appLayoutExtension);
     LGMLLogger::getInstance()->addLogCoalescedListener(this);
 //    LGMLUIUtils::markHasNewBackground(mainShifterContainer);
 }
@@ -50,9 +97,10 @@ ShapeShifterManager::~ShapeShifterManager()
     }
     openedWindows.clear();
 
-    saveCurrentLayoutToFile (lastFile);
+
 
 }
+
 
 void ShapeShifterManager::setCurrentCandidatePanel (ShapeShifterPanel* panel)
 {
@@ -315,56 +363,6 @@ void ShapeShifterManager::loadLayoutFromFile (const File& fromFile)
     loadLayout (data);
 }
 
-void ShapeShifterManager::loadLastSessionLayoutFile()
-{
-    bool hasFile =lastFile.exists();
-    if (hasFile)
-    {
-        loadLayoutFromFile (lastFile);
-
-    }
-    bool hasLoadedSuccessfully = mainShifterContainer.shifters.size()!=0;
-
-    if(!hasFile || !hasLoadedSuccessfully)
-    {
-        if(!hasLoadedSuccessfully && hasFile){
-            String bkName = lastFile.getFileNameWithoutExtension()+".bak."+appLayoutExtension;
-            File bkFile = lastFile.getParentDirectory().getChildFile(bkName);
-            LOGE(juce::translate("last layout file not valid moving to :") << bkFile.getFullPathName());
-            if(!lastFile.moveFileTo(bkFile)){
-                LOGE(juce::translate("can't move last layout file"));
-            }
-        }
-        loadDefaultLayoutFile();
-    }
-}
-
-void ShapeShifterManager::loadDefaultLayoutFile()
-{
-    File defaultFile = defaultFolder.getChildFile ("default." + appLayoutExtension);
-    bool hasDefaultFile = defaultFile.exists();
-    if (hasDefaultFile)
-    {
-        loadLayoutFromFile (defaultFile);
-    }
-    bool hasLoadedSuccessfully = mainShifterContainer.shifters.size()!=0;
-
-    // move corrupted file to .bak sibling
-    if(!hasLoadedSuccessfully && hasDefaultFile){
-        String bkName = defaultFile.getFileNameWithoutExtension()+".bak."+appLayoutExtension;
-        File bkFile = defaultFile.getParentDirectory().getChildFile(bkName);
-        LOGE(juce::translate("default layout file not valid moving to :") << bkFile.getFullPathName());
-        if(!defaultFile.moveFileTo(bkFile)){
-            LOGE(juce::translate("can't move default layout file"));
-        }
-    }
-    //load from app
-    if(!hasDefaultFile || !hasLoadedSuccessfully)
-    {
-        String defaultLayoutFileData = String::fromUTF8 (BinaryData::default_lgmllayout);
-        loadLayout (JSON::parse (defaultLayoutFileData));
-    }
-}
 
 void ShapeShifterManager::saveCurrentLayout()
 {
@@ -524,6 +522,12 @@ ShapeShifterPanelTab* ShapeShifterManager::getTabForContentName (const String& n
     return nullptr;
 
 }
+
+void ShapeShifterManager::loadDefaultLayoutFile(){
+    String defaultLayoutFileData = String::fromUTF8 (BinaryData::default_lgmllayout);
+    loadLayout (JSON::parse (defaultLayoutFileData));
+}
+
 void ShapeShifterManager::newMessages(int from,int to){
     const auto & logs = LGMLLogger::getInstance()->loggedElements;
 
