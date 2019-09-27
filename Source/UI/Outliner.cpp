@@ -575,7 +575,7 @@ void OutlinerItemComponent::resized()
 
     if (paramUI)
     {
-        const int minParamDisplayWidth = 200;
+        const int minParamDisplayWidth = 100;
 
         paramUI->setVisible(r.getWidth()>minParamDisplayWidth);
         if(paramUI->isVisible()){

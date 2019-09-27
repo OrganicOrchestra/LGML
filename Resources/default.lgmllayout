@@ -65,10 +65,10 @@
                 "type": 0,
                 "width": 492,
                 "height": 50,
-                "currentContent": "Time Manager",
+                "currentContent": "Time",
                 "tabs": [
                   {
-                    "name": "Time Manager"
+                    "name": "Time"
                   }
                 ]
               },
@@ -76,10 +76,10 @@
                 "type": 0,
                 "width": 995,
                 "height": 944,
-                "currentContent": "Node Manager",
+                "currentContent": "Node",
                 "tabs": [
                   {
-                    "name": "Node Manager"
+                    "name": "Node"
                   }
                 ]
               }

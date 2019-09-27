@@ -140,10 +140,25 @@ public:
     void childBoundsChanged (Component* )override{updateSize();}
 
 private:
+    struct Sorter{
+        Sorter(SortFType f):sortF(f){}
+        int compareElements(const Component* a,const Component* b){
+            return sortF(dynamic_cast<const UIT*>(a),dynamic_cast<const UIT*>(b));
+        }
+        SortFType sortF;
+    };
     void filterAndSort(){
 
         if(sortF){
-            std::sort((const UIT**)stackedUIs.begin(),(const UIT**)stackedUIs.end(),sortF);
+            auto ss =Sorter(sortF);
+//            SortFunctionConverter<Sorter> sfc(ss);
+            stackedUIs.sort(ss);
+//            auto end = stackedUIs.end();
+//            for (auto i = stackedUIs.begin(); i !=  end; ++i){
+//                std::iter_swap(i, std::min_element(i, end,sortF));
+//        }
+            //std::sort((const UIT**)stackedUIs.begin(),(const UIT**)stackedUIs.end(),sortF);
+
         }
         if(filterF){
             for(auto o:stackedUIs){o->setVisible(filterF((UIT*)o));}
