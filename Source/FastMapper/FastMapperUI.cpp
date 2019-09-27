@@ -356,6 +356,7 @@ ParameterUI * getParamFromComponent(Component * comp){
     }
     return nullptr;
 }
+
 void FastMapperUI::selectionChanged (Inspector* i)
 {
     jassert (linkToSelection.getToggleState());

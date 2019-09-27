@@ -125,14 +125,14 @@ void FastMapper::clear()
 }
 
 
-FastMap* FastMapper::addFastMap()
+FastMap* FastMapper::addFastMap(bool warnDups)
 {
 
 
 
 
 
-    if(!checkDuplicates (potentialIn->getLinkedParam(),potentialOut->getLinkedParam())){
+    if(checkValidNewFastMap (potentialIn->getLinkedParam(),potentialOut->getLinkedParam(),warnDups)){
         lastFMAddedTime = Time::getMillisecondCounter();
         std::unique_ptr<FastMap> f ( new FastMap());
         f->nameParam->isEditable = true;
@@ -167,16 +167,18 @@ FastMap* FastMapper::addFastMap()
         return addedFastMap;
     }
     else{
+        potentialIn->setParamToReferTo (nullptr);
+        potentialOut->setParamToReferTo (nullptr);
         return nullptr;
     }
 }
 
-bool FastMapper::checkDuplicates (ParameterBase* referenceInParam,ParameterBase* referenceOutParam)
+bool FastMapper::checkValidNewFastMap (ParameterBase* referenceInParam,ParameterBase* referenceOutParam,bool warnDups)
 {
-    bool dup = false;
+    bool valid = true;
 
     if (referenceInParam == nullptr && referenceOutParam == nullptr)
-        return false;
+        return true;// allow empty fastmaps
 
     for (auto& ff : maps)
     {
@@ -185,15 +187,54 @@ bool FastMapper::checkDuplicates (ParameterBase* referenceInParam,ParameterBase*
         if (ff->referenceIn->getLinkedParam() == referenceInParam &&
             ff->referenceOut->getLinkedParam() == referenceOutParam)
         {
-            dup = true;
+            valid = false;
         }
         else if (ff->referenceIn->getLinkedParam() == referenceOutParam &&
                  ff->referenceOut->getLinkedParam() == referenceInParam)
         {
-            dup = true;
+            valid = false;
         }
+        if(warnDups){
+#if !ENGINE_HEADLESS
+            if(ff->referenceIn->getLinkedParam() == referenceInParam){
+                String fromAddr = referenceInParam?referenceInParam->getControlAddress().toString():"None";
+                ParameterBase* otherP = ff->referenceOut->getLinkedParam();
+                String otherAddress = otherP?otherP->getControlAddress().toString():"None";
+                String infoText =juce::translate(  "source (left side) of fast map 456\n is already mapped to 123 \n ?re you sure to proceed ? ").replace("123",otherAddress).replace("456",fromAddr);
+                int cancelAddReplace =AlertWindow::showYesNoCancelBox(AlertWindow::AlertIconType::QuestionIcon,
+                                                                      "FastMapWarning",
+                                                                      infoText,juce::translate("Add"), //1
+                                                                      juce::translate("Replace"), // 2
+                                                                      juce::translate("Cancel"), // 0
+                                                                      nullptr,//associatedComponent
+                                                                      nullptr);//callback
 
-        if (dup)
+                if(cancelAddReplace==0){return false;}
+                else if(cancelAddReplace==1){return true;}
+                else{ff->referenceOut->setParamToReferTo(referenceOutParam);return false;}
+            }
+            if(ff->referenceOut->getLinkedParam() == referenceOutParam){
+                String fromAddr = referenceOutParam?referenceInParam->getControlAddress().toString():"None";
+                ParameterBase* otherP = ff->referenceIn->getLinkedParam();
+                String otherAddress = otherP?otherP->getControlAddress().toString():"None";
+                String infoText =juce::translate(  "source (right side) of fast map 456\n is already mapped to 123 \n ?re you sure to proceed ? ").replace("123",otherAddress).replace("456",fromAddr);
+                int cancelAddReplace = AlertWindow::showYesNoCancelBox(AlertWindow::AlertIconType::QuestionIcon,
+                                                                      "FastMapWarning",
+                                                                      infoText,juce::translate("Add"), //1
+                                                                      juce::translate("Replace"), // 2
+                                                                      juce::translate("Cancel"), // 0
+                                                                      nullptr,//associatedComponent
+                                                                      nullptr);//callback
+
+                if(cancelAddReplace==0){return false;}
+                else if(cancelAddReplace==1){return true;}
+                else{ff->referenceIn->setParamToReferTo(referenceInParam);return false;}
+            }
+
+
+#endif
+        }
+        if (!valid)
         {
             LOGE(juce::translate("can't duplicate fastMap"));
 
@@ -202,7 +243,7 @@ bool FastMapper::checkDuplicates (ParameterBase* referenceInParam,ParameterBase*
         }
     }
 
-    return false;
+    return valid;
 }
 
 void FastMapper::removeFastmap (FastMap* f)
@@ -231,7 +272,7 @@ bool FastMapper::removeMappingIncluding(ParameterBase *p){
 
 ParameterContainer*   FastMapper::addContainerFromObject (const String& /*name*/, DynamicObject*   fData)
 {
-    FastMap* f = addFastMap();
+    FastMap* f = addFastMap(false);
     if(f){
         f->configureFromObject(fData);
     }

@@ -55,7 +55,7 @@ public:
     void setPotentialInput ( ParameterBase*);
     void setPotentialOutput ( ParameterBase*);
 
-    FastMap* addFastMap();
+    FastMap* addFastMap(bool warnDups=true);
     void removeFastmap (FastMap* f);
     bool removeMappingIncluding(ParameterBase *);
 
@@ -83,7 +83,7 @@ private:
     friend class ParameterContainer::OwnedFeedbackListener<FastMapper>;
 
     void createNewFromPotentials();
-    bool checkDuplicates (ParameterBase* referenceInParam,ParameterBase* referenceOutParam);
+    bool checkValidNewFastMap (ParameterBase* referenceInParam,ParameterBase* referenceOutParam,bool warnDups);
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FastMapper)
 
 };
