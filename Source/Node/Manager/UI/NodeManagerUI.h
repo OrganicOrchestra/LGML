@@ -25,6 +25,8 @@
 #include "../../../Utils/FactoryUIHelpers.h"
 #include "../../../Controllable/Parameter/UI/ParameterUIFactory.h"
 
+#include  "../../../Preset/PresetChooserUI.h"
+
 class UISync;
 
 //==============================================================================
@@ -74,6 +76,7 @@ public:
 
 
     void alignOnGrid(Point<int> &toAlign);
+
     IntParameter * gridSize;
     
     std::unique_ptr<UISync> uiSync;
@@ -101,7 +104,7 @@ public :
         addAndMakeVisible (vp);
         vp.setScrollBarThickness (10);
         nmui->addNodeManagerUIListener (this);
-        reconstructViewerPath();
+//        reconstructViewerPath();
         setWantsKeyboardFocus (true);
         nmui->setWantsKeyboardFocus (true);
         addAndMakeVisible (addNodeBt);
@@ -112,6 +115,7 @@ public :
         vp.addMouseListener(this,true);
         setPaintingIsUnclipped(true);
         vp.setPaintingIsUnclipped(true);
+        currentViewedContainerChanged();
 
     }
 
@@ -127,6 +131,7 @@ public :
 
     std::unique_ptr<ParameterUI> minimizeAllUI;
     std::unique_ptr<ParameterUI> gridSizeUI;
+    std::unique_ptr<PresetChooserUI>  presetUI;
     OwnedArray<TextButton> pathButtons;
 
     void reconstructViewerPath()
@@ -218,12 +223,16 @@ public :
         
         minimizeAllUI->setBounds(buttonR.removeFromRight(100));
         gridSizeUI->setBounds(buttonR.removeFromRight(100));
+
         for (auto& b : pathButtons)
         {
             b->setBounds (buttonR.removeFromLeft (100));
             buttonR.removeFromLeft (5);
         }
+        if(presetUI){
+            presetUI->setBounds(buttonR.withSizeKeepingCentre(130,buttonR.getHeight()));
 
+        }
         r.removeFromTop (2);
 
         vp.setBounds (r);
@@ -236,8 +245,12 @@ public :
 
     void currentViewedContainerChanged()override
     {
+
+        presetUI = nmui->currentViewer?std::make_unique<PresetChooserUI>(nmui->currentViewer->nodeContainer):nullptr;
+        addAndMakeVisible(presetUI.get());
+
         reconstructViewerPath();
-        
+
         hideInfoLabelIfNeeded();
 
         //nmui->setBounds(getLocalBounds().withTop(30));

@@ -19,6 +19,7 @@
 #include "../../../Controllable/Parameter/ParameterContainerSync.h"
 #include "../../../Controllable/ControllableUIHelpers.h"
 
+
 class UISync:public ParameterContainerSync{
 public:
     UISync(const String &n,ParameterContainer * c,ParameterContainer *p) : ParameterContainerSync(n,p){
@@ -175,6 +176,7 @@ void NodeManagerUI::setCurrentViewedContainer (NodeContainer* c)
 
         removeChildComponent (currentViewer.get());
         currentViewer = nullptr;
+        
     }
 
     if (c != nullptr)
@@ -189,6 +191,7 @@ void NodeManagerUI::setCurrentViewedContainer (NodeContainer* c)
         currentViewer->minimizeAll->setValue(isMiniMode);
         
         addAndMakeVisible (currentViewer.get());
+
         currentViewer->setMouseCursor(MouseCursor::CrosshairCursor);
         currentViewer->setTopLeftPosition (0, 0);
         currentViewer->selectThis();

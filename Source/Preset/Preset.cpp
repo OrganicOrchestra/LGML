@@ -285,7 +285,7 @@ DynamicObject * Presetable::createPresetObject(ParameterContainer * p){
                                  }
 
                                  if(auto *pp = dynamic_cast<ParameterContainer*>(c->parentContainer.get())){
-                                     if(c->parentContainer->parentContainer==p){ // sub containers at depth 1
+                                     if(pp->parentContainer==p ){ // sub containers at depth 1
                                          String presetN = pp->presetable->currentPresetName->stringValue();
                                          bool isPresetLoaded = !presetN.isEmpty();
                                          //bool isSamePresetLoaded = isPresetLoaded && (presetN==p->presetable->currentPresetName->stringValue());
@@ -294,13 +294,19 @@ DynamicObject * Presetable::createPresetObject(ParameterContainer * p){
                                          if(auto n = dynamic_cast<NodeBase*>(pp)){
                                              isEnableParam = c==n->enabledParam;
                                          }
-                                         isValid&= (isPresetLoaded==isCurrentPresetNameParam || isEnableParam);
+                                         if(isPresetLoaded){
+                                             isValid&= (isCurrentPresetNameParam || isEnableParam);
+                                         }
                                      }
                                  }
                                  return isValid;
                              },
-                             [](ParameterContainer * cc){
-                                 if(dynamic_cast<NodeContainer*>(cc)){
+                             [p](ParameterContainer * cc){
+                                 auto ccParent =dynamic_cast<ParameterContainer*>(cc->parentContainer);
+                                 if(ccParent!=p && // if we are more than 2 level away
+                                   ( dynamic_cast<NodeContainer*>(ccParent)|| // if parent is NodeContainer
+                                    ccParent->presetable->currentPresetName->stringValue().isNotEmpty()) // parent has PresetLoaded
+                                    ){
                                      return false;
                                  }
                                  return cc->canHavePresets();
