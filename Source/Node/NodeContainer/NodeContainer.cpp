@@ -368,6 +368,7 @@ void NodeContainer::configureFromObject (DynamicObject* data)
     setBuildSessionGraph(true);
 
 
+
     NodeBase::configureFromObject (data);
 
     setBuildSessionGraph(false);
@@ -375,6 +376,8 @@ void NodeContainer::configureFromObject (DynamicObject* data)
     if( auto *  connectionsData = data->getProperty ("connections").getArray()){
         setConnectionFromObject(*connectionsData);
     }
+
+
 
 }
 

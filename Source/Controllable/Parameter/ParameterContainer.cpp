@@ -358,7 +358,7 @@ void ParameterContainer::configureFromObject (DynamicObject* dyn)
                                 // we don't load preset when already loading a state
                                 if ((par->shortName != Presetable::presetIdentifier )  || !dyn->hasProperty(childContainerId) )
                                 {
-                                    if(par->isSavableAsObject){
+                                    if(par->isSavableAsObject || par->isUserDefined){
                                         if(auto d = p.value.getDynamicObject()){
                                             jassert(d->hasProperty("value"));
                                             par->setValue (d->getProperty("value"));
@@ -402,19 +402,25 @@ void ParameterContainer::configureFromObject (DynamicObject* dyn)
             if (cD)
             {
                 const auto ob = cD->getProperties();
+                Array<ParameterContainer*> delayedUserDefinedConts;
+                for (int i = 0 ; i< ob.size() ; i++){
 
-                for (const auto& o : ob)
-                {
-                    auto cont = dynamic_cast<ParameterContainer*> (getControllableContainerByName (o.name.toString()));
+                    const auto name = ob.getName(i);
+                    const auto value = ob.getValueAt(i);
+                    auto cont = dynamic_cast<ParameterContainer*> (getControllableContainerByName (name.toString()));
 
                     if (cont)
                     {
-                        cont->configureFromObject (o.value.getDynamicObject());
+                        if(cont->isUserDefined){
+                            delayedUserDefinedConts.add(cont);
+                            continue;
+                        }
+                        cont->configureFromObject (value.getDynamicObject());
                     }
                     else if(canHaveUserDefinedContainers)
                     {
-                        if( o.value.getDynamicObject()){
-                            auto c = addContainerFromObject (o.name.toString(), o.value.getDynamicObject());
+                        if( value.getDynamicObject()){
+                            auto c = addContainerFromObject (name.toString(), value.getDynamicObject());
 
                             if (!c)
                             {
@@ -427,8 +433,14 @@ void ParameterContainer::configureFromObject (DynamicObject* dyn)
                         }
                     }
                     else{
-                        LOGE(String("sub container 456 not allowed in 123").replace("123", getNiceName()).replace("456",o.name.toString()));
+                        LOGE(String("sub container 456 not allowed in 123").replace("123", getNiceName()).replace("456",name.toString()));
                     }
+                }
+                for(auto c:delayedUserDefinedConts){
+                    const auto name = c->getNiceName();
+                    const auto obj = ob[name];
+                    c->configureFromObject (obj.getDynamicObject());
+
                 }
 
             }
