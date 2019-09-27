@@ -330,7 +330,11 @@ void ParameterContainer::dispatchFeedbackInternal(ParameterBase* c, ParameterBas
     controllableContainerFBListeners.call (&FeedbackListener::parameterFeedbackUpdate, this, c,notifier);
 
 }
-void ParameterContainer::configureFromObject (DynamicObject* dyn)
+
+void ParameterContainer::configureFromObject (DynamicObject* dyn){
+    configureFromObjectOrValues(dyn,true);
+}
+void ParameterContainer::configureFromObjectOrValues (DynamicObject* dyn,bool allowNewChilds)
 {
     if (dyn)
     {
@@ -385,9 +389,12 @@ void ParameterContainer::configureFromObject (DynamicObject* dyn)
                             }
                         }
                     }
-                    else
+                    else if(allowNewChilds)
                     {
                         addParameterFromVar (p.name.toString(), p.value);
+                    }
+                    else{
+                        LOGE(String("var  456 not allowed in 123 , it may be a defunct variable called from an old preset? save current preset if you want to get rid of this message").replace("123", getControlAddress().toString()).replace("456",p.name.toString()));
                     }
 
                 }
@@ -415,9 +422,9 @@ void ParameterContainer::configureFromObject (DynamicObject* dyn)
                             delayedUserDefinedConts.add(cont);
                             continue;
                         }
-                        cont->configureFromObject (value.getDynamicObject());
+                        cont->configureFromObjectOrValues (value.getDynamicObject(),allowNewChilds);
                     }
-                    else if(canHaveUserDefinedContainers)
+                    else if(allowNewChilds && canHaveUserDefinedContainers )
                     {
                         if( value.getDynamicObject()){
                             auto c = addContainerFromObject (name.toString(), value.getDynamicObject());
@@ -439,7 +446,7 @@ void ParameterContainer::configureFromObject (DynamicObject* dyn)
                 for(auto c:delayedUserDefinedConts){
                     const auto name = c->getNiceName();
                     const auto obj = ob[name];
-                    c->configureFromObject (obj.getDynamicObject());
+                    c->configureFromObjectOrValues (obj.getDynamicObject(),allowNewChilds);
 
                 }
 

@@ -58,7 +58,8 @@ public:
     virtual ParameterContainer* addContainerFromObject (const String& name, DynamicObject*   data) ;
     virtual ParameterBase* addParameterFromVar (const String& name, const var& data) ;
 
-    virtual void configureFromObject (DynamicObject* data) override;
+    void configureFromObject (DynamicObject* data) override;
+    void configureFromObjectOrValues (DynamicObject* data,bool allowNewChilds) ; // allowNewChilds useful for preset loading
     virtual DynamicObject* createObject() override;
     DynamicObject* createObjectMaxDepth(int maxDepth) ;
     DynamicObject* createObjectFiltered(std::function<bool(ParameterBase*)> controllableFilter,std::function<bool(ParameterContainer*)> containerFilter,int maxDepth=-1,bool includeUID=false,bool getNotExposed = false);

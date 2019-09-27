@@ -235,7 +235,7 @@ bool Presetable::loadPreset (Preset* preset,bool /*sendNotif*/)
 
     }
     DBG("loading preset" +preset->getPresetName()+ " -> " + pc->getNiceName());
-    pc->configureFromObject(preset->getPresetValueObject());
+    pc->configureFromObjectOrValues(preset->getPresetValueObject(),false);
     currentPreset = preset;
     String preName = currentPreset->getPresetName();
     if(currentPreset->getOriginContainer()!=pc){
