@@ -175,27 +175,42 @@ FastMap* FastMapper::addFastMap(bool warnDups)
 
 bool FastMapper::checkValidNewFastMap (ParameterBase* referenceInParam,ParameterBase* referenceOutParam,bool warnDups)
 {
-    bool valid = true;
-
     if (referenceInParam == nullptr && referenceOutParam == nullptr)
         return true;// allow empty fastmaps
 
+    #if !ENGINE_HEADLESS
+    if(warnDups){
+        // check mapping from same container
+        if(referenceInParam && referenceOutParam && referenceInParam->parentContainer ){
+            if(referenceInParam->parentContainer == referenceOutParam->parentContainer){
+                if(!AlertWindow::showOkCancelBox(AlertWindow::AlertIconType::QuestionIcon,
+                                                 "FastMapWarning",
+                                                 juce::translate("parameters  have the same parent (123) are you sure you know what you're doing? ").replace("123",referenceInParam->parentContainer->getControlAddress().toString()),
+                                                 juce::translate("Yes"), //1
+                                                 juce::translate("Cancel"), // 0
+                                                 nullptr,//associatedComponent
+                                                 nullptr)//callback
+                   ){
+                    return false;
+                };
+
+            }
+        }
+    }
+    #endif
     for (auto& ff : maps)
     {
 //        if (ff == f)continue;
+        // checkduplicates
+        if ((ff->referenceIn->getLinkedParam() == referenceInParam && ff->referenceOut->getLinkedParam() == referenceOutParam) ||
+            (ff->referenceIn->getLinkedParam() == referenceOutParam && ff->referenceOut->getLinkedParam() == referenceInParam)){
+            LOGE(juce::translate("can't duplicate fastMap"));
+            return false;
 
-        if (ff->referenceIn->getLinkedParam() == referenceInParam &&
-            ff->referenceOut->getLinkedParam() == referenceOutParam)
-        {
-            valid = false;
-        }
-        else if (ff->referenceIn->getLinkedParam() == referenceOutParam &&
-                 ff->referenceOut->getLinkedParam() == referenceInParam)
-        {
-            valid = false;
         }
         if(warnDups){
 #if !ENGINE_HEADLESS
+            // check similar source/targets mappings
             if(ff->referenceIn->getLinkedParam() == referenceInParam){
                 String fromAddr = referenceInParam?referenceInParam->getControlAddress().toString():"None";
                 ParameterBase* otherP = ff->referenceOut->getLinkedParam();
@@ -210,7 +225,7 @@ bool FastMapper::checkValidNewFastMap (ParameterBase* referenceInParam,Parameter
                                                                       nullptr);//callback
 
                 if(cancelAddReplace==0){return false;}
-                else if(cancelAddReplace==1){return true;}
+//                else if(cancelAddReplace==1){return true;}
                 else{ff->referenceOut->setParamToReferTo(referenceOutParam);return false;}
             }
             if(ff->referenceOut->getLinkedParam() == referenceOutParam){
@@ -227,23 +242,17 @@ bool FastMapper::checkValidNewFastMap (ParameterBase* referenceInParam,Parameter
                                                                       nullptr);//callback
 
                 if(cancelAddReplace==0){return false;}
-                else if(cancelAddReplace==1){return true;}
+//                else if(cancelAddReplace==1){return true;}
                 else{ff->referenceIn->setParamToReferTo(referenceInParam);return false;}
             }
 
 
 #endif
         }
-        if (!valid)
-        {
-            LOGE(juce::translate("can't duplicate fastMap"));
 
-            return true;
-
-        }
     }
 
-    return valid;
+    return true;
 }
 
 void FastMapper::removeFastmap (FastMap* f)
