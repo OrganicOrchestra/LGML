@@ -161,7 +161,7 @@ void MainContentComponent::paint (Graphics& g)
     g.fillAll (findColour (ResizableWindow::backgroundColourId).darker().withAlpha(1.f));
 }
 
-void MainContentComponent::startLoadFile()
+void MainContentComponent::startLoadFile(File targetFile)
 {
 
     // clear graphics to gain time when deleting objects (and to ease thread safety))

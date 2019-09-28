@@ -59,7 +59,7 @@ class Engine:
 public:
     Engine();
     ~Engine();
-
+    void init();
     // Audio
     AudioProcessorPlayer graphPlayer;
 
@@ -141,7 +141,7 @@ public:
         virtual ~EngineListener();
         virtual void startEngine() {}
         virtual void stopEngine() {}
-        virtual void startLoadFile() {}
+        virtual void startLoadFile(File targetFile) {}
         virtual void fileProgress (float /*percent*/, int /*state*/) {}
         virtual void endLoadFile() {}
     };

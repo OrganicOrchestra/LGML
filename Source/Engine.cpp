@@ -99,10 +99,13 @@ hasDefaultOSCControl(false)
     closeEngine->isHidenInEditor = true;
     addChildControllableContainer((engineStats=std::make_unique< EngineStats>(this)).get());
 
+}
+
+
+void Engine::init(){
+    Logger::setCurrentLogger (LGMLLogger::getInstance());
     loadingStartTime = 0;
     initAudio();
-    Logger::setCurrentLogger (LGMLLogger::getInstance());
-
 
 
     MIDIManager::getInstance()->init();
@@ -118,7 +121,7 @@ hasDefaultOSCControl(false)
     addChildControllableContainer (ControllerManager::getInstance());
     addChildControllableContainer (FastMapper::getInstance());
 
-//    DBG ("max recording time : " << std::numeric_limits<sample_clk_t>().max() / (44100.0 * 60.0 * 60.0) << "hours @ 44.1kHz");
+    //    DBG ("max recording time : " << std::numeric_limits<sample_clk_t>().max() / (44100.0 * 60.0 * 60.0) << "hours @ 44.1kHz");
     initDefaultUserSettings();
     setLanguage(getAppProperties()->getUserSettings()->getValue("language"));
 

@@ -60,7 +60,7 @@ RecentlyOpenedFilesList Engine::getLastOpenedFileList(){
 void Engine::createNewGraph()
 {
     loadingStartTime =  getElapsedMillis();
-    engineListeners.call (&EngineListener::startLoadFile);
+    engineListeners.call (&EngineListener::startLoadFile,File());
 
     suspendAudio (true);
     clear();
@@ -86,7 +86,7 @@ Result Engine::loadDocument (const File& file)
     }
 
     isLoadingFile = true;
-    engineListeners.call (&EngineListener::startLoadFile);
+    engineListeners.call (&EngineListener::startLoadFile,file);
 #if !ENGINE_HEADLESS
     if (Inspector::getInstanceWithoutCreating() != nullptr) Inspector::getInstance()->shouldListen (false); //avoid creation of inspector editor while recreating all nodes, controllers, rules,etc. from file
 #endif

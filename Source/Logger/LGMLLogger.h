@@ -21,10 +21,13 @@
 
 #include "../Utils/QueuedNotifier.h"
 #include "../Utils/DebugHelpers.h"
-// do not use file logger atm
-// TODO figure out true utility of such
-#define USE_FILE_LOGGER 0
 
+#if JUCE_DEBUG || PRE_RELEASE
+#define USE_FILE_LOGGER 1
+class FileWriter;
+#else
+#define USE_FILE_LOGGER 0
+#endif
 
 
 class LogElement
@@ -45,6 +48,8 @@ public:
         (other.source == source) &&
         (other.content ==content);
     }
+    String toNiceString()const;
+
 
 private:
     int numAppearances;
@@ -125,24 +130,14 @@ class LGMLLogger : public Logger
 
     };
 
-    const String & getWelcomeMessage();
+    const String  getWelcomeMessage();
     void addLogListener (Listener* l) {listeners.add (l);}
     void addLogCoalescedListener (CoalescedListener* l) {listeners.add (l);}
     void removeLogListener (CoalescedListener* l) {listeners.remove (l);}
     void removeLogListener (Listener* l) {listeners.remove (l);}
 
 #if USE_FILE_LOGGER
-    class FileWriter : public StringListener
-    {
-    public:
-        FileWriter() {fileLog = FileLogger::createDefaultAppLogger ("LGML", "log", "");}
-
-        void newMessage (const String& s) override {if (fileLog && !s.isEmpty()) {fileLog->logMessage (s);}}
-        String getFilePath() {return fileLog->getLogFile().getFullPathName();}
-        std::unique_ptr<FileLogger> fileLog;
-    };
-
-    FileWriter fileWriter;
+    std::unique_ptr<FileWriter> fileWriter;
 #endif
 
     static int maxLoggedElements;
@@ -150,8 +145,7 @@ class LGMLLogger : public Logger
     OwnedArray<LogElement,CriticalSection> loggedElements;
     int getNumLogs();
     void clearLog();
-private:
-    const String welcomeMessage;
+
 };
 
 

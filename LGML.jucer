@@ -760,7 +760,7 @@
         <CONFIGURATION binaryPath="" cppLanguageStandard="c++11" cppLibType="libc++"
                        headerPath="" isDebug="0" linkTimeOptimisation="0" name="PreRelease"
                        optimisation="1" osxArchitecture="Native" osxCompatibility="10.13 SDK"
-                       targetName="LGML" enablePluginBinaryCopyStep="1" customXcodeFlags="ONLY_ACTIVE_ARCH=YES,&#10;GCC_PRECOMPILE_PREFIX_HEADER=YES,&#10;GCC_PREFIX_HEADER=PrefixHeader.pch,&#10;ENABLE_TESTABILITY=YES,&#10;GCC_GENERATE_DEBUGGING_SYMBOLS=YES"
+                       targetName="LGML_Beta" enablePluginBinaryCopyStep="1" customXcodeFlags="ONLY_ACTIVE_ARCH=YES,&#10;GCC_PRECOMPILE_PREFIX_HEADER=YES,&#10;GCC_PREFIX_HEADER=PrefixHeader.pch,&#10;ENABLE_TESTABILITY=YES,&#10;GCC_GENERATE_DEBUGGING_SYMBOLS=YES"
                        defines="PRE_RELEASE=1"/>
         <CONFIGURATION cppLanguageStandard="c++11" cppLibType="libc++" customXcodeFlags="ONLY_ACTIVE_ARCH=YES,&#10;GCC_PRECOMPILE_PREFIX_HEADER=YES,&#10;GCC_PREFIX_HEADER=PrefixHeader.pch,&#10;OTHER_CPLUSPLUSFLAGS=-Wno-everything"
                        defines="" headerPath="" isDebug="1" name="DebugFast" osxArchitecture="Native"

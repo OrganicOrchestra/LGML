@@ -51,7 +51,11 @@ class OSXBuilder (BuilderBase):
 		return dmgPath
 
 	def getBinaryPath(self) :
-		return os.path.join(self.xcodeProjPath,"build",self.cfg["build_cfg_name"],self.cfg["appName"]+".app")
+		#allow pre/suffixed versions
+		build_dir = os.path.join(self.xcodeProjPath,"build",self.cfg["build_cfg_name"])
+		for i in os.listdir(build_dir):
+			if ('LGML' in i) and i.endswith(".app"):
+				return os.path.join(os.path.join(build_dir,i))
 
 	def removeOldApp(self):
 		appPath = self.getBinaryPath()
@@ -69,7 +73,8 @@ class OSXBuilder (BuilderBase):
 	def createDmg(self,exportFileBaseName):
 		import dmgbuild
 		print('creating dmg')
-		dmgPath = exportFileBaseName+'_(%s).dmg'%self.getArchReadable()
+		betaSuffix = "Beta" if self.cfg["build_cfg_name"]=="PreRelease" else ""
+		dmgPath = exportFileBaseName+'_(%s)_%s.dmg'%(self.getArchReadable(),betaSuffix)
 		os.chdir(os.path.abspath(os.path.join(__file__,os.path.pardir)))
 		dmgbuild.build_dmg(dmgPath,"Le Grand Mechant Loop",settings_file = 'dmgbuild_conf.py',defines={'app':self.getBinaryPath()})
 		print('dmg done at :'+dmgPath)

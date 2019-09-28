@@ -85,9 +85,7 @@ startDisplayedIdx(0)
     addAndMakeVisible (logListComponent.get());
 
     LOG (l->getWelcomeMessage());
-#if USE_FILE_LOGGER
-    LOG (juce::translate("please provide logFile for any bug report :\nlogFile in 123").replace("123", l->fileWriter.getFilePath()));
-#endif
+
     clearB.setButtonText (juce::translate("Clear"));
     clearB.addListener (this);
     addAndMakeVisible (clearB);
@@ -483,12 +481,7 @@ void LGMLLoggerUI::buttonClicked (Button* b)
         String s;
         for(int i = startDisplayedIdx ; i< LGMLLogger::getInstance()->getNumLogs() ; i++){
             const LogElement  * el = loggedElements().getUnchecked(i);
-            int leftS = el->source.length() + 3;
-            s+=el->source+" : ";
-            for(int k = 0 ; k < el->getNumLines() ; k++){
-                if (k!=0)for ( int j = 0; j < leftS ; j++) s+=" ";
-                s+=el->getLine(k)+"\n";
-            }
+            s+=el->toNiceString();
         }
         SystemClipboard::copyTextToClipboard (s);
     }

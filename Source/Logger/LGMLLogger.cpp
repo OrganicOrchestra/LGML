@@ -18,32 +18,48 @@
 
 #include "LGMLLogger.h"
 #include "../Version.h"
+#include "../Engine.h"
+
 juce_ImplementSingleton (LGMLLogger);
 int LGMLLogger::maxLoggedElements = 5000;
 #define CIRCULAR 0
 
+#if USE_FILE_LOGGER
+class FileWriter : public LGMLLogger::Listener,public Engine::EngineListener
+{
+public:
+    FileWriter() {fileLog.reset(FileLogger::createDefaultAppLogger ("LGML", "log", ""));}
+    void startLoadFile(File sessionFile) override{
+        if(!sessionFile.exists())return;// new sessions
+        if(!sessionFile.getParentDirectory().exists()){jassertfalse;return;}
+        File logFile = sessionFile.getParentDirectory().getChildFile("log");
+        if(logFile.exists()){
+            logFile.deleteFile();
+        }
 
+        fileLog.reset(new FileLogger(logFile,LGMLLogger::getInstance()->getWelcomeMessage()));
+
+
+    }
+
+    void newMessage(const LogElement * el)  override {if (fileLog && el) {String msg(el->toNiceString());fileLog->logMessage (msg);}}
+    String getFilePath() {return fileLog->getLogFile().getFullPathName();}
+    std::unique_ptr<FileLogger> fileLog;
+};
+
+#endif
 
 LGMLLogger::LGMLLogger():
-writeCursor(0),
-welcomeMessage
-(
- String("LGML v@@1@@@4 (@@2):\nCompiled with love at @@5 the @@3\n by OrganicOrchestra")
- .replace("@@1",String (VersionTriplet::getCurrentVersion().toString()))
- .replace("@@3",String (Time::getCompilationDate()
-                        .formatted("%d/%m/%y")))
- .replace("@@5",String (Time::getCompilationDate()
-                        .formatted("%R")))
- .replace("@@2",BUILD_VERSION_UID)
- .replace("@@4",GIT_SHA)
- ){
+writeCursor(0)
+{
 #if CIRCULAR
     loggedElements.resize(maxLoggedElements);
     loggedElements.fill(nullptr);
 #endif
 
 #if USE_FILE_LOGGER
-    addLogListener (&fileWriter);
+    fileWriter.reset(new FileWriter());
+    addLogListener (fileWriter.get());
 #endif
 
 }
@@ -52,8 +68,23 @@ LGMLLogger::~LGMLLogger(){
     
 }
 
-const String & LGMLLogger::getWelcomeMessage(){
-    return welcomeMessage;
+const String LGMLLogger::getWelcomeMessage(){
+    static String welcome = String ("LGML v@@1@@@4 (@@2):\nCompiled with love at @@5 the @@3\n by OrganicOrchestra\n@@6").replace("@@1",String (VersionTriplet::getCurrentVersion().toString()))
+    .replace("@@3",String (Time::getCompilationDate()
+                           .formatted("%d/%m/%y")))
+    .replace("@@5",String (Time::getCompilationDate()
+                           .formatted("%R")))
+    .replace("@@2",BUILD_VERSION_UID)
+    .replace("@@4",GIT_SHA)
+    .replace("@@6",
+#if USE_FILE_LOGGER
+    juce::translate("please provide logFile for any bug report :\nlogFile are located in session folder")
+#else
+             ""
+#endif
+             );
+
+    return welcome;
 }
 
 
@@ -154,4 +185,14 @@ numAppearances(1)
         severity = LOG_NONE;
     }
 
+}
+String LogElement::toNiceString() const{
+    String s ;
+    int leftS = source.length() + 3;
+    s+=source+" : ";
+    for(int k = 0 ; k < getNumLines() ; k++){
+        if (k!=0)for ( int j = 0; j < leftS ; j++) s+=" ";
+        s+=getLine(k)+"\n";
+    }
+    return s;
 }

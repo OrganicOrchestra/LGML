@@ -137,6 +137,7 @@ public:
         Process::setPriority (Process::HighPriority);
 
         engine = std::make_unique<Engine>();
+        engine->init();
 #if LGML_UNIT_TESTS
 
         UnitTestRunner tstRunner;
