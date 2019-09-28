@@ -4406,7 +4406,7 @@
 			};
 			name = Test;
 		};
-		09A842F6CCA7ABB1C24001B7 = {
+		7C01617AC7BC8D49286A1C67 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
@@ -4424,7 +4424,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"_NDEBUG=1",
 					"NDEBUG=1",
-					"PRE_RELEASE=1",
+					"LGML_BETA=1",
 					"LINK_PLATFORM_MACOSX=1",
 					"JUCER_XCODE_MAC_F6D2F4CF=1",
 					"JUCE_APP_VERSION=1.4.0",
@@ -4464,7 +4464,7 @@
 				PRODUCT_NAME = "LGML_Beta";
 				USE_HEADERMAP = NO;
 			};
-			name = PreRelease;
+			name = Beta;
 		};
 		7180BCDFD1C2B41816B44B17 = {
 			isa = XCBuildConfiguration;
@@ -4657,7 +4657,7 @@
 			};
 			name = Test;
 		};
-		89B7D85FCB72C82817747D3B = {
+		64DBDA4731148DA98266363D = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -4699,7 +4699,7 @@
 				WARNING_CFLAGS = "-Wreorder";
 				ZERO_LINK = NO;
 			};
-			name = PreRelease;
+			name = Beta;
 		};
 		69A409B6140C1495C2FAC6E7 = {
 			isa = XCBuildConfiguration;
@@ -4756,7 +4756,7 @@
 				75F0C7731AACD40A71033986,
 				B0E27C3F337CC864A533FB32,
 				AA45E1E953516F380CE76713,
-				89B7D85FCB72C82817747D3B,
+				64DBDA4731148DA98266363D,
 				69A409B6140C1495C2FAC6E7,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4768,7 +4768,7 @@
 				A413A5C5D8FD14C2C6740BF3,
 				46490BCE9877DD7FFC34BAE6,
 				A915B38F377BAA20491A7C50,
-				09A842F6CCA7ABB1C24001B7,
+				7C01617AC7BC8D49286A1C67,
 				7180BCDFD1C2B41816B44B17,
 			);
 			defaultConfigurationIsVisible = 0;

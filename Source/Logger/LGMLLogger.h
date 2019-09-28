@@ -22,7 +22,7 @@
 #include "../Utils/QueuedNotifier.h"
 #include "../Utils/DebugHelpers.h"
 
-#if JUCE_DEBUG || PRE_RELEASE
+#if JUCE_DEBUG || LGML_BETA
 #define USE_FILE_LOGGER 1
 class FileWriter;
 #else

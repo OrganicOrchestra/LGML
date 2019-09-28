@@ -177,7 +177,7 @@ jobs:
           command: |
             python3 Scripts/buildScript.py --configure --exportpath=/tmp/buildOSX/64/ --os=osx --configuration=Release --arch=x86_64
             python3 Scripts/buildScript.py --build --package --export
-            python3 Scripts/buildScript.py --configure --exportpath=/tmp/buildOSX/64Beta/ --os=osx --configuration=PreRelease --arch=x86_64
+            python3 Scripts/buildScript.py --configure --exportpath=/tmp/buildOSX/64Beta/ --os=osx --configuration=Beta --arch=x86_64
             python3 Scripts/buildScript.py --build --package --export
             
       - store_artifacts:

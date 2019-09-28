@@ -38,7 +38,7 @@
 
 #define DO_PRAGMA(x) _Pragma (#x)
 #define TODO(x) DO_PRAGMA(message ("TODO - " #x));
-#ifdef PRE_RELEASE // TODO use this flag
+#if LGML_BETA 
     #define JUCE_LOG_ASSERTIONS 1
 #endif
 
