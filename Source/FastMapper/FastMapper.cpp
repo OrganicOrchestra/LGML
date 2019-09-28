@@ -225,8 +225,8 @@ bool FastMapper::checkValidNewFastMap (ParameterBase* referenceInParam,Parameter
                                                                       nullptr);//callback
 
                 if(cancelAddReplace==0){return false;}
-//                else if(cancelAddReplace==1){return true;}
-                else{ff->referenceOut->setParamToReferTo(referenceOutParam);return false;}
+                else if(cancelAddReplace==2){ff->referenceOut->setParamToReferTo(referenceOutParam);return false;}
+                //                else if(cancelAddReplace==1){return true;}
             }
             if(ff->referenceOut->getLinkedParam() == referenceOutParam){
                 String fromAddr = referenceOutParam?referenceInParam->getControlAddress().toString():"None";
@@ -242,8 +242,8 @@ bool FastMapper::checkValidNewFastMap (ParameterBase* referenceInParam,Parameter
                                                                       nullptr);//callback
 
                 if(cancelAddReplace==0){return false;}
+                else if(cancelAddReplace==2){ff->referenceIn->setParamToReferTo(referenceInParam);return false;}
 //                else if(cancelAddReplace==1){return true;}
-                else{ff->referenceIn->setParamToReferTo(referenceInParam);return false;}
             }
 
 
