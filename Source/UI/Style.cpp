@@ -211,7 +211,7 @@ public:
         crd->setStrokeFill(FillType(color));
         crd->setStrokeThickness(thickness);
         crd->setPath(crossPath);
-        crd->setTransform(AffineTransform::rotation((float)(rotation/360.0*2.0*M_PI),scale/2,scale/2));
+        crd->setTransform(AffineTransform::rotation((float)(rotation/360.0*2.0*float_Pi),scale/2,scale/2));
         
         dp->addAndMakeVisible(cd);
         dp->addAndMakeVisible(crd);
