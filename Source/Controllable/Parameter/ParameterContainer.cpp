@@ -161,7 +161,7 @@ DynamicObject* ParameterContainer::createObjectMaxDepth(int maxDepth)
     return data;
 }
 
-DynamicObject* ParameterContainer::createObjectFiltered(std::function<bool(ParameterBase*)> controllableFilter,std::function<bool(ParameterContainer*)> containerFilter,int maxDepth,bool includeUID,bool getNotExposed)
+DynamicObject* ParameterContainer::createObjectFiltered(std::function<bool(ParameterBase*)> controllableFilter,std::function<bool(ParameterContainer*)> containerFilter,int maxDepth,bool includeUID,bool getNotExposed,bool getOnlyValues)
 {
 
     DynamicObject* data = new DynamicObject();
@@ -174,7 +174,7 @@ DynamicObject* ParameterContainer::createObjectFiltered(std::function<bool(Param
         {
 
             if(controllableFilter(c)){
-                if (c->isUserDefined || c->isSavableAsObject)
+                if (!getOnlyValues && (c->isUserDefined || c->isSavableAsObject))
                 {
 
                     paramsData.getDynamicObject()->setProperty (c->niceName, ParameterFactory::createTypedObjectFromInstance ( ParameterBase::fromControllable (c)));
@@ -182,6 +182,9 @@ DynamicObject* ParameterContainer::createObjectFiltered(std::function<bool(Param
                 else if (c->isSavable)
                 {
                     paramsData.getDynamicObject()->setProperty (c->niceName, c->getVarState());
+                }else{
+                    int dbg=0;
+                    dbg++;
                 }
             }
         }
@@ -199,7 +202,7 @@ DynamicObject* ParameterContainer::createObjectFiltered(std::function<bool(Param
         for (auto controllableCont : getContainersOfType<ParameterContainer>(false))
         {
             if(containerFilter(controllableCont))
-                childData->setProperty (controllableCont->getNiceName(), controllableCont->createObjectFiltered(controllableFilter,containerFilter,maxDepth-1,includeUID,getNotExposed));
+                childData->setProperty (controllableCont->getNiceName(), controllableCont->createObjectFiltered(controllableFilter,containerFilter,maxDepth-1,includeUID,getNotExposed,getOnlyValues));
         }
         if(childData->getProperties().size())
             data->setProperty (childContainerId, childData);
@@ -367,9 +370,16 @@ void ParameterContainer::configureFromObjectOrValues (DynamicObject* dyn,bool al
                                             jassert(d->hasProperty("value"));
                                             par->setValue (d->getProperty("value"));
                                         }
+                                        else if(par->getVarState().hasSameTypeAs(p.value)){
+                                            par->setValue (p.value);
+                                        }
                                         else{
 
-                                            LOGE(String("parsing error for parameter 123").replace("123",par->niceName));
+                                            LOGW(String("changing type of parmeter :  @@1  (value=@@2) with value @@3")
+                                                 .replace("@@1",par->getControlAddress().toString())
+                                                 .replace("@@2",par->getVarState().toString())
+                                                 .replace("@@3",p.value.toString())
+                                                 );
                                             par->setValue (p.value); // retro compat try to set value
                                         }
                                     }

@@ -31,6 +31,7 @@ ParameterContainer(generateName(_name, pc))
     type = addNewParameter<StringParameter>("type", "type for preset", pc?pc->getFactoryTypeId().toString():"no");
     subType = addNewParameter<StringParameter>("subType", "subType for preset", pc?pc->getSubTypeName():"no");
     originUID = addNewParameter<StringParameter>("originUID", "originUID for preset", pc?pc->uid.toString():"no");
+    originAddress = pc?pc->getControlAddress().toString():"Unknown";
 }
 
 void Preset::clear()
@@ -50,6 +51,10 @@ DynamicObject* Preset::createObject() {
     d->setProperty("values", values);
     return d;
 
+}
+
+bool Preset::isValidPreset(){
+    return getOriginContainer()!=nullptr;
 }
 
 void Preset::configureFromObject(DynamicObject *data) {
@@ -311,7 +316,7 @@ DynamicObject * Presetable::createPresetObject(ParameterContainer * p){
                                  }
                                  return cc->canHavePresets();
                              },
-                             -1,false,true);
+                             -1,false,true,true);
     }
     return nullptr;
 }

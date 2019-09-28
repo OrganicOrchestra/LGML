@@ -36,8 +36,8 @@ public:
 
     DynamicObject * getPresetValueObject();
     void configurePresetValueObject(DynamicObject *v);
-
-    
+    bool isValidPreset();
+    String originAddress; // used as info if origin container has been deleted
 private:
     StringParameter* filter; //Used to filter which preset to propose depending on the object (specific nodes, vst, controller, etc.)
     StringParameter* presetName;

@@ -62,7 +62,7 @@ public:
     void configureFromObjectOrValues (DynamicObject* data,bool allowNewChilds) ; // allowNewChilds useful for preset loading
     virtual DynamicObject* createObject() override;
     DynamicObject* createObjectMaxDepth(int maxDepth) ;
-    DynamicObject* createObjectFiltered(std::function<bool(ParameterBase*)> controllableFilter,std::function<bool(ParameterContainer*)> containerFilter,int maxDepth=-1,bool includeUID=false,bool getNotExposed = false);
+    DynamicObject* createObjectFiltered(std::function<bool(ParameterBase*)> controllableFilter,std::function<bool(ParameterContainer*)> containerFilter,int maxDepth=-1,bool includeUID=false,bool getNotExposed = false,bool getOnlyValues=false);
     
 
     //  controllableContainer::Listener

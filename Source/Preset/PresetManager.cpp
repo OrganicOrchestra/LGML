@@ -43,7 +43,34 @@ public:
 
         auto r= pFolder.createDirectory();
         if(!r)return r;
-
+        Array<Preset*> invalidPresets;
+        for(auto & p:pm->presets){
+            if(p && !p->isValidPreset()){
+                invalidPresets.add(p);
+            }
+        }
+        bool removeOldPresets = true;
+#if !ENGINE_HEADLESS
+        if(invalidPresets.size()){
+        String presetsInfos;
+        for(auto & p:invalidPresets){
+            auto originAddress = p->getOriginContainer()?p->getOriginContainer()->getControlAddress().toString():String("Unknown");
+            presetsInfos+=String("preset : @@1 was in deleted @@2\n").replace("@@1",p->getPresetName()).replace("@@2",p->originAddress);
+        }
+        removeOldPresets = AlertWindow::showOkCancelBox(AlertWindow::AlertIconType::QuestionIcon,
+                                                        "PresetWarning",
+                                                        juce::translate("presets will be deleted :\n @@1").replace("@@1",presetsInfos),
+                                                        juce::translate("Yes"), //1
+                                                        juce::translate("Cancel"), // 0
+                                                        nullptr,//associatedComponent
+                                                        nullptr);//callback
+        }
+#endif
+        if(removeOldPresets){
+            for(auto & p:invalidPresets){
+                pm->removePreset(p);
+            }
+        }
 
         for(auto &p:pm->presets){
 
