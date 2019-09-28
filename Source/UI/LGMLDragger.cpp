@@ -114,7 +114,7 @@ public:
         g.fillAll();
     }
 
-    bool hitTest (int x, int y)override
+    bool hitTest (int , int )override
     {
         return !isDragging;
     }
@@ -367,11 +367,11 @@ void LGMLDragger::dragComponent (Component* const componentToDrag, const MouseEv
         auto curComp = mainComp->getComponentAt (e.getEventRelativeTo (mainComp).getPosition());
 
         // juce still return child of component that doesn't allow click on child
-        if (curComp)curComp = curComp->getParentComponent();
+        // if (curComp)curComp = curComp->getParentComponent();
 
         auto curTarget = dynamic_cast<ParameterUI*> (curComp);
 
-        if (curTarget != dropCandidate && (!curTarget || curTarget->isMappingDest))
+        if (curTarget != dropCandidate)//} && (!curTarget || curTarget->isMappingDest))
         {
             if (dropCandidate) {dropCandidate->setAlpha (1);}
 
@@ -388,16 +388,22 @@ void LGMLDragger::dragComponent (Component* const componentToDrag, const MouseEv
 void LGMLDragger::endDraggingComponent (Component*   /*componentToDrag*/, const MouseEvent& e)
 {
     //  jassert(!target || componentToDrag==target);
-    auto target_C = dynamic_cast<ParameterProxyUI*> (dropCandidate);
-    jassert (!dropCandidate || target_C);
 
-    if (dropCandidate)
-    {
-        target_C->paramProxy->setParamToReferTo (dragCandidate->originComp->parameter);
+    if(auto target_ProxyUI = dynamic_cast<ParameterProxyUI*> (dropCandidate)){
+        target_ProxyUI->paramProxy->setParamToReferTo (dragCandidate->originComp->parameter);
+    }
+    else if(auto destParameter = dynamic_cast<ParameterUI*>(dropCandidate)){
+        if(destParameter->parameter && dragCandidate->originComp->parameter){
+        FastMapper::getInstance()->setPotentialInput(dragCandidate->originComp->parameter);
+        FastMapper::getInstance()->setPotentialOutput(destParameter->parameter);
+        }
+        else{
+            jassertfalse;
+        }
     }
     else
     {
-
+        jassert(!dropCandidate);
         auto* c = (dragCandidate && !e.mouseWasDraggedSinceMouseDown())? dragCandidate->originComp.get() : nullptr;
         setSelected (c);
     }
