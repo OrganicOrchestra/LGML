@@ -806,10 +806,13 @@ void LooperTrack::setTrackState (TrackState newState)
             }
         }
 
-        // if every one else is stopped
-        else if (trackState != CLEARED && parentLooper->askForBeingAbleToPlayNow (this) && !playableBuffer.isOrWasPlaying())
+        // if every one else is stopped or this track is not quantized
+        else if (trackState != CLEARED &&
+                 parentLooper->askForBeingAbleToPlayNow (this) &&
+                 (!playableBuffer.isOrWasPlaying() || getQuantization()==0))
         {
             quantizedRecordEnd = NO_QUANTIZE;
+            quantizedPlayEnd = NO_QUANTIZE;
 
             if (timeManager->isMasterCandidate (parentLooper))
             {
