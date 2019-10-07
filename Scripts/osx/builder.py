@@ -74,14 +74,17 @@ class OSXBuilder (BuilderBase):
 		print('creating dmg')
 		betaSuffix = ""
 		trueBinaryPath = self.getBinaryPath()
+
 		if self.cfg["build_cfg_name"]=="Beta":
 			betaBinaryPath = self.getBinaryPath().split(".app")[0]+'_%s_Beta.app'%(self.getVersion())
 			shutil.copytree(trueBinaryPath,betaBinaryPath)
 			trueBinaryPath = betaBinaryPath
 			betaSuffix = "_Beta"
+
+		maxAppSize = None#str(self.getAppSize(trueBinaryPath)*1.3)+"b"
 		dmgPath = exportFileBaseName+'_(%s)%s.dmg'%(self.getArchReadable(),betaSuffix)
 		os.chdir(os.path.abspath(os.path.join(__file__,os.path.pardir)))
-		dmgbuild.build_dmg(dmgPath,"Le Grand Mechant Loop",settings_file = 'dmgbuild_conf.py',defines={'app':trueBinaryPath})
+		dmgbuild.build_dmg(dmgPath,"Le Grand Mechant Loop",settings_file = 'dmgbuild_conf.py',defines={'app':trueBinaryPath,'size':maxAppSize})
 		print('dmg done at :'+dmgPath)
 		return dmgPath
 

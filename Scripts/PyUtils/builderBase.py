@@ -95,7 +95,17 @@ class BuilderBase:
 
     return zipPath
 
-
+  def getAppSize(self,path):
+    app = path or self.getBinaryPath();
+    size = 0;
+    if os.path.isdir(app):
+      for root, dirs, files in os.walk(app):
+        for fn in files:
+          path = os.path.join(root, fn)
+          size += os.stat(path).st_size
+    else:
+      size += os.stat(app).st_size
+    return size
 
 
 def zipdir(path, ziph,baseDir):
