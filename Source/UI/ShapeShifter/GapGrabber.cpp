@@ -143,12 +143,19 @@ GapGrabber::GapGrabber (Direction _direction) : direction (_direction)
 {
     goMiniHandle = std::make_unique< MiniHandle>(this,true);
     addAndMakeVisible(goMiniHandle.get());
+    goMiniHandle->setPaintingIsUnclipped(true);
+//    LGMLUIUtils::optionallySetBufferedToImage(goMiniHandle.get());
     goMiniHandle2 = std::make_unique< MiniHandle>(this,false);
     addAndMakeVisible(goMiniHandle2.get());
+    goMiniHandle2->setPaintingIsUnclipped(true);
+//    LGMLUIUtils::optionallySetBufferedToImage(goMiniHandle2.get());
     stretchHandle = std::make_unique< StretchHandle>(this);
     addAndMakeVisible(stretchHandle.get() );
+    stretchHandle->setPaintingIsUnclipped(true);
     setPaintingIsUnclipped(true);
+//    LGMLUIUtils::optionallySetBufferedToImage(stretchHandle.get());
     setOpaque(true);
+    LGMLUIUtils::optionallySetBufferedToImage(this);
 
 }
 

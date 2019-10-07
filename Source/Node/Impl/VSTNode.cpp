@@ -378,7 +378,7 @@ void VSTNode::initParametersFromProcessor (AudioPluginInstance* pi)
     // will check if not already here
     pi->addListener (this);
     {
-        ScopedLock lk (controllables.getLock());
+        ControllablesScopedLockType lk (controllables.getLock());
 
         for (auto& c : VSTParameters)
         {
@@ -415,7 +415,7 @@ void VSTNode::updateParametersFromProcessor (AudioPluginInstance* /*pi*/)
     jassert(VSTParameters.size()==getUsedSize(innerPlugin->getParameters()));
     bool hadOneChange = false;
 
-    ScopedLock lk (controllables.getLock());
+    ControllablesScopedLockType lk (controllables.getLock());
     if(VSTParameters.size()<=innerPlugin->getParameters().size()){
         int i = 0;
         int baseVSTPIdx = VSTParameters.size()?controllables.indexOf(VSTParameters.getUnchecked(0)):-1;

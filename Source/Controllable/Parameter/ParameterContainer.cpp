@@ -84,7 +84,7 @@ Array<WeakReference<ParameterBase>> ParameterContainer::getAllParameters (bool r
 
     if (recursive)
     {
-        ScopedLock lk (controllableContainers.getLock());
+        ControllablesScopedLockType lk (controllableContainers.getLock());
 
         for (auto& cc : controllableContainers)
         {

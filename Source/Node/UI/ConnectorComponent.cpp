@@ -35,6 +35,7 @@ ConnectorComponent::ConnectorComponent (ConnectorIOType _ioType, NodeConnection:
 
     generateToolTip();
     setPaintingIsUnclipped(true);
+    LGMLUIUtils::optionallySetBufferedToImage(this);
     postCommandMessage (0);
 }
 

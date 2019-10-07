@@ -44,8 +44,11 @@ public:
     
     
     Uuid uid;
-    OwnedArray<Controllable, CriticalSection> controllables;
-    Array<WeakReference<ControllableContainer >, CriticalSection  > controllableContainers;
+
+    typedef DummyCriticalSection ControllableCriticalSection;
+    typedef ControllableCriticalSection::ScopedLockType ControllablesScopedLockType;
+    OwnedArray<Controllable, ControllableCriticalSection> controllables;
+    Array<WeakReference<ControllableContainer >, ControllableCriticalSection  > controllableContainers;
     ControllableContainer* parentContainer = nullptr;
 
 
@@ -96,7 +99,7 @@ public:
 
         if (recursive)
         {
-            ScopedLock lk (controllableContainers.getLock());
+            ControllablesScopedLockType lk (controllableContainers.getLock());
 
             for (auto& c : controllableContainers) {res.addArray (c->getControllablesOfType<T> (true));}
         }
@@ -108,7 +111,7 @@ public:
     Array<T* > getContainersOfType (bool recursive)
     {
         Array<T* > res;
-        ScopedLock lk (controllableContainers.getLock());
+        ControllablesScopedLockType lk (controllableContainers.getLock());
 
         for (auto& c : controllableContainers)
         {

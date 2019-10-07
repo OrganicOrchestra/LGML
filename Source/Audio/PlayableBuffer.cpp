@@ -49,10 +49,8 @@ using namespace RubberBand;
 
 
 PlayableBuffer::PlayableBuffer (int numChannels, int numSamples, float _sampleRate, int _blockSize):
-
 bufferBlockList (numChannels, numSamples)
 ,multiNeedle (512, 512)
-
 #if BUFFER_CAN_STRETCH
 , stretchJob (nullptr)
 #if RT_STRETCH

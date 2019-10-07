@@ -154,6 +154,7 @@ isDraggingFromUI (false)
     //connectableNode->miniMode->isHidenInEditor = true;
 
     resizer.setPaintingIsUnclipped(true);
+    LGMLUIUtils::optionallySetBufferedToImage(&resizer);
 //    setBufferedToImage(true);
 
 
@@ -442,6 +443,7 @@ miniMode (false)
     addAndMakeVisible (contentContainer.get());
     LGMLUIUtils::markHasNewBackground(this,2);
     setPaintingIsUnclipped(true);
+    LGMLUIUtils::optionallySetBufferedToImage(this);
     setOpaque(true);
 
 }

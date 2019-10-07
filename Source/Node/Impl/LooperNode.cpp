@@ -553,7 +553,7 @@ void LooperNode::onContainerTriggerTriggered (Trigger* t)
 
 void LooperNode::selectMe (LooperTrack* t)
 {
-    ScopedLock lk (controllableContainers.getLock());
+    ControllablesScopedLockType lk (controllableContainers.getLock());
 
     if (t != nullptr)
     {

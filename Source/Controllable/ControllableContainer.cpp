@@ -159,7 +159,7 @@ void ControllableContainer::setAutoShortName()
 
 Controllable* ControllableContainer::getControllableByName (const String& _name) const
 {
-    ScopedLock lk (controllables.getLock());
+    ControllablesScopedLockType lk (controllables.getLock());
 
     for (auto * c : controllables)
     {
@@ -171,7 +171,7 @@ Controllable* ControllableContainer::getControllableByName (const String& _name)
 }
 
 Controllable* ControllableContainer::getControllableByShortName(const ShortNameType & n) const{
-    ScopedLock lk (controllables.getLock());
+    ControllablesScopedLockType lk (controllables.getLock());
     for (auto * c : controllables)
     {
         if (c->shortName==n) return c;
@@ -278,7 +278,7 @@ void ControllableContainer::localIndexChanged() {};
 ControllableContainer* ControllableContainer::getControllableContainerByName (const String& _name) const
 {
 
-    ScopedLock lk (controllableContainers.getLock());
+    ControllablesScopedLockType lk (controllableContainers.getLock());
 
     for (auto & c : controllableContainers)
     {
@@ -294,7 +294,7 @@ const auto name = Controllable::toShortName(_name);
     return getControllableContainerByShortName(name);
 }
 ControllableContainer* ControllableContainer::getControllableContainerByShortName (const ShortNameType & name) const{
-    ScopedLock lk (controllableContainers.getLock());
+    ControllablesScopedLockType lk (controllableContainers.getLock());
     for (auto& cc : controllableContainers)
     {
         if (cc.get() && (cc->shortName==name )) return cc;
@@ -373,12 +373,12 @@ void ControllableContainer::updateControlAddress(bool isParentResolved){
 void ControllableContainer::updateChildrenControlAddress()
 {
     {
-        ScopedLock lk (controllables.getLock());
+        ControllablesScopedLockType lk (controllables.getLock());
 
         for (auto& c : controllables) c->updateControlAddress(true);
     }
     {
-        ScopedLock lk (controllableContainers.getLock());
+        ControllablesScopedLockType lk (controllableContainers.getLock());
 
         for (auto& cc : controllableContainers) if (cc.get())cc->updateControlAddress(true);
     }
@@ -392,7 +392,7 @@ Array<WeakReference<Controllable> > ControllableContainer::getAllControllables (
 
     Array<WeakReference<Controllable>> result;
     {
-        ScopedLock lk (controllables.getLock());
+        ControllablesScopedLockType lk (controllables.getLock());
 
         for (const auto& c : controllables)
         {
@@ -402,7 +402,7 @@ Array<WeakReference<Controllable> > ControllableContainer::getAllControllables (
 
     if (recursive)
     {
-        ScopedLock lk (controllableContainers.getLock());
+        ControllablesScopedLockType lk (controllableContainers.getLock());
 
         for (auto& cc : controllableContainers) if (cc.get())result.addArray (cc->getAllControllables (true, getNotExposed));
     }
@@ -422,7 +422,7 @@ Array<WeakReference<ControllableContainer > > ControllableContainer::getAllContr
     }
 
     {
-        ScopedLock lk (controllableContainers.getLock());
+        ControllablesScopedLockType lk (controllableContainers.getLock());
 
         for (auto& cc : controllableContainers) if (cc.get())containers.addArray (cc->getAllControllableContainers (true));
 
@@ -473,7 +473,7 @@ Array<Controllable*> ControllableContainer::getControllablesForExtendedAddress (
     {
         {
             //DBG("Check controllable Address : " + shortName);
-            const ScopedLock lk (controllables.getLock());
+            const ControllablesScopedLockType lk (controllables.getLock());
 
             for (const auto& c : controllables)
             {
@@ -494,7 +494,7 @@ Array<Controllable*> ControllableContainer::getControllablesForExtendedAddress (
 
     else
     {
-        ScopedLock lk (controllableContainers.getLock());
+        ControllablesScopedLockType lk (controllableContainers.getLock());
         auto deeperAddr = addressSplit;
         deeperAddr.remove(0);
 
@@ -598,7 +598,7 @@ bool ControllableContainer::containsContainer (ControllableContainer* c) const
 {
     if (c == this)return true;
     
-    ScopedLock lk (controllableContainers.getLock());
+    ControllablesScopedLockType lk (controllableContainers.getLock());
     
     for (auto& cc : controllableContainers)
     {
