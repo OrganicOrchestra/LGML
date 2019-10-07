@@ -50,8 +50,8 @@ StringArray getSearchPaths(){
 
 PdNode::PdNode (StringRef name) :
 NodeBase (name),
-patchHandle(NULL),
-pdinstance(NULL),
+patchHandle(nullptr),
+pdinstance(nullptr),
 midiChooser(this,false,true)
 {
 
@@ -66,7 +66,7 @@ midiChooser(this,false,true)
     libpd_init();
 
     pdinstance = libpd_new_instance();
-    jassert(pdinstance!=NULL);
+    jassert(pdinstance!=nullptr);
     libpd_set_instance(pdinstance);
     setPreferedNumAudioInput(2);
     setPreferedNumAudioOutput(2);
@@ -174,17 +174,17 @@ void PdNode::onContainerParameterChanged ( ParameterBase* p) {
 }
 
 void PdNode::unloadFile(){
-    if(patchHandle!=NULL){
+    if(patchHandle!=nullptr){
         libpd_set_instance(pdinstance);
         libpd_closefile(patchHandle);
-        patchHandle = NULL;
+        patchHandle = nullptr;
         dollarZero = -1;
     }
 
 }
 
 bool PdNode::isLoaded(){
-    return patchHandle!=NULL;
+    return patchHandle!=nullptr;
 }
 
 Result PdNode::loadPdFile(const File & f){
@@ -200,7 +200,7 @@ Result PdNode::loadPdFile(const File & f){
     auto fileName = pdFile.getFileName();
     auto dirName = pdFile.getParentDirectory().getFullPathName();
     patchHandle = libpd_openfile(fileName.toRawUTF8(), dirName.toRawUTF8());
-    if(patchHandle==NULL){
+    if(patchHandle==nullptr){
         return Result::fail(juce::translate(String("can't open patch at  123").replace("123", pdPath->stringValue())));
     }
 

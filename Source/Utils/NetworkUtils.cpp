@@ -98,11 +98,11 @@ public:
     {
         name = getName();
         // scan all interfaces not starting with lo
-        struct ifaddrs* ifap = NULL;
+        struct ifaddrs* ifap = nullptr;
 
         if (getifaddrs (&ifap) < 0) {LOGE(juce::translate("Cannot not get a list of interfaces\n")); return;}
 
-        for (struct ifaddrs* p = ifap; p != NULL; p = p->ifa_next)
+        for (struct ifaddrs* p = ifap; p != nullptr; p = p->ifa_next)
         {
             if ( !String (p->ifa_name).startsWith ("lo"))
             {
@@ -163,15 +163,15 @@ public:
                     &client,
                     0,   //DNSServiceFlags flags,
                     i,//uint32_t interfaceIndex,
-                    ("LGML_" + name).toRawUTF8(), //const char                          *name,         /* may be NULL */
+                    ("LGML_" + name).toRawUTF8(), //const char                          *name,         /* may be nullptr */
                     "_osc._udp",//const char                          *regtype,
-                    "local",//const char                          *domain,       /* may be NULL */
-                    NULL,//const char                          *host,         /* may be NULL */
+                    "local",//const char                          *domain,       /* may be nullptr */
+                    nullptr,//const char                          *host,         /* may be nullptr */
                     htons (defaultOSCPort), //uint16_t port,                                     /* In network byte order */
                     0,//uint16_t txtLen,
-                    NULL,//const void                          *txtRecord,    /* may be NULL */
-                    NULL,//DNSServiceRegisterReply callBack,                  /* may be NULL */
-                    NULL//void                                *context       /* may be NULL */
+                    nullptr,//const void                          *txtRecord,    /* may be nullptr */
+                    nullptr,//DNSServiceRegisterReply callBack,                  /* may be nullptr */
+                    nullptr//void                                *context       /* may be nullptr */
                 ) == 0)
             {
                 m_ServerToFdMap[client] = DNSServiceRefSockFD (client);
@@ -231,7 +231,7 @@ public:
 
                 struct timeval tv = { 0, 1000 };
 
-                int result = select (ndfs, &readfds, (fd_set*)NULL, (fd_set*)NULL, &tv);
+                int result = select (ndfs, &readfds, (fd_set*)nullptr, (fd_set*)nullptr, &tv);
 
                 if ( result > 0 )
                 {
