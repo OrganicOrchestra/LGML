@@ -114,19 +114,19 @@ void OSCController::setupReceiver()
     }
     if(availableP!=targetP){
         localPortParam->setValueFrom(this, String(availableP),false,true);
-        LOGW(nameParam->stringValue() <<" : " <<
+        OLOGW(nameParam->stringValue() <<" : " <<
              juce::translate(String("reassigning port to avoid feedback: 123 to 456"))
              .replace("123", String(targetP)).replace("456",String(availableP)));
     }
     if (!receiver.connect (localPortParam->stringValue().getIntValue()))
     {
 
-        LOGE(nameParam->stringValue() <<" : " <<
+        OLOGE(nameParam->stringValue() <<" : " <<
              juce::translate("can't connect to local port : ") + localPortParam->stringValue());
     }
     else{
         //#if JUCE_DEBUG
-        //        LOGW (nameParam->stringValue()  << "listen to " << localPortParam->stringValue());
+        //        OLOGW (nameParam->stringValue()  << "listen to " << localPortParam->stringValue());
         //#endif
         listenedPorts.set(this,localPortParam->stringValue().getIntValue());
     }
@@ -138,7 +138,7 @@ void OSCController::setupSender()
     isConnected->setValue (false);
     sender.disconnect();
     //#if JUCE_DEBUG
-    //    LOGW(nameParam->stringValue() << "disconnect sender " << remotePortParam->stringValue());
+    //    OLOGW(nameParam->stringValue() << "disconnect sender " << remotePortParam->stringValue());
     //#endif
     if(localSentPorts.contains(this))localSentPorts.remove(this);
     hostNameResolved = false;
@@ -146,7 +146,7 @@ void OSCController::setupSender()
 
     if (!hostNameResolved)
     {
-        LOGE(nameParam->stringValue() <<" : " <<
+        OLOGE(nameParam->stringValue() <<" : " <<
              juce::translate("no valid ip found for ") << remoteHostParam->stringValue());
     }
 
@@ -190,17 +190,17 @@ void OSCController::resolveHostnameIfNeeded()
                 remoteIP = resolved.ipAddress.toString();
                 int targetPort=resolved.hasValidPort()?resolved.port:remotePortParam->stringValue().getTrailingIntValue();
                 if(connectSender(remoteIP,targetPort)){
-                    //                    LOG (nameParam->stringValue() << juce::translate(" has resolved IP : ") << hostName << " > " << remoteIP << ":" << remotePortParam->stringValue());
+                    //                    OLOG (nameParam->stringValue() << juce::translate(" has resolved IP : ") << hostName << " > " << remoteIP << ":" << remotePortParam->stringValue());
                 }
                 else{
-                    LOGW(nameParam->stringValue() <<" : " <<
+                    OLOGW(nameParam->stringValue() <<" : " <<
                          juce::translate("unresolved IP : ") << hostName << " > " << remoteIP << ":" << remotePortParam->stringValue());
                 }
 
             }
             else
             {
-                LOGE(nameParam->stringValue() <<" : " <<
+                OLOGE(nameParam->stringValue() <<" : " <<
                      juce::translate("can't resolve IP : ") << hostName);
             }
         }
@@ -226,7 +226,7 @@ bool OSCController::connectSender(String & _remoteIP, int portNum){
     isConnected->setValue (connected);
     localSentPorts.set(this,portNum);
     //#if JUCE_DEBUG
-    //        LOGW (nameParam->stringValue() << (connected?"":"not ") << "connected " << remoteIP << ":" << remotePortParam->stringValue());
+    //        OLOGW (nameParam->stringValue() << (connected?"":"not ") << "connected " << remoteIP << ":" << remotePortParam->stringValue());
     //#endif
     return connected;
 }
@@ -268,7 +268,7 @@ void OSCController::processMessage (const OSCMessage& msg)
         MessageManager::getInstance()->callAsync ([this, msg]() {checkAndAddParameterIfNeeded (msg);});
     }
     if(logIncoming && !result){
-        LOGW(nameParam->stringValue() <<" : " <<result.getErrorMessage());
+        OLOGW(result.getErrorMessage());
     }
     isProcessingOSC = false;
     
@@ -466,7 +466,7 @@ void OSCController::logMessage (const OSCMessage& msg, const String& prefix)
 
     }
 
-    NLOG (getNiceName(), log);
+    OLOG ( log);
 }
 
 Result OSCController::processMessageInternal (const OSCMessage&)
@@ -581,7 +581,7 @@ bool OSCController::sendOSC (OSCMessage& m)
     if (enabledParam->boolValue() )
     {
         if(AnyoneIsListeningOnPort(remotePortParam->stringValue().getTrailingIntValue())){
-            LOGE(nameParam->stringValue() << juce::translate(" : block osc that can produce feedback on port 123").replace("123",remotePortParam->stringValue()));
+            OLOGE(nameParam->stringValue() << juce::translate(" : block osc that can produce feedback on port 123").replace("123",remotePortParam->stringValue()));
             return false;
         }
         resolveHostnameIfNeeded();
@@ -614,7 +614,7 @@ bool OSCController::sendOSCInternal (OSCMessage& m)
         return sender.send (m);
     }
     else{
-        LOG(String("OSC : 123 not connected").replace("123",nameParam->stringValue()));
+        OLOG(String("OSC : 123 not connected").replace("123",nameParam->stringValue()));
 
     }
     return false;
@@ -657,7 +657,7 @@ void OSCController::sendOSCFromParam(const Controllable *c){
         }
     }
     else{
-        LOGE("trying to send deleted param");
+        OLOGE("trying to send deleted param");
     }
 }
 

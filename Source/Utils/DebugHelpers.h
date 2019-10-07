@@ -50,6 +50,11 @@ juce::Logger::writeToLog(tempDbgBuf);)
 #define NLOGW(n,t) NLOG(n,"!! " << t)
 #define NLOGE(n,t) NLOG(n,"!!! " << t)
 
+
+#define OLOG(textToWrite) NLOG(getControlAddress().toString(),textToWrite)
+#define OLOGW(textToWrite) OLOG("!! " <<textToWrite)
+#define OLOGE(textToWrite) OLOG("!!! " <<textToWrite)
+
 namespace DebugHelpers{
 inline void debugDobj(const var & v){
     DBG(JSON::toString(v));

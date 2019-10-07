@@ -251,8 +251,8 @@ Result JsEnvironment::loadScriptContent (const String& content)
     {
         _hasValidJsFile = false;
         //        jsEngine = nullptr;
-        // NLOG(localNamespace,printAllNamespace());
-        NLOGE (localNamespace, r.getErrorMessage());
+        // NLOG (getJsObjectAddress(),printAllNamespace());
+        NLOGE (getJsObjectAddress(), r.getErrorMessage());
     }
     else
     {
@@ -264,17 +264,21 @@ Result JsEnvironment::loadScriptContent (const String& content)
 
         if (_isInSyncWithLGML)
         {
-            NLOG (localNamespace, juce::translate("Content loaded sucessfully"));
+            NLOG (getJsObjectAddress(), juce::translate("Content loaded sucessfully"));
         }
         else
         {
-            NLOGE (localNamespace,  r.getErrorMessage());
+            NLOGE (getJsObjectAddress(),  r.getErrorMessage());
         }
     }
 
     
 
     return r;
+}
+
+String JsEnvironment::getJsObjectAddress(){
+    return linkedContainer?linkedContainer->getControlAddress().toString():"unknown js Object";
 }
 
 void JsEnvironment::clearListeners()
@@ -341,7 +345,7 @@ var JsEnvironment::callFunction (const String& function, const Array<var>& args,
 
         if (result != nullptr)result->fail (noFunctionLogIdentifier.toString());
 
-        if(logResult) NLOGE (localNamespace, noFunctionLogIdentifier.toString());
+        if(logResult) NLOGE (getJsObjectAddress(), noFunctionLogIdentifier.toString());
 
         return var::undefined();
     }
@@ -356,7 +360,7 @@ var JsEnvironment::callFunction (const String& function, const var& args, bool l
     {
         if (result != nullptr)result->fail (noFunctionLogIdentifier.toString());
 
-        if (logResult)NLOGE (localNamespace, noFunctionLogIdentifier.toString());
+        if (logResult)NLOGE (getJsObjectAddress(), noFunctionLogIdentifier.toString());
 
         return var::undefined();
     }
@@ -418,13 +422,13 @@ var JsEnvironment::callFunctionFromIdentifier (const Identifier& function, const
         else
         {
             //      jassertfalse;
-            NLOGE (localNamespace, juce::translate("jsEngine is Locked"));
+            NLOGE (getJsObjectAddress(), juce::translate("jsEngine is Locked"));
         }
     }
 
     if (logResult && result->failed())
     {
-        NLOGE(localNamespace, result->getErrorMessage());
+        NLOGE (getJsObjectAddress(), result->getErrorMessage());
     }
 
     if (resOwned)

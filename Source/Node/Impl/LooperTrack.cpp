@@ -1013,7 +1013,7 @@ bool LooperTrack::loadAudioSample (const String& path)
 
                 if (sampleRateRatio != 1)
                 {
-                    LOGW(juce::translate("sample loading : resampling should work but still experimental : 123 : 456")
+                    OLOGW(juce::translate("sample loading : resampling should work but still experimental : 123 : 456")
                          .replace("123",audioFile.getFileName())
                          .replace("456",String( audioReader->sampleRate))
                          );
@@ -1057,20 +1057,20 @@ bool LooperTrack::loadAudioSample (const String& path)
                 return true; // only way a sample is correctly loaded
             }
             else{
-                    LOGE(juce::translate("trying to import too much audio : 123s , max : 456")
+                    OLOGE(juce::translate("trying to import too much audio : 123s , max : 456")
                          .replace("123",String(importSize / parentLooper->getSampleRate()))
                          .replace("456",String( (MAX_NUMSAMPLES) / parentLooper->getSampleRate())));
             }
         }
         else
         {
-            LOGE(juce::translate("sample loading : format not supported : ") << audioFile.getFileExtension());
+            OLOGE(juce::translate("sample loading : format not supported : ") << audioFile.getFileExtension());
             setTrackState(CLEARED);
         }
     }
     else
     {
-        LOGE(juce::translate("sample loading : file not found : ") << audioFile.getFullPathName());
+        OLOGE(juce::translate("sample loading : file not found : ") << audioFile.getFullPathName());
         setTrackState(CLEARED);
     }
     return false;

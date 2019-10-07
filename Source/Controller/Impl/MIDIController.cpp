@@ -51,7 +51,7 @@ void ParameterContainer::OwnedFeedbackListener<MIDIController>::parameterFeedbac
                         owner->sendMessage(msgToSend);
                     }
                     else{
-                        NLOGW("MIDI","user parameter doesnt have a valid midi name to be sent to device");
+                        NLOGW(owner->getControlAddress().toString(),"user parameter doesnt have a valid midi name to be sent to device");
                     }
                 }
             }
@@ -111,12 +111,12 @@ void MIDIController::handleIncomingMidiMessage (MidiInput*,
     if (channelFilter->intValue() > 0 && message.getChannel() != channelFilter->intValue())
     {
         if (logIncoming->boolValue()){
-            NLOG("MIDI IN", "Ignoring MIDI message Channel filter not valid");
+            OLOG("MIDI IN : Ignoring MIDI message Channel filter not valid");
         }
         return;
     }
     if (logIncoming->boolValue()){
-        NLOG ("MIDI IN",MIDIHelpers::midiMessageToDebugString(message));
+        OLOG("MIDI IN : "+MIDIHelpers::midiMessageToDebugString(message));
     }
     if (message.isController())
     {
@@ -276,7 +276,7 @@ void MIDIController::startMidiClockIfNeeded(){
 void MIDIController::midiMessageSent(const MidiMessage & msg){
     outActivityTrigger->triggerDebounced(activityTriggerDebounceTime);
     if(logOutgoing->boolValue()){
-        NLOG("MIDI OUT",MIDIHelpers::midiMessageToDebugString(msg));
+        OLOG("MIDI OUT : "+MIDIHelpers::midiMessageToDebugString(msg));
     }
 
 };

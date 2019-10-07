@@ -375,8 +375,8 @@ void ParameterContainer::configureFromObjectOrValues (DynamicObject* dyn,bool al
                                         }
                                         else{
 
-                                            LOGW(String("changing type of parmeter :  @@1  (value=@@2) with value @@3")
-                                                 .replace("@@1",par->getControlAddress().toString())
+                                            OLOGW(String("changing type of parmeter :  @@1  (value=@@2) with value @@3")
+                                                 .replace("@@1",par->shortName)
                                                  .replace("@@2",par->getVarState().toString())
                                                  .replace("@@3",p.value.toString())
                                                  );
@@ -404,7 +404,8 @@ void ParameterContainer::configureFromObjectOrValues (DynamicObject* dyn,bool al
                         addParameterFromVar (p.name.toString(), p.value);
                     }
                     else{
-                        LOGE(String("var  456 not allowed in 123 , it may be a defunct variable called from an old preset? save current preset if you want to get rid of this message").replace("123", getControlAddress().toString()).replace("456",p.name.toString()));
+                        OLOGE(String("var  456 not allowed , it may be a defunct variable called from an old preset? save current preset if you want to get rid of this message")
+                              .replace("456",p.name.toString()));
                     }
 
                 }

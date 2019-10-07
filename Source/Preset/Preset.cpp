@@ -256,7 +256,7 @@ bool Presetable::loadPreset (Preset* preset,bool /*sendNotif*/)
 Preset* Presetable::saveNewPreset (const String& _name,void * notif)
 {
     Preset* pre = addNamedPreset(_name,true,notif);
-    NLOG (pc->getNiceName(), juce::translate("New preset saved : ") + pre->getPresetName());
+    NLOG (pc->getControlAddress().toString(), juce::translate("New preset saved : ") + pre->getPresetName());
     //    loadPreset (pre);
     return pre;
 }
@@ -333,7 +333,7 @@ bool Presetable::saveCurrentPreset(void *notif)
 
     Preset* pre = addNamedPreset(currentPresetName->stringValue(),true,notif);
 
-    NLOG (pc->getNiceName(), juce::translate("Current preset saved : ") + pre->getPresetName());
+    NLOG (pc->getControlAddress().toString(), juce::translate("Current preset saved : ") + pre->getPresetName());
     return pre!=nullptr;
 
 

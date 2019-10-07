@@ -75,7 +75,7 @@ public:
 
     String printAllNamespace();
 
-    
+    String getJsObjectAddress();
     void setAutoWatch (bool );
 
     var callFunction (const String& function, const Array<var>& args, bool logResult = true, Result* = nullptr);
@@ -286,7 +286,7 @@ public :
 
         else
         {
-            NLOGE(js->localNamespace, juce::translate("wrong Parameter Listener type for : ") + parameter->shortName);
+            NLOGE(js->getJsObjectAddress(), juce::translate("wrong Parameter Listener type for : ") + parameter->shortName);
         }
     }
     static Identifier parameterChangedFId;

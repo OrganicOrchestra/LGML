@@ -410,21 +410,21 @@ void NodeContainer::setConnectionFromObject(const Array<var> & connectionsData){
 
                 if (srcNode == nullptr)
                 {
-                    NLOGE ("loadJSON", juce::translate("no srcnode for shortName : ") + cData.getDynamicObject()->getProperty ("srcNode").toString());
+                    OLOGE ("loadJSON : "+ juce::translate("no srcnode for shortName : ") + cData.getDynamicObject()->getProperty ("srcNode").toString());
                 }
 
                 if (dstNode == nullptr)
                 {
-                    NLOGE ("loadJSON", juce::translate("no dstnode for shortName : ") + cData.getDynamicObject()->getProperty ("dstNode").toString());
+                    OLOGE ("loadJSON : "+ juce::translate("no dstnode for shortName : ") + cData.getDynamicObject()->getProperty ("dstNode").toString());
                 }
 
 
 #if defined DEBUG
-                LOGE(juce::translate("Available Nodes in " )+ shortName + " : ");
+                OLOGE(juce::translate("Available Nodes : " ));
 
                 for (auto& node : nodes)
                 {
-                    LOGE("> " + node->getNiceName() + "//" + node->shortName);
+                    OLOGE("> " + node->getNiceName() + "//" + node->shortName);
                 }
 
 #endif

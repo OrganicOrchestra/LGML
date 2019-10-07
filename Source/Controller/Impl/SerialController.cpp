@@ -166,7 +166,7 @@ void SerialController::serialDataReceived (const var& data)
 {
 
     processMessage (data.toString());
-    if(logIncoming->boolValue()){NLOG (getNiceName(),"In : "+ data.toString());}
+    if(logIncoming->boolValue()){OLOG ("In : "+ data.toString());}
     inActivityTrigger->triggerDebounced(activityTriggerDebounceTime);
 
 }

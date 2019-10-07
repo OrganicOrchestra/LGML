@@ -161,7 +161,7 @@ void VSTNode::onContainerParameterChanged ( ParameterBase* p)
                 suspendProcessing (true);
                 auto err = generatePluginFromDescription (pd.get());
                 if(!err.isEmpty()){
-                        NLOGW("VST", "can't load vst "+pd->createIdentifierString()+"\n"+err);
+                        OLOGW( "can't load vst "+pd->createIdentifierString()+"\n"+err);
                 }
                 DBG ("VST found");
                 if(stateInfoPluginID==pd->createIdentifierString()){
@@ -246,7 +246,7 @@ void VSTNode::onContainerParameterChanged ( ParameterBase* p)
 
         }
         if(!found){
-            LOGW(nameParam->stringValue() << " :  can't find param : "<<p->niceName );
+            OLOGW(nameParam->stringValue() << " :  can't find param : "<<p->niceName );
         }
     }
 };
@@ -285,7 +285,7 @@ void VSTNode::setVSTState(){
 
             }
             else{
-                LOGE("trying to load old vst state");
+                OLOGE("trying to load old vst state");
                 jassertfalse;
             }
 
@@ -509,7 +509,7 @@ String VSTNode::generatePluginFromDescription (PluginDescription* desc)
         innerPluginTotalNumInputChannels = 0;
         innerPluginTotalNumOutputChannels = 0;
         innerPlugin = nullptr;
-        LOGE(errorMessage);
+        OLOGE(errorMessage);
         jassertfalse;
 
     }
@@ -597,18 +597,18 @@ void VSTNode::audioProcessorParameterChanged (AudioProcessor* p,
             }
             else
             {
-                NLOGE("VSTNode", "oldParam update");
+                OLOGE("oldParam update");
                 jassertfalse;
             }
         }
         else{
-            NLOGE("VSTNode","wrong param num update");
+            OLOGE("wrong param num update");
             jassertfalse;
         }
     }
     else
     {
-        NLOGE("VSTNode", "oldplugin update");
+        OLOGE("oldplugin update");
         jassertfalse;
     }
 

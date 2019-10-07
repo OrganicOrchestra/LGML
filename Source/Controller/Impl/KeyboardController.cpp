@@ -53,7 +53,7 @@ bool KeyboardController::keyPressed (const KeyPress& key, Component* /*originati
     for ( auto k:keysDown){if(k->key == key){ return false;}}
     keysDown.add(new KeyPressTime{key,time});
 
-    if(logIncoming->boolValue()){LOG(juce::translate("keyPress : 123").replace("123" ,String(ch)));}
+    if(logIncoming->boolValue()){OLOG(juce::translate("keyPress : 123").replace("123" ,String(ch)));}
 
     const String paramName =getPNameFromKey(key);
     if (Controllable* c = userContainer.getControllableByName(paramName))
