@@ -44,7 +44,7 @@ def icon_from_app(app_path):
 format = defines.get('format', 'UDBZ')
 
 # Volume size (must be large enough for your files)
-size = defines.get('size', None)
+# size = defines.get('size', None)
 
 # Files to include
 files = [ application ]
