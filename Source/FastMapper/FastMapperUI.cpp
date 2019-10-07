@@ -85,8 +85,8 @@ mapsUI(new StackedContainerUI<FastMapUI, FastMap>(
 
 
     LGMLDragger::getInstance()->addSelectionListener(this);
-    mapsUI.stUI->setSortFunction([](const FastMapUI* a,const FastMapUI * b)->bool{
-        return CompareFastMaps::compareElements(a->fastMap,b->fastMap)<0;
+    mapsUI.stUI->setSortFunction([](const FastMapUI* a,const FastMapUI * b){
+        return CompareFastMaps::compareElements(a->fastMap,b->fastMap);
         
     });
     mapsUI.stUI->setFilterFunction([this](FastMapUI * a){

@@ -76,7 +76,7 @@ class StackedContainerUI : public StackedContainerBase{
 public:
     typedef std::function<T*(UIT*)> GetTFromUITTYPE;
     typedef std::function<void(int,int)> SwapElemsF;
-    typedef std::function<bool(const UIT*,const UIT*)> SortFType;
+    typedef std::function<int(const UIT*,const UIT*)> SortFType;
     typedef std::function<bool(UIT*)> FilterFType;
     StackedContainerUI(GetTFromUITTYPE f,SwapElemsF sw,int _minElemSize=20,bool isHorizontal=false,int _gap=2,int _padEnd=0):
     StackedContainerBase(_minElemSize,isHorizontal,_gap,_padEnd),
