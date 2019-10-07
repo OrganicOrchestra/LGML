@@ -455,9 +455,7 @@ private:
 //==============================================================================
 LatestVersionChecker::LatestVersionChecker(bool force)  : Thread ("Updater"),
 statusCode (-1),
-hasAttemptedToReadWebsite (false),
-force_show(force),
-hasEnded(false)
+force_show(force)
 {
     startTimer (2000);
 }

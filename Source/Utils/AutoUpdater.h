@@ -57,7 +57,7 @@ public:
                                  URL& newVersionToDownload,
                                  const String& extraHeaders,
                                  bool hasDirectDownload);
-    bool hasEnded;
+    bool hasEnded=false;
 
 
     virtual Result performUpdate (const MemoryBlock& data, File& targetFolder);
@@ -83,7 +83,7 @@ private:
     int statusCode;
     var jsonReply;
     bool force_show;
-    bool hasAttemptedToReadWebsite;
+    bool hasAttemptedToReadWebsite=false;
     String newRelativeDownloadPath;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LatestVersionChecker)

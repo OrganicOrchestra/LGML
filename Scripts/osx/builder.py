@@ -55,8 +55,10 @@ class OSXBuilder (BuilderBase):
 
 	def removeOldApp(self):
 		appPath = self.getBinaryPath()
-		if len(appPath)>10:
-			sh("rm -rf "+appPath)
+		buildPath = os.path.abspath(os.path.join(appPath, os.pardir))
+		print('//////////removing',buildPath)
+		if len(buildPath)>10:
+			sh("rm  -rf "+buildPath)
 
 	def getArchReadable(self):
 		if self.cfg['arch'] == "i386":
@@ -68,11 +70,14 @@ class OSXBuilder (BuilderBase):
 
 	def createDmg(self,exportFileBaseName):
 		import dmgbuild
+		import shutil
 		print('creating dmg')
 		betaSuffix = ""
 		trueBinaryPath = self.getBinaryPath()
 		if self.cfg["build_cfg_name"]=="Beta":
-			trueBinaryPath = self.getBinaryPath().split(".app")[0]+'_%s_Beta.app'%(self.getVersion())
+			betaBinaryPath = self.getBinaryPath().split(".app")[0]+'_%s_Beta.app'%(self.getVersion())
+			shutil.copytree(trueBinaryPath,betaBinaryPath)
+			trueBinaryPath = betaBinaryPath
 			betaSuffix = "Beta"
 		dmgPath = exportFileBaseName+'_(%s)_%s.dmg'%(self.getArchReadable(),betaSuffix)
 		os.chdir(os.path.abspath(os.path.join(__file__,os.path.pardir)))
@@ -89,7 +94,7 @@ if __name__ == "__main__":
 	opts["build_cfg_name"] = "Beta"
 	builder = OSXBuilder(opts)
 	print (builder.cfg)
-	#builder.buildApp()
+	builder.buildApp()
 	builder.packageApp()
 # 	global specificVersion
 # 	print sys.argv
