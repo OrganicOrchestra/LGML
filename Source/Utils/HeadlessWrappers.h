@@ -39,7 +39,7 @@ public:
     saveFileDialogTitle (saveFileDialogTitle_){
 
     }
-    virtual ~FileBasedDocument(){};
+    virtual ~FileBasedDocument(){}
 
     Result loadFrom (const File& newFile,
                      bool showMessageOnFailure){

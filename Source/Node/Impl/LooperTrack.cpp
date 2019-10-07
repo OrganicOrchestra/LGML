@@ -953,8 +953,10 @@ void LooperTrack::enumOptionSelectionChanged (EnumParameter* ep, bool _isSelecte
 
         if (!path.isEmpty())
         {
-            MessageManager::callAsync([this,path](){
-                loadAudioSample (path);
+            MessageManager::callAsync([this,path,k](){
+                if(!loadAudioSample (path)){
+                    sampleChoice->removeOption(k);
+                }
             });
             return;
         }
@@ -969,7 +971,14 @@ void LooperTrack::enumOptionSelectionChanged (EnumParameter* ep, bool _isSelecte
         //        jassertfalse;
     }
 };
-void LooperTrack::loadAudioSample (const String& path)
+
+struct ScopedFlag{
+    ScopedFlag(bool & _flagToSet,bool _startValue):flagToSet(_flagToSet),startValue(_startValue){flagToSet=startValue;}
+    ~ScopedFlag(){flagToSet = !startValue;}
+    bool & flagToSet;
+    bool startValue;
+};
+bool LooperTrack::loadAudioSample (const String& path)
 {
     // check that for now, but will remove when proper job will be set
     jassert (MessageManager::getInstance()->isThisTheMessageThread());
@@ -977,8 +986,9 @@ void LooperTrack::loadAudioSample (const String& path)
 
     if (audioFile.exists())
     {
-        isLoadingAudioFile = true;
 
+
+        ScopedFlag scopedFlag(isLoadingAudioFile,true);
         AudioFormatManager formatManager;
         formatManager.registerBasicFormats();
         std::unique_ptr<AudioFormatReader> audioReader (formatManager.createReaderFor (audioFile));
@@ -990,15 +1000,9 @@ void LooperTrack::loadAudioSample (const String& path)
             auto tm = TimeManager::getInstance();
             auto ti = tm->findTransportTimeInfoForLength ((int)audioReader->lengthInSamples, audioReader->sampleRate);
             double sampleRateRatio = parentLooper->getSampleRate() * 1.0 / audioReader->sampleRate;
-            sample_clk_t importSize = audioReader->lengthInSamples * sampleRateRatio;
+            sample_clk_t importSize = (sample_clk_t)audioReader->lengthInSamples * sampleRateRatio;
 
-            if (importSize >= MAX_NUMSAMPLES)
-            {
-                LOGE(juce::translate("trying to import too much audio : 123s , max : 456")
-                     .replace("123",String(importSize / parentLooper->getSampleRate()))
-                     .replace("456",String( (MAX_NUMSAMPLES) / parentLooper->getSampleRate())));
-            }
-            else
+            if (importSize < MAX_NUMSAMPLES)
             {
                 sample_clk_t inSampleLength = (sample_clk_t)audioReader->lengthInSamples;
                 int destNumChannels = playableBuffer.getNumChannels();//audioReader->numChannels;
@@ -1050,7 +1054,12 @@ void LooperTrack::loadAudioSample (const String& path)
                 playableBuffer.setTimeRatio( parentLooper->getQuantization()>0?timeRatio:1,false);
                 if(wasPlaying){setTrackState(WILL_PLAY);}
 #endif
-
+                return true; // only way a sample is correctly loaded
+            }
+            else{
+                    LOGE(juce::translate("trying to import too much audio : 123s , max : 456")
+                         .replace("123",String(importSize / parentLooper->getSampleRate()))
+                         .replace("456",String( (MAX_NUMSAMPLES) / parentLooper->getSampleRate())));
             }
         }
         else
@@ -1064,5 +1073,5 @@ void LooperTrack::loadAudioSample (const String& path)
         LOGE(juce::translate("sample loading : file not found : ") << audioFile.getFullPathName());
         setTrackState(CLEARED);
     }
-    isLoadingAudioFile = false;
+    return false;
 }

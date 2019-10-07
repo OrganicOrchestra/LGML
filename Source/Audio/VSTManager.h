@@ -29,7 +29,7 @@
 class VSTManager : public ChangeListener
 {
 public:
-    juce_DeclareSingleton (VSTManager, false);
+    juce_DeclareSingleton (VSTManager, false)
     VSTManager();
     ~VSTManager();
 

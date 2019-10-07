@@ -94,7 +94,7 @@ public:
 
     class Listener{
     public:
-        virtual ~Listener(){};
+        virtual ~Listener(){}
         virtual void controllableContainerPresetLoaded (ControllableContainer*,Preset *p) =0;
     };
     ListenerList<Listener> presetableListeners;

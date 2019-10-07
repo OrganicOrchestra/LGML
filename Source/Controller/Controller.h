@@ -46,8 +46,8 @@ public:
 
 
 
-    virtual void internalVariableAdded ( ParameterBase* ) {};
-    virtual void internalVariableRemoved ( ParameterBase* ) {};
+    virtual void internalVariableAdded ( ParameterBase* ) {}
+    virtual void internalVariableRemoved ( ParameterBase* ) {}
     virtual void onContainerParameterChanged ( ParameterBase* p) override;
     virtual void onContainerTriggerTriggered (Trigger* ) override;
 

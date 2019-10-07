@@ -17,11 +17,13 @@
 #include "../Style.h"
 
 ShapeShifterContent::ShapeShifterContent (Component* _contentComponent, const String& _contentName,const String& _info) :
-    contentIsFlexible (false),
-    contentName (_contentName),
-    contentIsShown (false),
     contentComponent (_contentComponent),
-    info(juce::translate(_info))
+    contentName (_contentName),
+    info(juce::translate(_info)),
+    contentIsFlexible (false),
+    contentIsShown (false)
+
+
 {
     _contentComponent->setOpaque(true);
     _contentComponent->setPaintingIsUnclipped(false);

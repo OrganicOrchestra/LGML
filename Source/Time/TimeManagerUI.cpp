@@ -133,24 +133,24 @@ void TimeManagerUI::resized()
 
     Rectangle<int> r = getLocalBounds().withWidth (width).withCentre (getLocalBounds().getCentre()).reduced (4);
     r = r.withSizeKeepingCentre(r.getWidth(), jmin(100,r.getHeight()));
-    timeBar.setBounds (r.removeFromRight (width * 0.3).reduced (0, 2));
+    timeBar.setBounds (r.removeFromRight ((int)(width * 0.3)).reduced (0, 2));
     r.removeFromRight (5);
-    playTrig->setBounds (r.removeFromRight (width * 0.05).reduced (gap, 0));
+    playTrig->setBounds (r.removeFromRight ((int)(width * 0.05)).reduced (gap, 0));
     r.removeFromRight (2);
-    stopTrig->setBounds (r.removeFromRight (width * 0.05).reduced (gap, 0));
+    stopTrig->setBounds (r.removeFromRight ((int)(width * 0.05)).reduced (gap, 0));
     r.removeFromRight (10);
-    bpmStepper->setBounds (r.removeFromRight (width * 0.1).reduced (gap, 0));
+    bpmStepper->setBounds (r.removeFromRight ((int)(width * 0.1)).reduced (gap, 0));
     r.removeFromRight (10);
-    quantizStepper->setBounds (r.removeFromRight (width * 0.1).reduced (gap, 0));
+    quantizStepper->setBounds (r.removeFromRight ((int)(width * 0.1)).reduced (gap, 0));
     r.removeFromRight (10);
-    tapTempo->setBounds (r.removeFromRight (width * 0.1).reduced (gap, 0));
+    tapTempo->setBounds (r.removeFromRight ((int)(width * 0.1)).reduced (gap, 0));
     r.removeFromRight (10);
-    Rectangle<int> clickR = r.removeFromRight (width * 0.1).reduced (gap, 0);
+    Rectangle<int> clickR = r.removeFromRight ((int)(width * 0.1)).reduced (gap, 0);
     click->setBounds (clickR.removeFromTop (10));
     clickR.removeFromTop (4);
     clickVolumeUI->setBounds (clickR);
 
-    linkEnabled->setBounds (r.removeFromRight (width * 0.1).reduced (gap, 0));
+    linkEnabled->setBounds (r.removeFromRight ((int)(width * 0.1)).reduced (gap, 0));
     //    linkNumPeers->setBounds(r.removeFromRight(width*0.1).reduced(gap, 0));
 }
 #pragma warning(pop)

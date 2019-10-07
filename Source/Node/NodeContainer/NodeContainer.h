@@ -90,7 +90,7 @@ class NodeContainer :
 {
 public:
     NodeContainer(StringRef name,bool isRoot);
-    DECLARE_OBJ_TYPE (NodeContainer,"holds sub graph of audio");
+    DECLARE_OBJ_TYPE (NodeContainer,"holds sub graph of audio")
     virtual ~NodeContainer();
 
     //Keep value of containerIn RMS and containerOutRMS to dispatch in one time
@@ -102,7 +102,7 @@ public:
     ContainerInNode* containerInNode;
     ContainerOutNode* containerOutNode;
     std::unique_ptr<AudioProcessorGraph> innerGraph;
-    AudioProcessorGraph* getAudioGraph() {return innerGraph.get();};
+    AudioProcessorGraph* getAudioGraph() {return innerGraph.get();}
     void addToAudioGraph(NodeBase * );
     void removeFromAudioGraph(NodeBase *);
 
@@ -172,7 +172,7 @@ public:
     {
         NodeBase::releaseResources();
         getAudioGraph()->releaseResources();
-    };
+    }
 
 
 
@@ -219,7 +219,7 @@ public:
     public:
         RebuildTimer (NodeContainer* o): owner (o) ,maxRebuildTime(20000),lastTime(0){
         curRebuildTime = maxRebuildTime;
-        };
+        }
         void timerCallback()override
         {
 
@@ -239,7 +239,7 @@ public:
 
             }
             lastTime =cT;
-        };
+        }
         NodeContainer* owner;
         const int maxRebuildTime;
         int64 curRebuildTime;

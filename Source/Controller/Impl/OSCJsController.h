@@ -82,7 +82,7 @@ public :
     static Identifier oscReceivedCallbackId;
 
 
-    virtual ~JsOSCListener() {};
+    virtual ~JsOSCListener() {}
     void buildVarObject()
     {
         object = new DynamicObject();

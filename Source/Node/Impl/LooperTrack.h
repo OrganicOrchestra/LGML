@@ -139,7 +139,7 @@ public:
 
 
         // dispatched to listeners
-        //    virtual void trackStateChanged(const TrackState &) {};
+        //    virtual void trackStateChanged(const TrackState &) {}
         virtual void trackStateChangedAsync (const TrackState& state) = 0;
 
         void handleAsyncUpdate() override
@@ -156,8 +156,8 @@ public:
             }
 
         }
-        virtual void trackSelected (bool) {};
-        virtual void trackSelectedAsync (bool) {};
+        virtual void trackSelected (bool) {}
+        virtual void trackSelectedAsync (bool) {}
     };
 
     class TrackTimeListener: public Listener{
@@ -178,7 +178,7 @@ public:
             }
 
         }
-        virtual void trackTimeChangedAsync (double /*position*/) {};
+        virtual void trackTimeChangedAsync (double /*position*/) {}
         void setTrackTimeUpdateRateHz (float hz){trackUpdatePeriodMs = 1000.0 / hz;}
 
         struct TimeAsyncUpdater : public juce::AsyncUpdater{
@@ -255,7 +255,7 @@ private:
     void enumOptionSelectionChanged (EnumParameter*, bool isSelected, bool isValid, const Identifier&)override;
 
 
-    void loadAudioSample (const String& file);
+    bool loadAudioSample (const String& file);
     bool isLoadingAudioFile;
     bool hadOnset;
     

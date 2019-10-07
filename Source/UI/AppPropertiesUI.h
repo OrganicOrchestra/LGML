@@ -25,7 +25,7 @@ class PrefPanel;
 class AppPropertiesUI : public ResizableWindow{
 public:
 
-    juce_DeclareSingleton(AppPropertiesUI, false);
+    juce_DeclareSingleton(AppPropertiesUI, false)
     AppPropertiesUI();
     ~AppPropertiesUI();
 

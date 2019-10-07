@@ -83,7 +83,7 @@ public:
         /** Destructor. */
         virtual ~ConnectorListener() {}
 
-        virtual void connectorVisibilityChanged (ConnectorComponent*) {};
+        virtual void connectorVisibilityChanged (ConnectorComponent*) {}
     };
 
     ListenerList<ConnectorListener> connectorListeners;

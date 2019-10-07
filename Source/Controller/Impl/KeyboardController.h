@@ -85,7 +85,7 @@ public :
     }
 
     static Identifier keyRecievedId;
-    virtual ~JsKeyboardListener() {};
+    virtual ~JsKeyboardListener() {}
     void buildVarObject()
     {
         object = new DynamicObject();
@@ -100,7 +100,7 @@ public :
     static var dummyCallback (const var::NativeFunctionArgs& /*a*/)
     {
         return var::undefined();
-    };
+    }
 #pragma warning(pop)
 
     void processKeyPress (const KeyPress& kp)

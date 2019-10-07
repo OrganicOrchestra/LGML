@@ -54,8 +54,8 @@ public:
     class SerialThreadListener
     {
     public:
-        virtual ~SerialThreadListener() {};
-        virtual void newMessage (const var&) {};
+        virtual ~SerialThreadListener() {}
+        virtual void newMessage (const var&) {}
     };
 
     ListenerList<SerialThreadListener> serialThreadListeners;

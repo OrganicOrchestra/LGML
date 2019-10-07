@@ -43,7 +43,7 @@ public:
     {
     public:
         LogList (LGMLLoggerUI* o);
-        virtual ~LogList(){};
+        virtual ~LogList(){}
         int getNumRows() override;
 
         void paintRowBackground (Graphics&,

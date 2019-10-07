@@ -49,13 +49,24 @@ class OSXBuilder (BuilderBase):
 		localPath = os.path.join((exportpath or self.localExportPath),self.getNameWithVersion());
 		dmgPath = self.createDmg(localPath);
 		return dmgPath
-
-	def getBinaryPath(self) :
-		#allow pre/suffixed versions
+'''
 		build_dir = os.path.join(self.xcodeProjPath,"build",self.cfg["build_cfg_name"])
+		if(not os.path.exists(build_dir)):
+			return ""
 		for i in os.listdir(build_dir):
 			if ('LGML' in i) and i.endswith(".app"):
-				return os.path.join(os.path.join(build_dir,i))
+				path = os.path.join(os.path.join(build_dir,i))
+				if "Beta" in i and (not any([x.isdigit() for x in i])): # if no version Number is added
+					newName = "LGML_%s_Beta.app"%self.cfg["version"]
+					newPath = os.path.join(os.path.join(build_dir,newName))
+					print ("renaming app %s"%newName )
+					os.rename(path,newPath)
+
+					path = newPath
+				return path
+				'''
+	def getBinaryPath(self) :
+		return os.path.join(self.xcodeProjPath,"build",self.cfg["build_cfg_name"],self.cfg["appName"]+".app")
 
 	def removeOldApp(self):
 		appPath = self.getBinaryPath()
@@ -73,7 +84,7 @@ class OSXBuilder (BuilderBase):
 	def createDmg(self,exportFileBaseName):
 		import dmgbuild
 		print('creating dmg')
-		betaSuffix = "Beta" if self.cfg["build_cfg_name"]=="PreRelease" else ""
+		betaSuffix = self.cfg["version"]+"_Beta" if self.cfg["build_cfg_name"]=="Beta" else ""
 		dmgPath = exportFileBaseName+'_(%s)_%s.dmg'%(self.getArchReadable(),betaSuffix)
 		os.chdir(os.path.abspath(os.path.join(__file__,os.path.pardir)))
 		dmgbuild.build_dmg(dmgPath,"Le Grand Mechant Loop",settings_file = 'dmgbuild_conf.py',defines={'app':self.getBinaryPath()})

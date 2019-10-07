@@ -21,7 +21,7 @@
 // compile time check that all subclass has implemented
 #define DECLARE_OBJECT_BASE(T)     virtual int dummy_##T() = 0;
 #define CHK_OBJECT_BASE(T)  int dummy_check_##T = dummy_##T();ignoreUnused(dummy_check_##T);
-#define IMPL_OBJECT_BASE(T)    virtual int dummy_##T() {return 0;};
+#define IMPL_OBJECT_BASE(T)    virtual int dummy_##T() {return 0;}
 
 
 

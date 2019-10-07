@@ -31,7 +31,7 @@ public SelectedItemSet<WeakReference<InspectableComponent> >
 
 {
 public:
-    juce_DeclareSingleton (Inspector, true);
+    juce_DeclareSingleton (Inspector, true)
     Inspector();
     virtual ~Inspector();
 
@@ -67,12 +67,12 @@ public:
     public:
         /** Destructor. */
         virtual ~InspectorListener() {}
-        virtual void contentSizeChanged (Inspector*) {};
+        virtual void contentSizeChanged (Inspector*) {}
         virtual void selectionChanged(Inspector *){}
     private:
         void changeListenerCallback (ChangeBroadcaster* source) override{
             selectionChanged((Inspector*)source);
-        };
+        }
         friend class Inspector;
 
     };

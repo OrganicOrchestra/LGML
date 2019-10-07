@@ -90,7 +90,7 @@ public :
         TimeManager* timeManager;
 
 
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeBar);
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeBar)
 
     };
 
@@ -111,7 +111,7 @@ public :
 
     
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeManagerUI);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeManagerUI)
 };
 
 

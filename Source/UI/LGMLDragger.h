@@ -73,7 +73,7 @@ public:
     class Listener
     {
     public:
-        virtual ~Listener() {};
+        virtual ~Listener() {}
         virtual void mappingModeChanged(bool) = 0;
         virtual void selectionChanged ( ParameterBase*) = 0;
     };

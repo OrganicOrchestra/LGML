@@ -116,7 +116,7 @@ public :
     static Identifier midiReceivedId;
     static Identifier midiValueId;
 
-    virtual ~JsMIDIMessageListener() {};
+    virtual ~JsMIDIMessageListener() {}
     void buildVarObject()
     {
         object = new DynamicObject();
@@ -132,7 +132,7 @@ public :
     static var dummyCallback (const var::NativeFunctionArgs& /*a*/)
     {
         return var::undefined();
-    };
+    }
 #pragma warning(pop)
 
     void processMessage (const MidiMessage& m)

@@ -31,7 +31,7 @@ public:
     ControllerManager();
     ~ControllerManager();
 
-    juce_DeclareSingleton (ControllerManager, true);
+    juce_DeclareSingleton (ControllerManager, true)
 
     ControllerFactory factory;
     OwnedArray<Controller> controllers;

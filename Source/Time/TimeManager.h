@@ -76,7 +76,7 @@ class TimeManager : public AudioIODeviceCallback, public ParameterContainer, pub
 public :
 
     // TODO check if we can use SingleThread Singleton for fast access in processAdio
-    juce_DeclareSingleton (TimeManager, true);
+    juce_DeclareSingleton (TimeManager, true)
 
     TimeManager();
     ~TimeManager();
@@ -177,10 +177,10 @@ public :
     class TimeManagerListener
     {
     public:
-        virtual ~TimeManagerListener() {};
-        virtual void BPMChanged (double /*BPM*/) {};
-        virtual void timeJumped (sample_clk_t /*time*/) {};
-        virtual void playStop (bool /*playStop*/) {};
+        virtual ~TimeManagerListener() {}
+        virtual void BPMChanged (double /*BPM*/) {}
+        virtual void timeJumped (sample_clk_t /*time*/) {}
+        virtual void playStop (bool /*playStop*/) {}
         // info for stopping manager if needed;
         virtual bool isBoundToTime() = 0;
 
@@ -234,13 +234,13 @@ private:
         setSampleRate ((int)device->getCurrentSampleRate());
         setBlockSize ((int)device->getCurrentBufferSizeSamples());
         // should we notify blockSize?
-    };
+    }
 
     /** Called to indicate that the device has stopped. */
     virtual void audioDeviceStopped() override
     {
 
-    };
+    }
     bool _isLocked;
 
 

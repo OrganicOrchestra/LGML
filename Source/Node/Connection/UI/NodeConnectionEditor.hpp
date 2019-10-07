@@ -100,7 +100,7 @@ private:
     virtual void selectLink (NodeConnectionEditorLink* target) override;
 
     // Inherited via Listener
-    virtual void connectionRemoved (NodeConnection*) override {setCurrentConnection ( nullptr);};
+    virtual void connectionRemoved (NodeConnection*) override {setCurrentConnection ( nullptr);}
     virtual void connectionAudioLinkAdded (const NodeConnection::AudioConnection& audioConnection) override;
     virtual void connectionAudioLinkRemoved (const NodeConnection::AudioConnection& audioConnection) override;
 };

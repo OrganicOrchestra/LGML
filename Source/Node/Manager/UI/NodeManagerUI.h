@@ -66,7 +66,7 @@ public:
     public:
         /** Destructor. */
         virtual ~NodeManagerUIListener() {}
-        virtual void currentViewedContainerChanged() {};
+        virtual void currentViewedContainerChanged() {}
     };
 
     ListenerList<NodeManagerUIListener> nodeManagerUIListeners;

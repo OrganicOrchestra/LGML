@@ -189,7 +189,7 @@ void EnumParameterUI::comboBoxChanged (ComboBox* c)
 
                 if (std::get<0> (res))
                 {
-                    ep->addOption (std::get<1> (res), std::get<2> (res));
+                    ep->addOption (std::get<1> (res), std::get<2> (res),false);
                     ep->selectId (std::get<1> (res), true, false);
                 }
                 else

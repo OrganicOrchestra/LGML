@@ -117,8 +117,8 @@ public:
             innerPlugin->prepareToPlay (_sampleRate, _blockSize);
         }
     }
-    void releaseResources() override { if (innerPlugin) { innerPlugin->releaseResources(); } };
-    bool hasEditor() const override { if (innerPlugin) { return innerPlugin->hasEditor(); } return false; };
+    void releaseResources() override { if (innerPlugin) { innerPlugin->releaseResources(); } }
+    bool hasEditor() const override { if (innerPlugin) { return innerPlugin->hasEditor(); } return false; }
 
     CriticalSection pluginStateMutex;
     void processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;

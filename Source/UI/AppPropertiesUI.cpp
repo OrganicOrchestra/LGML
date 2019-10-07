@@ -63,9 +63,9 @@ public:
     typedef std::function<void(const String &)> CBType;
     EnumPropUI(const String & _name, StringArray _choices,CBType _cb,const String & suffix=String(),const String  tooltip=""):
     ChoicePropertyComponent(juce::translate(_name)+(suffix.isEmpty()?"":" "+juce::translate(suffix))),
-    name(_name),
     cb(std::move(_cb)),
-    nonTranslatedChoices (std::move(_choices))
+    nonTranslatedChoices (std::move(_choices)),
+    name(_name)
     {
 
         setTooltip(tooltip);
@@ -94,9 +94,9 @@ public:
                 }
         si = newI;
         refresh();
-    };
+    }
 
-    virtual int getIndex() const override{return si;};
+    virtual int getIndex() const override{return si;}
     CBType cb;
     StringArray nonTranslatedChoices;
     int si ;
@@ -173,13 +173,13 @@ public:
 template<class FunctionType>
 class ActionPropUI : public ButtonPropertyComponent{
 public:
-    ActionPropUI(const String & name,FunctionType f,const String  tooltip=""):ButtonPropertyComponent(juce::translate(name),true),func(f){setTooltip(tooltip);};
+    ActionPropUI(const String & name,FunctionType f,const String  tooltip=""):ButtonPropertyComponent(juce::translate(name),true),func(f){setTooltip(tooltip);}
     void buttonClicked() override{
         func(this);
     }
     String getButtonText() const override{
         return juce::translate(getName());
-    };
+    }
 
     FunctionType func;
 
