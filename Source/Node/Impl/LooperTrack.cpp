@@ -1000,7 +1000,7 @@ bool LooperTrack::loadAudioSample (const String& path)
             auto tm = TimeManager::getInstance();
             auto ti = tm->findTransportTimeInfoForLength ((int)audioReader->lengthInSamples, audioReader->sampleRate);
             double sampleRateRatio = parentLooper->getSampleRate() * 1.0 / audioReader->sampleRate;
-            sample_clk_t importSize = (sample_clk_t)audioReader->lengthInSamples * sampleRateRatio;
+            sample_clk_t importSize = (sample_clk_t)(audioReader->lengthInSamples * sampleRateRatio);
 
             if (importSize < MAX_NUMSAMPLES)
             {

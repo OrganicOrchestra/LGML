@@ -52,22 +52,22 @@ public:
             setStrokeThickness (1);
 
         }
-        void mouseEnter(const MouseEvent & me)final{
+        void mouseEnter(const MouseEvent & )final{
             isHovered = true;
             setFill (Colours::white.withAlpha (0.5f));
         }
-        void mouseExit(const MouseEvent & me)final{
+        void mouseExit(const MouseEvent & )final{
             isHovered = false;
             setFill (Colours::white.withAlpha (0.1f));
         }
-        void mouseDown(const MouseEvent & me)final{
+        void mouseDown(const MouseEvent & )final{
 //            if(auto ncv = findParentComponentOfClass<NodeContainerViewer>()){
 //
 //            }
         }
 
         
-        void mouseUp(const MouseEvent & me)final{
+        void mouseUp(const MouseEvent & )final{
             if(auto ncv = findParentComponentOfClass<NodeContainerViewer>()){
                 ncv->finishEditingConnection();
             }
@@ -146,9 +146,9 @@ public:
     String getTooltip() override;
     std::unique_ptr<InspectorEditor> createEditor() override;
     void handleCommandMessage (int cId)override;
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeConnectionUI);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeConnectionUI)
 
-
+    bool _isMouseOver=false;
 
 };
 

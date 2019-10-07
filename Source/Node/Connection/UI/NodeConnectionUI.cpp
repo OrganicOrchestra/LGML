@@ -90,7 +90,7 @@ void NodeConnectionUI::paint (Graphics& g)
     if (candidateDropConnector != nullptr) baseColor = Colours::yellow;
 
     else if (isSelected) baseColor = findColour (TextButton::buttonOnColourId);
-    else if (isMouseOver()) baseColor = Colours::red;
+    else if (_isMouseOver) baseColor = Colours::red;
     g.setColour (baseColor);
     g.strokePath (path, PathStrokeType (1.5f));
 }
@@ -396,6 +396,7 @@ void NodeConnectionUI::mouseDrag (const MouseEvent& e)
 
 void NodeConnectionUI::mouseEnter (const MouseEvent&)
 {
+    _isMouseOver = true;
     anchorSource.setVisible(true);
     anchorDest.setVisible(true);
     repaint();
@@ -403,6 +404,7 @@ void NodeConnectionUI::mouseEnter (const MouseEvent&)
 
 void NodeConnectionUI::mouseExit (const MouseEvent&)
 {
+    _isMouseOver = false;
     if(!isSelected){
         anchorSource.setVisible(false);
         anchorDest.setVisible(false);
