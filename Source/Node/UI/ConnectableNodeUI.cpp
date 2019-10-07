@@ -173,6 +173,9 @@ Point2DParameter<int>* ConnectableNodeUI::getCurrentPositionParam(){
     return ncv && ncv->minimizeAll->boolValue()?nodeMinimizedPosition:nodePosition;
 }
 
+void ConnectableNodeUI::setSelectedInternal (bool value) {
+    mainComponentContainer.repaint();
+}
 void ConnectableNodeUI::moved()
 {
     bool wasDraggingFromUI = isDraggingFromUI;

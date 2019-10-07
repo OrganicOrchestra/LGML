@@ -291,6 +291,7 @@ void LGMLLoggerUI::mouseDown  (const MouseEvent& me) {
 };
 
 void LGMLLoggerUI::mouseDrag  (const MouseEvent& me) {
+    if(dynamic_cast<TableHeaderComponent*>(me.originalComponent)){return;}
     auto pos = me.getEventRelativeTo(logListComponent.get());
     auto rowUnderMouse =  logListComponent->getRowContainingPosition(pos.x,pos.y);
     auto rowStart =logListComponent->getRowContainingPosition(pos.getMouseDownX(),pos.getMouseDownY());

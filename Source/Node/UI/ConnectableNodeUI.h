@@ -139,7 +139,7 @@ public:
 
 
 private:
-
+    void setSelectedInternal (bool value) final;
     Point2DParameter<int>* getCurrentPositionParam();
     //interaction
     Rectangle<int> nodeInitBounds;

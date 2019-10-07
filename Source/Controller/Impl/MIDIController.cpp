@@ -322,11 +322,14 @@ var MIDIController::sendNoteOnFromJS (const var::NativeFunctionArgs& a )
 
     if (a.numArguments < 3)
     {
-        NLOGE("MidiController", juce::translate("Incorrect number of arguments for sendNoteOn"));
+        NLOGE(c->getControlAddress().toString(), juce::translate("Script : Incorrect number of arguments for sendNoteOn"));
         return var (false);
     }
 
-    c->sendNoteOn ((int) (a.arguments[0]), a.arguments[1], a.arguments[2]);
+    bool sent = c->sendNoteOn ((int) (a.arguments[0]), a.arguments[1], a.arguments[2]);
+    if(!sent){
+        NLOGE(c->getControlAddress().toString(),juce::translate("Script : MIDI Out is not set"));
+    }
     return var (true);
 }
 
@@ -338,12 +341,15 @@ var MIDIController::sendNoteOffFromJS (const var::NativeFunctionArgs& a)
 
     if (a.numArguments < 3)
     {
-        NLOGE("MidiController", juce::translate("Incorrect number of arguments for sendNoteOff"));
+        NLOGE(c->getControlAddress().toString(), juce::translate("Script : Incorrect number of arguments for sendNoteOff"));
         return var (false);
     }
 
-    c->sendNoteOff ((int) (a.arguments[0]), a.arguments[1], a.arguments[2]);
-    return var (true);
+   bool sent  = c->sendNoteOff ((int) (a.arguments[0]), a.arguments[1], a.arguments[2]);
+    if(!sent){
+        NLOGE(c->getControlAddress().toString(),juce::translate("Script : MIDI Out is not set"));
+    }
+    return var (sent);
 }
 
 var MIDIController::sendCCFromJS (const var::NativeFunctionArgs& a)
@@ -352,7 +358,7 @@ var MIDIController::sendCCFromJS (const var::NativeFunctionArgs& a)
 
     if (a.numArguments < 3)
     {
-        NLOGE("MidiController", juce::translate("Incorrect number of arguments for sendCC"));
+        NLOGE(c->getControlAddress().toString(), juce::translate("Script : Incorrect number of arguments for sendCC"));
         return var (false);
     }
     int targetChannel = (int) (a.arguments[0]);
@@ -360,8 +366,11 @@ var MIDIController::sendCCFromJS (const var::NativeFunctionArgs& a)
         targetChannel = c->channelFilter->intValue();
     if(targetChannel==0)
         targetChannel = 1;
-    c->sendCC (targetChannel, a.arguments[1], a.arguments[2]);
-    return var (true);
+    bool sent =c->sendCC (targetChannel, a.arguments[1], a.arguments[2]);
+    if(!sent){
+        NLOGE(c->getControlAddress().toString(),juce::translate("Script : MIDI Out is not set"));
+    }
+    return var (sent);
 }
 
 var MIDIController::sendSysExFromJS (const var::NativeFunctionArgs& a)
@@ -370,7 +379,7 @@ var MIDIController::sendSysExFromJS (const var::NativeFunctionArgs& a)
 
     if (a.numArguments > 8)
     {
-        NLOGE("MidiController", juce::translate("Incorrect number of arguments for sendSysEx"));
+        NLOGE(c->getControlAddress().toString(), juce::translate("Script : Incorrect number of arguments for sendSysEx"));
         return var (false);
     }
 
@@ -383,7 +392,10 @@ var MIDIController::sendSysExFromJS (const var::NativeFunctionArgs& a)
         LOG ("Byte : " << String (bytes[i]));
     }
 
-    c->sendSysEx (bytes, a.numArguments);
+    bool sent = c->sendSysEx (bytes, a.numArguments);
+    if(!sent){
+        NLOGE(c->getControlAddress().toString(),juce::translate("Script : MIDI Out is not set"));
+    }
     return var (true);
 }
 

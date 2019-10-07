@@ -41,11 +41,11 @@ public :
 
     //Output
     std::unique_ptr<MidiOutput> midiOutDevice;
-    void sendNoteOn (int channel, int pitch, int velocity);
-    void sendNoteOff (int channel, int pitch, int velocity);
-    void sendCC (int channel, int number, int value);
-    void sendSysEx (uint8* data, int dataCount);
-    void sendMessage(const MidiMessage & msg);
+    bool sendNoteOn (int channel, int pitch, int velocity);
+    bool sendNoteOff (int channel, int pitch, int velocity);
+    bool sendCC (int channel, int number, int value);
+    bool sendSysEx (uint8* data, int dataCount);
+    bool sendMessage(const MidiMessage & msg);
     virtual void midiMessageSent(const MidiMessage & ){}
     virtual void midiInputAdded (String& s) override;
     virtual void midiInputRemoved (String& s) override;

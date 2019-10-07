@@ -86,41 +86,41 @@ void MIDIListener::setCurrentDevice (const String& deviceName)
 
 }
 
-void MIDIListener::sendNoteOn (int channel, int pitch, int velocity)
+bool MIDIListener::sendNoteOn (int channel, int pitch, int velocity)
 {
     if(channel==0){channel = 1;jassertfalse;}
-    sendMessage(MidiMessage::noteOn (channel, pitch, (uint8)velocity));
+    return sendMessage(MidiMessage::noteOn (channel, pitch, (uint8)velocity));
 }
 
-void MIDIListener::sendNoteOff (int channel, int pitch, int velocity)
+bool MIDIListener::sendNoteOff (int channel, int pitch, int velocity)
 {
     if(channel==0){channel = 1;jassertfalse;}
-    sendMessage(MidiMessage::noteOff (channel, pitch, (uint8)velocity));
+    return sendMessage(MidiMessage::noteOff (channel, pitch, (uint8)velocity));
 
 }
 
-void MIDIListener::sendMessage(const MidiMessage & msg){
+bool  MIDIListener::sendMessage(const MidiMessage & msg){
     if (midiOutDevice == nullptr)
     {
-        LOGW(juce::translate("MIDI Out is null"));
-        return;
+        return false ;
     }
 
     midiOutDevice->sendMessageNow (msg);
     midiMessageSent(msg);
+    return true;
 }
 
-void MIDIListener::sendCC (int channel, int number, int value)
+bool MIDIListener::sendCC (int channel, int number, int value)
 {
     //LOG("Send CC");
     if(channel==0){channel = 1;jassertfalse;}
-    sendMessage(MidiMessage::controllerEvent (channel, number, value));
+    return sendMessage(MidiMessage::controllerEvent (channel, number, value));
 
 }
 
-void MIDIListener::sendSysEx (uint8* data, int dataCount)
+bool  MIDIListener::sendSysEx (uint8* data, int dataCount)
 {
-    sendMessage(MidiMessage::createSysExMessage (data, dataCount));
+    return sendMessage(MidiMessage::createSysExMessage (data, dataCount));
     
 }
 
