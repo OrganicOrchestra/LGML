@@ -42,7 +42,7 @@ public:
         }
         return false;
 
-    };
+    }
 
 
     bool undo() override{
@@ -51,7 +51,7 @@ public:
             return true;
         }
         return false;
-    };
+    }
 
     UndoableAction* createCoalescedAction (UndoableAction* nextAction) override {
 

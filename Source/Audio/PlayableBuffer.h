@@ -116,8 +116,8 @@ public :
     sample_clk_t getGlobalPlayPos() const;
 
 
-    bool stateChanged;
-    int numTimePlayed;
+    bool stateChanged = false;
+    int numTimePlayed = 0;
     AudioSampleBuffer originAudioBuffer;
     BufferBlockList bufferBlockList;
     MultiNeedle multiNeedle;
@@ -153,15 +153,14 @@ private:
     void applyStretch();
     bool processPendingRTStretch (AudioBuffer<float>& b, sample_clk_t time);
     std::unique_ptr<RubberBand::RubberBandStretcher> RTStretcher;
-    int RTStretcherSamplerate;
-    float pendingTimeStretchRatio;
-    int processedStretch;
-    int stretchNeedle;
+    int RTStretcherSamplerate = -1;
+    float pendingTimeStretchRatio = 1;
+    int stretchNeedle=0;
 
     FadeInOut fadePendingStretch;
 
 #endif
-    bool isStretchPending;
+    bool isStretchPending = false;
     
 #if BUFFER_CAN_STRETCH
     friend class StretcherJob;
@@ -169,14 +168,14 @@ private:
     bool isStretchJobPending();
     WeakReference<StretcherJob> stretchJob;
     AudioSampleBuffer tmpBufferStretch;
-    bool isStretchReady;
-    double desiredRatio,appliedRatio;
+    bool isStretchReady = false;
+    double desiredRatio = 1,appliedRatio=1;
 
 #endif
 
-    int sampleOffsetBeforeNewState;
-    BufferState state;
-    BufferState lastState;
+    int sampleOffsetBeforeNewState = 0;
+    BufferState state = BUFFER_STOPPED;
+    BufferState lastState = BUFFER_STOPPED;
 
 
     void fadeInOut();
@@ -187,7 +186,7 @@ private:
 
 
 
-    sample_clk_t recordNeedle, playNeedle, globalPlayNeedle;
+    sample_clk_t recordNeedle = 0, playNeedle = 0, globalPlayNeedle = 0;
 
 
 

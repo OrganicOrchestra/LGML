@@ -81,15 +81,16 @@ class PresetSync:public PresetManager::Listener{
             owner->loadPreset(p,false);
         }
     }
-    void presetAdded(Preset * p)final{}
-    void presetRemoved(Preset * p)final{}
+    void presetAdded(Preset * )final{}
+    void presetRemoved(Preset * )final{}
     Presetable * owner;
 
 };
 
 const Identifier Presetable::presetIdentifier ("preset");
 
-Presetable::Presetable(ParameterContainer  * _pc):pc(_pc),currentPreset (nullptr),presetSync(nullptr){
+Presetable::Presetable(ParameterContainer  * _pc):
+pc(_pc){
     
     currentPresetName = pc->addParameter(new StringParameter(presetIdentifier.toString(), "Current Preset", ""),-1,false);
     currentPresetName->addParameterListener(this);

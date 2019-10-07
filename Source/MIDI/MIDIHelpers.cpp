@@ -135,10 +135,10 @@ namespace MIDIHelpers{
             else{
                 LOGE(juce::translate("error while checking MIDI Input"));
             }
-        };
+        }
         void midiInputRemoved (String& k)override {
             removeOption(k, true);
-        };
+        }
         void refresh() override{
             MIDIManager::getInstance()->updateLists();
         }
@@ -159,10 +159,10 @@ namespace MIDIHelpers{
         }
         void midiOutputAdded (String& k) override{
             addOption(k, k, true);
-        };
+        }
         void midiOutputRemoved (String& k)override {
             removeOption(k, true);
-        };
+        }
         void refresh() override{
             MIDIManager::getInstance()->updateLists();
         }
@@ -192,12 +192,12 @@ namespace MIDIHelpers{
                 c->nameParam->addParameterListener(this);
                 addOption(mc->getNiceName(), MCToValue(mc), true);
             }
-        };
+        }
         void controllerRemoved (Controller* c) override{
             if(auto mc=dynamic_cast<MIDIController*>(c)){
                 removeOption(mc->getNiceName(), true);
             }
-        };
+        }
         void parameterValueChanged ( ParameterBase* p, ParameterBase::Listener * /*notifier*/) override{
             auto c = p->parentContainer.get();
             if(auto cont = dynamic_cast<MIDIController*>(c)){
@@ -209,7 +209,7 @@ namespace MIDIHelpers{
 
             }
 
-        };
+        }
         static var MCToValue(MIDIController *mc){
             return var(int64(mc));
         }

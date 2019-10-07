@@ -51,7 +51,7 @@ public:
     std::unique_ptr<ProgressWindow> fileProgressWindow;
 
     // from engineListener
-    void startLoadFile(File targetFile) override;
+    void startLoadFile(const File & targetFile) override;
     void fileProgress (float percent, int state)override;
     void endLoadFile() override;
 

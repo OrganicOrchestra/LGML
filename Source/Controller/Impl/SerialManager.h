@@ -26,7 +26,7 @@ class SerialManager :
     public EnumParameterModel
 {
 public:
-    juce_DeclareSingleton (SerialManager, true);
+    juce_DeclareSingleton (SerialManager, true)
 
     SerialManager();
     virtual ~SerialManager();
@@ -50,9 +50,9 @@ public:
         virtual void portRemoved (SerialPortInfo*  info) = 0;
     };
 
-    ListenerList<SerialManagerListener> listeners;
-    void addSerialManagerListener (SerialManagerListener* newListener) { listeners.add (newListener); }
-    void removeSerialManagerListener (SerialManagerListener* listener) { listeners.remove (listener); }
+    ListenerList<SerialManagerListener> serialListeners;
+    void addSerialManagerListener (SerialManagerListener* newListener) { serialListeners.add (newListener); }
+    void removeSerialManagerListener (SerialManagerListener* listener) { serialListeners.remove (listener); }
 
 
     // Inherited via Timer

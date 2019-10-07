@@ -139,7 +139,7 @@ public:
         s->setMini(false,false);
         s->parentShifterContainer->resized();
     }
-    void timerCallback(int id) override{
+    void timerCallback(int ) override{
 #if HAS_MINI_TIMER
         if(s.get()){
             if(id==1){
@@ -215,7 +215,7 @@ bool ShapeShifter::isInAutoMiniMode(){
 
 }
 
-void ShapeShifter::mouseEnter(const juce::MouseEvent &me){
+void ShapeShifter::mouseEnter(const juce::MouseEvent &){
     if(miniTimer){miniTimer->stopTimers();}
     if(isMini){
         miniTimer = std::make_unique< MiniTimer>(this);
@@ -223,7 +223,7 @@ void ShapeShifter::mouseEnter(const juce::MouseEvent &me){
 
 }
 
-void ShapeShifter::mouseExit(const MouseEvent & me){
+void ShapeShifter::mouseExit(const MouseEvent & ){
     if(miniTimer){
         miniTimer->requestEnd();
     }

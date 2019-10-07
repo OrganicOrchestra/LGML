@@ -44,7 +44,7 @@ public:
         TrackGroup (LooperNode* l): ParameterContainer ("tracks"),
             owner (l),
             selectedTrack (nullptr),
-        lastMasterTempoTrack (nullptr) {nameParam->setInternalOnlyFlags(true,false);};
+        lastMasterTempoTrack (nullptr) {nameParam->setInternalOnlyFlags(true,false);}
 
         void setNumTracks (int numTracks);
         void addTrack();

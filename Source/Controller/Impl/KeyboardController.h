@@ -31,7 +31,7 @@ private KeyListener
 {
 public :
     
-    DECLARE_OBJ_TYPE_DEFAULTNAME (KeyboardController, "Keyboard","use your computer keyboard to control LGML");
+    DECLARE_OBJ_TYPE_DEFAULTNAME (KeyboardController, "Keyboard","use your computer keyboard to control LGML")
     virtual ~KeyboardController();
 
     // should be implemented to build localenv
@@ -103,7 +103,7 @@ public :
     }
 #pragma warning(pop)
 
-    void processKeyPress (const KeyPress& kp)
+    void processKeyPress (const KeyPress& )
     {
 //        if (channel == 0 || channel == m.getChannel())
 //        {
@@ -120,7 +120,7 @@ public :
 //
 //            }
 //        }
-    };
+    }
     JsEnvironment* jsEnv;
     char keyToListen;
     var object;

@@ -739,7 +739,7 @@
   </MAINGROUP>
   <EXPORTFORMATS>
     <XCODE_MAC bigIcon="jsU7Hw" documentExtensions="lgml" externalLibraries=""
-               extraCompilerFlags="-Wall&#10;-Wno-unknown-pragmas&#10;-Wno-inconsistent-missing-destructor-override&#10;"
+               extraCompilerFlags="-Wall&#10;-Wno-unknown-pragmas&#10;-Wno-inconsistent-missing-destructor-override&#10;-Wgnu-empty-initializer&#10;-Wmissing-field-initializers&#10;-Wno-zero-as-null-pointer-constant&#10;"
                extraDefs="LINK_PLATFORM_MACOSX=1&#10;" extraLinkerFlags="../../third_party/rubberband/lib/librubberband.a"
                keepCustomXcodeSchemes="1" postbuildCommand="" prebuildCommand=""
                smallIcon="jsU7Hw" targetFolder="Builds/MacOSX" vst3Folder="third_party/VST3_SDK"

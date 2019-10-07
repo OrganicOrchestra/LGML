@@ -292,14 +292,14 @@ public:
     }
 
     static void cb_resolve (
-        DNSServiceRef sdRef,
-        DNSServiceFlags flags,
-        uint32_t interfaceIndex,
-        DNSServiceErrorType errorCode,
+        DNSServiceRef /*sdRef*/,
+        DNSServiceFlags /*flags*/,
+        uint32_t /*interfaceIndex*/,
+        DNSServiceErrorType /*errorCode*/,
         const char*                          fullname,
         const char*                          hosttarget,
         uint16_t port,                                   /* In network byte order */
-        uint16_t txtLen,
+        uint16_t /*txtLen*/,
         const unsigned char*                 txtRecord,
         void*                                context
     )

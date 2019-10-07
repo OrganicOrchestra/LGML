@@ -22,7 +22,7 @@
 
 #define NON_BLOCKING 0
 template<>
-void ParameterContainer::OwnedFeedbackListener<OSCDirectController>::parameterFeedbackUpdate (ParameterContainer* originContainer, ParameterBase* c,ParameterBase::Listener * notifier){
+void ParameterContainer::OwnedFeedbackListener<OSCDirectController>::parameterFeedbackUpdate (ParameterContainer* /*originContainer*/, ParameterBase* c,ParameterBase::Listener * notifier){
 
 
     if (owner->enabledParam->boolValue() && (!owner->blockFeedback->boolValue() || notifier!=(Controller*)owner))

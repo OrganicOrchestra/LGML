@@ -52,7 +52,7 @@ private:
      void timeJumped (sample_clk_t /*time*/) override ;
      void playStop (bool /*playStop*/) override ;
     // info for stopping manager if needed;
-     bool isBoundToTime() override {return false;};
+     bool isBoundToTime() override {return false;}
     void addClockIfNeeded();
     void sendCurrentSPP();
 
@@ -68,13 +68,13 @@ private:
 
     private :
     struct MIDIClockState{
-        MIDIClockState():isPlaying(false),ppqn(0){};
+        MIDIClockState():isPlaying(false),ppqn(0){}
         bool isPlaying;
         int ppqn;
 
     };
     MIDIClockState state;
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MIDIClock);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MIDIClock)
     
 };
 

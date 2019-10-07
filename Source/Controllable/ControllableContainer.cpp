@@ -35,12 +35,7 @@ const Identifier ControllableContainer::controllablesId ("parameters");
 
 
 
-ControllableContainer::ControllableContainer (StringRef niceName) :
-parentContainer (nullptr),
-numContainerIndexed (0),
-localIndexedPosition (-1),
-isUserDefined (false),
-canHaveUserDefinedContainers(false)
+ControllableContainer::ControllableContainer (StringRef niceName) 
 {
 
     shortName = Controllable::toShortName (niceName);

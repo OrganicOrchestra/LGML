@@ -133,8 +133,8 @@ constexpr int headerHeight = 20;
 constexpr int maxUsrParamHeight = 200;
 
 void ControllerUI::componentMovedOrResized (Component& component,
-                              bool wasMoved,
-                              bool wasResized) {
+                              bool /*wasMoved*/,
+                              bool /*wasResized*/) {
     if(&component==userParamsUI->treeView.getViewport()->getViewedComponent()){
         setSize(getWidth(),getTargetHeight());
     }

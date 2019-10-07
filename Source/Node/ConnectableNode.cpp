@@ -105,7 +105,7 @@ bool ConnectableNode::hasAudioOutputs()
 
 
 
-void ConnectableNode::onContainerParameterChanged ( ParameterBase* p)
+void ConnectableNode::onContainerParameterChanged ( ParameterBase* )
 {
 
 }

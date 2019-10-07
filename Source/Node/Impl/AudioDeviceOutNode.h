@@ -27,7 +27,7 @@ class AudioDeviceOutNode :
 
 {
 public:
-    DECLARE_OBJ_TYPE (AudioDeviceOutNode,"access your sound card output");
+    DECLARE_OBJ_TYPE (AudioDeviceOutNode,"access your sound card output")
     ~AudioDeviceOutNode();
 
 

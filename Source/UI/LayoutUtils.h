@@ -21,13 +21,13 @@ void layoutComponentsInGrid (const ComponentContainerType & components,
     if(pArea.getHeight()==0) return;
 
 
-    const float AR = pArea.getWidth()*1.0/pArea.getHeight();
+    const float AR = pArea.getWidth()*1.0f/pArea.getHeight();
 
-    int targetNumLine = sqrt(components.size())*targetComponentAR/AR;
+    int targetNumLine = (int)(sqrt(components.size())*targetComponentAR/AR);
     targetNumLine = jmax(1,targetNumLine);
 
     int numLines = jmin ((int)(targetNumLine), components.size());
-    int numCols = ceil((components.size() ) *1.0f/ numLines ) ;
+    int numCols = (int)ceil((components.size() ) *1.0f/ numLines ) ;
 
     int w = pArea.getWidth() / numCols;
     int h = pArea.getHeight() / numLines;

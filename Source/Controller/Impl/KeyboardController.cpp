@@ -35,19 +35,19 @@ KeyboardController::~KeyboardController(){
     GlobalKeyListener::removeTraversingListener(this);
 }
 
-void KeyboardController::onContainerParameterChanged ( ParameterBase* p){
+void KeyboardController::onContainerParameterChanged ( ParameterBase* ){
 
 
 }
 
 String getPNameFromKey(const KeyPress & key){
-    const char c = key.getTextCharacter();
+    const auto c = key.getTextCharacter();
     return String("key ")+(char)c;
 }
 bool KeyboardController::keyPressed (const KeyPress& key, Component* /*originatingComponent*/)
 {
     
-    const char ch = key.getTextCharacter();
+    const auto ch = key.getTextCharacter();
     const uint32 time = Time::getMillisecondCounter();
     // avoid repetition on holded keys
     for ( auto k:keysDown){if(k->key == key){ return false;}}

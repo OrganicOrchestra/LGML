@@ -52,7 +52,7 @@ public :
         TimeBar (TimeManager*);
 
         bool isSettingTempo = false;
-
+        TimeManager* timeManager;
         int refreshHz ;
         float blinkHz;
         double blinkCount = 0;
@@ -87,7 +87,7 @@ public :
 
         void paint (Graphics& g) override;
 
-        TimeManager* timeManager;
+
 
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeBar)

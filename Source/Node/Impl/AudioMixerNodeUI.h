@@ -52,7 +52,7 @@ public:
         {
 
             setNumInput (o->volumes.size());
-        };
+        }
 
         ~OutputBusUI()
         {

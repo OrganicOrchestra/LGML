@@ -39,7 +39,9 @@ String varToString(const var &v){
 }
 
 StringParameterUI::StringParameterUI ( ParameterBase* p) :
-ParameterUI (p), autoSize (false), maxFontHeight (12),trimStart(false)//,valueLabel(this)
+ParameterUI (p),
+maxFontHeight (12)
+//,valueLabel(this)
 {
 
     addChildComponent (nameLabel);

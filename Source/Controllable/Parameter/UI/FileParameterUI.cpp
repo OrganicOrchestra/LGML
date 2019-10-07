@@ -16,10 +16,10 @@
 void createFile(FileParameter* fp);
 void openFile(FileParameter* fp);
 
-FileParameterUI::FileParameterUI (FileParameter* p): ParameterUI (p)
-,options("options",DrawableButton::ButtonStyle::ImageFitted)
-,hoveredByFile(false)
+FileParameterUI::FileParameterUI (FileParameter* p):
+ParameterUI (p)
 ,fnComponent(new StringParameterUI(p))
+,options("options",DrawableButton::ButtonStyle::ImageFitted)
 {
     options.addListener(this);
     options.setImages(AddElementButton::createDrawable());
@@ -85,18 +85,18 @@ void FileParameterUI::buttonClicked (Button*) {
             openFile(getFileParameter());
             break;
         case 3:
-            if(auto * fp =getFileParameter())
-                fp->triggerFileChange();
+            if(auto * _fp =getFileParameter())
+                _fp->triggerFileChange();
             break;
         case 4:
             if (getCurrentFile().existsAsFile())
                 getCurrentFile().startAsProcess();
-            if(auto * fp =getFileParameter())
-                fp->setIsWatching(true);
+            if(auto * _fp =getFileParameter())
+                _fp->setIsWatching(true);
             break;
         case 5:
-            if(auto * fp =getFileParameter())
-                fp->setIsWatching(!getFileParameter()->isWatching);
+            if(auto * _fp =getFileParameter())
+                _fp->setIsWatching(!getFileParameter()->isWatching);
             break;
 
     }

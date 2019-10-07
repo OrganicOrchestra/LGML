@@ -29,7 +29,7 @@ class SerialController : public Controller, public JsEnvironment,
     public SerialManager::SerialManagerListener
 {
 public:
-    DECLARE_OBJ_TYPE_DEFAULTNAME (SerialController, "Serial","access your serial ports");
+    DECLARE_OBJ_TYPE_DEFAULTNAME (SerialController, "Serial","access your serial ports")
     virtual ~SerialController();
 
     String lastOpenedPortID; //for ghosting

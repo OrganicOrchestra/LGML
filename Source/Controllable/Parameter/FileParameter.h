@@ -45,8 +45,8 @@ public:
     bool fileHasValidExtension(const File & f);
     bool hasValidPath(bool ignoreEmpty);
     FileType fileType;
-    bool isWatchable;
-    bool isReloadable;
+    bool isWatchable = false;
+    bool isReloadable = false;
 
     void setLoader(LoaderFunctionType & f);
     
@@ -57,7 +57,7 @@ public:
     String errorMsg;
 
     void setIsWatching(bool t);
-    bool isWatching;
+    bool isWatching = false;
 
 
     class Listener{
@@ -92,7 +92,7 @@ private:
     bool isAsync;
     friend class FileLoaderJob;
     WeakReference<FileLoaderJob> fileLoaderJob;
-    LoadingState loadingState;
+    LoadingState loadingState = EMPTY;
     std::unique_ptr<FileWatcher> fileWatcher;
     WeakReference<FileParameter>::Master masterReference;
     friend class WeakReference<FileParameter>;

@@ -23,7 +23,7 @@ class JsContainerSync: private ControllableContainerListener
 
 public:
 
-    JsContainerSync(): aggregChanges (this) {};
+    JsContainerSync(): aggregChanges (this) {}
     virtual ~JsContainerSync();
 
 

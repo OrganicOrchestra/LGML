@@ -29,7 +29,7 @@ class FileWriter : public LGMLLogger::Listener,public Engine::EngineListener
 {
 public:
     FileWriter() {fileLog.reset(FileLogger::createDefaultAppLogger ("LGML", "log", ""));}
-    void startLoadFile(File sessionFile) override{
+    void startLoadFile(const File & sessionFile) override{
         if(!sessionFile.exists())return;// new sessions
         if(!sessionFile.getParentDirectory().exists()){jassertfalse;return;}
         File logFile = sessionFile.getParentDirectory().getChildFile("log");

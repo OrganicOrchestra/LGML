@@ -33,7 +33,7 @@ public EnumParameter::EnumListener,
 public JsEnvironment
 {
 public :
-    DECLARE_OBJ_TYPE_DEFAULTNAME (MIDIController, "MIDI","use your MIDI device to control LGML");
+    DECLARE_OBJ_TYPE_DEFAULTNAME (MIDIController, "MIDI","use your MIDI device to control LGML")
     virtual ~MIDIController();
 
     
@@ -152,7 +152,7 @@ public :
 
             }
         }
-    };
+    }
     JsEnvironment* jsEnv;
     int channel;
     // can be CC or note number

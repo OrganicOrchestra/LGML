@@ -48,7 +48,7 @@ MouseDbg * globalMouse(nullptr);
 class NodeLayerComponent : public Component{
 public:
     NodeLayerComponent(){ setPaintingIsUnclipped(true);}
-    void childBoundsChanged(Component *c) override{
+    void childBoundsChanged(Component *) override{
         auto nv = static_cast<NodeContainerViewer *>( getParentComponent());
         nv->resizeToFitNodes();
     }
@@ -494,7 +494,7 @@ void NodeContainerViewer::mouseDown (const MouseEvent& event)
 
 
 
-void NodeContainerViewer::mouseMove (const MouseEvent& e)
+void NodeContainerViewer::mouseMove (const MouseEvent& )
 {
     if (editingConnection != nullptr )
     {

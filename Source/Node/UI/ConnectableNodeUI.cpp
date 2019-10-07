@@ -390,16 +390,16 @@ void ConnectableNodeUI::mouseUp (const juce::MouseEvent& me)
     UndoableHelpers::setParameterCoalesced(false);
 }
 
-void ConnectableNodeUI::mouseDrag (const MouseEvent& e)
+void ConnectableNodeUI::mouseDrag (const MouseEvent& )
 {
 
     isDraggingFromUI = true;
 
 }
-void ConnectableNodeUI::mouseEnter (const MouseEvent& e)  {
+void ConnectableNodeUI::mouseEnter (const MouseEvent& )  {
 
 };
-void ConnectableNodeUI::mouseExit (const MouseEvent& e)  {
+void ConnectableNodeUI::mouseExit (const MouseEvent& )  {
     
 };
 

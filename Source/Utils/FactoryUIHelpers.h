@@ -128,7 +128,7 @@ class UndoableFactoryCreateOrDelete:public UndoableAction{
         typedef std::function<void(T*)> rmFType;
         UndoableFactoryCreateOrDelete(String _typeID,addFType _addF,rmFType _rmF,T * originToRemove,bool _isRemove):addF(_addF),rmF(_rmF),typeID(_typeID),obj(originToRemove),isRemove(_isRemove){
             obSettings = var(originToRemove?originToRemove->createObject():nullptr);
-        };
+        }
 
         bool perform() override{
             return  isRemove?removeObj():createObj();

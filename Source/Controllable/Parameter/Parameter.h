@@ -117,7 +117,7 @@ public:
                     linkedP.removeLast();
             }
         }
-        virtual void parameterValueChanged ( ParameterBase* p,ParameterBase::Listener * notifier=nullptr) {}
+        virtual void parameterValueChanged ( ParameterBase* ,ParameterBase::Listener * /*notifier*/=nullptr) {}
         virtual void parameterRangeChanged ( ParameterBase* ) {}
         virtual void newMessage (const ParamWithValue& ) override {}
 

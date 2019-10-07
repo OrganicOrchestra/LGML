@@ -24,7 +24,7 @@
 REGISTER_NODE_TYPE (NodeContainer)
 
 #if JUCE_DEBUG && 1
-#define DBGGRAPH(x) {int d = 0; auto * cpa = parentContainer;while(cpa){d++;cpa=cpa->parentContainer;};DBG(String::repeatedString(">",d+1)+" "+x);}
+#define DBGGRAPH(x) {int dddd = 0; auto * cpa = parentContainer;while(cpa){dddd++;cpa=cpa->parentContainer;};DBG(String::repeatedString(">",dddd+1)+" "+x);}
 #else
 #define DBGGRAPH(x)
 #endif
@@ -48,7 +48,7 @@ class GraphBuildWatcher : public AsyncUpdater{
     void handleAsyncUpdate() override{
         nc->getAudioGraph()->suspendProcessing(false);
         nc->gWatcher=nullptr;
-    };
+    }
     NodeContainer* nc;
 };
 
@@ -353,8 +353,8 @@ ParameterContainer*   NodeContainer::addContainerFromObject (const String& name,
 
     ConnectableNode* node = NodeFactory::createBaseFromObject ( "", data,false); // avoid to configure it before added
     if(!node){jassertfalse; return nullptr;}
-    if (auto n = dynamic_cast<ContainerInNode*> (node)) containerInNode = n;
-    else if (auto n = dynamic_cast<ContainerOutNode*> (node)) containerOutNode = n;
+    if (auto n = dynamic_cast<ContainerInNode*> (node)){ containerInNode = n;}
+    else if (auto no = dynamic_cast<ContainerOutNode*> (node)){ containerOutNode = no;}
     if(data && data->hasProperty(uidIdentifier)){
         node->uid = data->getProperty(uidIdentifier).toString();
     }

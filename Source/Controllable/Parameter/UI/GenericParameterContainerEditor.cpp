@@ -178,8 +178,8 @@ void GenericParameterContainerEditor::timerCallback()
 //////////////////////////////
 
 CCInnerContainerUI::CCInnerContainerUI (GenericParameterContainerEditor* _editor, ParameterContainer* _container, int _level, int _maxLevel, bool _canAccessLowerContainers) :
-    editor (_editor),
     container (_container),
+    editor (_editor),
     level (_level),
     maxLevel (_maxLevel),
     canAccessLowerContainers (_canAccessLowerContainers),

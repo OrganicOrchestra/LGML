@@ -39,8 +39,8 @@ ParameterContainer * ParameterContainerSync::getSlaveRelatedContainer(ParameterC
     ParameterContainer * inner = dynamic_cast<ParameterContainer*>(slave->getMirroredContainer(c,root));
     if( tryLastName && !inner){ // last resort try to find amongst uids
             const auto & ui = c->uid.toString();
-            inner = dynamic_cast<ParameterContainer*>(slave->findFirstControllableContainer([ui](ControllableContainer*c){
-                if(auto sui = dynamic_cast<StringParameter*>(c->getControllableByShortName(uidRefName))){
+            inner = dynamic_cast<ParameterContainer*>(slave->findFirstControllableContainer([ui](ControllableContainer* _c){
+                if(auto sui = dynamic_cast<StringParameter*>(_c->getControllableByShortName(uidRefName))){
                     return sui->stringValue()== ui;
                 }
                 return false;

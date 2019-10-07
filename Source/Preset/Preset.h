@@ -90,7 +90,7 @@ public:
     ParameterBase* savePresetTrigger;
 
 
-    Preset* currentPreset;
+    Preset* currentPreset = nullptr;
 
     class Listener{
     public:
@@ -106,7 +106,7 @@ private:
     Array<ParameterBase*> params;
     virtual void containerWillClear (ControllableContainer* ) override;
 
-    PresetSync* presetSync;
+    PresetSync* presetSync = nullptr;
 
     void newMessage (const ParameterBase::ParamWithValue& pv)final;
     void parameterValueChanged ( ParameterBase* p, ParameterBase::Listener * notifier) final;

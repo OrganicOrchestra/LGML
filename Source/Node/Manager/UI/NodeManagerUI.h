@@ -40,7 +40,7 @@ class NodeManagerUI :
     private DeletedAtShutdown 
 {
 public:
-    juce_DeclareSingleton(NodeManagerUI, false);
+    juce_DeclareSingleton(NodeManagerUI, false)
     NodeManagerUI (NodeManager* nodeManager=NodeManager::getInstance());
     ~NodeManagerUI();
 

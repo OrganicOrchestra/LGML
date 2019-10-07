@@ -23,10 +23,10 @@ NodeBase* getAsNodeBase (WeakReference<ConnectableNode>& n)
 {
     return (NodeBase*) n.get();
 }
-NodeConnection::NodeConnection (ConnectableNode* _sourceNode, ConnectableNode* _destNode, NodeConnection::ConnectionType connectionType, NodeConnection::Model* root) :
+NodeConnection::NodeConnection (ConnectableNode* _sourceNode, ConnectableNode* _destNode, NodeConnection::ConnectionType _connectionType, NodeConnection::Model* root) :
     sourceNode (_sourceNode),
     destNode (_destNode),
-    connectionType (connectionType)
+    connectionType (_connectionType)
 {
 
 

@@ -124,7 +124,7 @@ public:
 
         return res;
 
-    };
+    }
 
 };
 

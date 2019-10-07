@@ -26,7 +26,7 @@ class ShapeShifterManager :
     private LGMLLogger::CoalescedListener
 {
 public:
-    juce_DeclareSingleton (ShapeShifterManager, true);
+    juce_DeclareSingleton (ShapeShifterManager, true)
     ShapeShifterManager();
     virtual ~ShapeShifterManager();
 

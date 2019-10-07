@@ -556,7 +556,7 @@ void Engine::EngineStats::timerCallback(){
             int usage = it.getValue().size();
             String pName = it.getKey();
             struct EComp{
-                int compareElements( const UsagePoint & a,const UsagePoint & b){return a.second-b.second;};
+                int compareElements( const UsagePoint & a,const UsagePoint & b){return a.second-b.second;}
             };
             static EComp eComp;
             paramUsage.addSorted(eComp,UsagePoint(pName,usage));

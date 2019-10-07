@@ -20,7 +20,9 @@
 
 
 
-BufferBlockList::BufferBlockList (int _numChannels, int  _minNumSample, int _blockSize): bufferBlockSize (_blockSize), minNumSample (_minNumSample)
+BufferBlockList::BufferBlockList (int _numChannels, int  _minNumSample, int _blockSize):
+minNumSample (_minNumSample),
+bufferBlockSize (_blockSize)
 {
     jassert (bufferBlockSize > 0);
     allocateSamples (_numChannels, minNumSample);

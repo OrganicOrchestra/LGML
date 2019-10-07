@@ -43,8 +43,8 @@ static FileTypeMap* fileTypes = new FileTypeMap(); // will be deleted at shutdow
 struct FilePostponedLoader : private Engine::EngineListener
 {
     FilePostponedLoader(FileParameter * fp):owner(fp){}
-    ~FilePostponedLoader(){};
-    void endLoadFile() override {if(owner.get()){owner->startLoading();}};
+    ~FilePostponedLoader(){}
+    void endLoadFile() override {if(owner.get()){owner->startLoading();}}
     WeakReference<FileParameter> owner;
 };
 
@@ -79,13 +79,10 @@ public:
 };
 
 
-FileParameter::FileParameter (const String& niceName, const String& description, const String& initialValue,const FileType type,LoaderFunctionType _loaderFunction,bool _isAsync):StringParameter(niceName,description,initialValue)
+FileParameter::FileParameter (const String& niceName, const String& description, const String& initialValue,const FileType type,LoaderFunctionType _loaderFunction,bool _isAsync):
+StringParameter(niceName,description,initialValue)
 ,fileType(type)
-,isWatchable(false)
-,isReloadable(false)
-,isWatching(false)
 ,loaderFunction(_loaderFunction)
-,loadingState(EMPTY)
 ,isAsync( _isAsync) // TODO support Async generate random crash
 {
     
@@ -128,11 +125,11 @@ public:
     }
     ThreadPoolJob::JobStatus runJob() override{
         if(!shouldExit()){
-        loadFileImpl(fp);
+        loadFileImpl();
         }
         return ThreadPoolJob::JobStatus::jobHasFinished;
     }
-    void loadFileImpl(const WeakReference<FileParameter> fp){
+    void loadFileImpl(){
         Result r=Result::fail("file not processed");
         if(fp.get()){
 

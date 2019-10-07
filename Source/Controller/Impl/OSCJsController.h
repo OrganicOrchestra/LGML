@@ -27,7 +27,7 @@ class JsOSCListener;
 class OSCJsController : public OSCDirectController, public JsEnvironment
 {
 public:
-    DECLARE_OBJ_TYPE_DEFAULTNAME (OSCJsController, "OSCJS","use any OSC App to control LGML");
+    DECLARE_OBJ_TYPE_DEFAULTNAME (OSCJsController, "OSCJS","use any OSC App to control LGML")
 
     ~OSCJsController();
     Result processMessageInternal (const OSCMessage& m) override;
@@ -97,7 +97,7 @@ public :
     static var dummyCallback (const var::NativeFunctionArgs&)
     {
         return var::undefined();
-    };
+    }
 
 #pragma warning(pop)
 

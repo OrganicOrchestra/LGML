@@ -53,7 +53,7 @@ void BoolToggleUI::paint (Graphics& g)
 
 
     if(!parameter->isEditable){
-        const float ledHeight=10.0f;
+        const int ledHeight=10;
         g.setColour(c);
         auto tbound = getLocalBounds()
                                     .removeFromLeft(ledHeight)

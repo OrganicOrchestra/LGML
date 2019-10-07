@@ -18,16 +18,16 @@
 #include "NodeConnectionEditor.hpp"
 
 //==============================================================================
-NodeConnectionUI::NodeConnectionUI (NodeConnection* connection, Connector* sourceConnector, Connector* destConnector) :
+NodeConnectionUI::NodeConnectionUI (NodeConnection* _connection, Connector* _sourceConnector, Connector* _destConnector) :
     InspectableComponent("NodeConnectionUI"),
     candidateDropConnector (nullptr),
-    connection (connection),
+    connection (_connection),
     sourceConnector (nullptr),
     destConnector (nullptr)
 {
     InspectableComponent::paintBordersWhenSelected = false;
-    setSourceConnector (sourceConnector);
-    setDestConnector (destConnector);
+    setSourceConnector (_sourceConnector);
+    setDestConnector (_destConnector);
 
     if (connection != nullptr)
     {
@@ -345,7 +345,7 @@ void NodeConnectionUI::mouseDown (const MouseEvent& e)
     }
 }
 
-void NodeConnectionUI::mouseUp (const MouseEvent& e)
+void NodeConnectionUI::mouseUp (const MouseEvent& )
 {
     if ( auto nodeViewer = findParentComponentOfClass<NodeContainerViewer>()) {
         if(nodeViewer->isEditingConnection()){
@@ -358,7 +358,7 @@ void NodeConnectionUI::mouseUp (const MouseEvent& e)
     }
 }
 
-void NodeConnectionUI::mouseMove (const MouseEvent& e)
+void NodeConnectionUI::mouseMove (const MouseEvent& )
 {
     
 
@@ -495,7 +495,7 @@ void NodeConnectionUI::cancelCandidateDropConnector()
     candidateDropConnector = nullptr;
 }
 
-void NodeConnectionUI::startEditing(bool editDest){
+void NodeConnectionUI::startEditing(bool /*editDest*/){
     Desktop::getInstance().addGlobalMouseListener(this);
 }
 bool NodeConnectionUI::finishEditing()

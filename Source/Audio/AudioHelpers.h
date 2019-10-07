@@ -219,7 +219,7 @@ inline void updateRMS (const AudioBuffer<float>& buffer,
     constexpr double decayFactor = 0.9;
     constexpr float lowThresh = 0.0001f;
     constexpr int downSample = 2;
-    const float factor = .9 * downSample * 1.0 / numSamples;
+    const float factor = .9f * downSample * 1.0f / numSamples;
 
     if (buffer.hasBeenCleared())
     {

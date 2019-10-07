@@ -27,13 +27,13 @@ public:
 
     Label nameLabel;
     Label valueLabel;
-    bool trimStart;
+    bool trimStart=false;
     String prefix;
     String suffix;
     int arraySize;
     float maxFontHeight;
 
-    bool autoSize;
+    bool autoSize = false;
     void setAutoSize (bool value);
 
     void setPrefix (const String& _prefix);

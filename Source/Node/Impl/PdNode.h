@@ -20,7 +20,7 @@
 
 class PdNode:public NodeBase,public MIDIListener{
 public:
-    DECLARE_OBJ_TYPE (PdNode,"load Pd Patch");
+    DECLARE_OBJ_TYPE (PdNode,"load Pd Patch")
 
     ~PdNode();
 
@@ -63,6 +63,6 @@ private:
                                     const MidiMessage& message) override;
 
     MidiMessageCollector messageCollector;
-    MidiBuffer incomingMidi;
+    
 
 };

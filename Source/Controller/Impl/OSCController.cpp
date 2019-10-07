@@ -41,7 +41,7 @@ public:
         {
             oscClientAdded (r);
         }
-    };
+    }
     ~OSCClientModel()
     {
     }
@@ -49,11 +49,11 @@ public:
     void oscClientAdded (OSCClientRecord o)
     {
         addOrSetOption (o.getShortName(), o.ipAddress.toString(), true);
-    };
+    }
     void oscClientRemoved (OSCClientRecord o)
     {
         removeOption (o.getShortName(), true);
-    };
+    }
 
 };
 
@@ -61,9 +61,7 @@ int defaultLocalOSCPort = 11000;
 OSCController::OSCController (const String& _name) :
 Controller (_name),
 lastMessageReceived (OSCAddressPattern ("/fake")),
-isProcessingOSC (false),
-oscMessageQueue (this),
-hostNameResolved (false)
+oscMessageQueue (this)
 
 {
     // force init of Network Utils if not created
@@ -216,15 +214,15 @@ void OSCController::resolveHostnameIfNeeded()
 
 }
 
-bool OSCController::connectSender(String & remoteIP, int portNum){
+bool OSCController::connectSender(String & _remoteIP, int portNum){
     bool validPort = portNum>=100 && portNum <= 20000;
     jassert(validPort);
-    if( validPort && remoteIP=="127.0.0.1"){
+    if( validPort && _remoteIP=="127.0.0.1"){
         while(AnyoneIsListeningOnPort(portNum)){portNum+=1;}
         remotePortParam->setValueFrom (this,String((int)portNum),false,true); // wont recall
     }
 
-    bool connected = validPort && sender.connect (remoteIP,portNum );
+    bool connected = validPort && sender.connect (_remoteIP,portNum );
     isConnected->setValue (connected);
     localSentPorts.set(this,portNum);
     //#if JUCE_DEBUG
@@ -288,12 +286,12 @@ bool OSCController::setParameterFromMessage ( ParameterBase* c, const OSCMessage
 
     if (targetType == Trigger::_factoryType)
     {
-        if (msg.size() == 0) ((Trigger*)c)->trigger();
+        if (msg.size() == 0) ((Trigger*)c)->triggerFrom(this);
         else if (allowConversions && (msg[0].isInt32() || msg[0].isFloat32()))
         {
             float val = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
 
-            if (val > 0) ((Trigger*)c)->trigger();
+            if (val > 0) ((Trigger*)c)->triggerFrom(this);
         }
     }
     else if (targetType == BoolParameter::_factoryType)
@@ -303,7 +301,7 @@ bool OSCController::setParameterFromMessage ( ParameterBase* c, const OSCMessage
                                (msg[0].isInt32() || msg[0].isFloat32())))
         {
             float val = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
-            (( ParameterBase*)c)->setValue (val > 0, false, force);
+            (( ParameterBase*)c)->setValueFrom (this,val > 0, false, force);
         }
     }
     else if (targetType == FloatParameter::_factoryType)
@@ -311,7 +309,7 @@ bool OSCController::setParameterFromMessage ( ParameterBase* c, const OSCMessage
         if (msg.size() > 0 && ((allowConversions && msg[0].isInt32()) || msg[0].isFloat32()))
         {
             float value = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
-            (( ParameterBase*)c)->setValue ((float)value, false, force); //normalized or not ? can user decide ?
+            (( ParameterBase*)c)->setValueFrom (this,(float)value, false, force); //normalized or not ? can user decide ?
         }
     }
     else if (targetType == IntParameter::_factoryType)
@@ -319,7 +317,7 @@ bool OSCController::setParameterFromMessage ( ParameterBase* c, const OSCMessage
         if (msg.size() > 0 && (msg[0].isInt32() || (allowConversions && msg[0].isFloat32())))
         {
             int value = msg[0].isInt32() ? msg[0].getInt32() : (int)msg[0].getFloat32();
-            (( ParameterBase*)c)->setValue (value, false, force);
+            (( ParameterBase*)c)->setValueFrom (this,value, false, force);
         }
     }
     else if (targetType == StringParameter::_factoryType)
@@ -330,11 +328,11 @@ bool OSCController::setParameterFromMessage ( ParameterBase* c, const OSCMessage
             if  (allowConversions && (msg[0].isInt32() || msg[0].isFloat32()))
             {
                 float value = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
-                (( ParameterBase*)c)->setValue (String (value));
+                (( ParameterBase*)c)->setValueFrom (this,String (value));
             }
             else if (msg[0].isString())
             {
-                (( ParameterBase*)c)->setValue (msg[0].getString(), false, force);
+                (( ParameterBase*)c)->setValueFrom (this,msg[0].getString(), false, force);
             }
         }
     }
@@ -346,12 +344,12 @@ bool OSCController::setParameterFromMessage ( ParameterBase* c, const OSCMessage
             if  (allowConversions && (msg[0].isInt32() || msg[0].isFloat32()))
             {
                 int value = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
-                (( ParameterBase*)c)->setValue (value, false, force);
+                (( ParameterBase*)c)->setValueFrom (this,value, false, force);
             }
             // select by name
             else if (msg[0].isString())
             {
-                (( ParameterBase*)c)->setValue (msg[0].getString(), false, force);
+                (( ParameterBase*)c)->setValueFrom (this,msg[0].getString(), false, force);
             }
         }
     }
@@ -369,7 +367,7 @@ bool OSCController::setParameterFromMessage ( ParameterBase* c, const OSCMessage
 
                 }
             }
-            (( ParameterBase*)c)->setValue (arrVal, false, force);
+            (( ParameterBase*)c)->setValueFrom (this,arrVal, false, force);
         }
     }
     else

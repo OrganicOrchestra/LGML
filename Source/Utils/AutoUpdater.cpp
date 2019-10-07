@@ -215,9 +215,9 @@ public Button::Listener
 {
 public:
     UpdateUserDialog (const VersionTriplet& version,
-                      const String& productName,
+                      const String& /*productName*/,
                       const String& releaseNotes,
-                      const char* overwriteFolderPath, bool hasDirectDownload)
+                      const char* /*overwriteFolderPath*/, bool hasDirectDownload)
     {
 
 

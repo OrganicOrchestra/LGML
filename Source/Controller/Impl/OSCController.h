@@ -109,14 +109,14 @@ private:
     OSCSender sender;
     //  String lastAddressReceived;
     OSCMessage lastMessageReceived;
-    bool isProcessingOSC;
+    bool isProcessingOSC=false;
 
     void checkAndAddParameterIfNeeded (const OSCMessage& msg);
 
 
     void resolveHostnameIfNeeded();
     bool connectSender(String & ip,int port);
-    bool hostNameResolved ;
+    bool hostNameResolved=false ;
 
     String remoteIP;
 

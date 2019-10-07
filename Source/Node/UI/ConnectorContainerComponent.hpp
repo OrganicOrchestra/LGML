@@ -39,7 +39,7 @@ public:
 
 
 
-ConnectorContainerComponent::ConnectorContainerComponent (ConnectorComponent::ConnectorIOType type) : type (type), displayLevel (ConnectorComponent::MINIMAL)
+ConnectorContainerComponent::ConnectorContainerComponent (ConnectorComponent::ConnectorIOType _type) : type (_type), displayLevel (ConnectorComponent::MINIMAL)
 {
     setInterceptsMouseClicks (false, true);
     setPaintingIsUnclipped(true);

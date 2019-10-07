@@ -48,7 +48,7 @@ public:
 
     }
 
-    ParameterContainer* addContainerFromObject (const String& name, DynamicObject*   data) override{
+    ParameterContainer* addContainerFromObject (const String& /*name*/, DynamicObject*   data) override{
         ParameterContainer * res;
         if(auto c = getControllableContainerByName("NodeManagerUI")){
             res = dynamic_cast<NodeManagerUI*>(c);
@@ -61,7 +61,7 @@ public:
             res->configureFromObject(data);
         }
         return res;
-    };
+    }
 };
 
 //==============================================================================

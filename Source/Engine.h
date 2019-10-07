@@ -141,7 +141,7 @@ public:
         virtual ~EngineListener();
         virtual void startEngine() {}
         virtual void stopEngine() {}
-        virtual void startLoadFile(File targetFile) {}
+        virtual void startLoadFile(const File& /*targetFile*/) {}
         virtual void fileProgress (float /*percent*/, int /*state*/) {}
         virtual void endLoadFile() {}
     };

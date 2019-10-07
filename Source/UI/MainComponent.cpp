@@ -36,13 +36,13 @@ MainContentComponent* createMainContentComponent (Engine* e)
 // synchronizes menubar
 class UndoWatcher:public ChangeListener,Timer{
 public:
-    UndoWatcher(MainContentComponent * _mc):mc(_mc){getAppUndoManager().addChangeListener(this);};
+    UndoWatcher(MainContentComponent * _mc):mc(_mc){getAppUndoManager().addChangeListener(this);}
 
     void timerCallback() override{
         mc->menuItemsChanged();
         stopTimer();
     }
-    void changeListenerCallback(ChangeBroadcaster* source) override{startTimer(300);}
+    void changeListenerCallback(ChangeBroadcaster* ) override{startTimer(300);}
     MainContentComponent * mc;
 };
 
@@ -106,7 +106,7 @@ MainContentComponent::~MainContentComponent()
 
 }
 
-void MainContentComponent::focusGained (FocusChangeType cause)
+void MainContentComponent::focusGained (FocusChangeType )
 {
 
     ShapeShifterManager* sm = ShapeShifterManager::getInstanceWithoutCreating();
@@ -134,7 +134,7 @@ void MainContentComponent::resized()
 }
 
 
-void MainContentComponent::paintOverChildren (Graphics& g)
+void MainContentComponent::paintOverChildren (Graphics& )
 {
     /*
      if(engine->isLoadingFile){
@@ -161,7 +161,7 @@ void MainContentComponent::paint (Graphics& g)
     g.fillAll (findColour (ResizableWindow::backgroundColourId).darker().withAlpha(1.f));
 }
 
-void MainContentComponent::startLoadFile(File targetFile)
+void MainContentComponent::startLoadFile(const File & targetFile)
 {
 
     // clear graphics to gain time when deleting objects (and to ease thread safety))

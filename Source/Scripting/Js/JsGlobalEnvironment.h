@@ -26,7 +26,7 @@
 class JsGlobalEnvironment: public JsContainerSync
 {
 public:
-    juce_DeclareSingleton (JsGlobalEnvironment, true);
+    juce_DeclareSingleton (JsGlobalEnvironment, true)
 
     JsGlobalEnvironment();
     ~JsGlobalEnvironment();

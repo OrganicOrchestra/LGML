@@ -54,7 +54,7 @@ public:
 class NetworkUtils
 {
 public:
-    juce_DeclareSingleton (NetworkUtils, true);
+    juce_DeclareSingleton (NetworkUtils, true)
 
     NetworkUtils();
     ~NetworkUtils();

@@ -204,19 +204,19 @@ ShortNameType Controllable::toShortName (const String& s){
     //        return ShortNameType(s.removeCharacters (" #*,?[]{}/:;%$<>()").toLowerCase());
 }
 
-Controllable::Controllable ( const String& niceName, const String& description, bool enabled) :
-description (description),
+Controllable::Controllable ( const String& _niceName, const String& _description, bool _enabled) :
+description (_description),
 parentContainer (nullptr),
 isControllableExposed (true),
 isHidenInEditor (false),
 isSavable (true),
-enabled (enabled),
+enabled (_enabled),
 isUserDefined (false),
 isSavableAsObject(false),
 isPresettable(true)
 {
     setEnabled (enabled);
-    setNiceName (niceName);
+    setNiceName (_niceName);
     
 }
 

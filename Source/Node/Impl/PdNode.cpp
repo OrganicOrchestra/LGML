@@ -88,7 +88,7 @@ midiChooser(this,false,true)
 PdNode::~PdNode(){
     libpd_free_instance(pdinstance);
 }
-void PdNode::numChannelsChanged (bool isInput) {
+void PdNode::numChannelsChanged (bool /*isInput*/) {
     libpd_set_instance(pdinstance);
     //    if(getSampleRate()!=0);
     libpd_init_audio(getTotalNumInputChannels(),getTotalNumOutputChannels(),getSampleRate());

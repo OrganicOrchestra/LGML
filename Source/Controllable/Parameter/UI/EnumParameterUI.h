@@ -32,7 +32,7 @@ public:
 
 
     ComboBox cb;
-    bool isSorted;
+    bool isSorted = true;
 
     void updateComboBox();
     String getCBSelectedKey();
@@ -63,7 +63,7 @@ public:
     void filesDropped (const StringArray& files, int x, int y) override;
     
 private:
-    int lastId ;
+    int lastId  = NoneId;
     HashMap<int, String> idKeyMap;
     HashMap<String, int> keyIdMap;
 
@@ -73,7 +73,7 @@ protected:
 
 
     void paintOverChildren(Graphics & g) override;
-    bool hoveredByFile;
+    bool hoveredByFile = false;
     void valueChanged (const var&) override ;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EnumParameterUI)
 

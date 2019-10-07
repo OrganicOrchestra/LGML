@@ -100,7 +100,7 @@ void SerialManager::updateDeviceList()
         removeOption ( p->port ,true);
 
         portInfos.removeObject (p, false);
-        listeners.call (&SerialManagerListener::portRemoved, p);
+        serialListeners.call (&SerialManagerListener::portRemoved, p);
 
         SerialPort* port = getPort (p, false);
 
@@ -114,7 +114,7 @@ void SerialManager::updateDeviceList()
         addOption( p->port , p->hardwareID,true);
         newInfos.removeObject (p, false);
         portInfos.add (p);
-        listeners.call (&SerialManagerListener::portAdded, p);
+        serialListeners.call (&SerialManagerListener::portAdded, p);
 
     }
 

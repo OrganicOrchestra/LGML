@@ -38,7 +38,7 @@ class ComputerKeyboardMIDIDevice:public ReferenceCountedObject,private KeyListen
 public:
     ComputerKeyboardMIDIDevice():octave(4){
         GlobalKeyListener::addTraversingListener(this);
-    };
+    }
     ~ComputerKeyboardMIDIDevice(){
         GlobalKeyListener::removeTraversingListener(this);
     }

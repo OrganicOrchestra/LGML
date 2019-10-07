@@ -271,14 +271,14 @@ bool JsContainerSync::isDirty()
 {
     return aggregChanges.nsToUpdate.size() > 0;
 }
-void JsContainerSync::childStructureChanged (ControllableContainer* notifier, ControllableContainer* ,bool isAdded)
+void JsContainerSync::childStructureChanged (ControllableContainer* notifier, ControllableContainer* ,bool /*isAdded*/)
 {
     
     aggregChanges.addNs (getContainerNamespace (notifier));
     //    updateControllableNamespace(c);
     
 }
-void JsContainerSync::childAddressChanged (ControllableContainer* notifier,ControllableContainer* c)
+void JsContainerSync::childAddressChanged (ControllableContainer* /*notifier*/,ControllableContainer* c)
 {
     aggregChanges.addNs (getContainerNamespace (c));
     //    updateControllableNamespace(c->parentContainer);

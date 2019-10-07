@@ -71,7 +71,7 @@ public:
     }
     static void triggerCrash(){abort();}
 
-    static void report(void *p){
+    static void report(void * /*p*/){
 
         auto bt = SystemStats::getStackBacktrace();
         if(saveToFile){

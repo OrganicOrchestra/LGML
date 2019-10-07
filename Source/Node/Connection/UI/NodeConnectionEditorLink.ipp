@@ -19,8 +19,8 @@
 //#include "NodeConnectionEditorLink.h"
 
 //==============================================================================
-NodeConnectionEditorLink::NodeConnectionEditorLink (NodeConnectionEditorDataSlot* outSlot, NodeConnectionEditorDataSlot* inSlot) :
-    outSlot (outSlot), inSlot (inSlot), candidateDropSlot (nullptr), isSelected (false)
+NodeConnectionEditorLink::NodeConnectionEditorLink (NodeConnectionEditorDataSlot* _outSlot, NodeConnectionEditorDataSlot* _inSlot) :
+    outSlot (_outSlot), inSlot (_inSlot), candidateDropSlot (nullptr), isSelected (false)
 {
     isEditing = (outSlot != nullptr && inSlot == nullptr) || (outSlot == nullptr && inSlot != nullptr);
     setTooltip (juce::translate("Double click to delete"));

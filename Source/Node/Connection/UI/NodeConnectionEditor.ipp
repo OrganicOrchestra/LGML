@@ -390,7 +390,7 @@ void NodeConnectionEditor::cancelCandidateDropSlot()
 }
 
 
-void NodeConnectionEditor::slotMouseEnter (NodeConnectionEditorDataSlot* target)
+void NodeConnectionEditor::slotMouseEnter (NodeConnectionEditorDataSlot* )
 {
 
 }

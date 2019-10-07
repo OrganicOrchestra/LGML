@@ -22,7 +22,7 @@ extern AudioDeviceManager& getAudioDeviceManager();
 bool isEngineLoadingFile();
 juce_ImplementSingleton (NodeManager);
 
-NodeManager::NodeManager (StringRef name) :
+NodeManager::NodeManager (StringRef /*name*/) :
     ThreadPool (4),
     NodeContainer ("node",true),
 isLoading(false)

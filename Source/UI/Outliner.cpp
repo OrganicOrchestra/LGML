@@ -208,7 +208,7 @@ void Outliner::buildTree (OutlinerItem* parentItem, ParameterContainer* parentCo
     }
 }
 
-void Outliner::childStructureChanged (ControllableContainer* notif, ControllableContainer* changed,bool isAdded)
+void Outliner::childStructureChanged (ControllableContainer* notif, ControllableContainer* /*changed*/,bool /*isAdded*/)
 {
     if(root.get()){
     jassert(notif == root);
@@ -222,7 +222,7 @@ void Outliner::childStructureChanged (ControllableContainer* notif, Controllable
     }
 
 }
-void  Outliner::containerWillClear (ControllableContainer* origin) {
+void  Outliner::containerWillClear (ControllableContainer* ) {
     setRoot(nullptr);
     if (!AsyncUpdater::isUpdatePending())
     {
@@ -343,7 +343,7 @@ container (_container), parameter (nullptr), isContainer (true)
     }
 }
 
-OutlinerItem::OutlinerItem ( ParameterBase* _parameter,bool generateSubTree) :
+OutlinerItem::OutlinerItem ( ParameterBase* _parameter,bool /*generateSubTree*/) :
 container (nullptr), parameter (_parameter), isContainer (false)
 {
 
@@ -715,7 +715,7 @@ void OutlinerItemComponent::buttonClicked (Button* b){
     
 }
 
-void OutlinerItemComponent::labelTextChanged (Label* labelThatHasChanged) {
+void OutlinerItemComponent::labelTextChanged (Label* /*labelThatHasChanged*/) {
     if(item->isContainer){
         item->container->nameParam->setValue(label.getTextValue().toString());
     }

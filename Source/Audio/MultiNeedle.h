@@ -33,16 +33,18 @@ public:
 
 
     void reset();
-    int startNeedle;
-    int startFadeOutCount;
-    bool isFadingOut;
-    float lastFade, currentFade;
-    int consumedSamples;
-    int fadeInNumSamples, sustainNumSamples;
-    int fadeOutNumSamples;
+    
+    int startNeedle=0;
+    int startFadeOutCount=0;
+    bool isFadingOut=false;
+    float lastFade=0, currentFade=0;
+    int consumedSamples = 0;
+    int fadeInNumSamples=0, sustainNumSamples=0;
+    int fadeOutNumSamples=0;
     bool hasBeenSet;
-    int num;
-    bool reverse;
+    int num=-1;
+    float maxFadeOutValue =1;
+    bool reverse =false;
 
     float fadeOutValue();
     int getCurrentPosition();
@@ -56,7 +58,7 @@ public:
 
     float getFadeValueStart();
     float getFadeValueEnd();
-    float maxFadeOutValue;
+
 private:
     inline float computeCurrentFade();
     int getStartFadeOut() const;
@@ -70,16 +72,20 @@ private:
 class MultiNeedle
 {
 public:
-    int currentPos;
+
     Array<FadeNeedle> needles;
-    int maxNeedles;
-    bool isJumping;
+
     int fadeInNumSamples ;
     int fadeOutNumSamples;
+    int maxNeedles;
+
+    int currentPos=0;
+    bool isJumping = false;
     int needleIdx = 0;
-    int loopSize;
-    int numActiveNeedle;
-    bool isStitching;
+    int loopSize=0;
+    int numActiveNeedle = 0;
+    bool isStitching = false;
+    
     CriticalSection readMutex;
 
     MultiNeedle (int fIn = 512, int fOut = 512, int max = 10);

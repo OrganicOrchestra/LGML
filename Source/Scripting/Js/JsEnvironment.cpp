@@ -746,10 +746,10 @@ var JsEnvironment::createParameterListenerObject (const var::NativeFunctionArgs&
         auto*  p = JsHelpers::castPtrFromObject<ParameterBase>(ob) ;
         if ( p)
         {
-                JsParameterListenerObject* ob = new JsParameterListenerObject (originEnv, p);
-                originEnv->addJsParameterListener (ob);
+                JsParameterListenerObject* pob = new JsParameterListenerObject (originEnv, p);
+                originEnv->addJsParameterListener (pob);
                 DBG(p->niceName << ", " << p->shortName);
-                return ob->object;
+                return pob->object;
         }
 
         auto  props =a.arguments[0].getDynamicObject()->getProperties();

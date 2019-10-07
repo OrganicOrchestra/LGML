@@ -56,7 +56,7 @@ public:
     void rangeChanged ( ParameterBase* )override
     {
         repaint();
-    };
+    }
 
 
 protected:

@@ -60,7 +60,8 @@ RecentlyOpenedFilesList Engine::getLastOpenedFileList(){
 void Engine::createNewGraph()
 {
     loadingStartTime =  getElapsedMillis();
-    engineListeners.call (&EngineListener::startLoadFile,File());
+    static File emptyFile;
+    engineListeners.call (&EngineListener::startLoadFile,emptyFile);
 
     suspendAudio (true);
     clear();
@@ -71,7 +72,7 @@ void Engine::createNewGraph()
 
     NodeManager::getInstance()->addNode (NodeFactory::createFromTypeID ( AudioDeviceOutNode::typeId()));
 
-    setFile (File());
+    setFile (emptyFile);
     isLoadingFile = false;
 
     handleAsyncUpdate();

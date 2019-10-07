@@ -18,9 +18,9 @@
 #include "../../../UI/Style.h"
 
 
-NodeConnectionEditorDataSlot::NodeConnectionEditorDataSlot (String label, int channel,
-                                                            NodeConnection::ConnectionType connectionType, IOType ioType) : label (label), channel (channel),
-    connectionType (connectionType), ioType (ioType)
+NodeConnectionEditorDataSlot::NodeConnectionEditorDataSlot (String _label, int _channel,
+                                                            NodeConnection::ConnectionType _connectionType, IOType _ioType) : label (_label), channel (_channel),
+    connectionType (_connectionType), ioType (_ioType)
 {
 }
 

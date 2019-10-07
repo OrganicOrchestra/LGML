@@ -27,10 +27,7 @@
 
 EnumParameterUI::EnumParameterUI ( ParameterBase* parameter) :
 ParameterUI (parameter),
-ep ((EnumParameter*)parameter),
-lastId (NoneId),
-isSorted(true),
-hoveredByFile(false)
+ep ((EnumParameter*)parameter)
 {
     addMouseListener(this, true);
     cb.addListener (this);
@@ -295,21 +292,21 @@ void EnumParameterUI::selectString (const juce::String& s)
     }
 }
 
-bool EnumParameterUI::isInterestedInFileDrag (const StringArray& files) {
+bool EnumParameterUI::isInterestedInFileDrag (const StringArray& /*files*/) {
     return ep->getModel()->isFileBased;
 };
-void EnumParameterUI::fileDragEnter (const StringArray& files, int x, int y) {
+void EnumParameterUI::fileDragEnter (const StringArray& /*files*/, int /*x*/, int /*y*/) {
     hoveredByFile = true;
     repaint();
 };
-void EnumParameterUI::fileDragMove (const StringArray& files, int x, int y) {
+void EnumParameterUI::fileDragMove (const StringArray& /*files*/, int /*x*/, int /*y*/) {
 
 };
-void EnumParameterUI::fileDragExit (const StringArray& files) {
+void EnumParameterUI::fileDragExit (const StringArray& /*files*/) {
     hoveredByFile = false;
     repaint();
 };
-void EnumParameterUI::filesDropped (const StringArray& files, int x, int y) {
+void EnumParameterUI::filesDropped (const StringArray& files, int /*x*/, int /*y*/) {
     String fname;
     bool needRemove = ep->getFirstSelectedId()!=Identifier::null;
     for(auto & fp :files){

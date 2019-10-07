@@ -151,7 +151,7 @@ public:
             }
         }
         updateLabel();
-    };
+    }
 
     WeakReference<Component> comp{};
     Label descriptionLabel{},helpLabel{};

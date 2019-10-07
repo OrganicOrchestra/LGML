@@ -32,7 +32,7 @@ public:
     {
         linkSession.setNumPeersCallback (&LinkImpl::linkNumPeersCallBack);
         linkSession.setTempoCallback (&LinkImpl::linkTempoCallBack);
-    };
+    }
     ableton::Link linkSession;
 
     ableton::Link::SessionState  linkSessionState;

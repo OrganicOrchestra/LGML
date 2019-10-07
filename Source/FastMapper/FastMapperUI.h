@@ -89,7 +89,7 @@ private:
 
     // LGMLDrager
     void mappingModeChanged(bool) override;
-    void selectionChanged ( ParameterBase*) override{};
+    void selectionChanged ( ParameterBase*) override{}
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FastMapperUI)
 

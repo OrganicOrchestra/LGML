@@ -86,7 +86,7 @@ private:
     friend class WeakReference<OutlinerItem>;
     WeakReference<OutlinerItem>::Master masterReference;
 
-    JUCE_LEAK_DETECTOR(OutlinerItem);
+    JUCE_LEAK_DETECTOR(OutlinerItem)
 };
 
 class Outliner : public ShapeShifterContentComponent,
@@ -140,7 +140,7 @@ private:
     void restoreCurrentOpenChilds();
     class XmlElementCounted : public ReferenceCountedObject{
     public:
-        XmlElementCounted(std::unique_ptr<XmlElement> e):xml(std::move(e)){};
+        XmlElementCounted(std::unique_ptr<XmlElement> e):xml(std::move(e)){}
         std::unique_ptr<XmlElement> xml;
         using Ptr = ReferenceCountedObjectPtr<XmlElementCounted>;
     };

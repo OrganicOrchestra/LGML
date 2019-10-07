@@ -40,13 +40,13 @@ public:
 
     // variables
     ShortNameType shortName;
-    bool isUserDefined;
+    bool isUserDefined = false;
     
     
     Uuid uid;
     OwnedArray<Controllable, CriticalSection> controllables;
     Array<WeakReference<ControllableContainer >, CriticalSection  > controllableContainers;
-    ControllableContainer* parentContainer;
+    ControllableContainer* parentContainer = nullptr;
 
 
 
@@ -170,8 +170,8 @@ public:
 
     String getUniqueNameInContainer (const String& sourceName, int suffix = 0, void* me = nullptr); // relates to nice names for efficiency
 
-    int numContainerIndexed;
-    int localIndexedPosition;
+    int numContainerIndexed = 0;
+    int localIndexedPosition = -1;
 
     //Listener
     class  Listener
@@ -226,7 +226,7 @@ public:
 protected :
 
 
-    bool canHaveUserDefinedContainers;
+    bool canHaveUserDefinedContainers = false;
     
 
     void updateControlAddress(bool isParentResolved = false);

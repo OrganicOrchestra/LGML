@@ -242,8 +242,8 @@ void LooperNodeContentUI::filesDropped (const StringArray& files, int x, int y) 
 ////////////////
 
 
-LooperNodeContentUI::TrackUI::TrackUI (LooperTrack* track) :InspectableComponent(track), track (track),
-isTrackSelected (track->isSelected), timeStateUI (track)
+LooperNodeContentUI::TrackUI::TrackUI (LooperTrack* _track) :InspectableComponent(_track), track (_track),
+isTrackSelected (_track->isSelected), timeStateUI (_track)
 {
     LGMLUIUtils::markHasNewBackground(this,3);
     recPlayButton = ParameterUIFactory::createDefaultUI (track->recPlayTrig);

@@ -29,9 +29,7 @@
 
 #define NEEDLE_STITCHING 0
 
-FadeNeedle::FadeNeedle(): startNeedle (0), fadeInNumSamples (0), isFadingOut (false),
-    fadeOutNumSamples (0), sustainNumSamples (0), consumedSamples (0),
-num(-1)
+FadeNeedle::FadeNeedle()
 {
     reset();
 
@@ -245,12 +243,7 @@ int FadeNeedle::getEndFadeOut()const
 MultiNeedle::MultiNeedle (int fIn, int fOut, int max):
     fadeInNumSamples (fIn),
     fadeOutNumSamples (fOut),
-    isJumping (false),
-    maxNeedles (max),
-    currentPos (0),
-    loopSize (0),
-    isStitching (false),
-    numActiveNeedle(0)
+    maxNeedles (max)
 {
     needles.resize (maxNeedles);
     int idx = 0;
