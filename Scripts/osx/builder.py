@@ -18,7 +18,7 @@ class OSXBuilder (BuilderBase):
 	localExportPath = os.path.abspath(os.path.join(BuilderBase.rootPath,'Builds/MacOSX/build/'))+'/'
 	# default configuration
 	default_cfg  = {
-	"arch" : "i386",
+	"arch" : "x86_64",
 	}
 
 	def __init__(self,cfg):
@@ -49,22 +49,7 @@ class OSXBuilder (BuilderBase):
 		localPath = os.path.join((exportpath or self.localExportPath),self.getNameWithVersion());
 		dmgPath = self.createDmg(localPath);
 		return dmgPath
-'''
-		build_dir = os.path.join(self.xcodeProjPath,"build",self.cfg["build_cfg_name"])
-		if(not os.path.exists(build_dir)):
-			return ""
-		for i in os.listdir(build_dir):
-			if ('LGML' in i) and i.endswith(".app"):
-				path = os.path.join(os.path.join(build_dir,i))
-				if "Beta" in i and (not any([x.isdigit() for x in i])): # if no version Number is added
-					newName = "LGML_%s_Beta.app"%self.cfg["version"]
-					newPath = os.path.join(os.path.join(build_dir,newName))
-					print ("renaming app %s"%newName )
-					os.rename(path,newPath)
 
-					path = newPath
-				return path
-				'''
 	def getBinaryPath(self) :
 		return os.path.join(self.xcodeProjPath,"build",self.cfg["build_cfg_name"],self.cfg["appName"]+".app")
 
@@ -84,10 +69,14 @@ class OSXBuilder (BuilderBase):
 	def createDmg(self,exportFileBaseName):
 		import dmgbuild
 		print('creating dmg')
-		betaSuffix = self.cfg["version"]+"_Beta" if self.cfg["build_cfg_name"]=="Beta" else ""
+		betaSuffix = ""
+		trueBinaryPath = self.getBinaryPath()
+		if self.cfg["build_cfg_name"]=="Beta":
+			trueBinaryPath = self.getBinaryPath().split(".app")[0]+'_%s_Beta.app'%(self.getVersion())
+			betaSuffix = "Beta"
 		dmgPath = exportFileBaseName+'_(%s)_%s.dmg'%(self.getArchReadable(),betaSuffix)
 		os.chdir(os.path.abspath(os.path.join(__file__,os.path.pardir)))
-		dmgbuild.build_dmg(dmgPath,"Le Grand Mechant Loop",settings_file = 'dmgbuild_conf.py',defines={'app':self.getBinaryPath()})
+		dmgbuild.build_dmg(dmgPath,"Le Grand Mechant Loop",settings_file = 'dmgbuild_conf.py',defines={'app':trueBinaryPath})
 		print('dmg done at :'+dmgPath)
 		return dmgPath
 
@@ -96,9 +85,12 @@ class OSXBuilder (BuilderBase):
 		# gitCommit()
 
 if __name__ == "__main__":
-	builder = OSXBuilder()
+	opts = {}
+	opts["build_cfg_name"] = "Beta"
+	builder = OSXBuilder(opts)
 	print (builder.cfg)
-	builder.buildApp()
+	#builder.buildApp()
+	builder.packageApp()
 # 	global specificVersion
 # 	print sys.argv
 	

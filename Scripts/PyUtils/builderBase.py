@@ -38,10 +38,12 @@ class BuilderBase:
         self.cfg[k] = newCfg[k]
 
   def getNameWithVersion(self):
-    from PyUtils import ProJucerUtils
-    name =  self.cfg["appName"]+ "_v"+str(ProJucerUtils.getVersion())
+    name =  self.cfg["appName"]+ "_v"+self.getVersion()
     return name
-  
+
+  def getVersion(self):
+    from PyUtils import ProJucerUtils
+    return str(ProJucerUtils.getVersion())
 
   def getBinaryPath(self):
     if "binary_path" in self.cfg:
