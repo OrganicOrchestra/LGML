@@ -26,7 +26,7 @@ Identifier EnumParameter::selectedSetIdentifier ("selected");
 //////////////
 //
 
-#if JUCE_DEBUG && 0
+#if JUCE_DEBUG 
 #define DBGENUM(x) DBG(x)
 #define LOG_ENUM DBG("////////////////");DBG(dumpVarObj(enumData));
 String dumpVarObj(const var & v ,const int indent=0){

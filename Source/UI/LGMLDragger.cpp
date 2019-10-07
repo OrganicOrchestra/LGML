@@ -160,17 +160,18 @@ void LGMLDragger::registerDragCandidate (ParameterUI* c)
 
 }
 
-void LGMLDragger::unRegisterDragCandidate (ParameterUI* /*c*/)
+void LGMLDragger::unRegisterDragCandidate (ParameterUI* c)
 {
-    dragCandidate = nullptr;
+    if((dragCandidate && dragCandidate->originComp==c) || c==nullptr){
+        dragCandidate = nullptr;
 
-    if (dropCandidate)
-    {
-        dropCandidate->setAlpha (1);
+        if (dropCandidate)
+        {
+            dropCandidate->setAlpha (1);
+        }
+
+        dropCandidate = nullptr;
     }
-
-    dropCandidate = nullptr;
-
 
 
 }
@@ -205,21 +206,21 @@ void LGMLDragger::mouseEnter (const MouseEvent& e)
     }
 }
 
-void LGMLDragger::mouseUp (const MouseEvent& e)
+void LGMLDragger::mouseUp (const MouseEvent& )
 {
     //  unselect only if in the same parent component
-    auto* i = e.originalComponent;
-
-    while (i)
-    {
-        if (i == selectedSSContent)
-        {
-            setSelected (nullptr);
-            break;
-        }
-
-        i = i->getParentComponent();
-    }
+//    auto* i = e.originalComponent;
+//
+//    while (i)
+//    {
+//        if (i == selectedSSContent)
+//        {
+//            setSelected (nullptr);
+//            break;
+//        }
+//
+//        i = i->getParentComponent();
+//    }
 
 
 }
@@ -370,7 +371,8 @@ void LGMLDragger::dragComponent (Component* const componentToDrag, const MouseEv
         // if (curComp)curComp = curComp->getParentComponent();
 
         auto curTarget = dynamic_cast<ParameterUI*> (curComp);
-
+        if(!curTarget && curComp){curTarget = curComp->findParentComponentOfClass<ParameterUI> ();}
+        
         if (curTarget != dropCandidate)//} && (!curTarget || curTarget->isMappingDest))
         {
             if (dropCandidate) {dropCandidate->setAlpha (1);}
@@ -385,27 +387,33 @@ void LGMLDragger::dragComponent (Component* const componentToDrag, const MouseEv
         }
     }
 }
-void LGMLDragger::endDraggingComponent (Component*   /*componentToDrag*/, const MouseEvent& e)
+void LGMLDragger::endDraggingComponent (Component*   /*componentToDrag*/, const MouseEvent& )
 {
     //  jassert(!target || componentToDrag==target);
 
     if(auto target_ProxyUI = dynamic_cast<ParameterProxyUI*> (dropCandidate)){
         target_ProxyUI->paramProxy->setParamToReferTo (dragCandidate->originComp->parameter);
     }
-    else if(auto destParameter = dynamic_cast<ParameterUI*>(dropCandidate)){
-        if(destParameter->parameter && dragCandidate->originComp->parameter){
-        FastMapper::getInstance()->setPotentialInput(dragCandidate->originComp->parameter);
-        FastMapper::getInstance()->setPotentialOutput(destParameter->parameter);
+    else if(auto destParameterUI = dynamic_cast<ParameterUI*>(dropCandidate)){
+        if(destParameterUI->parameter && dragCandidate->originComp->parameter){
+            if(destParameterUI->parameter!=dragCandidate->originComp->parameter){
+                FastMapper::getInstance()->setPotentialInput(dragCandidate->originComp->parameter);
+                FastMapper::getInstance()->setPotentialOutput(destParameterUI->parameter);
+            }
+            else{
+                setSelected (dragCandidate->originComp);
+
+            }
         }
         else{
             jassertfalse;
         }
     }
+
     else
     {
         jassert(!dropCandidate);
-        auto* c = (dragCandidate && !e.mouseWasDraggedSinceMouseDown())? dragCandidate->originComp.get() : nullptr;
-        setSelected (c);
+
     }
 
     unRegisterDragCandidate (nullptr);

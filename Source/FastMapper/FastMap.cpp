@@ -121,6 +121,8 @@ void FastMap::process (bool toReferenceOut)
             {
                 ((BoolParameter*)outRef)->setValueFrom (this,newIsInRange);
             }
+        }else if((type == EnumParameter::_factoryType) || (type == StringParameter::_factoryType)){
+            outRef->setValueFrom(this, inRef->stringValue());
         }
         else
         {
