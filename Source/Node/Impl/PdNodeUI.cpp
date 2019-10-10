@@ -46,7 +46,7 @@ void PdNodeContentUI::init()
     activityBlink->showLabel = false;
     addAndMakeVisible (activityBlink.get());
 
-    midiDeviceChooser = ParameterUIFactory::createDefaultUI(pdNode->midiChooser.getDeviceInEnumParameter());
+    midiDeviceChooser = ParameterUIFactory::createDefaultUI(pdNode->midiChooser.getDeviceEnumParameter());
     addAndMakeVisible(midiDeviceChooser.get());
     jassert(midiDeviceChooser);
 

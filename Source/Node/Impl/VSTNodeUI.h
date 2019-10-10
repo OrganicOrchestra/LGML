@@ -15,7 +15,7 @@
 #pragma once
 
 #include "../../Controllable/Parameter/UI/SliderUI.h"
-#include "../../MIDI/MIDIUIHelper.h"
+
 #include "VSTNode.h"
 #include "../UI/ConnectableNodeContentUI.h"
 

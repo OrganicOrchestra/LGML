@@ -254,7 +254,7 @@ ApplicationCommandManager& getCommandManager()      { return getApp()->commandMa
 ApplicationProperties * getAppProperties()           { return getApp()->appProperties.get(); }
 AudioDeviceManager& getAudioDeviceManager()        { return getApp()->deviceManager;}
 UndoManager& getAppUndoManager()                      { return getApp()->undoManager;}
-Engine* getEngine()                              { return getApp()->engine.get();}
+Engine* getEngine()                              { return getApp()?getApp()->engine.get():nullptr;}
 ThreadPool* getEngineThreadPool()                              { return &getEngine()->threadPool;}
 bool  isEngineLoadingFile()                            {if (getEngine()) {return getEngine()->isLoadingFile;} else {return false;}}
 //==============================================================================

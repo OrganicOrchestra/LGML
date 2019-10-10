@@ -292,10 +292,6 @@
               resource="0"/>
         <FILE compile="0" file="Source/MIDI/MIDIManager.h" id="ofXwuD" name="MIDIManager.h"
               resource="0"/>
-        <FILE compile="1" file="Source/MIDI/MIDIUIHelper.cpp" id="OXZI8G" name="MIDIUIHelper.cpp"
-              resource="0"/>
-        <FILE compile="0" file="Source/MIDI/MIDIUIHelper.h" id="mZpRDp" name="MIDIUIHelper.h"
-              resource="0"/>
       </GROUP>
       <GROUP id="{4F947802-2B57-F99B-01BA-C8137508F603}" name="Node">
         <GROUP id="{6ABFCD79-CA05-2C8D-601A-40C5CB9B595B}" name="Connection">
@@ -758,10 +754,10 @@
                        name="Test" osxArchitecture="32BitUniversal" osxCompatibility="10.13 SDK"
                        targetName="LGMLTest" enablePluginBinaryCopyStep="1"/>
         <CONFIGURATION binaryPath="" cppLanguageStandard="c++11" cppLibType="libc++"
-                       headerPath="" isDebug="0" linkTimeOptimisation="0" name="Beta"
-                       optimisation="1" osxArchitecture="Native" osxCompatibility="10.13 SDK"
+                       headerPath="" isDebug="1" linkTimeOptimisation="0" name="Beta"
+                       optimisation="3" osxArchitecture="Native" osxCompatibility="10.13 SDK"
                        targetName="LGML" enablePluginBinaryCopyStep="1" customXcodeFlags="ONLY_ACTIVE_ARCH=YES,&#10;GCC_PRECOMPILE_PREFIX_HEADER=YES,&#10;GCC_PREFIX_HEADER=PrefixHeader.pch,&#10;ENABLE_TESTABILITY=YES,&#10;GCC_GENERATE_DEBUGGING_SYMBOLS=YES"
-                       defines="LGML_BETA=1"/>
+                       defines="LGML_BETA=1" stripLocalSymbols="0"/>
         <CONFIGURATION cppLanguageStandard="c++11" cppLibType="libc++" customXcodeFlags="ONLY_ACTIVE_ARCH=YES,&#10;GCC_PRECOMPILE_PREFIX_HEADER=YES,&#10;GCC_PREFIX_HEADER=PrefixHeader.pch,&#10;OTHER_CPLUSPLUSFLAGS=-Wno-everything"
                        defines="" headerPath="" isDebug="1" name="DebugFast" osxArchitecture="Native"
                        osxCompatibility="10.13 SDK" targetName="LGML" enablePluginBinaryCopyStep="1"/>

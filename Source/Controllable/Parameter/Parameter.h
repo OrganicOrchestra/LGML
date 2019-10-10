@@ -111,8 +111,9 @@ public:
         /** Destructor. */
         virtual ~Listener() {
             while(linkedP.size()){
-                if(auto p = linkedP.getLast().get())
+                if(auto p = linkedP.getLast().get()){
                     p->removeParameterListener(this);
+                }
                 else
                     linkedP.removeLast();
             }
@@ -122,6 +123,7 @@ public:
         virtual void newMessage (const ParamWithValue& ) override {}
 
         Array<WeakReference<ParameterBase> > linkedP;
+
     };
 
 

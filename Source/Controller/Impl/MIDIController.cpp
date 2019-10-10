@@ -74,7 +74,8 @@ void ParameterContainer::OwnedFeedbackListener<MIDIController>::parameterFeedbac
 
 MIDIController::MIDIController (StringRef name) :
 Controller (name), JsEnvironment ("controllers.MIDI", this),
-midiChooser(this,true,false),
+midiInChooser(this,false,false),
+midiOutChooser(this,false,true),
 midiClock(false),
 pSync(this)
 {
@@ -97,7 +98,8 @@ pSync(this)
 
 MIDIController::~MIDIController()
 {
-    setCurrentDevice ("");
+    setCurrentDevice ("",false);
+    setCurrentDevice ("",true);
 
 }
 
@@ -181,7 +183,9 @@ void MIDIController::handleIncomingMidiMessage (MidiInput*,
         callJs (message);
     }
 
-    if(!message.isNoteOff())inActivityTrigger->triggerDebounced(activityTriggerDebounceTime);
+    if(!message.isNoteOff() && !message.isAftertouch()){
+        inActivityTrigger->triggerDebounced(activityTriggerDebounceTime);
+    }
 }
 
 
@@ -232,13 +236,14 @@ void MIDIController::onContainerParameterChanged ( ParameterBase* p)
     {
         setNamespaceName ("controllers." + shortName);
     }
-    else if(p==midiChooser.getDeviceInEnumParameter()){
-        auto ep = midiChooser.getDeviceInEnumParameter();
-        auto selId = ep->getFirstSelectedId();
-        bool connected = ep->getModel()->isValidId(selId);
-        isConnected->setValue(connected);
-        startMidiClockIfNeeded();
+    else if(p==midiInChooser.getDeviceEnumParameter()){
+        isConnected->setValue(hasValidInPort || hasValidOutPort);
+       // startMidiClockIfNeeded();
 
+    }
+    else if(p==midiOutChooser.getDeviceEnumParameter()){
+        isConnected->setValue(hasValidInPort || hasValidOutPort);
+        startMidiClockIfNeeded();
     }
     else if(p==isConnected){
         startMidiClockIfNeeded();
@@ -251,30 +256,28 @@ void MIDIController::onContainerParameterChanged ( ParameterBase* p)
         midiClock.sendSPP = sendMIDIPosition->boolValue();
     }
     else if(p==midiClockOffset){
-        midiClock.delta = midiClockOffset->intValue();
-        midiClock.reset();
+        midiClock.delta = -midiClockOffset->intValue();
+        //midiClock.reset();
     }
 
 }
+
+
 void MIDIController::startMidiClockIfNeeded(){
-    if(isConnected->boolValue()){
-        if(sendMIDIClock->boolValue()){
-            if(!midiClock.isThreadRunning())
-                midiClock.start();
-            else{
-                midiClock.reset();
-            }
-        }
-        else{
-            midiClock.stop();
+    if(hasValidOutPort && sendMIDIClock->boolValue() ){
+        if(!midiClock.isRunning()){
+            midiClock.start();
         }
     }
-    else{
+    else {
         midiClock.stop();
     }
+
 }
 void MIDIController::midiMessageSent(const MidiMessage & msg){
-    outActivityTrigger->triggerDebounced(activityTriggerDebounceTime);
+    if(!msg.isMidiClock()){
+        outActivityTrigger->triggerDebounced(activityTriggerDebounceTime);
+    }
     if(logOutgoing->boolValue()){
         OLOG("MIDI OUT : "+MIDIHelpers::midiMessageToDebugString(msg));
     }

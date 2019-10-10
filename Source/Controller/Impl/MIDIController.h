@@ -91,7 +91,10 @@ public :
     // from jsenvironment
     void clearNamespace()override;
 
-    MIDIHelpers::MIDIIOChooser midiChooser;
+    MIDIHelpers::MIDIIOChooser midiInChooser;
+    MIDIHelpers::MIDIIOChooser midiOutChooser;
+
+    
 private:
 
     void startMidiClockIfNeeded();

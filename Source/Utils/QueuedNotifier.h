@@ -37,15 +37,27 @@ public:
 
     }
 
-    virtual ~QueuedNotifier() {cancelPendingUpdate();}
+    virtual ~QueuedNotifier() {cancelPendingUpdate();masterReference.clear();}
 
-
+    using thisQueueType = QueuedNotifier<MessageClass,CriticalSectionToUse> ;
+    typename WeakReference<thisQueueType>::Master  masterReference;
 
     class Listener
     {
     public:
-        virtual ~Listener() {}
+        virtual ~Listener() {
+            while(linkedQ.size()){
+                if(auto l = linkedQ.getLast().get()){
+                    l->removeListener(this);
+                }
+                else{
+                linkedQ.removeLast();
+                }
+
+            }
+        }
         virtual void newMessage (const MessageClass&) = 0;
+        Array<WeakReference<thisQueueType>> linkedQ;
     };
 
 
@@ -121,9 +133,9 @@ public:
 
 
     // allow to stack all values or get only last updated value
-    void addListener (Listener* newListener) { listeners.add (newListener); }
-    void addAsyncCoalescedListener (Listener* newListener) { lastListeners.add (newListener); }
-    void removeListener (Listener* listener) { listeners.remove (listener); lastListeners.remove (listener); }
+    void addListener (Listener* newListener) { listeners.add (newListener);newListener->linkedQ.add(this); }
+    void addAsyncCoalescedListener (Listener* newListener) { lastListeners.add (newListener);newListener->linkedQ.add(this); }
+    void removeListener (Listener* listener) { listeners.remove (listener); lastListeners.remove (listener);listener->linkedQ.removeAllInstancesOf(this); }
 private:
 
     void handleAsyncUpdate() override
@@ -173,6 +185,7 @@ private:
     bool canDropMessage;
     ListenerList<Listener > listeners;
     ListenerList<Listener > lastListeners;
+
 
 };
 

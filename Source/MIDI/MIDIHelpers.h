@@ -30,8 +30,8 @@ EnumParameterModel * getGlobalMidiModel();
     MidiMessage midiMessageFromParam(const ParameterBase* p,int targetChannel);
 
 struct MIDIIOChooser : EnumParameter::EnumListener{
-        MIDIIOChooser(MIDIListener *l,bool autoOut,bool showControllers);
-        EnumParameter * getDeviceInEnumParameter();
+        MIDIIOChooser(MIDIListener *l,bool showControllers,bool isOutputDevice);
+        EnumParameter * getDeviceEnumParameter();
     private:
         EnumParameter * inP;
 //        EnumParameter *outP;
@@ -43,6 +43,8 @@ struct MIDIIOChooser : EnumParameter::EnumListener{
         void enumOptionAdded (EnumParameter*, const Identifier&) override;
         void enumOptionRemoved (EnumParameter*, const Identifier&) override;
         void enumOptionSelectionChanged (EnumParameter*, bool /*isSelected*/, bool /*isValid*/, const Identifier&) override;
+    bool isOutputDevice;
+    bool autoOut=true;
 
     };
 

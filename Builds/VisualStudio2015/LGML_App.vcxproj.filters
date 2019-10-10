@@ -730,9 +730,6 @@
     <ClCompile Include="..\..\Source\MIDI\MIDIManager.cpp">
       <Filter>LGML\Source\MIDI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\MIDI\MIDIUIHelper.cpp">
-      <Filter>LGML\Source\MIDI</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Node\Connection\UI\NodeConnectionUI.cpp">
       <Filter>LGML\Source\Node\Connection\UI</Filter>
     </ClCompile>
@@ -3211,9 +3208,6 @@
       <Filter>LGML\Source\MIDI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\MIDI\MIDIManager.h">
-      <Filter>LGML\Source\MIDI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\MIDI\MIDIUIHelper.h">
       <Filter>LGML\Source\MIDI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Node\Connection\UI\NodeConnectionEditor.hpp">

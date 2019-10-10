@@ -55,7 +55,7 @@ public:
         String presetsInfos;
         for(auto & p:invalidPresets){
             auto originAddress = p->getOriginContainer()?p->getOriginContainer()->getControlAddress().toString():String("Unknown");
-            presetsInfos+=String("preset : @@1 was in deleted @@2\n").replace("@@1",p->getPresetName()).replace("@@2",p->originAddress);
+            presetsInfos+=String("preset : @@1 was in deleted @@2\n").replace("@@1",p->getPresetName()).replace("@@2",p->originAddress->stringValue());
         }
         removeOldPresets = AlertWindow::showOkCancelBox(AlertWindow::AlertIconType::QuestionIcon,
                                                         "PresetWarning",

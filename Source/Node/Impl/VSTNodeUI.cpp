@@ -71,7 +71,7 @@ void VSTNodeContentUI::init()
     activityBlink->showLabel = false;
     addAndMakeVisible (activityBlink.get());
     
-    midiDeviceChooser = ParameterUIFactory::createDefaultUI(vstNode->midiChooser.getDeviceInEnumParameter());
+    midiDeviceChooser = ParameterUIFactory::createDefaultUI(vstNode->midiChooser.getDeviceEnumParameter());
     addAndMakeVisible(midiDeviceChooser.get());
     jassert(midiDeviceChooser);
     updateVSTParameters();

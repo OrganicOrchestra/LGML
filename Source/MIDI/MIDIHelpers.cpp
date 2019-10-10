@@ -237,22 +237,35 @@ namespace MIDIHelpers{
     }
 
 
-    MIDIIOChooser::MIDIIOChooser(MIDIListener *l,bool autoOut,bool _showController):
-    showController(_showController),owner(l),listenedIn(nullptr),inP(nullptr){
+    MIDIIOChooser::MIDIIOChooser(MIDIListener *l,bool _showController,bool _isOutputDevice):
+showController(_showController),
+    owner(l),
+    listenedIn(nullptr),
+    inP(nullptr),
+    isOutputDevice(_isOutputDevice)
+    {
         auto cont = getCont(owner);
         if(cont!=nullptr){
             EnumParameterModel * m;
-            if(autoOut){
-                m = getGlobalModel<MIDIInModel>();
-                inP = cont->addNewParameter<EnumParameter>("MidiDeviceChooser", "midi in param", m);
-                listenedIn = inP;
-
-            }
             if(showController){
                 m = getGlobalModel<MIDIControllerModel>();
                 inP = cont->addNewParameter<EnumParameter>("MIDIControllerChooser", "MIDIController to link to", m);
 
             }
+            else{
+                if(!isOutputDevice){
+                    m = getGlobalModel<MIDIInModel>();
+                    inP = cont->addNewParameter<EnumParameter>("MidiInDeviceChooser", "midi in param", m);
+                    listenedIn = inP;
+
+                }
+                else{
+                    m = getGlobalModel<MIDIOutModel>();
+                    inP = cont->addNewParameter<EnumParameter>("MidiOutDeviceChooser", "midi in param", m);
+                    listenedIn = inP;
+                }
+            }
+
             if(inP){
                 inP->isEditable = false;
                 inP->addEnumParameterListener(this);
@@ -291,28 +304,40 @@ namespace MIDIHelpers{
 
             }
 
-            listenedIn = c?c->midiChooser.getDeviceInEnumParameter():nullptr;
+            listenedIn = c?(isOutputDevice?c->midiOutChooser:c->midiInChooser).getDeviceEnumParameter():nullptr;
             if(listenedIn){
                 listenedIn ->addEnumParameterListener(this);
-                owner->setCurrentDevice(listenedIn->getFirstSelectedValue().toString());
+                owner->setCurrentDevice(listenedIn->getFirstSelectedValue().toString(),isOutputDevice);
+
             }
             else{
-                owner->setCurrentDevice("");
+                owner->setCurrentDevice("",isOutputDevice);
             }
 
 
         }
 
         else if(isValid && isSelected){
-            owner->setCurrentDevice(ep->getFirstSelectedValue().toString());
+//            String lastInDevice = owner->inPortName;
+//            String lastOutDevice = owner->outPortName;
+            owner->setCurrentDevice(ep->getFirstSelectedValue().toString(),isOutputDevice);
+            if(!isOutputDevice && autoOut && owner->hasValidInPort){
+                auto c = dynamic_cast<MIDIController*>(owner);
+                if(c){//} && (lastOutDevice.isEmpty() || c->getClosestOutName(lastInDevice)==lastOutDevice)){
+                    String sameOutPortName = owner->getClosestOutName(owner->inPortName);
+                    if(!sameOutPortName.isEmpty()){
+                        c->midiOutChooser.getDeviceEnumParameter()->setValue(sameOutPortName);
+                    }
+                }
+            }
         }
         else {//if (!isSelected || !isValid){
-            owner->setCurrentDevice("");
+            owner->setCurrentDevice("",isOutputDevice);
         }
         
         
     };
-    EnumParameter * MIDIIOChooser::getDeviceInEnumParameter(){
+    EnumParameter * MIDIIOChooser::getDeviceEnumParameter(){
         return inP;
     }
     

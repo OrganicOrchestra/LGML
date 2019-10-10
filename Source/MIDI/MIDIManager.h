@@ -65,11 +65,11 @@ public:
         virtual ~MIDIManagerListener() {}
         virtual void midiInputAdded (String&) {}
         virtual void midiInputRemoved (String&) {}
-        virtual void midiInputsChanged() {}
+
 
         virtual void midiOutputAdded (String&) {}
         virtual void midiOutputRemoved (String&) {}
-        virtual void midiOutputsChanged() {}
+        
 
     };
 

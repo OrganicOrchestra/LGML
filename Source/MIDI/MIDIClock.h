@@ -21,7 +21,7 @@
 #include "../Time/TimeManager.h"
 
 constexpr int MIDI_SYNC_QUEUE_SIZE = 100;
-class MIDIClock: public Thread, private TimeManager::TimeManagerListener
+class MIDIClock:  private TimeManager::TimeManagerListener
 {
 public:
     MIDIClock(bool sendSPP);
@@ -35,17 +35,18 @@ public:
     bool sendSPP;
     float delta;
     
-
+    bool isRunning();
 private:
-    void run()override;
+    static double sendAllClocks();
+    double runClock();
 
     MidiMessage nextMidiMsg;
     MIDIListener* midiOut;
 
-    float interval;
+    bool hasSentMessage = false;
     
-
-
+    friend class MIDIClockRunner;
+    Atomic<bool> _isRunning = false;
     // TimeManager Listener
 
      void BPMChanged (double /*BPM*/) override ;
@@ -53,16 +54,16 @@ private:
      void playStop (bool /*playStop*/) override ;
     // info for stopping manager if needed;
      bool isBoundToTime() override {return false;}
-    void addClockIfNeeded();
-    void sendCurrentSPP();
+    void addClockIfNeeded(double & timeToNextMessage);
+    int appendCurrentSPP();
 
 
 
     
     double getPPQWithDelta(int multiplier);
-
-    void sendOneMsg(const MidiMessage & msg);
-    void sendClocks(const int num);
+    static double ppqToTime(double ppq,int multiplier);
+    void appendOneMsg(const MidiMessage & msg);
+    void appendClocks(const int num);
     MidiMessage  messagesToSend[MIDI_SYNC_QUEUE_SIZE];
     AbstractFifo midiFifo;
 
@@ -70,11 +71,14 @@ private:
     struct MIDIClockState{
         MIDIClockState():isPlaying(false),ppqn(0){}
         bool isPlaying;
-        int ppqn;
+        Atomic<int> ppqn; // has to be an integer type (same resolution as device)
+
 
     };
     MIDIClockState state;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MIDIClock)
     
 };
+
+
 

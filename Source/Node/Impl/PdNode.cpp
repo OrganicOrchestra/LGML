@@ -52,7 +52,7 @@ PdNode::PdNode (StringRef name) :
 NodeBase (name),
 patchHandle(nullptr),
 pdinstance(nullptr),
-midiChooser(this,false,true)
+midiChooser(this,true,false)
 {
 
     pdPath = addNewParameter<FileParameter>("pd path", "path where to load pd Vanilla file , if a patch contain a subpatch named gui graphical object with send names will be added as parameters", "",PdPatch,std::bind(&PdNode::loadPdFile,this,std::placeholders::_1));

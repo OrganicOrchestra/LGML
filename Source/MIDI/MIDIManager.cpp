@@ -216,10 +216,6 @@ void MIDIManager::updateDeviceList (bool updateInput)
 //        NLOG ("MIDIManager",  juce::translate("MIDI 123 Removed : 456").replace("123", updateInput ? "Input" : "Output").replace("456", d));
     }
 
-    if (devicesToAdd.size() > 0 || devicesToRemove.size() > 0)
-    {
-        listeners.call (updateInput ? &MIDIManagerListener::midiInputsChanged : &MIDIManagerListener::midiOutputsChanged);
-    }
 
 
 }

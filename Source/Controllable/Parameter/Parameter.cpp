@@ -289,7 +289,7 @@ void ParameterBase::addParameterListener (Listener* newListener) {
 
     auto parentCont = dynamic_cast<ParameterContainer*>(parentContainer.get());
     bool isParent = parentCont && (newListener==parentCont);
-    if(!isParent){ // insert in list (callback are in reverse order)
+    if(!isParent){ // keep parent first notified listener (callback are in reverse order)
         auto curListeners = listeners.getListeners();
         int parentIdx = curListeners.indexOf(parentCont);
         if(parentIdx>=0){

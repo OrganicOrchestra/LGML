@@ -95,7 +95,7 @@ struct VSTLoaderPostponer : private Engine::EngineListener{
 VSTNode::VSTNode (StringRef name) :
 NodeBase (name),
 blockFeedback (false),
-midiChooser(this,false,true)
+midiChooser(this,true,false)
 {
     identifierString = addNewParameter<StringParameter> ("VST Identifier", "string that identify a VST", "");
     identifierString->setInternalOnlyFlags(false,true);

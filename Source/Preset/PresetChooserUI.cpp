@@ -128,7 +128,7 @@ void PresetChooserUI::fillWithPresets (ComboBox* cb)
     PopupMenu sameTypePresets;
     pIndex = 1;
     for(auto & p : otherPresets){
-        sameTypePresets.addItem(otherStartId+pIndex, p->getPresetName() + String("(123)").replace("123",p->getOriginContainer()->getNiceName()));
+        sameTypePresets.addItem(otherStartId+pIndex, p->getPresetName() + String("(123)").replace("123",p->getOriginContainer()->getControlAddress().toString()));
         pIndex++;
     }
 

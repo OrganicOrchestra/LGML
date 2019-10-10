@@ -32,12 +32,13 @@ public :
     virtual ~MIDIListener();
 
 
-    String midiPortName;
-    String ghostPortName;
+    String inPortName;
+    String ghostInPortName,ghostOutPortName;
     String outPortName;
-    bool hasValidPort;
+    bool hasValidInPort;
+    bool hasValidOutPort;
 
-    virtual void setCurrentDevice (const String& deviceName);
+    void setCurrentDevice (const String& deviceName,bool output);
 
     //Output
     std::unique_ptr<MidiOutput> midiOutDevice;
@@ -56,7 +57,7 @@ public :
     //    virtual void midiOutputsChanged() {}
 
     
-
+    String getClosestOutName(const String &);
 
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MIDIListener)

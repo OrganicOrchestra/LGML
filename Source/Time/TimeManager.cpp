@@ -45,6 +45,7 @@ juce_ImplementSingleton (TimeManager);
 extern AudioDeviceManager& getAudioDeviceManager();
 
 #include "LinkImpl.hpp"
+#include "../MIDI/MIDIClock.h"
 
 TimeManager::TimeManager():
     beatTimeInSample (1000),
@@ -154,12 +155,12 @@ void TimeManager::incrementClock (int block)
     bool isNewBar = false;
     if (isNewBeat)
     {
-        currentBeat->setValue (newBeat);
+        currentBeat->setValueFrom (this,newBeat);
 
         isNewBar = newBeat % ((int)beatPerBar->value) == 0;
         if(isNewBar)
         {
-            currentBar->setValue (getBar());
+            currentBar->setValueFrom (this,getBar());
 
         }
     }
@@ -194,6 +195,7 @@ void TimeManager::incrementClock (int block)
     hadMasterCandidate = timeMasterCandidate != nullptr;
 
     pushCommitableParams();
+    
 
 
 }
@@ -359,7 +361,7 @@ void TimeManager::play (bool _shouldPlay)
     }
     else
     {
-        shouldGoToZero();
+        //shouldGoToZero();
         shouldPlay();
         clickFader->startFadeIn();
     }
@@ -376,7 +378,20 @@ void TimeManager::onContainerParameterChanged ( ParameterBase* p)
     {
         BPM->isEditable = !BPMLocked->boolValue();
     }
+    else if( p==currentBar){
+        int diff = currentBar->intValue() - (int)currentBar->lastValue;
+        currentBeat-> setValue(currentBeat->intValue()+diff*beatPerBar->intValue()); // will recall this (no setValueFrom)
+    }
+    else if(p==currentBeat){
+        int diff = currentBeat->intValue()-getBeatInt() ;
+        if(diff!=0){
+            goToTime (timeState.time + diff*beatTimeInSample,false);
 
+        }
+        else{
+            jassertfalse;
+        }
+    }
 
 #if LINK_SUPPORT
     else if (p == linkEnabled)
@@ -477,7 +492,8 @@ void TimeManager::updateState()
     if (timeState.time != desiredTimeState.time)
     {
         dbg += " ::: time:" + String (timeState.time) + "/" + String (desiredTimeState.time);
-        timeManagerListeners.call (&TimeManagerListener::timeJumped, desiredTimeState.time);
+        desiredTimeState.isJumping = true;
+        //timeManagerListeners.call (&TimeManagerListener::timeJumped, desiredTimeState.time);
     }
 
     if (desiredTimeState.isJumping)
@@ -489,7 +505,7 @@ void TimeManager::updateState()
             dbg += "time jumping to : " + String (desiredTimeState.nextTime) + " delta=" + String (delta);
         }
 
-        timeManagerListeners.call (&TimeManagerListener::timeJumped, desiredTimeState.time);
+        //timeManagerListeners.call (&TimeManagerListener::timeJumped, desiredTimeState.time);
     }
 
     //  if(dbg!=""){
@@ -509,7 +525,7 @@ void TimeManager::onContainerTriggerTriggered (Trigger* t)
     {
         if (!playState->boolValue())playState->setValue (true);
 
-        shouldRestart (true);
+        //shouldRestart (true);
 
         //    desiredTimeState.jumpTo(0);
         //    playState->setValue(false);
@@ -529,7 +545,7 @@ void TimeManager::onContainerTriggerTriggered (Trigger* t)
             if (!playState->boolValue())
             {
                 playState->setValue (true);
-                currentBeatPeriod = (sample_clk_t)0;
+                currentBeatPeriod = (sample_clk_t)(beatTimeInSample*1000.0/sampleRate);
             }
 
             sample_clk_t currentTime = Time().getMillisecondCounter();//timeState.time;
@@ -610,15 +626,19 @@ void TimeManager::setBPMInternal (double /*_BPM*/, bool adaptTimeInSample)
 {
     isSettingTempo->setValue (false, false, false);
     sample_clk_t newBeatTime = (sample_clk_t) (sampleRate * 60.0 / BPM->doubleValue() + 0.5);
-
+    double qBPM = sampleRate*60.0/newBeatTime;
+    jassert(abs(qBPM - BPM->doubleValue())<0.1);
+    BPM->setValueFrom(this,qBPM,false,true);
     if (adaptTimeInSample)
     {
         sample_clk_t targetTime = (sample_clk_t) (timeState.time * (newBeatTime * 1.0 / beatTimeInSample) +0.5);
         jassert (targetTime >= 0);
+        beatTimeInSample = newBeatTime;
         goToTime (targetTime, true);
     }
-
+    else{
     beatTimeInSample = newBeatTime;
+    }
 
 }
 sample_clk_t TimeManager::getTimeInSample()
@@ -756,8 +776,8 @@ bool TimeManager::getCurrentPosition (CurrentPositionInfo& result)
     result.isPlaying = playState->boolValue();
     result.isRecording = isSettingTempo->boolValue();
 
-    result.ppqPosition = (double) (getBeat() );
-    result.ppqPositionOfLastBarStart = (double) (getBar() * beatPerBar->intValue());
+    result.ppqPosition = (double) (getBeat() ); //??
+    result.ppqPositionOfLastBarStart = (double) (getBar() * beatPerBar->intValue()); // ?? 
     result.ppqLoopStart = 0;
     result.ppqLoopEnd = 0;
     result.timeSigNumerator = beatPerBar->intValue();

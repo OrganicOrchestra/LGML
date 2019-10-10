@@ -38,7 +38,7 @@
 
 #define DO_PRAGMA(x) _Pragma (#x)
 #define TODO(x) DO_PRAGMA(message ("TODO - " #x));
-#if LGML_BETA 
+#if LGML_BETA || DEBUG
     #define JUCE_LOG_ASSERTIONS 1
 #endif
 

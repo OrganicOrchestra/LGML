@@ -31,12 +31,23 @@ ParameterContainer(generateName(_name, pc))
     type = addNewParameter<StringParameter>("type", "type for preset", pc?pc->getFactoryTypeId().toString():"no");
     subType = addNewParameter<StringParameter>("subType", "subType for preset", pc?pc->getSubTypeName():"no");
     originUID = addNewParameter<StringParameter>("originUID", "originUID for preset", pc?pc->uid.toString():"no");
-    originAddress = pc?pc->getControlAddress().toString():"Unknown";
+    originAddress = addNewParameter<StringParameter>("originAddress", "originAddress of preset", pc?pc->getControlAddress().toString():"Unknown");
+    
 }
 
 void Preset::clear()
 {
     values = var();
+}
+
+
+void Preset::updateSubTypeName(){
+    if(auto pc = getOriginContainer()){
+        subType->setValueFrom(this,pc->getSubTypeName());
+    }
+    else{
+        jassertfalse;
+    }
 }
 
 DynamicObject * Preset::getPresetValueObject(){
@@ -190,7 +201,7 @@ Preset* Presetable::addNamedPreset (const String& name,bool doLoad,void * notif)
 
     auto pm = PresetManager::getInstance();
     String filter = getPresetFilter();
-    String subType = pc->getSubTypeName();
+    //String subType = pc->getSubTypeName();
     Preset* pre = pm->getPreset (filter, name);
     bool presetExists = pre != nullptr;
 
@@ -242,6 +253,7 @@ bool Presetable::loadPreset (Preset* preset,bool /*sendNotif*/)
     }
     DBG("loading preset" +preset->getPresetName()+ " -> " + pc->getNiceName());
     pc->configureFromObjectOrValues(preset->getPresetValueObject(),false);
+    currentPreset->updateSubTypeName();
     currentPreset = preset;
     String preName = currentPreset->getPresetName();
     if(currentPreset->getOriginContainer()!=pc){
@@ -390,3 +402,5 @@ String Presetable::getType(){
         return "";
     }
 }
+
+

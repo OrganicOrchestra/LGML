@@ -128,7 +128,6 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/MIDIHelpers_9da2819f.o \
   $(JUCE_OBJDIR)/MIDIListener_a0441724.o \
   $(JUCE_OBJDIR)/MIDIManager_1adad6c7.o \
-  $(JUCE_OBJDIR)/MIDIUIHelper_d188beb2.o \
   $(JUCE_OBJDIR)/NodeConnectionUI_a5c1994c.o \
   $(JUCE_OBJDIR)/NodeConnection_6099998d.o \
   $(JUCE_OBJDIR)/PdNodeUI_d3851c75.o \
@@ -548,11 +547,6 @@ $(JUCE_OBJDIR)/MIDIListener_a0441724.o: ../../Source/MIDI/MIDIListener.cpp
 $(JUCE_OBJDIR)/MIDIManager_1adad6c7.o: ../../Source/MIDI/MIDIManager.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling MIDIManager.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/MIDIUIHelper_d188beb2.o: ../../Source/MIDI/MIDIUIHelper.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling MIDIUIHelper.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/NodeConnectionUI_a5c1994c.o: ../../Source/Node/Connection/UI/NodeConnectionUI.cpp

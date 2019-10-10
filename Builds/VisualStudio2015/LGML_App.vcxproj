@@ -343,7 +343,6 @@
     <ClCompile Include="..\..\Source\MIDI\MIDIHelpers.cpp"/>
     <ClCompile Include="..\..\Source\MIDI\MIDIListener.cpp"/>
     <ClCompile Include="..\..\Source\MIDI\MIDIManager.cpp"/>
-    <ClCompile Include="..\..\Source\MIDI\MIDIUIHelper.cpp"/>
     <ClCompile Include="..\..\Source\Node\Connection\UI\NodeConnectionUI.cpp"/>
     <ClCompile Include="..\..\Source\Node\Connection\NodeConnection.cpp"/>
     <ClCompile Include="..\..\Source\Node\Impl\PdNodeUI.cpp"/>
@@ -2358,7 +2357,6 @@
     <ClInclude Include="..\..\Source\MIDI\MIDIHelpers.h"/>
     <ClInclude Include="..\..\Source\MIDI\MIDIListener.h"/>
     <ClInclude Include="..\..\Source\MIDI\MIDIManager.h"/>
-    <ClInclude Include="..\..\Source\MIDI\MIDIUIHelper.h"/>
     <ClInclude Include="..\..\Source\Node\Connection\UI\NodeConnectionEditor.hpp"/>
     <ClInclude Include="..\..\Source\Node\Connection\UI\NodeConnectionEditorDataSlot.hpp"/>
     <ClInclude Include="..\..\Source\Node\Connection\UI\NodeConnectionEditorLink.hpp"/>

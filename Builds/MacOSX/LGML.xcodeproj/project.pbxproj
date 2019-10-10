@@ -318,10 +318,6 @@
 			isa = PBXBuildFile;
 			fileRef = FBAC0DDED62B008C4B090953;
 		};
-		99E7A6AF60616185DECB4228 = {
-			isa = PBXBuildFile;
-			fileRef = 8A275E321EA994E19728F8E9;
-		};
 		323B19D658B7183075605324 = {
 			isa = PBXBuildFile;
 			fileRef = 8CB28680E899C76683ED7FF5;
@@ -2192,13 +2188,6 @@
 			path = ../../Source/Node/UI/ConnectorComponent.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
-		8A275E321EA994E19728F8E9 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = MIDIUIHelper.cpp;
-			path = ../../Source/MIDI/MIDIUIHelper.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
 		8A31766763F41DF5DB800C6F = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -2610,13 +2599,6 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = unix.h;
 			path = "../../third_party/serial/include/serial/impl/unix.h";
-			sourceTree = "SOURCE_ROOT";
-		};
-		B574DD47514F8434B9810C6C = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = MIDIUIHelper.h;
-			path = ../../Source/MIDI/MIDIUIHelper.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		B5FB3905DBF7ED42C42752F0 = {
@@ -3690,8 +3672,6 @@
 				02DA72F8B7D0266448FC3792,
 				FBAC0DDED62B008C4B090953,
 				84090E4AAA4A72D472AAFECA,
-				8A275E321EA994E19728F8E9,
-				B574DD47514F8434B9810C6C,
 			);
 			name = MIDI;
 			sourceTree = "<group>";
@@ -4415,15 +4395,16 @@
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";
-				DEAD_CODE_STRIPPING = YES;
+				COPY_PHASE_STRIP = NO;
 				ENABLE_TESTABILITY = "YES";
+				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = "YES";
-				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = "YES";
 				GCC_PREFIX_HEADER = "PrefixHeader.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"_NDEBUG=1",
-					"NDEBUG=1",
+					"_DEBUG=1",
+					"DEBUG=1",
 					"LGML_BETA=1",
 					"LINK_PLATFORM_MACOSX=1",
 					"JUCER_XCODE_MAC_F6D2F4CF=1",
@@ -4438,7 +4419,6 @@
 					"JucePlugin_Build_Standalone=0",
 					"JucePlugin_Build_Unity=0",
 				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = (
 					"../../third_party/VST3_SDK",
@@ -4681,6 +4661,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_MODEL_TUNING = G5;
@@ -4848,7 +4829,6 @@
 				20500235BB41EDA0E58E9912,
 				7489B09B4A20BE010E5DFD48,
 				5D14D101B975B72D36A91B15,
-				99E7A6AF60616185DECB4228,
 				323B19D658B7183075605324,
 				24F98A6891F747F701D70C47,
 				C4897B4EEBDA6749FCC4C1B2,

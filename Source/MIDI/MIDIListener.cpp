@@ -20,12 +20,12 @@
 #include "../Utils/DebugHelpers.h"
 
 
-String getClosestOutName(const String  &midiPortName);
+
 int commonNamePartWithInName (String& s,const String & midiPortName);
 
-MIDIListener::MIDIListener():hasValidPort(true)
+MIDIListener::MIDIListener():hasValidInPort(true),hasValidOutPort(true)
 {
-    midiPortName = "";
+    inPortName = "";
     outPortName = "";
     MIDIManager::getInstance()->addMIDIListener (this);
 
@@ -34,17 +34,17 @@ MIDIListener::MIDIListener():hasValidPort(true)
 MIDIListener::~MIDIListener()
 {
     if(auto mm  = MIDIManager::getInstanceWithoutCreating()){
-    mm->removeMidiInputCallback (midiPortName, this);
+    mm->removeMidiInputCallback (inPortName, this);
     mm->removeMIDIListener (this);
     }
 }
 
-void MIDIListener::setCurrentDevice (const String& deviceName)
+void MIDIListener::setCurrentDevice (const String& deviceName,bool output)
 {
-    //if (deviceName == midiPortName) return;
+    //if (deviceName == inPortName) return;
     if(!MessageManager::getInstance()->isThisTheMessageThread()){
         MessageManager::getInstance()->callAsync(
-                                                 [this,deviceName](){setCurrentDevice(deviceName);});
+                                                 [this,deviceName,output](){setCurrentDevice(deviceName,output);});
         return;
     }
     auto mm = MIDIManager::getInstance();
@@ -52,38 +52,54 @@ void MIDIListener::setCurrentDevice (const String& deviceName)
     if (deviceName.isNotEmpty())
     {
         mm->updateLists();
-        if (mm->inputDevices.indexOf (deviceName) == -1)
+        auto deviceList = output?mm->outputDevices:mm->inputDevices;
+        if (deviceList.indexOf (deviceName) == -1)
         {
-            ghostPortName = deviceName;
-            setCurrentDevice ("");
+            if(output){
+                ghostOutPortName = deviceName;
+            }else{
+                ghostInPortName = deviceName;
+            }
+            setCurrentDevice ("",output);
             return;
         }
     }
-
-    if (midiPortName.isNotEmpty())
-    {
-        mm->disableInputDevice (midiPortName);
+    if(outPortName.isNotEmpty() && output){
         mm->disableOutputDevice (outPortName);
-        mm->removeMidiInputCallback (midiPortName, this);
-        hasValidPort = false;
+        hasValidOutPort = false;
     }
-
-
-
-    midiPortName = deviceName;
-
-
-    if (midiPortName.isNotEmpty())
+    if (inPortName.isNotEmpty() && !output)
     {
-        mm->enableInputDevice (midiPortName);
-        outPortName = getClosestOutName(midiPortName);
-        midiOutDevice = mm->enableOutputDevice (outPortName);
-        mm->addMidiInputCallback (midiPortName, this);
-        hasValidPort = true;
+
+        mm->disableOutputDevice (outPortName);
+        mm->disableInputDevice (inPortName);
+        mm->removeMidiInputCallback (inPortName, this);
+
+        hasValidInPort = false;
     }
+
+    if(output){
+        outPortName = deviceName;
+        if (outPortName.isNotEmpty())
+        {
+            midiOutDevice = mm->enableOutputDevice (outPortName);
+            hasValidOutPort = true;
+        }
+    }
+    else{
+        inPortName = deviceName;
+        if (inPortName.isNotEmpty())
+        {
+            mm->enableInputDevice (inPortName);
+            mm->addMidiInputCallback (inPortName, this);
+            hasValidInPort = true;
+        }
+    }
+
+
 
     mm->checkMIDIListenerStates();
-
+    
 }
 
 bool MIDIListener::sendNoteOn (int channel, int pitch, int velocity)
@@ -126,26 +142,26 @@ bool  MIDIListener::sendSysEx (uint8* data, int dataCount)
 
 void MIDIListener::midiInputAdded (String& s)
 {
-    DBG ("MIDIListener :: inputAdded " << s << ",portName = " << midiPortName << ", ghost = " << ghostPortName);
+    DBG ("MIDIListener :: inputAdded " << s << ",portName = " << inPortName << ", ghost = " << ghostInPortName);
 
-    if (s == midiPortName)
+    if (s == inPortName)
     {
-        setCurrentDevice (midiPortName);
-        ghostPortName = "";
+        setCurrentDevice (inPortName,false);
+        ghostInPortName = "";
     }
-    else if (s == ghostPortName)
+    else if (s == ghostInPortName)
     {
-        setCurrentDevice (ghostPortName);
-        ghostPortName = "";
+        setCurrentDevice (ghostInPortName,false);
+        ghostInPortName = "";
     }
 }
 
 void MIDIListener::midiInputRemoved (String& s)
 {
-    if (s == midiPortName)
+    if (s == inPortName)
     {
-        ghostPortName = s;
-        setCurrentDevice ("");
+        ghostInPortName = s;
+        setCurrentDevice ("",false);
     }
 }
 
@@ -155,15 +171,28 @@ void MIDIListener::midiInputRemoved (String& s)
 
 void MIDIListener::midiOutputAdded (String& s)
 {
-
-    if (commonNamePartWithInName (s,midiPortName) > 0)
-    {
-        setCurrentDevice (midiPortName);
+    if(s==outPortName){
+        setCurrentDevice(outPortName, true);
+        ghostOutPortName = "";
     }
+    else if(s==ghostOutPortName){
+        setCurrentDevice(ghostOutPortName, true);
+        ghostOutPortName = "";
+    }
+
+//    else if (commonNamePartWithInName (s,inPortName) > 0)
+//    {
+//        setCurrentDevice (inPortName,true);
+//    }
 }
 
-void MIDIListener::midiOutputRemoved (String& /*s*/)
+void MIDIListener::midiOutputRemoved (String& s)
 {
+    if (s == outPortName)
+    {
+        ghostOutPortName = s;
+        setCurrentDevice ("",true);
+    }
     //
 }
 
@@ -190,9 +219,9 @@ int commonNamePartWithInName (String& s,const String & midiPortName)
     return res;
 }
 
-String getClosestOutName(const String  &midiPortName)
+String MIDIListener::getClosestOutName(const String & midiPortName )
 {
-
+    
     int best = 0;
     String bestName = midiPortName;
     MIDIManager::getInstance()->updateLists();
@@ -200,7 +229,7 @@ String getClosestOutName(const String  &midiPortName)
     {
 
         if (outName == midiPortName) {return midiPortName;}
-
+        if(outName.startsWith("from ") && midiPortName.startsWith("to ") && midiPortName.substring(3)==outName.substring(5)){return outName;}
         int n = commonNamePartWithInName (outName,midiPortName);
 
         if (n > best)

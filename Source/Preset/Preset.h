@@ -27,17 +27,19 @@ public:
     String getOriginUID(){return originUID->stringValue();}
     ParameterContainer* getOriginContainer(){
         Uuid ui (getOriginUID());
-        return ParameterContainer::getForUidGlobal(ui);}
+        return ui.isNull()?nullptr:ParameterContainer::getForUidGlobal(ui);
+    }
 
     void clear();
 
+    void updateSubTypeName();
     DynamicObject* createObject() final;
     void configureFromObject(DynamicObject * ) final;
 
     DynamicObject * getPresetValueObject();
     void configurePresetValueObject(DynamicObject *v);
     bool isValidPreset();
-    String originAddress; // used as info if origin container has been deleted
+    StringParameter* originAddress; // used as info if origin container has been deleted
 private:
     StringParameter* filter; //Used to filter which preset to propose depending on the object (specific nodes, vst, controller, etc.)
     StringParameter* presetName;
