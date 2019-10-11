@@ -464,6 +464,12 @@ LatestVersionChecker::~LatestVersionChecker()
 {
     stopThread (maxTimeOut);
 }
+bool LatestVersionChecker::end()
+{
+    signalThreadShouldExit();
+    notify();
+    return !isThreadRunning();
+}
 
 String LatestVersionChecker::getOSString()
 {
@@ -566,7 +572,18 @@ URL LatestVersionChecker::getLatestVersionURL (String& headers) const
     String emptyString;
     return getLatestVersionURL (headers, emptyString);
 }
+//bool LatestVersionChecker::progressCB(void* context, int bytesSent, int totalBytes){
+//
+//}
 
+class DLWatcher{ // prevent freezing main thread if asking for deletion
+public:
+    static LatestVersionChecker * unsafeVChecker ;
+    static bool progressCB(void* /*context*/, int /*bytesSent*/, int /*totalBytes*/){
+        return unsafeVChecker && !unsafeVChecker->threadShouldExit();
+    }
+};
+LatestVersionChecker * DLWatcher::unsafeVChecker = nullptr;
 void LatestVersionChecker::checkForNewVersion()
 {
     hasAttemptedToReadWebsite = true;
@@ -577,11 +594,17 @@ void LatestVersionChecker::checkForNewVersion()
         StringPairArray responseHeaders;
 
         const int numRedirects = 0;
+        DLWatcher::unsafeVChecker = this;
 
-        const std::unique_ptr<InputStream> in (updateURL.createInputStream (false, nullptr, nullptr,
-                                                                          extraHeaders, maxTimeOut*0.5f, &responseHeaders,
-                                                                          &statusCode, numRedirects));
-
+        const std::unique_ptr<InputStream> in (updateURL.createInputStream (false,
+                                                                            &DLWatcher::progressCB,
+                                                                            nullptr,
+                                                                            extraHeaders,
+                                                                            (int)maxTimeOut*0.5f,
+                                                                            &responseHeaders,
+                                                                            &statusCode,
+                                                                            numRedirects));
+        DLWatcher::unsafeVChecker =nullptr;
         if (threadShouldExit())
             return;  // can't connect: fail silently.
 

@@ -42,7 +42,7 @@ public:
 
     }
 
-    void newMessage(const LogElement * el)  override {if (fileLog && el) {String msg(el->toNiceString());fileLog->logMessage (msg);}}
+    void newMessage(const LogElement * el)  override {if (fileLog && el) {String msg(el->toNiceString(true));fileLog->logMessage (msg);}}
     String getFilePath() {return fileLog->getLogFile().getFullPathName();}
     std::unique_ptr<FileLogger> fileLog;
 };
@@ -186,12 +186,25 @@ numAppearances(1)
     }
 
 }
-String LogElement::toNiceString() const{
+String LogElement::toNiceString(bool includeSeverity) const{
     String s ;
-    int leftS = source.length() + 3;
-    s+=source+" : ";
+    int leftS =0;
+    if(!includeSeverity){
+        leftS =  source.length() + 3;
+        s+=source+" : ";
+    }
+    else{
+        int numMarks = jmax((int)severity,0);
+        leftS =  source.length() + 2 + numMarks;
+        s+=source+"::";
+        for(int i = 0 ; i < numMarks;i++){s+="!";}
+    }
     for(int k = 0 ; k < getNumLines() ; k++){
-        if (k!=0)for ( int j = 0; j < leftS ; j++) s+=" ";
+        if (k!=0){
+            for ( int j = 0; j < leftS ; j++){
+                s+=" ";
+            }
+        }
         s+=getLine(k)+"\n";
     }
     return s;

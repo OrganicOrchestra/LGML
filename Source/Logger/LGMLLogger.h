@@ -48,7 +48,7 @@ public:
         (other.source == source) &&
         (other.content ==content);
     }
-    String toNiceString()const;
+    String toNiceString(bool includeSeverity)const;
 
 
 private:
@@ -84,7 +84,7 @@ class LGMLLogger : public Logger
             for(int i = readIdx ; i <= end ; i++){
                 newMessage(LGMLLogger::getInstance()->loggedElements.getUnchecked(i));
             }
-            readIdx=jmax(0,end);
+            readIdx=jmax(0,end+1);
         }
         friend class LGMLLogger;
         void newMessageAtIdx(int idx){

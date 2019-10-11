@@ -45,7 +45,7 @@ public:
     ~LatestVersionChecker();
 
     static String getOSString();
-
+    bool end();
     URL getLatestVersionURL (String& headers, const String& path) const;
     URL getLatestVersionURL (String& headers) const;
 
@@ -85,7 +85,7 @@ private:
     bool force_show;
     bool hasAttemptedToReadWebsite=false;
     String newRelativeDownloadPath;
-
+    friend class DLWatcher;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LatestVersionChecker)
 };
 

@@ -482,7 +482,7 @@ void LGMLLoggerUI::buttonClicked (Button* b)
         String s;
         for(int i = startDisplayedIdx ; i< LGMLLogger::getInstance()->getNumLogs() ; i++){
             const LogElement  * el = loggedElements().getUnchecked(i);
-            s+=el->toNiceString();
+            s+=el->toNiceString(false);
         }
         SystemClipboard::copyTextToClipboard (s);
     }

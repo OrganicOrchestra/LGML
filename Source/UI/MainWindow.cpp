@@ -160,7 +160,10 @@ void MainWindow::timerCallback()
         latestVChecker = std::make_unique< LatestVersionChecker>();
     }
     if(latestVChecker && curT>timeToUpdate){
-        latestVChecker = nullptr;
+        if(latestVChecker->end()){
+            latestVChecker = nullptr;
+        }
+
     }
     setName (getEngine()->getDocumentTitle() + " : LGML "
              + VersionTriplet::getCurrentVersion().toString() + String (" (CPU : ") +

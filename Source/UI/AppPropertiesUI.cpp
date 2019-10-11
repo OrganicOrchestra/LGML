@@ -245,8 +245,10 @@ namespace{
             }
             else{
                 bt->setAlpha(1);
+                if(latestVChecker->end()){
                 stopTimer();
-                //latestVChecker = nullptr;
+                latestVChecker = nullptr;
+                }
             }
 
         }
