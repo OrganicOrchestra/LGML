@@ -90,6 +90,10 @@ public:
     SortFType sortF;
 
     UIT * addFromT(T* obj){
+        if(obj==nullptr){
+            jassertfalse;
+            return nullptr;
+        }
         auto ui =new UIT(obj);
         addAndMakeVisible(ui);
         
@@ -101,7 +105,7 @@ public:
         return ui;
 
     }
-    void removeUI(UIT* ui){
+    void removeUI( UIT* ui){
         removeChildComponent (ui);
         stackedUIs.removeObject(ui);
         updateSize();
@@ -143,6 +147,10 @@ private:
     struct Sorter{
         Sorter(SortFType f):sortF(f){}
         int compareElements(const Component* a,const Component* b){
+            if(!dynamic_cast<const UIT*>(a) || !dynamic_cast<const UIT*>(b)){
+                jassertfalse;
+                return !dynamic_cast<const UIT*>(a)?-1:1;
+            }
             return sortF(dynamic_cast<const UIT*>(a),dynamic_cast<const UIT*>(b));
         }
         SortFType sortF;
@@ -152,6 +160,13 @@ private:
         if(sortF){
             auto ss =Sorter(sortF);
 //            SortFunctionConverter<Sorter> sfc(ss);
+            for(auto s : stackedUIs){
+                if(s==nullptr){
+                    int dbg;
+                    dbg++;
+                }
+            }
+
             stackedUIs.sort(ss);
 //            auto end = stackedUIs.end();
 //            for (auto i = stackedUIs.begin(); i !=  end; ++i){

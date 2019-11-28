@@ -26,10 +26,10 @@
 
 struct CompareFastMaps{
     static int compareElements(const FastMap * a,const FastMap * b){
-        if(!a->referenceIn->getLinkedParam() || !b->referenceIn->getLinkedParam()){
-            return -100;
-        }
-        return a->referenceIn->getLinkedParam()->niceName.compare( b->referenceIn->getLinkedParam()->niceName);
+        if(a==b){return 0;}
+        const auto nameA = a->referenceIn->getLinkedParam()?a->referenceIn->getLinkedParam()->niceName:"";
+        const auto nameB = b->referenceIn->getLinkedParam()?b->referenceIn->getLinkedParam()->niceName:"";
+        return nameA.compare(nameB);
     }
 };
 
@@ -286,9 +286,9 @@ void FastMapperUI::mouseDown (const MouseEvent& e)
 
 void FastMapperUI::controllableContainerAdded (ControllableContainer* ori, ControllableContainer* cc)
 {
-    if (ori == fastMapper)
+    if (ori == fastMapper )
     {
-
+        if(dynamic_cast<FastMap*>(cc)){
         WeakReference<ControllableContainer> wf (cc);
         MessageManager::callAsync ([this, wf] ()
         {
@@ -299,6 +299,10 @@ void FastMapperUI::controllableContainerAdded (ControllableContainer* ori, Contr
                 resized();
             }
         });
+        }
+        else{
+            jassertfalse;// just to check...
+        }
     }
 
     //    addFastMapUI(f);
