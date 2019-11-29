@@ -18,7 +18,7 @@
 #include "../Connection/NodeConnection.h"
 
 #include "../../Utils/DebugHelpers.h"
- 
+#include "../../Preset/Preset.h"
 
 
 REGISTER_NODE_TYPE (NodeContainer)
@@ -107,7 +107,7 @@ NodeContainer::~NodeContainer()
 void NodeContainer::clear ()
 {
     DBGGRAPH(getNiceName()+" clear Container");
-
+    presetable->cleanUpPresets();
     if(connections.size() || nodeContainers.size() || nodes.size()){
         if(auto * g = getAudioGraph())g->suspendProcessing(true);
         setBuildSessionGraph(true);

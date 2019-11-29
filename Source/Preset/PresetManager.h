@@ -59,7 +59,7 @@ public:
 
     Array<WeakReference<Preset> > getPresetsForFilter(String filter);
     Array<WeakReference<Preset> >  getPresetsForType(String type,ParameterContainer *ownerToIgnore=nullptr);
-    void removePresetForIdx (int idx);
+    
     int getNumPresetForFilter (const String&) const;
 
     void deleteAllUnusedPresets (ParameterContainer* rootContainer);

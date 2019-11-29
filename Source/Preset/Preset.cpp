@@ -93,7 +93,11 @@ class PresetSync:public PresetManager::Listener{
         }
     }
     void presetAdded(Preset * )final{}
-    void presetRemoved(Preset * )final{}
+    void presetRemoved(Preset * p)final{
+        if(owner && p==owner->currentPreset){
+            owner->loadPreset (nullptr);
+        }
+    }
     Presetable * owner;
 
 };
@@ -242,6 +246,7 @@ bool Presetable::loadPreset (Preset* preset,bool /*sendNotif*/)
     if (preset == nullptr)
     {
         currentPresetName->setValueFrom (this,"", true);
+        currentPreset=nullptr;
         return false;
     }
     if(!pc){jassertfalse; LOGE("presets corrupted");return false;}
@@ -253,7 +258,7 @@ bool Presetable::loadPreset (Preset* preset,bool /*sendNotif*/)
     }
     DBG("loading preset" +preset->getPresetName()+ " -> " + pc->getNiceName());
     pc->configureFromObjectOrValues(preset->getPresetValueObject(),false);
-    currentPreset->updateSubTypeName();
+    if(currentPreset){currentPreset->updateSubTypeName();};
     currentPreset = preset;
     String preName = currentPreset->getPresetName();
     if(currentPreset->getOriginContainer()!=pc){
@@ -379,8 +384,14 @@ bool Presetable::hasPresetLoaded(){
 
 void Presetable::cleanUpPresets()
 {
+    if(presetSync){
+        delete presetSync;
+        presetSync=nullptr;
+    }
+    currentPreset = nullptr;
     auto * pm = PresetManager::getInstance();
     pm->deletePresetsForContainer (pc, true);
+
 
 }
 
@@ -396,7 +407,8 @@ String Presetable::getPresetFilter()
 
 String Presetable::getType(){
     if(pc){
-        String st = pc->getSubTypeName();return pc->getFactoryTypeId().toString()+(st.isEmpty()?"":String("_")+st);
+        String st = pc->getSubTypeName();
+        return pc->getFactoryTypeId().toString()+(st.isEmpty()?"":String("_")+st);
     }
     else{
         return "";

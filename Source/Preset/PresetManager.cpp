@@ -164,8 +164,8 @@ Preset* PresetManager::addPreset(Preset * pre){
 }
 void PresetManager::removePreset(Preset * pre){
 
-     presets.removeObject(pre,false);
-presetListeners.call(&PresetManager::Listener::presetRemoved,pre);
+    presets.removeObject(pre,false);
+    presetListeners.call(&PresetManager::Listener::presetRemoved,pre);
     delete pre;
 
 }
@@ -188,14 +188,7 @@ Preset* PresetManager::getPreset (const String & filter, const String& name) con
 
 
 
-void PresetManager::removePresetForIdx (int idx)
-{
-    if (idx > 0 && idx < presets.size())
-    {
-        presets.remove (idx);
-    }
 
-}
 
 int PresetManager::getNumPresetForFilter (const String& filter) const
 {
@@ -236,7 +229,9 @@ void PresetManager::deleteAllUnusedPresets (ParameterContainer* rootContainer)
 
     int numPresetsToRemove = presetsToRemove.size();
 
-    for (auto& p : presetsToRemove) presets.removeObject (p);
+    for (auto& p : presetsToRemove){
+        removePreset(p);
+    }
 
     LOG ("Cleaned up " << numPresetsToRemove << " unused presets, now " << presets.size() << "presets");
 }
@@ -256,7 +251,9 @@ int PresetManager::deletePresetsForContainer (ParameterContainer* container, boo
 
     int numPresetsDeleted = presetsToRemove.size();
 
-    for (auto& p : presetsToRemove) presets.removeObject (p);
+    for (auto& p : presetsToRemove){
+        removePreset(p);
+    }
 
     if (recursive)
     {
@@ -274,10 +271,11 @@ int PresetManager::deletePresetsForContainer (ParameterContainer* container, boo
 
 void PresetManager::clear()
 {
-    for(auto & p:presets){
-        presetListeners.call(&PresetManager::Listener::presetRemoved,p);
+    for(int i = presets.size() -1 ; i>=0 ; i--){
+        removePreset(presets[i]);
     }
-    presets.clear();
+
+    
 }
 
 
