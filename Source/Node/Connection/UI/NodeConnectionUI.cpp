@@ -286,7 +286,7 @@ void NodeConnectionUI::updateBoundsFromNodes()
 
         //      DBG(cPos.toString() + " // " + mPos.toString());
 
-        setBounds (minX - margin, minY - margin, tw + margin * 2, th + margin * 2);
+        setBounds (jmax(0,minX - margin),jmax(0, minY - margin), tw + margin * 2, th + margin * 2);
 
         repaint();
     }

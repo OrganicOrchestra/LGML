@@ -94,7 +94,7 @@ FileParameter::~FileParameter(){
     masterReference.clear();
 }
 const File  FileParameter::getFile() const{
-    return getEngine()->getFileAtNormalizedPath(stringValue());
+    return getEngine()?getEngine()->getFileAtNormalizedPath(stringValue()):File();
 }
 
 void FileParameter::setFile(const File & f){

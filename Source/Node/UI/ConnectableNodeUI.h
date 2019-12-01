@@ -124,7 +124,7 @@ public:
     // receives x y position from node parameters
     void paint (Graphics&)override;
     void paintOverChildren (Graphics&) override {} //cancel default yellow border behavior
-
+    void parentHierarchyChanged() override;
     void resized()override;
 
 

@@ -210,12 +210,19 @@ void ConnectableNodeUI::moved()
 void ConnectableNodeUI::setMiniMode (bool value)
 {
     // update parameter only if in non minimized mode
-    if(auto ncv = findParentComponentOfClass<NodeContainerViewer>())
-        if(!ncv->minimizeAll->boolValue())
+    if(auto ncv = findParentComponentOfClass<NodeContainerViewer>()){
+        if(!ncv->minimizeAll->boolValue()){
             if( value!=miniModeParam->boolValue()){
                 miniModeParam->setValue(value);
                 return;
             }
+
+        }
+
+    }
+    else{
+       // miniModeParam->setValue(false); // else if no parent store default value in parameter
+    }
     mainComponentContainer.setMiniMode (value);
     isMiniMode = value;
     auto nodeP = getCurrentPositionParam();
@@ -334,9 +341,15 @@ void ConnectableNodeUI::handleCommandMessage (int commandId)
             break;
 
         case setMiniModeId:
-            setMiniMode (miniModeParam->boolValue());
+        {
+            auto ncv = findParentComponentOfClass<NodeContainerViewer>();
+            bool v =miniModeParam->boolValue();
+            if(ncv && ncv->minimizeAll->boolValue()){
+                v = true;
+            }
+            setMiniMode (v);
             break;
-
+    }
         case posChangedId:
             setTopLeftPosition(getCurrentPositionParam()->getPoint());
             if(!nodeMinimizedPosition->isOverriden){
@@ -424,6 +437,12 @@ bool ConnectableNodeUI::keyPressed (const KeyPress& key)
     }
 
     return InspectableComponent::keyPressed(key);
+}
+
+void ConnectableNodeUI::parentHierarchyChanged() {
+    if(findParentComponentOfClass<NodeContainerViewer>()){
+    notifyFromParams(); // update when added to NodeContainerViewer
+    }
 }
 
 ////////////    MAIN CONTAINER

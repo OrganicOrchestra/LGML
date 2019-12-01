@@ -197,7 +197,7 @@ void GapGrabber::updateMiniHandleVisibility(){
         return;
     }
 
-    jassert(parent->shifters.size()-1==parent->grabbers.size());
+    jassert(parent->shifters.size()==0 || (parent->shifters.size()-1==parent->grabbers.size()));
     
     for(int i = 0 ; i < parent->shifters.size()-1 ; i++){
         auto s = parent->shifters.getUnchecked(i);
