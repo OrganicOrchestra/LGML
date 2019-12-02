@@ -131,12 +131,13 @@ void MIDIController::handleIncomingMidiMessage (MidiInput*,
         }
         else if(autoAddParams){
             MessageManager::callAsync([this,message,paramName](){
-                userContainer.
+                auto p = userContainer.
                 addNewParameter<FloatParameter>(
                                                 paramName,
                                                 "MIDI CC Parameter",
                                                 message.getControllerValue()/127.0,
                                                 0,1);
+                p->isSavableAsObject=true;
             }
                                       );
         }
@@ -153,11 +154,12 @@ void MIDIController::handleIncomingMidiMessage (MidiInput*,
         }
         else if(autoAddParams && isNoteOn ){
             MessageManager::callAsync([this,message,paramName](){
-                userContainer.
+               auto p =  userContainer.
                 addNewParameter<FloatParameter>(paramName,
                                                 "MIDI Note Parameter",
                                                 message.getFloatVelocity(),
                                                 0,1);
+                p->isSavableAsObject  = true;
             }
                                       );
         }

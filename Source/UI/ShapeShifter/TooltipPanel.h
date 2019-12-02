@@ -109,7 +109,12 @@ public:
         auto hs  = juce::translate("Help");
         if(newTT.isNotEmpty()){
             if(auto *pui = dynamic_cast<ParameterUI*>(tc)){
+                if(pui->parameter){
                 hs+=" : "+pui->parameter->niceName + "("+FactoryBase<ParameterBase>::getFactoryNiceNameForInstance(pui->parameter.get())+")";
+                }
+                else{
+                    hs+="empty parameter";
+                }
             }
         }
         else{

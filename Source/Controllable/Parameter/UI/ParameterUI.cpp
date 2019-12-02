@@ -119,7 +119,7 @@ void ParameterUI::mouseDown (const MouseEvent& e)
         p.addItem (3, juce::translate("Add FastMap To"));
         p.addItem (4, juce::translate("Add FastMap From"));
         Array<Identifier> typeSwitch;
-        if(parameter->isUserDefined){
+        if(parameter->isUserDefined && parameter->isSavableAsObject){
             typeSwitch = ParameterFactory::getCompatibleTypes(parameter);
             if(typeSwitch.size()){
                 PopupMenu tp;
@@ -178,6 +178,8 @@ void ParameterUI::mouseDown (const MouseEvent& e)
                         var obj (parameter->createObject());
                         parentC->removeControllable(parameter);
                         auto np = ParameterFactory::createFromTypeID(typeSwitch.getUnchecked(result-50),niceName,nullptr);
+                        np->isSavableAsObject = true;
+                        np->isUserDefined = true;
                         parentC->addParameter(np,oriIdx,true);
                         np->configureFromObject(obj.getDynamicObject());
                     }

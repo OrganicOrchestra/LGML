@@ -63,12 +63,13 @@ bool KeyboardController::keyPressed (const KeyPress& key, Component* /*originati
     }
     else if(autoAddParams){
         MessageManager::callAsync([this,key,paramName](){
-            userContainer.
+            auto p = userContainer.
             addNewParameter<BoolParameter>(
                                            paramName,
                                            "Keyboard Parameter",
                                            key.isCurrentlyDown()
                                            );
+            p->isSavableAsObject = true;
         });
         return true;
     }

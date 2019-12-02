@@ -86,6 +86,7 @@ var JsNode::addIntParameter (const var::NativeFunctionArgs& a)
     };
     auto res = jsNode->ParameterContainer::addNewParameter<IntParameter> (a.arguments[0], a.arguments[1], a.arguments[2], a.arguments[3], a.arguments[4]);
     res->isUserDefined = true;
+    res->isSavableAsObject = false;
     jsNode->jsDynamicParameters.add (res);
 
     return var::undefined();
@@ -105,6 +106,7 @@ var JsNode::addFloatParameter (const var::NativeFunctionArgs& a)
     auto res = jsNode->ParameterContainer::addNewParameter<FloatParameter> (a.arguments[0], a.arguments[1], a.arguments[2], a.arguments[3], a.arguments[4]);
 
     res->isUserDefined = true;
+    res->isSavableAsObject = false;
     jsNode->jsDynamicParameters.add (res);
     return var::undefined();
 }
@@ -122,6 +124,7 @@ var JsNode::addStringParameter (const var::NativeFunctionArgs& a)
 
     auto res = jsNode->ParameterContainer::addNewParameter<StringParameter> (a.arguments[0], a.arguments[1], a.arguments[2]);
     res->isUserDefined = true;
+    res->isSavableAsObject = false;
     jsNode->jsDynamicParameters.add (res);
     return var::undefined();
 }
@@ -139,6 +142,7 @@ var JsNode::addBoolParameter (const var::NativeFunctionArgs& a)
 
     auto res = jsNode->ParameterContainer::addNewParameter<BoolParameter> (a.arguments[0], a.arguments[1], a.arguments[2]);
     res->isUserDefined = true;
+    res->isSavableAsObject = false;
     jsNode->jsDynamicParameters.add (res);
     return var::undefined();
 }
@@ -156,6 +160,7 @@ var JsNode::addTriggerParameter (const var::NativeFunctionArgs& a)
 
     auto res = jsNode->ParameterContainer::addNewParameter<Trigger> (a.arguments[0], a.arguments[1]);
     res->isUserDefined = true;
+    res->isSavableAsObject = false;
     jsNode->jsDynamicParameters.add (res);
 
     return var::undefined();

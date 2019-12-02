@@ -23,7 +23,7 @@
 #include "../Scripting/Js/JsHelpers.h"
 #include "Parameter/ParameterFactory.h"
 
-#include <juce_osc/juce_osc.h>
+#include <juce_osc/juce_osc.h> // for extended address
 
 
 ControllableContainer * ControllableContainer::globalRoot(nullptr);

@@ -436,7 +436,7 @@ void OSCController::checkAndAddParameterIfNeeded (const OSCMessage& msg)
             }
 
             if (linked)
-            {
+            {   linked->isSavableAsObject = true;
                 setParameterFromMessage (linked, msg, true);
             }
         }

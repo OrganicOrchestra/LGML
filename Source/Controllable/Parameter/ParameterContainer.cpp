@@ -493,6 +493,7 @@ ParameterBase* ParameterContainer::addParameterFromVar (const String& name, cons
         if (data.isObject())
         {
             up = addParameter (ParameterFactory::createBaseFromObject ( name, data.getDynamicObject()));
+            up->isSavableAsObject = true;
         }
         else
         {
