@@ -44,7 +44,7 @@ public :
 
 
 
-    Array<Controllable* > jsDynamicParameters;
+    Array<WeakReference<ParameterBase> > jsDynamicParameters;
 
     String getSubTypeName()final;
 

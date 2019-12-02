@@ -104,6 +104,12 @@ void ParameterProxyUI::setLinkedParamUI ( ParameterBase* p)
 
 //    chooser.setVisible (linkedParamUI == nullptr);
     chooser.setCurrentControllable(p);
+    if((linkedParamUI==nullptr )&& parameter ){
+        String path = parameter->stringValue();
+        if(!path.isEmpty()){
+            chooser.setButtonText(path);
+        }
+    }
     chooser.filterOutControllable = {paramProxy};
     resized();
 }

@@ -84,7 +84,7 @@ void JsNodeUI::childControllableAdded (ControllableContainer*, Controllable* c)
 {
     JsNode* jsNode = (JsNode*) node.get();
 
-    if (!jsNode->jsDynamicParameters.contains ((Controllable*)c))return;
+    if (!jsNode->jsDynamicParameters.contains ((ParameterBase*)c))return;
 
     ParameterUI* comp = new NamedParameterUI (ParameterUIFactory::createDefaultUI ( ParameterBase::fromControllable (c)), 100);
     varUI.add (comp);

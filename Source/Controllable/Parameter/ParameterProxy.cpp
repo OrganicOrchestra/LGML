@@ -148,6 +148,9 @@ void ParameterProxy::setParamToReferTo ( ParameterBase* p)
         {
             linkedParam->addParameterListener (this);
             linkedParam->addControllableListener (this);
+            if(auto root = getRoot()){
+                root->removeControllableContainerListener(this);
+            }
         }
 
         proxyListeners.call (&ParameterProxyListener::linkedParamChanged, this);
@@ -181,7 +184,7 @@ bool ParameterProxy::resolveAddress()
 void ParameterProxy::childControllableAdded (ControllableContainer*, Controllable* c)
 {
     jassert (linkedParam == nullptr);
-
+    
     if (c->getControlAddress().toString() == stringValue())
     {
         setParamToReferTo ( ParameterBase::fromControllable (c));
@@ -189,11 +192,51 @@ void ParameterProxy::childControllableAdded (ControllableContainer*, Controllabl
 
 }
 
+void ParameterProxy::childStructureChanged (ControllableContainer* /*notifier*/, ControllableContainer* origin,bool isAdded) {
+    jassert (linkedParam == nullptr);
+
+    if (isAdded &&  stringValue().startsWith(origin->getControlAddress().toString()))
+    {
+        StringArray arr ;
+        arr.addTokens(stringValue().toLowerCase(), juce::StringRef ("/"), juce::StringRef ("\""));
+        if(arr.size()){
+            const String name =arr.getReference(arr.size()-1);
+            auto p = origin->getControllableByName(name);
+            if(p){
+            setParamToReferTo ( ParameterBase::fromControllable (p));
+            }
+        }
+    }
+}
+void ParameterProxy::childAddressChanged (ControllableContainer* /*notifier*/,ControllableContainer* origin ) {
+    jassert (linkedParam == nullptr);
+
+    if (stringValue().startsWith(origin->getControlAddress().toString()))
+    {
+        StringArray arr ;
+        arr.addTokens(stringValue().toLowerCase(), juce::StringRef ("/"), juce::StringRef ("\""));
+        if(arr.size()){
+            const String name =arr.getReference(arr.size()-1);
+            auto p = origin->getControllableByName(name);
+            if(p){
+                setParamToReferTo ( ParameterBase::fromControllable (p));
+            }
+        }
+    }
+}
+
+
 void ParameterProxy::controllableRemoved (Controllable* c)
 {
     if (c == (Controllable*)linkedParam || !linkedParam.get())
     {
-        setParamToReferTo (nullptr);
+       // setParamToReferTo (nullptr);
+        if(auto root = getRoot()){
+            linkedParam = nullptr;
+            proxyListeners.call (&ParameterProxyListener::linkedParamChanged, this);
+            root->addControllableContainerListener(this);
+
+        }
     }
 
 };

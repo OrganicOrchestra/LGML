@@ -517,7 +517,7 @@ void CCInnerContainerUI::childControllableAdded (ControllableContainer*, Control
 
 void CCInnerContainerUI::childControllableRemoved (ControllableContainer*, Controllable* c)
 {
-    auto pc = static_cast <ParameterBase*> (c);
+    auto pc = dynamic_cast <ParameterBase*> (c);
     jassert (pc);
     WeakReference<Component> thisRef(this);
     WeakReference<ParameterBase> pcRef(pc);

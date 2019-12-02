@@ -33,11 +33,11 @@ JsNode::JsNode (StringRef name) : NodeBase (name, false), JsEnvironment ("node.j
 void JsNode::clearNamespace()
 {
     JsEnvironment::clearNamespace();
-
-    for (auto& p : jsDynamicParameters)
-    {
-        removeControllable (p);
-    }
+//
+//    for (auto p : jsDynamicParameters)
+//    {
+//        removeControllable (p);
+//    }
 
     jsDynamicParameters.clear();
 

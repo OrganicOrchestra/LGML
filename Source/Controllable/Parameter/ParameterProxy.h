@@ -66,9 +66,12 @@ public:
 
     DECLARE_OBJ_TYPE (ParameterProxy,"proxy parameter (can become any given parameter)")
 private:
+    
     void childControllableAdded (ControllableContainer*, Controllable* /*notifier*/) override;
     void controllableRemoved (Controllable* ) override;
-    bool resolveAddress();
+    void childStructureChanged (ControllableContainer* /*notifier*/, ControllableContainer* /*origin*/,bool /*isAdded*/)override;
+    void childAddressChanged (ControllableContainer* /*notifier*/,ControllableContainer* )override;
+        bool resolveAddress();
     WeakReference<ParameterProxy>::Master masterReference;
     friend class WeakReference<ParameterProxy>;
 
