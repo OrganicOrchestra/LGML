@@ -94,7 +94,8 @@ void NodeContainerContentUI::buttonClicked (Button* b)
         }
     }
     else if (b==&addUserParamBT){
-        nodeContainer->userContainer.addNewParameter<FloatParameter> ("variable", "Custom Variable");
+       auto p =  nodeContainer->userContainer.addNewParameter<FloatParameter> ("variable", "Custom Variable");
+        p->isSavableAsObject = true;
 
     }
 }

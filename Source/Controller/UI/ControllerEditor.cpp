@@ -64,7 +64,8 @@ void ControllerEditor::buttonClicked (Button* b)
     if (b == &addParameterBT)
     {
 
-        controller->userContainer.addNewParameter<FloatParameter> ("variable", "Custom Variable");
+        auto p = controller->userContainer.addNewParameter<FloatParameter> ("variable", "Custom Variable");
+        p->isSavableAsObject = true;
 
     }
 }

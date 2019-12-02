@@ -231,10 +231,13 @@ Controllable::~Controllable()
 
 void Controllable::setNiceName (const String& _niceName)
 {
-    if (niceName == _niceName) return;
-
-    niceName = _niceName;
-
+    if(_niceName.isEmpty()){
+        LOGE("no name given to controllable assigning to no name");
+        jassertfalse;
+        niceName = "no Name";
+    }
+    else if (niceName == _niceName){ return;}
+    else{niceName = _niceName;}
     setAutoShortName();
 
 }

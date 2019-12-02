@@ -37,8 +37,14 @@ const Identifier ControllableContainer::controllablesId ("parameters");
 
 ControllableContainer::ControllableContainer (StringRef niceName) 
 {
-
-    shortName = Controllable::toShortName (niceName);
+    if(niceName.isEmpty()){
+        LOGE("no name on container" );
+        jassertfalse;
+        shortName = Controllable::toShortName ("no name");
+    }
+    else{
+        shortName = Controllable::toShortName (niceName);
+    }
     controlAddress = ControlAddressType::buildFromControllableContainer(this);
 
 }
@@ -135,10 +141,14 @@ void ControllableContainer::notifyChildAddressChanged (ControllableContainer* or
 String ControllableContainer::setNiceName (const String& _niceName)
 {
     String targetName (_niceName);
-
+    if(targetName.isEmpty()){
+        LOGE("assigning no name to container");
+        targetName = "no Name";
+        jassertfalse;
+    }
     if (parentContainer)
     {
-        targetName = parentContainer->getUniqueNameInContainer (_niceName, 0, this);
+        targetName = parentContainer->getUniqueNameInContainer (targetName, 0, this);
     }
 
     return targetName;
@@ -439,9 +449,16 @@ Controllable* ControllableContainer::getControllableForAddress (String address, 
     StringArray addrArray;
     addrArray.addTokens (address.toLowerCase(), juce::StringRef ("/"), juce::StringRef ("\""));
 
-    // remove first when address starts with " / "
-    if(addrArray.size() && addrArray.getReference(0).isEmpty())
+    // remove first when address starts or ends with " / "
+
+    if(addrArray.size() && addrArray.getReference(0).isEmpty()){
         addrArray.remove (0);
+    }
+    if(addrArray.size() && addrArray.getReference(addrArray.size()-1).isEmpty()){
+        addrArray.remove(addrArray.size()-1);
+    }
+
+
 
     ControlAddressType addr;
     for(auto & s:addrArray){

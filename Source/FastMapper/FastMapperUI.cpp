@@ -167,20 +167,35 @@ void FastMapperUI::setViewFilter (const Array<WeakReference<ContainerType>> & fi
 {
     viewFilterContainers = filterContainer;
     viewFilterControllables.clear();
-    MessageManager::getInstance()->callAsync([this](){resetAndUpdateView();});
+    WeakReference<Component> thisRef(this);
+    MessageManager::getInstance()->callAsync([thisRef](){
+        if(thisRef){
+        static_cast<FastMapperUI*>(thisRef.get())->resetAndUpdateView();
+        }
+    });
 }
 
 void FastMapperUI::setViewFilter (const Array<WeakReference<ControllableType>> & filterControllable)
 {
     viewFilterContainers.clear();
     viewFilterControllables = filterControllable;
-    MessageManager::getInstance()->callAsync([this](){resetAndUpdateView();});
+    WeakReference<Component> thisRef(this);
+    MessageManager::getInstance()->callAsync([thisRef](){
+        if(thisRef){
+            static_cast<FastMapperUI*>(thisRef.get())->resetAndUpdateView();
+        }
+    });
 }
 
 void FastMapperUI::resetViewFilter(){
     viewFilterContainers.clear();
     viewFilterControllables.clear();
-    MessageManager::getInstance()->callAsync([this](){resetAndUpdateView();});
+    WeakReference<Component> thisRef(this);
+    MessageManager::getInstance()->callAsync([thisRef](){
+        if(thisRef){
+            static_cast<FastMapperUI*>(thisRef.get())->resetAndUpdateView();
+        }
+    });
 }
 
 bool FastMapperUI::mapPassViewFilter (FastMap* f)
@@ -290,13 +305,14 @@ void FastMapperUI::controllableContainerAdded (ControllableContainer* ori, Contr
     {
         if(dynamic_cast<FastMap*>(cc)){
         WeakReference<ControllableContainer> wf (cc);
-        MessageManager::callAsync ([this, wf] ()
+        WeakReference<Component> thisRef(this);
+        MessageManager::callAsync ([thisRef, wf] ()
         {
-            if (wf.get())
-            {
-                mapsUI.addFromT((FastMap*)wf.get());
 
-                resized();
+            if (wf.get() && thisRef.get())
+            {   auto fmui = static_cast<FastMapperUI*>(thisRef.get());
+                fmui->mapsUI.addFromT((FastMap*)wf.get());
+                fmui->resized();
             }
         });
         }
