@@ -26,7 +26,6 @@ AudioMixerNode::AudioMixerNode (StringRef name) :
     numberOfOutput = addNewParameter<IntParameter> ("numOutput", "number of output", 2, 1, 16);
     oneToOne = addNewParameter<BoolParameter> ("OneToOne", "is this mixer only concerned about one to one volumes (diagonal)", false);
 
-
     setPreferedNumAudioInput (numberOfInput->intValue());
     setPreferedNumAudioOutput (numberOfOutput->intValue());
     numChannelsChanged (true);
@@ -58,19 +57,48 @@ void AudioMixerNode::onContainerParameterChanged ( ParameterBase* p)
     {
         updateOutput();
     }
+    else{
+        int id = soloOuts.indexOf((IntParameter*)p);
+        if(id>=0){
+            auto soloI = soloOuts.getUnchecked(id)->intValue()-1;// zero is none
+            for(int i = 0 ; i< outBuses.size() ; i++){
+                auto ob = outBuses.getUnchecked(i);
+                auto iv = ob->volumes.getUnchecked(id);
+                iv->setValue(i==soloI?DB0_FOR_01:0);
+            }
+        }
 
+    }
 }
 
 void AudioMixerNode::updateInput()
 {
 
     setPreferedNumAudioInput (numberOfInput->intValue());
+
     //    suspendProcessing(false);
 
 }
 
 void AudioMixerNode::numChannelsChanged (bool /*isInput*/)
 {
+
+    if (numberOfInput->intValue() > soloOuts.size())
+    {
+        for(int i =soloOuts.size();i<numberOfInput->intValue();i++){
+            auto * soloOut = addNewParameter<IntParameter>("soloIn"+String(i+1), String("solo a input 123 on a given output").replace("123",String(i+1)),0,0,numberOfOutput->intValue());
+            soloOut->isSavable=false;
+            soloOut->isPresettable=false;
+            soloOut->alwaysNotify=true;
+            soloOuts.add (soloOut);
+        }
+    }
+    else if  (numberOfInput->intValue() < soloOuts.size()){
+        for(int i =numberOfInput->intValue(); i < soloOuts.size();i++){
+            removeControllable(soloOuts.getUnchecked(i));
+        }
+        soloOuts.removeRange (numberOfInput->intValue(), soloOuts.size() - numberOfInput->intValue());
+    }
 
 
     if (numberOfOutput->intValue() > outBuses.size())
@@ -96,6 +124,9 @@ void AudioMixerNode::numChannelsChanged (bool /*isInput*/)
     for (auto& bus : outBuses)
     {
         bus->setNumInput (numberOfInput->intValue());
+    }
+    for(auto & s:soloOuts){
+        s->setMinMax(0,numberOfOutput->intValue());
     }
 }
 void AudioMixerNode::updateOutput()
@@ -208,11 +239,14 @@ void AudioMixerNode::processBlockInternal (AudioBuffer<float>& buffer, MidiBuffe
 // output bus
 
 AudioMixerNode::OutputBus::OutputBus (int _outputIndex, int numInput):
-    outputIndex (_outputIndex),
-    ParameterContainer ("out " + String (_outputIndex+1))
+    ParameterContainer ("out " + String (_outputIndex+1)),
+    outputIndex (_outputIndex)
 {
     nameParam->setInternalOnlyFlags(true,false);
-    
+    soloIn = addNewParameter<IntParameter>("solo input","solo a given input on out"+String(_outputIndex+1),0,0,1);
+    soloIn->isSavable=false;
+    soloIn->isPresettable=false;
+    soloIn->alwaysNotify=true;
     setNumInput (numInput);
 
 
@@ -248,12 +282,21 @@ void AudioMixerNode::OutputBus::setNumInput (int numInput)
         }
     }
 
-
+    soloIn->setMinMax(0,numInput);
     lastVolumes.resize (numInput);
 }
 
 void AudioMixerNode::OutputBus::onContainerParameterChanged ( ParameterBase* p)
 {
+    if(p==soloIn){
+
+        for(int i = volumes.size()-1 ; i>=0;i--){
+            volumes.getUnchecked(i)->setValue((soloIn->intValue()==i+1)?DB0_FOR_01:0);
+
+        }
+
+    }
+    else{
     ScopedLock lk (volumes.getLock());
 
     if (volumes.contains ((FloatParameter*)p))
@@ -266,6 +309,7 @@ void AudioMixerNode::OutputBus::onContainerParameterChanged ( ParameterBase* p)
             v = float01ToGain (volumes.getUnchecked (i)->floatValue());
             i++;
         }
+    }
     }
 }
 

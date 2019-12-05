@@ -35,6 +35,7 @@ public:
         Array<FloatParameter*, CriticalSection> volumes;
         Array<float> logVolumes;
         Array<float> lastVolumes;
+        IntParameter* soloIn;
         int outputIndex;
     };
 
@@ -43,6 +44,7 @@ public:
     void setParentNodeContainer (NodeContainer* c)override;
 
     OwnedArray<OutputBus> outBuses;
+    Array<IntParameter*> soloOuts;
     //  OwnedArray<Vumeter>
     AudioBuffer<float> cachedBuffer;
 
