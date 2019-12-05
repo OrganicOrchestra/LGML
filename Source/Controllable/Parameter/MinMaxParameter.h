@@ -37,6 +37,14 @@ public:
     bool hasFiniteBounds() const{
         return !minimumValue.isUndefined() && !maximumValue.isUndefined();
     }
+    template<class T>
+    T getNumericMin()const{
+        return minimumValue.isUndefined()?std::numeric_limits<T>::min():(T)minimumValue;
+    }
+    template<class T>
+    T getNumericMax()const{
+        return maximumValue.isUndefined()?std::numeric_limits<T>::max():(T)maximumValue;
+    }
 
     DynamicObject* createObject() override
     {

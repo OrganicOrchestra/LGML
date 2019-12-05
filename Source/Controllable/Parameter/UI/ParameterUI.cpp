@@ -393,7 +393,7 @@ void ParameterUI::updateOverlayEffect(){
     }
 
     setComponentEffect (mapEffect.get());
-    repaint();
+    //repaint();
 
 }
 

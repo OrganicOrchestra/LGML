@@ -37,7 +37,7 @@ public:
 
     }
 
-    virtual ~QueuedNotifier() {cancelPendingUpdate();masterReference.clear();}
+    virtual ~QueuedNotifier() {cancelPendingUpdate();QueuedNotifier<MessageClass,CriticalSectionToUse>::masterReference.clear();}
 
     using thisQueueType = QueuedNotifier<MessageClass,CriticalSectionToUse> ;
     typename WeakReference<thisQueueType>::Master  masterReference;

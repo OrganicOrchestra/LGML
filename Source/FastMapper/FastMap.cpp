@@ -35,8 +35,9 @@ ParameterContainer ("FastMap")
     enabledParam = addNewParameter<BoolParameter> ("Enabled", "Enabled / Disable Fast Map", true);
 
     inputRange = addNewParameter<RangeParameter> ("In Range", "Input Range", 0.0f, 1.0f, 0.0f, 1.0f);
+    inputRange->setUnbounded();
     outputRange = addNewParameter<RangeParameter> ("Out Range", "Out Range", 0.0f, 1.0f, 0.0f, 1.0f);
-
+    outputRange->setUnbounded();
     invertParam = addNewParameter<BoolParameter> ("Invert", "Invert the output signal", false);
     toggleParam = addNewParameter<BoolParameter> ("Toggle", "Toggles the output signal", false);
     fullSync = addNewParameter<BoolParameter> ("FullSync", "synchronize source parameter too", true);
@@ -263,11 +264,13 @@ void FastMap::linkedParamChanged (ParameterProxy* p)
         }
 
         auto mmp = dynamic_cast<MinMaxParameter*> (lpar);
-        float newMin = mmp ? (float)mmp->minimumValue : 0;
-        float newMax = mmp ? (float)mmp->maximumValue : 1;
+        var newMin = mmp ? mmp->minimumValue : var::undefined();
+        var newMax = mmp ? mmp->maximumValue : var::undefined();
         inputRange->setMinMax (newMin, newMax);
-        if(inputRange->getRangeMin() < newMin || inputRange->getRangeMax()>newMax){ // modify only if range changed a lot
-            inputRange->setValue (newMin,newMax);
+        if(inputRange->hasFiniteBounds()){
+            if(inputRange->getRangeMin() < (float)newMin || inputRange->getRangeMax()>(float)newMax){ // modify only if range changed a lot
+                inputRange->setValue (newMin,newMax);
+            }
         }
     }
     else if (p == referenceOut)
@@ -281,11 +284,14 @@ void FastMap::linkedParamChanged (ParameterProxy* p)
         }
 
         auto mmp = dynamic_cast<MinMaxParameter*> (lpar);
-        float newMin = mmp ? (float)mmp->minimumValue : 0;
-        float newMax = mmp ? (float)mmp->maximumValue : 1;
+        var newMin = mmp ? mmp->minimumValue : var::undefined();
+        var newMax = mmp ? mmp->maximumValue : var::undefined();
         outputRange->setMinMax (newMin, newMax);
-        if(outputRange->getRangeMin() < newMin || outputRange->getRangeMax()>newMax){ // modify only if range changed a lot
-            outputRange->setValue (newMin,newMax);
+        if(outputRange->hasFiniteBounds()){
+            if(outputRange->getRangeMin() < (float)newMin || outputRange->getRangeMax()>(float)newMax){ // modify only if range changed a lot
+                outputRange->setValue (newMin,newMax);
+            }
+
         }
 
 

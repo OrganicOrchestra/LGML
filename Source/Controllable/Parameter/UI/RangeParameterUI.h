@@ -29,7 +29,7 @@ public:
 
         slider.addListener (this);
         addAndMakeVisible (slider);
-        slider.setRange (p->minimumValue, p->maximumValue);
+        slider.setRange (p->getNumericMin<float>(), p->getNumericMax<float>());
         slider.setMinAndMaxValues (p->getRangeMin(), p->getRangeMax(),dontSendNotification);
         slider.setPaintingIsUnclipped(true);
     }

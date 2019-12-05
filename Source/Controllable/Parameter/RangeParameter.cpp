@@ -54,10 +54,22 @@ void RangeParameter::setValueInternal (const var& _value)
         jassertfalse;
         return;
     }
-
+    if(minimumValue.isUndefined() && maximumValue.isUndefined()){
+        value[0] = _value[0];
+        value[1] = _value[1];
+    }
+    else if(minimumValue.isUndefined()){
+        value[0] = jmin(maximumValue,_value[0]);
+        value[1] = jmin(maximumValue,_value[1]);
+    }
+    else if (maximumValue.isUndefined()){
+        value[0] = jmax(minimumValue,_value[0]);
+        value[1] = jmax(minimumValue,_value[1]);
+    }
+    else{
     value[0] = jlimit<float> (minimumValue, maximumValue, _value[0]);
     value[1] = jlimit<float> (minimumValue, maximumValue, _value[1]);
-
+    }
 }
 
 //Point<double> RangeParameter::getRangeMinMax() {

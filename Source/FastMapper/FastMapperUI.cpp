@@ -100,6 +100,9 @@ mapsUI(new StackedContainerUI<FastMapUI, FastMap>(
 
 FastMapperUI::~FastMapperUI()
 {
+    if(auto i = Inspector::getInstanceWithoutCreating()){
+        i->removeInspectorListener (this);
+    }
     fastMapper->removeControllableContainerListener (this);
     if(auto* i = LGMLDragger::getInstanceWithoutCreating()){
         i->removeSelectionListener(this);
