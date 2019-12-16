@@ -79,12 +79,13 @@ class LGMLLogger : public Logger
         virtual void logCleared() {}
     private:
         void handleAsyncUpdate() final{
-            int end = lastIdx.get();
+            int end = lastIdx.get()+1;
             if(end<readIdx){logCleared();readIdx = 0;}
-            for(int i = readIdx ; i <= end ; i++){
+            for(int i = readIdx ; i < end ; i++){
                 newMessage(LGMLLogger::getInstance()->loggedElements.getUnchecked(i));
             }
-            readIdx=jmax(0,end+1);
+            readIdx=jmax(0,end);
+            
         }
         friend class LGMLLogger;
         void newMessageAtIdx(int idx){
