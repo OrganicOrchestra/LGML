@@ -229,10 +229,10 @@ bool FastMapper::checkValidNewFastMap (ParameterBase* referenceInParam,Parameter
                 //                else if(cancelAddReplace==1){return true;}
             }
             if(ff->referenceOut->getLinkedParam() == referenceOutParam){
-                String fromAddr = referenceOutParam?referenceInParam->getControlAddress().toString():"None";
+                String fromAddr = referenceOutParam?referenceOutParam->getControlAddress().toString():"None";
                 ParameterBase* otherP = ff->referenceIn->getLinkedParam();
                 String otherAddress = otherP?otherP->getControlAddress().toString():"None";
-                String infoText =juce::translate(  "source (right side) of fast map 456\n is already mapped to 123 \n ?re you sure to proceed ? ").replace("123",otherAddress).replace("456",fromAddr);
+                String infoText =juce::translate(  "dest (right side) of fast map 456\n is already mapped to 123 \n ?re you sure to proceed ? ").replace("123",otherAddress).replace("456",fromAddr);
                 int cancelAddReplace = AlertWindow::showYesNoCancelBox(AlertWindow::AlertIconType::QuestionIcon,
                                                                       "FastMapWarning",
                                                                       infoText,juce::translate("Add"), //1
