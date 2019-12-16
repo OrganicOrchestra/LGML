@@ -23,7 +23,7 @@ REGISTER_NODE_TYPE (JsNode)
 
 JsNode::JsNode (StringRef name) : NodeBase (name, false), JsEnvironment ("node.jsNode", this)
 {
-    _canHavePresets = false;
+    //_canHavePresets = false;
 
     setPreferedNumAudioInput (0);
     setPreferedNumAudioOutput (0);

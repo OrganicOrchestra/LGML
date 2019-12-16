@@ -777,9 +777,11 @@ var JsEnvironment::createParameterListenerObject (const var::NativeFunctionArgs&
 JSEnvContainer::JSEnvContainer (JsEnvironment* pEnv):
 ParameterContainer ("jsParams"), jsEnv (pEnv)
 {
+    _canHavePresets = false;// prevent dynamic script loading for now
     nameParam->isEditable = false;
     scriptPath = addNewParameter<FileParameter> ("ScriptPath", "path for js script", "",Js,std::bind(&JsEnvironment::loadFile,jsEnv,std::placeholders::_1),true);
     scriptPath->isControllableExposed = false;
+    //scriptPath->isPresettable = false;
 
     logT =  addNewParameter<Trigger> ("LogEnvironment", "print hierarchy of JS objects");
     
