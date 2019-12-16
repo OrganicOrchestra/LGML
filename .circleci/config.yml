@@ -1,11 +1,15 @@
-version: 2
+version: 2.1
+
+orbs:
+  win: circleci/windows@2.2.0 # The Windows orb give you everything you need to start using the Windows executor.
+
 jobs:
   #####
   #win
   #######
   buildWin: # name of your job
-    machine:
-      image: windows-default # Windows machine image
+    executor: 
+      name: win/default # executor type# Windows machine image
       environment:
         ASIOSDK: C:\projects\ASIOSDK2.3
     steps:
