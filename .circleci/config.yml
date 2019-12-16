@@ -10,12 +10,11 @@ jobs:
   buildWin: # name of your job
     executor: 
       name: win/default # executor type# Windows machine image
-      environment:
-        ASIOSDK: C:\projects\ASIOSDK2.3
+      shell: bash.exe #ASIOSDK: C:\projects\ASIOSDK2.3
     steps:
       # Commands are run in a Windows virtual machine environment
         - checkout
-        - run: Write-Host 'Hello, Windows'
+        - run: echo 'Hello, Windows'
   #######
 # ubuntu14
 #########
@@ -127,7 +126,6 @@ jobs:
         environment:
           CROSS_ARCH: armhf
           ARCH_FLAGS_PI3: -mcpu=cortex-a53 -mfpu=neon-fp-armv8 -mfloat-abi=hard # -ffast-math # arch flags for JUCEMakefile -> RPI3
-          ARCH_FLAGS_PI2: -mcpu=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard  # -ffast-math # arch flags for JUCEMakefile -> RPI2
           ARCH_FLAGS_PI4:  -mcpu=cortex-a72 -mtune=cortex-a72 -mfpu=neon-fp-armv8 -mfloat-abi=hard
           DST_LGML_PATH: /tmp/buildRasp
           PKG_CONFIG_PATH: /usr/lib/arm-linux-gnueabihf/pkgconfig
@@ -170,9 +168,6 @@ jobs:
             $BUILDLGML_CMD_BASE --configuration=Release --packagesuffix=Rpi3
             arm-linux-gnueabihf-objdump -x ~/LGML/Builds/LinuxMakefile/build/LGML | grep NEEDED > "$DST_LGML_PATH/dependenciesRpi3.txt"
             python3 Scripts/buildScript.py --clean
-            export ARCH_FLAGS=$ARCH_FLAGS_PI2
-            $BUILDLGML_CMD_BASE --configuration=Release --packagesuffix=Rpi2
-            arm-linux-gnueabihf-objdump -x ~/LGML/Builds/LinuxMakefile/build/LGML | grep NEEDED > "$DST_LGML_PATH//dependenciesRpi2.txt"
 
       - store_artifacts:
           path: /tmp/buildRasp/
