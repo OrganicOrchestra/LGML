@@ -123,19 +123,24 @@ void OSCController::setupReceiver()
 
         OLOGE(nameParam->stringValue() <<" : " <<
              juce::translate("can't connect to local port : ") + localPortParam->stringValue());
+        recieverConnected = false;
+
     }
     else{
+        recieverConnected = true;
+
         //#if JUCE_DEBUG
         //        OLOGW (nameParam->stringValue()  << "listen to " << localPortParam->stringValue());
         //#endif
         listenedPorts.set(this,localPortParam->stringValue().getIntValue());
     }
+    isConnected->setValue (recieverConnected && senderConnected);
 
     //DBG("Receiver connected" + String(result));
 }
 void OSCController::setupSender()
 {
-    isConnected->setValue (false);
+    senderConnected = false;
     sender.disconnect();
     //#if JUCE_DEBUG
     //    OLOGW(nameParam->stringValue() << "disconnect sender " << remotePortParam->stringValue());
@@ -149,6 +154,7 @@ void OSCController::setupSender()
         OLOGE(nameParam->stringValue() <<" : " <<
              juce::translate("no valid ip found for ") << remoteHostParam->stringValue());
     }
+
 
 }
 
@@ -211,6 +217,7 @@ void OSCController::resolveHostnameIfNeeded()
             hostNameResolved = true;
         }
     }
+    isConnected->setValue (recieverConnected && senderConnected);
 
 }
 
@@ -222,13 +229,13 @@ bool OSCController::connectSender(String & _remoteIP, int portNum){
         remotePortParam->setValueFrom (this,String((int)portNum),false,true); // wont recall
     }
 
-    bool connected = validPort && sender.connect (_remoteIP,portNum );
-    isConnected->setValue (connected);
+    senderConnected = validPort && sender.connect (_remoteIP,portNum );
+
     localSentPorts.set(this,portNum);
     //#if JUCE_DEBUG
     //        OLOGW (nameParam->stringValue() << (connected?"":"not ") << "connected " << remoteIP << ":" << remotePortParam->stringValue());
     //#endif
-    return connected;
+    return senderConnected;
 }
 
 void OSCController::processMessage (const OSCMessage& msg)
@@ -610,7 +617,7 @@ bool OSCController::sendOSCInternal (OSCMessage& m)
 {
     if (logOutGoingOSC->boolValue()) { logMessage (m, "Out:");}
     outActivityTrigger->triggerDebounced(activityTriggerDebounceTime);
-    if(isConnected->boolValue()){
+    if(senderConnected){
         return sender.send (m);
     }
     else{

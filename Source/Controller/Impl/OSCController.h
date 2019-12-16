@@ -125,6 +125,8 @@ private:
     static HashMap<OSCController * , int> localSentPorts;
     static bool AnyoneIsListeningOnPort(int);
     static bool AnyoneIsSendingOnLocalOnPort(int);
+    bool recieverConnected = false;
+    bool senderConnected = false;
 };
 
 
