@@ -37,7 +37,7 @@ public:
     void initFromParams();
     void notifyFromParams();
     virtual ~ConnectableNodeUIParams();
-    
+    void copyPositionFrom(ConnectableNodeUIParams *other);
 
     ParameterContainer * addContainerFromObject(const String &s ,DynamicObject * d) override;
 

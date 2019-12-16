@@ -114,6 +114,9 @@ NodeManagerUI::~NodeManagerUI()
     clearSingletonInstance();
 }
 
+ConnectableNodeUIParams * NodeManagerUI::getUIParamsForNode(ConnectableNode * n){
+    return dynamic_cast<ConnectableNodeUIParams*>(uiSync->getSlaveRelatedContainer(n));
+}
 void NodeManagerUI::clear()
 {
     setCurrentViewedContainer (nullptr);

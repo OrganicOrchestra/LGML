@@ -47,6 +47,7 @@ public:
     NodeManager* nodeManager;
     std::unique_ptr<NodeContainerViewer> currentViewer;
 
+    ConnectableNodeUIParams * getUIParamsForNode(ConnectableNode * n);
     void clear();
 
     void resized() override;

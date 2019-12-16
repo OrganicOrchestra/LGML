@@ -320,6 +320,30 @@ DynamicObject* Engine::createObject()
 /// ===================
 // loading
 
+void checkUIDDup(DynamicObject * o, HashMap<String, String> & existingUIDs,const String addr){
+    static Identifier uidId("uid");
+    if(!o)return;
+    auto props = o->getProperties();
+    for(auto k:props){
+        if(k.name==uidId){
+            auto uid =k.value.toString();
+            if(existingUIDs.contains(uid)){
+                LOGE("found duplicate uid between "<<addr <<" and " << existingUIDs[uid]);
+                o->setProperty(uidId, Uuid().toString());
+            }
+            else if(uid.isEmpty()){
+                LOGE("found empty uid at "<<addr );
+                o->setProperty(uidId, Uuid().toString());
+            }
+            else{
+                existingUIDs.set(uid,addr);
+            }
+        }
+        else if(k.value.isObject()){
+            checkUIDDup(k.value.getDynamicObject(),existingUIDs,addr+k.name);
+        }
+    }
+}
 void Engine::loadJSONData (const var& data, ProgressTask* loadingTask)
 {
 
@@ -329,12 +353,19 @@ void Engine::loadJSONData (const var& data, ProgressTask* loadingTask)
 
 
     DynamicObject* d = data.getDynamicObject();
+    ProgressTask* integrityCheckTask = loadingTask->addTask (juce::translate("integrityCheck"));
     ProgressTask* presetTask = loadingTask->addTask (juce::translate("presetManager"));
     ProgressTask* timeManagerTask = loadingTask->addTask(juce::translate("timeManager"));
     ProgressTask* nodeManagerTask = loadingTask->addTask (juce::translate("nodeManager"));
     ProgressTask* controllerManagerTask = loadingTask->addTask (juce::translate("controllerManager"));
     ProgressTask* fastMapperTask = loadingTask->addTask (juce::translate("fastMapper"));
 
+    integrityCheckTask->start();
+    {
+    HashMap<String, String> uids;
+    checkUIDDup(d,uids,"");
+    }
+    integrityCheckTask->end();
     presetTask->start();
 
     //    if (d->hasProperty ("presetManager")) PresetManager::getInstance()->configureFromObject (d->getProperty ("presetManager").getDynamicObject());

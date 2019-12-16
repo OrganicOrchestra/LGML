@@ -486,19 +486,32 @@ bool MainContentComponent::perform (const InvocationInfo& info)
 
                                     if (n && ncv)
                                     {
-                                        n->uid = Uuid();// ensure to have different uuid than the one from JSON
+                                        std::function<void(DynamicObject*)> removeUIDs = [&](DynamicObject*o){
+                                            o->removeProperty(ConnectableNode::uidIdentifier);
+                                            for(auto k : o->getProperties()){
+                                                auto dob = k.value.getDynamicObject();
+                                                if(dob){
+                                                    removeUIDs(dob);
+                                                }
+                                            }
+
+                                        };
                                         String oldName = n->shortName.toString();
                                         String oldPastedName;
                                         if(auto props = d->getProperty("data").getDynamicObject()){
-                                            props->removeProperty(ConnectableNode::uidIdentifier);
+                                            removeUIDs(props);
                                             if(auto pprops =props->getProperty("parameters").getDynamicObject()){
                                             oldPastedName = pprops->getProperty("Name");
-
                                             }
                                         }
 
+//                                        n->uid = Uuid();// ensure to have different uuid than the one from JSON in all childrens
+//                                        auto innerConts = n->getAllControllableContainers(true);
+//                                        for(auto c:innerConts){if(c){c->uid=Uuid();}}
+//
 
                                         ncv->addNodeUndoable(n, Point<int>(),d->getProperty ("data"));
+                                        
                                         String newName =n->shortName.toString();
                                         newNames.set(oldPastedName,newName);
                                         auto nodeUI = ncv->getUIForNode(n);

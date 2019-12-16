@@ -50,6 +50,16 @@ void ConnectableNodeUIParams::initFromParams(){
 
 }
 
+void ConnectableNodeUIParams::copyPositionFrom(ConnectableNodeUIParams *other){
+    if(other){
+        nodePosition->setValue (other->nodePosition->value.clone());
+        nodeMinimizedPosition->setValue(other->nodeMinimizedPosition->value.clone());
+        nodeSize->setValue(other->nodeSize->value.clone());
+        miniModeParam->setValue(other->miniModeParam->value.clone());
+    }
+
+}
+
 ParameterContainer * ConnectableNodeUIParams::addContainerFromObject(const String &s ,DynamicObject * d) {
     ParameterContainer* existing = dynamic_cast<ParameterContainer*>(getControllableContainerByName(s));
     if(existing){
