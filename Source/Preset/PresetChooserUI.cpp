@@ -261,12 +261,24 @@ void PresetChooserUI::comboBoxChanged (ComboBox* cb)
 
 void PresetChooserUI::controllableContainerPresetLoaded (ControllableContainer*,Preset * )
 {
+    auto wkC = WeakReference<Component>(this);
+    MessageManager::callAsync([wkC](){
+        if(wkC){
+            auto pui = static_cast<PresetChooserUI*> (wkC.get());
+            pui->updatePresetComboBox (false);
+        }
+    });
 
-    updatePresetComboBox (false);
 }
 void PresetChooserUI::presetRemoved(Preset *) {
 
-    updatePresetComboBox (false);
+    auto wkC = WeakReference<Component>(this);
+    MessageManager::callAsync([wkC](){
+        if(wkC){
+            auto pui = static_cast<PresetChooserUI*> (wkC.get());
+            pui->updatePresetComboBox (false);
+        }
+    });
 
 
 };
