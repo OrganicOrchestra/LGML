@@ -30,6 +30,16 @@ VisualStudio2017/*
 !VisualStudio2017/icon.ico
 !VisualStudio2017/resources.rc
 
+!VisualStudio2019/
+VisualStudio2019/*
+!VisualStudio2019/LGML.sln
+!VisualStudio2019/LGML.vcxproj
+!VisualStudio2019/LGML.vcxproj.filters
+!VisualStudio2019/LGML_App.vcxproj
+!VisualStudio2019/LGML_App.vcxproj.filters
+!VisualStudio2019/icon.ico
+!VisualStudio2019/resources.rc
+
 
 
 
