@@ -306,7 +306,7 @@ public:
     {
 
         auto* nu = (NetworkUtils*) context;
-        String name (fullname);
+        String name ((CharPointer_UTF8 )fullname);
         String hostIP (hosttarget);
         {
             // format hostname to ip part
