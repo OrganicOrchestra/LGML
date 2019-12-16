@@ -94,7 +94,7 @@ int BufferBlockList::getAllocatedNumChannels()const
 {
     return size() > 0 ? OwnedArray::getFirst()->getNumChannels() : 0;
 }
-void BufferBlockList::copyTo (AudioSampleBuffer& outBuf, int listStartSample, int bufStartSample, int numSampleToCopy)
+void BufferBlockList::copyTo (AudioSampleBuffer& outBuf, int listStartSample, int bufStartSample, int numSampleToCopy) const
 {
     if (numSampleToCopy == -1) numSampleToCopy = outBuf.getNumSamples();
 
@@ -199,4 +199,12 @@ AudioSampleBuffer& BufferBlockList::getContiguousBuffer (int sampleStart, int nu
     contiguous_Cache.setSize (getAllocatedNumChannels(), numSamples);
     copyTo (contiguous_Cache, sampleStart, 0, numSamples);
     return contiguous_Cache;
+}
+AudioSampleBuffer& BufferBlockList::fillAll (AudioSampleBuffer& buf) const
+{
+    auto numSamples = getNumSamples() ;
+
+    buf.setSize (getAllocatedNumChannels(), numSamples);
+    copyTo (buf, 0, 0, numSamples);
+    return buf;
 }

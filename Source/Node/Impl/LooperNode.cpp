@@ -467,6 +467,8 @@ void LooperNode::onContainerTriggerTriggered (Trigger* t)
 
         WavAudioFormat format;
 
+        AudioBuffer<float> bufferCached;
+
         for (auto& tr : trackGroup.tracks)
         {
             if (tr->playableBuffer.getRecordedLength())
@@ -526,7 +528,7 @@ void LooperNode::onContainerTriggerTriggered (Trigger* t)
                     if (afw)
                     {
                         fp.release();
-                        afw->writeFromAudioSampleBuffer (tr->playableBuffer.bufferBlockList.getContiguousBuffer (0, -1), 0, (int)tr->playableBuffer.getRecordedLength());
+                        afw->writeFromAudioSampleBuffer (tr->playableBuffer.bufferBlockList.fillAll (bufferCached), 0, (int)tr->playableBuffer.getRecordedLength());
                         afw->flush();
 
                     }
