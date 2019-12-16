@@ -124,7 +124,7 @@ jobs:
           CROSS_ARCH: armhf
           ARCH_FLAGS_PI3: -mcpu=cortex-a53 -mfpu=neon-fp-armv8 -mfloat-abi=hard # -ffast-math # arch flags for JUCEMakefile -> RPI3
           ARCH_FLAGS_PI2: -mcpu=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard  # -ffast-math # arch flags for JUCEMakefile -> RPI2
-          ARCH_FLAGS_PI4: -mfloat-abi=hard -mfpu=vfp -mtls-dialect=gnu  -marm -march=armv8-a+crc+simd
+          ARCH_FLAGS_PI4:  -mcpu=cortex-a72 -mtune=cortex-a72 -mfpu=neon-fp-armv8 -mfloat-abi=hard
           DST_LGML_PATH: /tmp/buildRasp
           PKG_CONFIG_PATH: /usr/lib/arm-linux-gnueabihf/pkgconfig
           BUILDLGML_CMD_BASE: python3 Scripts/buildScript.py --configure --exportpath=/tmp/buildRasp/ --os=linux --build --package --export
