@@ -385,7 +385,7 @@ bool OutlinerItem::mightContainSubItems()
 
 Component* OutlinerItem::createItemComponent()
 {
-
+    jassert(this);
     currentDisplayedComponent = new OutlinerItemComponent (this);
     return currentDisplayedComponent;
 }
@@ -508,12 +508,17 @@ label ("label"),
 paramUI (nullptr)
 
 {
+    if(_item){
     if(_item->isContainer){
         InspectableComponent::setRelatedContainer(_item->container);
     }
     else{
         InspectableComponent::setRelatedParameter(_item->parameter);
 
+    }
+    }
+    else{
+        jassertfalse;
     }
     setTooltip (item->isContainer ? item->container->getControlAddress().toString() : juce::translate(item->parameter->description) + "\n"+juce::translate("Control Address")+" : "  + item->parameter->controlAddress.toString());
     bool isNameEditable = !item->isContainer && item->parameter->isUserDefined;
