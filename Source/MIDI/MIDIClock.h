@@ -18,10 +18,10 @@
 
 #pragma once
 #include "MIDIListener.h"
-#include "../Time/TimeManager.h"
+#include "../Time/TimeManagerListener.h"
 
 constexpr int MIDI_SYNC_QUEUE_SIZE = 100;
-class MIDIClock:  private TimeManager::TimeManagerListener
+class MIDIClock:  private TimeManagerListener
 {
 public:
     MIDIClock(bool sendSPP);

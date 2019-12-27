@@ -502,6 +502,10 @@
 			isa = PBXBuildFile;
 			fileRef = 68116CA84B74FA6D90AC3326;
 		};
+		37B40D96CC1F9B985EC7AEAA = {
+			isa = PBXBuildFile;
+			fileRef = 03DDEF56A938312DF66822BD;
+		};
 		45EAC91B27B75C1B91526B06 = {
 			isa = PBXBuildFile;
 			fileRef = E88DB6C2F8CAC6D457342B80;
@@ -510,9 +514,9 @@
 			isa = PBXBuildFile;
 			fileRef = E8D8722BF6BED74CBA89FAD5;
 		};
-		863FD0C7C0B4FA55E2D7C3CA = {
+		EDA92434C2BB3DDD5BA8C2EB = {
 			isa = PBXBuildFile;
-			fileRef = 318E78212AA9469B0BA3BC83;
+			fileRef = 6968F30F1923067FF91928D5;
 		};
 		AEF845C80C8ED1B2211998C9 = {
 			isa = PBXBuildFile;
@@ -786,6 +790,13 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = PluginWindow.h;
 			path = ../../Source/UI/PluginWindow.h;
+			sourceTree = "SOURCE_ROOT";
+		};
+		03DDEF56A938312DF66822BD = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = QAction.cpp;
+			path = ../../Source/Time/QAction.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		0475290B202305348FE1E1E8 = {
@@ -1299,13 +1310,6 @@
 			path = ../../Source/Preset/PresetChooserUI.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
-		318E78212AA9469B0BA3BC83 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = TimeMasterCandidate.cpp;
-			path = ../../Source/Time/TimeMasterCandidate.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
 		32DF567F6BEEF9C793900F6F = {
 			isa = PBXFileReference;
 			lastKnownFileType = wrapper.framework;
@@ -1808,6 +1812,13 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = RingBuffer.h;
 			path = ../../Source/Audio/RingBuffer.h;
+			sourceTree = "SOURCE_ROOT";
+		};
+		6968F30F1923067FF91928D5 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = TimeManagerListener.cpp;
+			path = ../../Source/Time/TimeManagerListener.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		6AD19C8334B23C1EC24F38F3 = {
@@ -2671,6 +2682,13 @@
 			path = ../../Source/Controllable/Parameter/UI/FileParameterUI.h;
 			sourceTree = "SOURCE_ROOT";
 		};
+		BCB59F3719604B924F312CDD = {
+			isa = PBXFileReference;
+			lastKnownFileType = file.ipp;
+			name = TransportClick.ipp;
+			path = ../../Source/Time/TransportClick.ipp;
+			sourceTree = "SOURCE_ROOT";
+		};
 		BCD07C8F3E892DA25B9D2B16 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.objcpp;
@@ -2844,6 +2862,13 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = LooperNode.h;
 			path = ../../Source/Node/Impl/LooperNode.h;
+			sourceTree = "SOURCE_ROOT";
+		};
+		C9864C51D34CA2323700D0AF = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = TimeManagerListener.h;
+			path = ../../Source/Time/TimeManagerListener.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		CA2E27B3D2ABA776E7F29BFB = {
@@ -3154,6 +3179,13 @@
 			path = ../../Source/UI/VuMeter.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
+		E4F4D6BAA4707D53AF2E5DE2 = {
+			isa = PBXFileReference;
+			lastKnownFileType = text.plist.xml;
+			name = LGML.entitlements;
+			path = LGML.entitlements;
+			sourceTree = "SOURCE_ROOT";
+		};
 		E7356E32A20CAF3F4CBA6ECB = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -3383,6 +3415,13 @@
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = AudioDeviceOutNode.cpp;
 			path = ../../Source/Node/Impl/AudioDeviceOutNode.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
+		F5A050E7169CCB9C878DF2B1 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = QAction.h;
+			path = ../../Source/Time/QAction.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		F737E19B74C7E1409BE54BC2 = {
@@ -3880,13 +3919,17 @@
 		988AA8B0ACB1E3956AC156F8 = {
 			isa = PBXGroup;
 			children = (
+				DA15374957FB6B4F737E6F9B,
+				BCB59F3719604B924F312CDD,
+				03DDEF56A938312DF66822BD,
+				F5A050E7169CCB9C878DF2B1,
 				5444798DFD14CD223920FC3C,
 				E88DB6C2F8CAC6D457342B80,
 				3AE0A6AF56A43948EA62252E,
 				E8D8722BF6BED74CBA89FAD5,
 				ECCE1FDF334CC330748872C4,
-				318E78212AA9469B0BA3BC83,
-				DA15374957FB6B4F737E6F9B,
+				6968F30F1923067FF91928D5,
+				C9864C51D34CA2323700D0AF,
 			);
 			name = Time;
 			sourceTree = "<group>";
@@ -4222,6 +4265,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_LINK_OBJC_RUNTIME = NO;
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";
 				DEAD_CODE_STRIPPING = YES;
@@ -4278,6 +4322,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_LINK_OBJC_RUNTIME = NO;
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = NO;
@@ -4335,6 +4380,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_LINK_OBJC_RUNTIME = NO;
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = NO;
@@ -4393,6 +4439,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_LINK_OBJC_RUNTIME = NO;
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = NO;
@@ -4453,6 +4500,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_LINK_OBJC_RUNTIME = NO;
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = NO;
@@ -4525,6 +4573,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "";
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = c11;
@@ -4569,6 +4618,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "";
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -4614,6 +4664,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "";
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -4659,6 +4710,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "";
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -4704,6 +4756,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "";
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -4875,9 +4928,10 @@
 				209498ED4828D770454791E0,
 				800E5B916E95233CD78F37D8,
 				DD0B2FFD9609C6D73C7A9B67,
+				37B40D96CC1F9B985EC7AEAA,
 				45EAC91B27B75C1B91526B06,
 				4518ED51BC3883774932667D,
-				863FD0C7C0B4FA55E2D7C3CA,
+				EDA92434C2BB3DDD5BA8C2EB,
 				AEF845C80C8ED1B2211998C9,
 				A7982D127E6AF8D2B80D849B,
 				150D253C29501BA592764CCE,

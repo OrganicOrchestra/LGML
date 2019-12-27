@@ -21,6 +21,7 @@
 #include "LooperTrack.h"
 
 #define MAX_NUM_TRACKS 32
+#include "../../Time/TimeManagerListener.h"
 #include "../../Time/TimeMasterCandidate.h"
 
 #include "../../Audio/RingBuffer.h"
@@ -28,7 +29,8 @@
 
 class LooperNode :
     public NodeBase,
-    public TimeMasterCandidate, TimeManager::TimeManagerListener
+    public TimeManagerListener,
+    public TimeMasterCandidate
 
 {
 

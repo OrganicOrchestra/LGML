@@ -18,6 +18,7 @@
 
 #include "MIDIClock.h"
 #include "../Engine.h"
+#include "../Time/TimeManager.h"
 static Array<MIDIClock*,CriticalSection> allClocks={};
 
 class MIDIClockRunner : public Thread,public DeletedAtShutdown,public Engine::EngineListener{

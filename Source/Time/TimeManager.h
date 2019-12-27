@@ -23,17 +23,18 @@
 
 /*
  This singleton handle time at sample Level
- then can dispatch synchronous or asynchronous event via TimeManager::TimeManagerListener
+ then can dispatch synchronous or asynchronous event via TimeManagerListener
  Also provide basic click ability, and tap tempo via its parameters click and tapTempo
  */
 
 #include "TimeMasterCandidate.h"
+//#include "TimeManagerListener.h"
 #include "../Controllable/Parameter/ParameterContainer.h"
 #include "../Audio/AudioHelpers.h"
 #include "../Audio/AudioConfig.h"
 
 
-
+class TimeManagerListener;
 class LinkImpl;
 
 class FadeInOut;
@@ -68,8 +69,7 @@ struct TransportTimeInfo
 };
 
 
-class TimeManager : public AudioIODeviceCallback, public ParameterContainer, public AudioPlayHead,
-    public TimeMasterCandidate
+class TimeManager : public AudioIODeviceCallback, public ParameterContainer, public AudioPlayHead
 {
 
 
@@ -174,29 +174,12 @@ public :
 
     void notifyListenerCleared();
 
-    class TimeManagerListener
-    {
-    public:
-        virtual ~TimeManagerListener() {}
-        virtual void BPMChanged (double /*BPM*/) {}
-        virtual void timeJumped (sample_clk_t /*time*/) {}
-        virtual void playStop (bool /*playStop*/) {}
-        // info for stopping manager if needed;
-        virtual bool isBoundToTime() = 0;
-
-
-
-    };
+   
 
     ListenerList<TimeManagerListener> timeManagerListeners;
 
     void addTimeManagerListener (TimeManagerListener* newListener) { timeManagerListeners.add (newListener); }
     void removeTimeManagerListener (TimeManagerListener* listener) { timeManagerListeners.remove (listener); }
-
-
-#if !LGML_UNIT_TESTS
-private:
-#endif
 
     struct TimeState
     {

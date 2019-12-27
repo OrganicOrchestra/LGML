@@ -868,13 +868,16 @@
     <ClCompile Include="..\..\Source\Tests\NodeChildProofer.cpp">
       <Filter>LGML\Source\Tests</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Time\QAction.cpp">
+      <Filter>LGML\Source\Time</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Time\TimeManager.cpp">
       <Filter>LGML\Source\Time</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Time\TimeManagerUI.cpp">
       <Filter>LGML\Source\Time</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Time\TimeMasterCandidate.cpp">
+    <ClCompile Include="..\..\Source\Time\TimeManagerListener.cpp">
       <Filter>LGML\Source\Time</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\StackedContainerUI.cpp">
@@ -1932,6 +1935,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\JUCE\modules\juce_data_structures\juce_data_structures.mm">
       <Filter>JUCE Modules\juce_data_structures</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_dsp\containers\juce_AudioBlock_test.cpp">
+      <Filter>JUCE Modules\juce_dsp\containers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\JUCE\modules\juce_dsp\containers\juce_SIMDRegister_test.cpp">
       <Filter>JUCE Modules\juce_dsp\containers</Filter>
@@ -3360,6 +3366,12 @@
     <ClInclude Include="..\..\Source\Scripting\Js\JsHelpers.h">
       <Filter>LGML\Source\Scripting\Js</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Time\TimeMasterCandidate.h">
+      <Filter>LGML\Source\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Time\QAction.h">
+      <Filter>LGML\Source\Time</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Time\LinkImpl.hpp">
       <Filter>LGML\Source\Time</Filter>
     </ClInclude>
@@ -3369,7 +3381,7 @@
     <ClInclude Include="..\..\Source\Time\TimeManagerUI.h">
       <Filter>LGML\Source\Time</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Time\TimeMasterCandidate.h">
+    <ClInclude Include="..\..\Source\Time\TimeManagerListener.h">
       <Filter>LGML\Source\Time</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\LayoutUtils.h">
@@ -5749,6 +5761,9 @@
     </None>
     <None Include="..\..\Source\Node\UI\ConnectableNodeHeaderUI.ipp">
       <Filter>LGML\Source\Node\UI</Filter>
+    </None>
+    <None Include="..\..\Source\Time\TransportClick.ipp">
+      <Filter>LGML\Source\Time</Filter>
     </None>
     <None Include="..\..\Source\EngineFileDocument.ipp">
       <Filter>LGML\Source</Filter>

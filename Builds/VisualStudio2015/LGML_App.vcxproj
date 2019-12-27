@@ -389,9 +389,10 @@
     <ClCompile Include="..\..\Source\Tests\BufferListTest.cpp"/>
     <ClCompile Include="..\..\Source\Tests\LooperTest.cpp"/>
     <ClCompile Include="..\..\Source\Tests\NodeChildProofer.cpp"/>
+    <ClCompile Include="..\..\Source\Time\QAction.cpp"/>
     <ClCompile Include="..\..\Source\Time\TimeManager.cpp"/>
     <ClCompile Include="..\..\Source\Time\TimeManagerUI.cpp"/>
-    <ClCompile Include="..\..\Source\Time\TimeMasterCandidate.cpp"/>
+    <ClCompile Include="..\..\Source\Time\TimeManagerListener.cpp"/>
     <ClCompile Include="..\..\Source\UI\StackedContainerUI.cpp"/>
     <ClCompile Include="..\..\Source\UI\AppPropertiesUI.cpp"/>
     <ClCompile Include="..\..\Source\UI\MainWindow.cpp"/>
@@ -1308,6 +1309,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\JUCE\modules\juce_data_structures\juce_data_structures.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_dsp\containers\juce_AudioBlock_test.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\JUCE\modules\juce_dsp\containers\juce_SIMDRegister_test.cpp">
@@ -2407,10 +2411,12 @@
     <ClInclude Include="..\..\Source\Scripting\Js\JsEnvironmentUI.h"/>
     <ClInclude Include="..\..\Source\Scripting\Js\JsGlobalEnvironment.h"/>
     <ClInclude Include="..\..\Source\Scripting\Js\JsHelpers.h"/>
+    <ClInclude Include="..\..\Source\Time\TimeMasterCandidate.h"/>
+    <ClInclude Include="..\..\Source\Time\QAction.h"/>
     <ClInclude Include="..\..\Source\Time\LinkImpl.hpp"/>
     <ClInclude Include="..\..\Source\Time\TimeManager.h"/>
     <ClInclude Include="..\..\Source\Time\TimeManagerUI.h"/>
-    <ClInclude Include="..\..\Source\Time\TimeMasterCandidate.h"/>
+    <ClInclude Include="..\..\Source\Time\TimeManagerListener.h"/>
     <ClInclude Include="..\..\Source\UI\LayoutUtils.h"/>
     <ClInclude Include="..\..\Source\UI\StackedContainerUI.h"/>
     <ClInclude Include="..\..\Source\UI\AppPropertiesUI.h"/>
@@ -3205,6 +3211,7 @@
     <None Include="..\..\Source\Node\Connection\UI\NodeConnectionEditorLink.ipp"/>
     <None Include="..\..\Source\Node\Impl\Spat2DViewerUI.ipp"/>
     <None Include="..\..\Source\Node\UI\ConnectableNodeHeaderUI.ipp"/>
+    <None Include="..\..\Source\Time\TransportClick.ipp"/>
     <None Include="..\..\Source\EngineFileDocument.ipp"/>
     <None Include="..\..\..\JUCE\modules\juce_audio_formats\codecs\flac\Flac Licence.txt"/>
     <None Include="..\..\..\JUCE\modules\juce_audio_formats\codecs\oggvorbis\Ogg Vorbis Licence.txt"/>

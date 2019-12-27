@@ -174,9 +174,10 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/BufferListTest_bc972a07.o \
   $(JUCE_OBJDIR)/LooperTest_b47de95a.o \
   $(JUCE_OBJDIR)/NodeChildProofer_ef1fcaae.o \
+  $(JUCE_OBJDIR)/QAction_5093f2ae.o \
   $(JUCE_OBJDIR)/TimeManager_2ea8a747.o \
   $(JUCE_OBJDIR)/TimeManagerUI_681c6b5b.o \
-  $(JUCE_OBJDIR)/TimeMasterCandidate_ed6091db.o \
+  $(JUCE_OBJDIR)/TimeManagerListener_c5a2941b.o \
   $(JUCE_OBJDIR)/StackedContainerUI_e62e11aa.o \
   $(JUCE_OBJDIR)/AppPropertiesUI_2bd48916.o \
   $(JUCE_OBJDIR)/MainWindow_5f9c9b05.o \
@@ -779,6 +780,11 @@ $(JUCE_OBJDIR)/NodeChildProofer_ef1fcaae.o: ../../Source/Tests/NodeChildProofer.
 	@echo "Compiling NodeChildProofer.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/QAction_5093f2ae.o: ../../Source/Time/QAction.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling QAction.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/TimeManager_2ea8a747.o: ../../Source/Time/TimeManager.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling TimeManager.cpp"
@@ -789,9 +795,9 @@ $(JUCE_OBJDIR)/TimeManagerUI_681c6b5b.o: ../../Source/Time/TimeManagerUI.cpp
 	@echo "Compiling TimeManagerUI.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/TimeMasterCandidate_ed6091db.o: ../../Source/Time/TimeMasterCandidate.cpp
+$(JUCE_OBJDIR)/TimeManagerListener_c5a2941b.o: ../../Source/Time/TimeManagerListener.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling TimeMasterCandidate.cpp"
+	@echo "Compiling TimeManagerListener.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/StackedContainerUI_e62e11aa.o: ../../Source/UI/StackedContainerUI.cpp
