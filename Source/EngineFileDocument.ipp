@@ -23,7 +23,7 @@
 #include "Controller/Impl/OSCJsController.h"
 //
 //
-//#include "Engine.h"
+//#include "Engine.h" =>ipp so will be part of Engine.cpp
 //
 #if !ENGINE_HEADLESS
 #include "UI/Inspector/Inspector.h"
@@ -298,6 +298,9 @@ DynamicObject* Engine::createObject()
 
     metaData.getDynamicObject()->setProperty ("version",
                                               VersionTriplet::getCurrentVersion().toString()
+                                              );
+    metaData.getDynamicObject()->setProperty ("gitHash",
+                                              GIT_SHA
                                               );
 
     data->setProperty ("metaData", metaData);
