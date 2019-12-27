@@ -238,7 +238,8 @@ void ShapeShifterPanel::detachTab (ShapeShifterPanelTab* tab, bool createNewPane
         }
         else
         {
-            //DBG("panel emtied, num listeners " << listeners.size());
+
+            //DBG("panel emptied, num listeners " << listeners.size());
             listeners.call (&Listener::panelEmptied, this);
         }
     }
@@ -456,7 +457,11 @@ void ShapeShifterPanel::loadLayoutInternal (var layout)
 void ShapeShifterPanel::tabDrag (ShapeShifterPanelTab* tab)
 {
     if (!isDetached() ) detachTab (tab, true);
-    else listeners.call (&Listener::tabDrag, this);
+    else{
+//        Component::BailOutChecker checker (this);
+//        listeners.callChecked (checker,&Listener::tabDrag, this);
+        listeners.call(&Listener::tabDrag, this);
+    }
 }
 
 void ShapeShifterPanel::tabSelect (ShapeShifterPanelTab* tab)

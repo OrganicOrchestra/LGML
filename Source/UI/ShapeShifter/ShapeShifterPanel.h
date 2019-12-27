@@ -74,13 +74,15 @@ public:
     AttachZone checkAttachZone(ShapeShifterPanel *source, Point<float> relativePoint);
     void setCandidateZone (AttachZone zone);
 
-    virtual var getCurrentLayout() override;
-    virtual void loadLayoutInternal (var layout) override;
+    // from ShapeShifter
+     var getCurrentLayout() final;
+     void loadLayoutInternal (var layout) final;
 
-    virtual void tabDrag (ShapeShifterPanelTab*) override;
-    virtual void tabSelect (ShapeShifterPanelTab*) override;
-    virtual void askForRemoveTab (ShapeShifterPanelTab*) override;
-    virtual void headerDrag() override;
+    // from header Listener
+     void tabDrag (ShapeShifterPanelTab*) final;
+     void tabSelect (ShapeShifterPanelTab*) final;
+     void askForRemoveTab (ShapeShifterPanelTab*) final;
+     void headerDrag() final;
 
     //Listener
     class Listener

@@ -89,13 +89,21 @@ void ShapeShifterPanelHeader::mouseDrag (const MouseEvent& e)
 
     if (e.eventComponent == this)
     {
-        if (abs (e.getDistanceFromDragStartY()) > minDetachDistanceY) listeners.call (&Listener::headerDrag);
+        if (abs (e.getDistanceFromDragStartY()) > minDetachDistanceY){
+//            Component::BailOutChecker checker (this);
+//            listeners.callChecked (checker,&Listener::headerDrag);// check its not self deleting
+            listeners.call(&Listener::headerDrag);
+        }
     }
     else
     {
         ShapeShifterPanelTab* tab = dynamic_cast<ShapeShifterPanelTab*> (e.eventComponent);
 
-        if (abs (e.getDistanceFromDragStartY()) > minDetachDistanceY && tab != nullptr) listeners.call (&Listener::tabDrag, tab);
+        if (abs (e.getDistanceFromDragStartY()) > minDetachDistanceY && tab != nullptr){
+//            Component::BailOutChecker checker (this);
+//            listeners.callChecked (checker,&Listener::tabDrag, tab); // check its not self deleting
+            listeners.call (&Listener::tabDrag, tab);
+        }
     }
 
 }
