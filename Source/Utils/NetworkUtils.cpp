@@ -121,7 +121,7 @@ public:
     }
     ~Pimpl()
     {
-
+        stopThread (500);
         for ( auto ii = m_ClientToFdMap.cbegin() ; ii != m_ClientToFdMap.cend() ; )
         {
             auto jj = ii++;
@@ -137,7 +137,7 @@ public:
         }
 
         m_ServerToFdMap.clear();
-        stopThread (-1);
+
     }
 
     std::unordered_set<uint32_t> if_idxs;
