@@ -70,11 +70,8 @@ void MIDIListener::setCurrentDevice (const String& deviceName,bool output)
     }
     if (inPortName.isNotEmpty() && !output)
     {
-
-        mm->disableOutputDevice (outPortName);
         mm->disableInputDevice (inPortName);
         mm->removeMidiInputCallback (inPortName, this);
-
         hasValidInPort = false;
     }
 
