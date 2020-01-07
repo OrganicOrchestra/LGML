@@ -20,7 +20,7 @@
 #include "../Node/Manager/NodeManager.h"
 
 //#include "../Engine.h"
-
+extern bool isEngineLoadingFile();
 
 struct Smoother : private Timer{
 
@@ -36,6 +36,7 @@ struct Smoother : private Timer{
         stopTimer();
     }
     void rampUp(float timeIn,CBTYPE _cb,float _maxValue ){ //  TODO do we need immediate? if yes need to check that timer was started before stopping timer
+        jassert(state!=IN);
         maxValue = _maxValue;
         stopTimer();
         rampTime =0;
@@ -51,11 +52,12 @@ struct Smoother : private Timer{
     }
 
     void rampDown(float timeOut,CBTYPE _cb ){
+        jassert(state!=OUT);
         stopTimer();
         rampTime = 0;
         rampTotalTime = jmax(1.0f,timeOut);
         if(state==IN){
-            rampTime = (1.0-pct)*rampTotalTime;
+            rampTime = (1.0f-pct)*rampTotalTime;
         }
         state = OUT;
         lastTime = Time::currentTimeMillis()-1;
@@ -71,7 +73,7 @@ struct Smoother : private Timer{
         auto delta = ct-lastTime;
         rampTime+=delta;
         pct = jmin(1.0f,rampTime/rampTotalTime);
-        if(state==OUT){pct = 1.0 - pct;}
+        if(state==OUT){pct = 1.0f - pct;}
         cb(pct,maxValue);
         if(pct==1.0 || pct==0.0){
             state=IDLE;
@@ -94,7 +96,7 @@ struct Smoother : private Timer{
     State state;
 
     float pct;
-    unsigned long lastTime;
+    long long lastTime;
     float rampTime,rampTotalTime;
     int granularity;
     float maxValue;
@@ -164,6 +166,10 @@ void FastMap::process (bool toReferenceOut,bool sourceHasChanged)
     if (!referenceIn->getLinkedParam() || !referenceOut->getLinkedParam()) return;
 
     if (fastMapIsProcessing) return;
+
+    if( isEngineLoadingFile()){
+        return ;
+    }
 
 
     auto inRef = toReferenceOut ? referenceIn->getLinkedParam() : referenceOut->getLinkedParam();
@@ -251,10 +257,10 @@ void FastMap::process (bool toReferenceOut,bool sourceHasChanged)
                     if(sourceHasChanged){
                         bool sourceToggleState = sourceVal>minIn;
                         if(sourceToggleState){
-                            smoother->rampUp(smoothTimeIn->floatValue()*1000.0,cb,sourceVal);
+                            smoother->rampUp((int)smoothTimeIn->floatValue()*1000.0,cb,sourceVal);
                         }
                         else{
-                            smoother->rampDown(smoothTimeOut->floatValue()*1000.0,cb);
+                            smoother->rampDown((int)smoothTimeOut->floatValue()*1000.0,cb);
                         }
                         
                     }
