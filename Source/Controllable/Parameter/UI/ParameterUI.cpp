@@ -220,7 +220,14 @@ bool ParameterUI::shouldBailOut()
 
 void ParameterUI::controllableStateChanged (Controllable* c)
 {
-    setAlpha (c->enabled ? 1 : .5f);
+    WeakReference<ParameterUI> wkf(this);
+    bool en = c->enabled;
+    MessageManager::callAsync([wkf,en](){
+        if(wkf){
+            wkf->setAlpha (en ? 1 : .5f);
+        }
+    });
+
 }
 
 void ParameterUI::controllableControlAddressChanged (Controllable*)
