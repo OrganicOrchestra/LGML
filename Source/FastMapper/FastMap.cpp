@@ -24,7 +24,7 @@
 
 struct Smoother : private Timer{
 
-    typedef  std::function<void(float)> CBTYPE;
+    typedef  std::function<void(float,float)> CBTYPE;
     CBTYPE cb;
     Smoother(int _granularity=10):
     pct(0),
@@ -35,7 +35,8 @@ struct Smoother : private Timer{
     ~Smoother(){
         stopTimer();
     }
-    void rampUp(float timeIn,CBTYPE _cb ){ //  TODO do we need immediate? if yes need to check that timer was started before stopping timer
+    void rampUp(float timeIn,CBTYPE _cb,float _maxValue ){ //  TODO do we need immediate? if yes need to check that timer was started before stopping timer
+        maxValue = _maxValue;
         stopTimer();
         rampTime =0;
         if(state==OUT){
@@ -71,7 +72,7 @@ struct Smoother : private Timer{
         rampTime+=delta;
         pct = jmin(1.0f,rampTime/rampTotalTime);
         if(state==OUT){pct = 1.0 - pct;}
-        cb(pct);
+        cb(pct,maxValue);
         if(pct==1.0 || pct==0.0){
             state=IDLE;
             stopTimer();
@@ -96,6 +97,7 @@ struct Smoother : private Timer{
     unsigned long lastTime;
     float rampTime,rampTotalTime;
     int granularity;
+    float maxValue;
 };
 
 
@@ -237,9 +239,9 @@ void FastMap::process (bool toReferenceOut,bool sourceHasChanged)
                 if(smoothingEnabled()){
 //                    bool isToggleVal=sourceVal==minIn || sourceVal == maxIn
                     WeakReference<ParameterBase> wkp = (( ParameterBase*)outRef);
-                    auto cb = [=](float pct) mutable{
+                    auto cb = [=](float pct,float maxV) mutable{
                         if(wkp){
-                            float inScale = sourceVal>0?sourceVal/(maxIn-minIn):1;
+                            float inScale = maxV/(maxIn-minIn);
                             float smoothVal = minOut+pct*(maxOut-minOut)*inScale;
                             if (invertParam->boolValue()) smoothVal = maxOut - (smoothVal - minOut);
                             wkp->setValueFrom(this, smoothVal);
@@ -249,7 +251,7 @@ void FastMap::process (bool toReferenceOut,bool sourceHasChanged)
                     if(sourceHasChanged){
                         bool sourceToggleState = sourceVal>minIn;
                         if(sourceToggleState){
-                            smoother->rampUp(smoothTimeIn->floatValue()*1000.0,cb);
+                            smoother->rampUp(smoothTimeIn->floatValue()*1000.0,cb,sourceVal);
                         }
                         else{
                             smoother->rampDown(smoothTimeOut->floatValue()*1000.0,cb);
