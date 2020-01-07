@@ -36,7 +36,9 @@ struct Smoother : private Timer{
         stopTimer();
     }
     void rampUp(float timeIn,CBTYPE _cb,float _maxValue ){ //  TODO do we need immediate? if yes need to check that timer was started before stopping timer
-        jassert(state!=IN);
+        if(state==IN){
+            jassertfalse; // do we retrigger?
+        }
         maxValue = _maxValue;
         stopTimer();
         rampTime =0;
@@ -52,7 +54,10 @@ struct Smoother : private Timer{
     }
 
     void rampDown(float timeOut,CBTYPE _cb ){
-        jassert(state!=OUT);
+        if(state==OUT){
+            jassertfalse; // do we retrigger?
+        }
+
         stopTimer();
         rampTime = 0;
         rampTotalTime = jmax(1.0f,timeOut);
@@ -257,10 +262,10 @@ void FastMap::process (bool toReferenceOut,bool sourceHasChanged)
                     if(sourceHasChanged){
                         bool sourceToggleState = sourceVal>minIn;
                         if(sourceToggleState){
-                            smoother->rampUp((int)smoothTimeIn->floatValue()*1000.0,cb,sourceVal);
+                            smoother->rampUp((int)(smoothTimeIn->floatValue()*1000.0),cb,sourceVal);
                         }
                         else{
-                            smoother->rampDown((int)smoothTimeOut->floatValue()*1000.0,cb);
+                            smoother->rampDown((int)(smoothTimeOut->floatValue()*1000.0),cb);
                         }
                         
                     }
