@@ -66,6 +66,7 @@ public:
 
     //Parameters
     Trigger* recPlaySelectedTrig;
+
     Trigger* playSelectedTrig;
     Trigger* clearSelectedTrig;
     Trigger* stopSelectedTrig;
@@ -81,6 +82,7 @@ public:
 
     FloatParameter* volumeSelected;
     BoolParameter* isMonitoring;
+    BoolParameter* preventSubsequentPlays;
     IntParameter* numberOfTracks;
     IntParameter* numberOfAudioChannelsIn;
     IntParameter* selectTrack;

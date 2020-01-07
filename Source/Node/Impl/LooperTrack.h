@@ -68,7 +68,7 @@ public:
     void clear();
     void stop();
     void play();
-    void recPlay();
+    void recPlay(bool preventSubsequentPlays);
     bool isBusy();
     Array<float> getNormalizedOnsets();
 
@@ -223,7 +223,7 @@ public:
 #if !LGML_UNIT_TESTS
 private:
 #endif
-
+    
     friend class LooperNode;
     bool someOneIsSolo;
 

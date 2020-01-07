@@ -602,7 +602,7 @@ void LooperTrack::onContainerTriggerTriggered (Trigger* t)
     }
     else if (t == recPlayTrig)
     {
-        recPlay();
+        recPlay(parentLooper->preventSubsequentPlays);
         if(parentLooper->autoSelectTrack->boolValue()){
             parentLooper->selectMe (this);
         }
@@ -642,7 +642,7 @@ void LooperTrack::play()
     setTrackState (WILL_PLAY);
 }
 
-void LooperTrack::recPlay()
+void LooperTrack::recPlay(bool preventSubsequentPlay)
 {
     if (desiredState == CLEARED )
     {
@@ -656,7 +656,9 @@ void LooperTrack::recPlay()
             }
             else
             {
-                setTrackState (WILL_PLAY);
+                if(!preventSubsequentPlay || desiredState==RECORDING){
+                    setTrackState (WILL_PLAY);
+                }
             }
         }
 }
