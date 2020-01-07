@@ -94,6 +94,7 @@ pSync(this)
     channelFilter = addNewParameter<IntParameter> ("Channel", "Channel to filter message (0 = accept all channels)", 0, 0, 16);
     midiClock.setOutput(this);
     userContainer.addFeedbackListener (&pSync);
+    isConnected->setValue(hasValidInPort || hasValidOutPort);
 }
 
 MIDIController::~MIDIController()
