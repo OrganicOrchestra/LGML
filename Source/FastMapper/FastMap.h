@@ -58,7 +58,7 @@ private:
     bool isInRange; //memory for triggering
     bool fastMapIsProcessing;
 
-    void process (bool toReferenceOut = true);
+    void process (bool toReferenceOut = true,bool sourceHasChanged = true);
     // inherited from proxy listener
     void linkedParamValueChanged (ParameterProxy*,ParameterBase::Listener *) override;
     void linkedParamRangeChanged(ParameterProxy*) override;
@@ -66,7 +66,7 @@ private:
 private:
     WeakReference< FastMap >::Master masterReference;
     friend class WeakReference<FastMap>;
-
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FastMap)
 };
 

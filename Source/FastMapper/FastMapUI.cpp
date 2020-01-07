@@ -179,7 +179,8 @@ void FastMapUI::updateComponentsVisibility(){
     toggleUI->setVisible( refUI.parameter &&
                          !refUI.parameter->getAs<Trigger>() &&
                          targetProxy->linkedParam &&
-                         targetProxy->linkedParam->getAs<BoolParameter>());
+                         (targetProxy->linkedParam->getAs<BoolParameter>() ||
+                          targetProxy->linkedParam->getAs<Trigger>()));
 
 }
 #endif

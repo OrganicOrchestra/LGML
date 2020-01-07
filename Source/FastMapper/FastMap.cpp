@@ -80,6 +80,11 @@ struct Smoother : private Timer{
 
     }
 
+    void reset(){
+        stopTimer();
+        state=IDLE;
+    }
+
     typedef enum{
         IN,
         OUT,
@@ -133,7 +138,7 @@ void FastMap::onContainerParameterChanged ( ParameterBase* p)
         fullSync->setValueFrom(this,false);
         fullSync->setEnabled(false);
         }
-        else if(!fullSync->enabled){
+        else if(!smoothingEnabled() && !fullSync->enabled){
             fullSync->setValueFrom(this,true);
             fullSync->setEnabled(true);
         }
@@ -146,11 +151,11 @@ void FastMap::onContainerParameterChanged ( ParameterBase* p)
         }
         if (referenceIn->getLinkedParam() && referenceOut->getLinkedParam())
         {
-            process();
+            process(true,false);
         }
     }
 }
-void FastMap::process (bool toReferenceOut)
+void FastMap::process (bool toReferenceOut,bool sourceHasChanged)
 {
     if (!enabledParam->boolValue()) return;
 
@@ -183,7 +188,12 @@ void FastMap::process (bool toReferenceOut)
 
     if (type == Trigger::_factoryType)
     {
-        if ((newIsInRange != isInRange && newIsInRange) || inRef->getFactoryTypeId() == Trigger::_factoryType) ((Trigger*)outRef)->triggerFrom(this);
+        
+        if (inRef->getFactoryTypeId() == Trigger::_factoryType ||
+            (newIsInRange != isInRange && (newIsInRange || toggleParam->boolValue()))
+             ) {
+            ((Trigger*)outRef)->triggerFrom(this);
+        }
     }
     else
     {
@@ -196,12 +206,9 @@ void FastMap::process (bool toReferenceOut)
             else if(toggleParam->boolValue() ){ // toggles only on max for float values
                 if(sourceVal==maxIn){
                     ((BoolParameter*)outRef)->setValueFrom (this,!outRef->boolValue());
-
-
-
                 }
                 else{
-                    float targetToggleValue =outRef->boolValue()?maxIn-10e-6:minIn;
+                    float targetToggleValue =outRef->boolValue()?maxIn-10e-6:minIn;// to force re update?
                     MessageManager::callAsync([=](){
                         (inRef)->setValueFrom (this,targetToggleValue,false,false);
                     });
@@ -232,18 +239,23 @@ void FastMap::process (bool toReferenceOut)
                     WeakReference<ParameterBase> wkp = (( ParameterBase*)outRef);
                     auto cb = [=](float pct) mutable{
                         if(wkp){
-                            float smoothVal = minOut+pct*(maxOut-minOut)*(sourceVal>0?sourceVal/(maxIn-minIn):1);
+                            float inScale = sourceVal>0?sourceVal/(maxIn-minIn):1;
+                            float smoothVal = minOut+pct*(maxOut-minOut)*inScale;
                             if (invertParam->boolValue()) smoothVal = maxOut - (smoothVal - minOut);
                             wkp->setValueFrom(this, smoothVal);
                         }
                     };
-                    if(sourceVal>minIn){
-                        smoother->rampUp(smoothTimeIn->floatValue()*1000.0,cb);
-                    }
-                    else{
-                        smoother->rampDown(smoothTimeOut->floatValue()*1000.0,cb);
-                    }
 
+                    if(sourceHasChanged){
+                        bool sourceToggleState = sourceVal>minIn;
+                        if(sourceToggleState){
+                            smoother->rampUp(smoothTimeIn->floatValue()*1000.0,cb);
+                        }
+                        else{
+                            smoother->rampDown(smoothTimeOut->floatValue()*1000.0,cb);
+                        }
+                        
+                    }
                 }
                 else{
 
