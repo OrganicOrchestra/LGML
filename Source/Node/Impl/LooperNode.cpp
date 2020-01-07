@@ -266,6 +266,16 @@ void LooperNode::TrackGroup::setNumTracks (int numTracks)
         for (int i = oldSize - 1; i >= numTracks; --i) { removeTrack (i); }
     }
 
+    int numToSelect = owner->selectTrack->intValue();
+    if(numToSelect>=0){
+        if( numToSelect<tracks.size()){
+            selectedTrack = tracks.getUnchecked(numToSelect);
+        }
+        else{
+            selectedTrack = nullptr;
+        }
+    }
+
 }
 
 
