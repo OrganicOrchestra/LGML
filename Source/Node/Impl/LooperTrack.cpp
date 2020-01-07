@@ -602,7 +602,7 @@ void LooperTrack::onContainerTriggerTriggered (Trigger* t)
     }
     else if (t == recPlayTrig)
     {
-        recPlay(parentLooper->preventSubsequentPlays);
+        recPlay(parentLooper->preventSubsequentPlays->boolValue());
         if(parentLooper->autoSelectTrack->boolValue()){
             parentLooper->selectMe (this);
         }
