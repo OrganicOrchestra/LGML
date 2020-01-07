@@ -21,10 +21,84 @@
 
 //#include "../Engine.h"
 
+
+struct Smoother : private Timer{
+
+    typedef  std::function<void(float)> CBTYPE;
+    CBTYPE cb;
+    Smoother(int _granularity=10):
+    pct(0),
+    granularity(_granularity),
+    state(IDLE){
+        lastTime = Time::currentTimeMillis();
+    }
+    ~Smoother(){
+        stopTimer();
+    }
+    void rampUp(float timeIn,CBTYPE _cb ){ //  TODO do we need immediate? if yes need to check that timer was started before stopping timer
+        stopTimer();
+        rampTime =0;
+        if(state==OUT){
+            rampTime = pct*rampTotalTime;
+        }
+        rampTotalTime = jmax(1.0f,timeIn);
+
+        state = IN;
+        lastTime = Time::currentTimeMillis()-1;
+        cb = _cb;
+        startTimer(granularity);
+    }
+
+    void rampDown(float timeOut,CBTYPE _cb ){
+        stopTimer();
+        rampTime = 0;
+        rampTotalTime = jmax(1.0f,timeOut);
+        if(state==IN){
+            rampTime = (1.0-pct)*rampTotalTime;
+        }
+        state = OUT;
+        lastTime = Time::currentTimeMillis()-1;
+        cb = _cb;
+        startTimer(granularity);
+    }
+    bool isRamping(){
+        return state!=IDLE;
+    }
+
+    void timerCallback()final{
+        auto ct = Time::currentTimeMillis();
+        auto delta = ct-lastTime;
+        rampTime+=delta;
+        pct = jmin(1.0f,rampTime/rampTotalTime);
+        if(state==OUT){pct = 1.0 - pct;}
+        cb(pct);
+        if(pct==1.0 || pct==0.0){
+            state=IDLE;
+            stopTimer();
+        }
+        lastTime = ct;
+
+    }
+
+    typedef enum{
+        IN,
+        OUT,
+        IDLE
+    }State;
+    State state;
+
+    float pct;
+    unsigned long lastTime;
+    float rampTime,rampTotalTime;
+    int granularity;
+};
+
+
 FastMap::FastMap() :
 referenceIn (nullptr),
 referenceOut (nullptr),
 fastMapIsProcessing (false),
+smoother(std::make_unique<Smoother>()),
 ParameterContainer ("FastMap")
 {
 
@@ -41,6 +115,8 @@ ParameterContainer ("FastMap")
     invertParam = addNewParameter<BoolParameter> ("Invert", "Invert the output signal", false);
     toggleParam = addNewParameter<BoolParameter> ("Toggle", "Toggles the output signal", false);
     fullSync = addNewParameter<BoolParameter> ("FullSync", "synchronize source parameter too", true);
+    smoothTimeIn = addNewParameter<FloatParameter> ("smoothTimeIn", "time in ms to go to non-zero", 0.0f,0.0f,10.0f);
+    smoothTimeOut = addNewParameter<FloatParameter> ("smoothTimeOut", "time in ms to go to zero", 0.0f,0.0f,10.0f);
 }
 
 FastMap::~FastMap()
@@ -52,8 +128,22 @@ FastMap::~FastMap()
 }
 void FastMap::onContainerParameterChanged ( ParameterBase* p)
 {
+    if ((p==smoothTimeIn || p==smoothTimeOut) ){
+        if(smoothingEnabled() && fullSync->boolValue()){
+        fullSync->setValueFrom(this,false);
+        fullSync->setEnabled(false);
+        }
+        else if(!fullSync->enabled){
+            fullSync->setValueFrom(this,true);
+            fullSync->setEnabled(true);
+        }
+    }
     if (p == invertParam || p == inputRange || p == outputRange || p == fullSync)
     {
+        if(p==fullSync){
+            smoothTimeIn->setEnabled(!fullSync->boolValue());
+            smoothTimeOut->setEnabled(!fullSync->boolValue());
+        }
         if (referenceIn->getLinkedParam() && referenceOut->getLinkedParam())
         {
             process();
@@ -129,15 +219,36 @@ void FastMap::process (bool toReferenceOut)
         {
             if ( minIn != maxIn)
             {
+
                 auto outRange = (toReferenceOut ? outputRange : inputRange);
                 float minOut = outRange->getRangeMin();
                 float maxOut = outRange->getRangeMax();
                 float targetVal = juce::jmap<float> (sourceVal, minIn, maxIn, minOut, maxOut);
                 targetVal = juce::jlimit<float> (minOut, maxOut, targetVal);
-
                 if (invertParam->boolValue()) targetVal = maxOut - (targetVal - minOut);
 
+                if(smoothingEnabled()){
+//                    bool isToggleVal=sourceVal==minIn || sourceVal == maxIn
+                    WeakReference<ParameterBase> wkp = (( ParameterBase*)outRef);
+                    auto cb = [=](float pct) mutable{
+                        if(wkp){
+                            float smoothVal = minOut+pct*(maxOut-minOut)*(sourceVal>0?sourceVal/(maxIn-minIn):1);
+                            if (invertParam->boolValue()) smoothVal = maxOut - (smoothVal - minOut);
+                            wkp->setValueFrom(this, smoothVal);
+                        }
+                    };
+                    if(sourceVal>minIn){
+                        smoother->rampUp(smoothTimeIn->floatValue()*1000.0,cb);
+                    }
+                    else{
+                        smoother->rampDown(smoothTimeOut->floatValue()*1000.0,cb);
+                    }
+
+                }
+                else{
+
                 (( ParameterBase*)outRef)->setValueFrom (this,targetVal);
+                }
             }
         }
     }
@@ -147,7 +258,9 @@ void FastMap::process (bool toReferenceOut)
 
 }
 
-
+bool FastMap::smoothingEnabled(){
+    return smoothTimeOut->floatValue()>0 || smoothTimeIn->floatValue()>0;
+}
 
 
 

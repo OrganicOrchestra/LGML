@@ -23,7 +23,7 @@
 #include "../Controllable/Parameter/ParameterProxy.h"
 
 
-
+struct Smoother;
 
 class FastMap :
     public ParameterContainer,
@@ -40,6 +40,7 @@ public:
     RangeParameter* outputRange;
 
     BoolParameter* invertParam,*toggleParam;
+    FloatParameter *smoothTimeIn,*smoothTimeOut;
 
     ParameterProxy* referenceIn;
     ParameterProxy*   referenceOut;
@@ -50,6 +51,10 @@ public:
 private:
     void onContainerParameterChanged ( ParameterBase*)override;
 
+    
+    std::unique_ptr<Smoother> smoother;
+    bool smoothingEnabled();
+    
     bool isInRange; //memory for triggering
     bool fastMapIsProcessing;
 
