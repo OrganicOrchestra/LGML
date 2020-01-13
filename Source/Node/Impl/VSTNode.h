@@ -136,7 +136,8 @@ public:
     ParameterBase * addParameterFromVar(const String & name,const var & data)override;
     String getSubTypeName() final;
 private:
-
+    int64 lastStateLoadFromLGML = 0;
+    bool shouldUpdateParamFromVST();
     void setVSTState();
     void getVSTState();
     String stateInfoPluginID;

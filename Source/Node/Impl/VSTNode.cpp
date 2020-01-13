@@ -275,7 +275,7 @@ void VSTNode::setVSTState(){
                 innerPlugin->getStateInformation(currentInfo);
                 jassert(currentInfo!=stateInfo);
 #endif
-
+                lastStateLoadFromLGML = Time::currentTimeMillis();
                 innerPlugin->setStateInformation (stateInfo.getData() ,(int) stateInfo.getSize());
 
                 inOutChanged |= oldNumInput!=innerPlugin->getTotalNumInputChannels();
@@ -544,17 +544,19 @@ void VSTNode::audioProcessorChanged (juce::AudioProcessor* p )
             updateParametersFromProcessor(innerPlugin.get());
         }
         else{ // try to sync parameters
+            // if we had loaded a state from wihin lgml (session or presets) , we force params from lgml to vst
+            // else we assume state has changed from within vst (via vst window)
               //            int commonPS = jmin(p->getParameters().size(),VSTParameters.size());
             auto vstParams = p->getParameters();
-            bool shouldUpdateFromLGML = presetable->lastLoadPresetTime>0 && (presetable->lastLoadPresetTime  -Time::currentTimeMillis()<5000);
-            if(shouldUpdateFromLGML){
+
+            if(shouldUpdateParamFromVST()){
                 for(int i = 0 ; i < VSTParameters.size() ; i++){
-                    vstParams.getUnchecked(i)->setValue(VSTParameters.getUnchecked(i)->floatValue());
+                    VSTParameters.getUnchecked(i)->setValue(p->getParameters().getUnchecked(i)->getValue());
                 }
             }
             else{
                 for(int i = 0 ; i < VSTParameters.size() ; i++){
-                    VSTParameters.getUnchecked(i)->setValue(p->getParameters().getUnchecked(i)->getValue());
+                    vstParams.getUnchecked(i)->setValue(VSTParameters.getUnchecked(i)->floatValue());
                 }
             }
         }
@@ -586,7 +588,10 @@ inline void VSTNode::processBlockInternal (AudioBuffer<float>& buffer, MidiBuffe
     }
 }
 
-
+bool VSTNode::shouldUpdateParamFromVST(){
+//    return Time::currentTimeMillis()-presetable->lastLoadPresetTime>5000  ;
+    return Time::currentTimeMillis()-lastStateLoadFromLGML>5000  ;
+}
 void VSTNode::audioProcessorParameterChanged (AudioProcessor* p,
                                               int parameterIndex,
                                               float newValue)
@@ -601,7 +606,14 @@ void VSTNode::audioProcessorParameterChanged (AudioProcessor* p,
             auto * localP = VSTParameters.getUnchecked (parameterIndex);
             if(localP->niceName.startsWith(innerPL.getUnchecked (parameterIndex)->getName(maxVSTParamNameSize)))
             {
-                localP->setValue (newValue);
+                if(localP->floatValue()!=newValue){
+                    if(shouldUpdateParamFromVST()){
+                        localP->setValue (newValue);
+                    }
+                    else{
+                        innerPL.getUnchecked (parameterIndex)->setValue(localP->floatValue());
+                    }
+                }
                 blockFeedback = false;
                 //                loadVSTState();
             }
