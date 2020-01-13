@@ -46,7 +46,13 @@ public:
     void rangeChanged ( ParameterBase* p)override
     {
         auto rangeP = (RangeParameter*)p;
+        if(rangeP->minimumValue.isUndefined() && rangeP->maximumValue.isUndefined() ){
+            slider.setEnabled(false);
+        }
+        else{
+            slider.setEnabled(true);
         slider.setRange (rangeP->minimumValue, rangeP->maximumValue);
+        }
         slider.repaint();
     }
     void resized()override

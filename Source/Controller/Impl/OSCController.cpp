@@ -676,7 +676,14 @@ void OSCController::sendOSCForAddress (const Controllable* c, const String& cAdd
     {
         auto  targetType = p->getFactoryTypeId();
 
-        if (targetType == ParameterProxy::_factoryType) targetType = ((ParameterProxy*)c)->linkedParam->getFactoryTypeId();
+        if (targetType == ParameterProxy::_factoryType ){
+            if(((ParameterProxy*)c)->linkedParam){
+            targetType = ((ParameterProxy*)c)->linkedParam->getFactoryTypeId();
+            }
+            else{
+                return;
+            }
+        }
 
         if (targetType == Trigger::_factoryType) {sendOSC (cAddress);}
         else if (targetType == BoolParameter::_factoryType) {sendOSC (cAddress, p->intValue());}
@@ -691,6 +698,9 @@ void OSCController::sendOSCForAddress (const Controllable* c, const String& cAdd
         else if (targetType == Point2DParameter<floatParamType>::_factoryType) {
             auto point = static_cast<const Point2DParameter<floatParamType> *>(p);
             sendOSC (cAddress, (float)point->getX(),(float)point->getY());
+        }
+        else if(targetType == RangeParameter::_factoryType){
+            DBG("osc can't send rangeParam");
         }
         else
         {
