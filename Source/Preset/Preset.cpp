@@ -301,9 +301,10 @@ DynamicObject * Presetable::createPresetObject(ParameterContainer * p){
                                      bool isRootPresetName = c==p->presetable->currentPresetName; // don't save root preset
                                      bool isRootEnable = false;
                                      if(auto n = dynamic_cast<NodeBase*>(p)){
-                                         isRootEnable = c==n->enabledParam; // don't save root enabled state
+                                         isRootEnable = c==n->enabledParam; // don't save root enabled state??
                                      }
-                                     isValid &=!(isRootEnable || isRootPresetName);
+                                     isValid &=!isRootPresetName;
+//                                     isValid &=!(isRootEnable || isRootPresetName);
 
                                  }
 
@@ -318,7 +319,8 @@ DynamicObject * Presetable::createPresetObject(ParameterContainer * p){
                                              isEnableParam = c==n->enabledParam;
                                          }
                                          if(isPresetLoaded){
-                                             isValid&= (isCurrentPresetNameParam || isEnableParam);
+                                             isValid &= isCurrentPresetNameParam;
+//                                             isValid&= (isCurrentPresetNameParam || isEnableParam);
                                          }
                                      }
                                  }
