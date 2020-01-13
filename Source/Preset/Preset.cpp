@@ -256,6 +256,7 @@ bool Presetable::loadPreset (Preset* preset,bool /*sendNotif*/)
         nc->setBuildSessionGraph(false);
 
     }
+    lastLoadPresetTime = Time::currentTimeMillis();
     DBG("loading preset" +preset->getPresetName()+ " -> " + pc->getNiceName());
     pc->configureFromObjectOrValues(preset->getPresetValueObject(),false);
     if(currentPreset){currentPreset->updateSubTypeName();};
@@ -267,6 +268,7 @@ bool Presetable::loadPreset (Preset* preset,bool /*sendNotif*/)
     currentPresetName->setValueFrom (this,preName, false,false);
 
     presetableListeners.call (&Presetable::Listener::controllableContainerPresetLoaded, pc,preset);
+    
     return true;
 }
 

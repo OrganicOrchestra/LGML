@@ -81,7 +81,7 @@ public:
     bool saveCurrentPreset( void * notif=nullptr);
     int getNumPresets( );
 
-
+    int64 lastLoadPresetTime = 0;
     bool resetToCurrentPreset();
     void cleanUpPresets( );
 
