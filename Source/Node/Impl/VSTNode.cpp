@@ -545,10 +545,20 @@ void VSTNode::audioProcessorChanged (juce::AudioProcessor* p )
         }
         else{ // try to sync parameters
               //            int commonPS = jmin(p->getParameters().size(),VSTParameters.size());
-            for(int i = 0 ; i < VSTParameters.size() ; i++){
-                VSTParameters.getUnchecked(i)->setValue(p->getParameters().getUnchecked(i)->getValue());
+            auto vstParams = p->getParameters();
+            bool shouldUpdateFromLGML = presetable->lastLoadPresetTime>0 && (presetable->lastLoadPresetTime  -Time::currentTimeMillis()<5000);
+            if(shouldUpdateFromLGML){
+                for(int i = 0 ; i < VSTParameters.size() ; i++){
+                    vstParams.getUnchecked(i)->setValue(VSTParameters.getUnchecked(i)->floatValue());
+                }
+            }
+            else{
+                for(int i = 0 ; i < VSTParameters.size() ; i++){
+                    VSTParameters.getUnchecked(i)->setValue(p->getParameters().getUnchecked(i)->getValue());
+                }
             }
         }
+    }
 
         //        const OwnedArray<juce::AudioProcessorParameter>& vstParams (innerPlugin->getParameters());
         //
@@ -558,7 +568,7 @@ void VSTNode::audioProcessorChanged (juce::AudioProcessor* p )
         //            VSTParameters.getUnchecked (i)->setValue (param->getValue());
         //            VSTParameters.getUnchecked (i)->setNiceName (param->getName (maxVSTParamNameSize));
         //        }
-    }
+
 
 }
 
@@ -618,8 +628,9 @@ void VSTNode::audioProcessorParameterChanged (AudioProcessor* p,
 bool VSTNode::parameterHaveChanged(){
     if(VSTParameters.size()==getUsedSize(innerPlugin->getParameters())){
         int i = 0;
+        auto vstParams = innerPlugin->getParameters();
         for(auto & p:VSTParameters){
-            const auto & p2 = innerPlugin->getParameters().getUnchecked(i);
+            const auto & p2 = vstParams.getUnchecked(i);
             auto p2Name  = p2->getName(maxVSTParamNameSize);
             if(p2Name!=p->niceName && !p->niceName.startsWith(p2Name+" ")){
                 return true;
