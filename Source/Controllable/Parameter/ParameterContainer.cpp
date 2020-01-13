@@ -351,7 +351,12 @@ void ParameterContainer::configureFromObjectOrValues (DynamicObject* dyn,bool al
             if (paramsData != nullptr)
             {
                 auto props = paramsData->getProperties();
-
+                bool hasPresetToLoad = (props.getWithDefault(Presetable::presetIdentifier,"") != "");
+                bool hasChildConts = dyn->hasProperty(childContainerId);
+                bool shouldLoadPreset = !hasChildConts && hasPresetToLoad;
+                if(hasPresetToLoad && hasChildConts){
+                    LOGW("preset will not be recalled because child props are presents");
+                }
                 for (auto& p : props)
                 {
                     Controllable* c = getControllableByName (p.name.toString()); // retro compat : try both
@@ -363,7 +368,8 @@ void ParameterContainer::configureFromObjectOrValues (DynamicObject* dyn,bool al
                             if ( ParameterBase* par = ParameterBase::fromControllable (c))
                             {
                                 // we don't load preset when already loading a state
-                                if ((par->shortName != Presetable::presetIdentifier )  || !dyn->hasProperty(childContainerId) )
+                                if (((par->shortName != Presetable::presetIdentifier ) && !shouldLoadPreset)  ||
+                                    ((par->shortName == Presetable::presetIdentifier ) && shouldLoadPreset ))
                                 {
                                     if(par->isSavableAsObject || par->isUserDefined){
                                         if(auto d = p.value.getDynamicObject()){
@@ -388,8 +394,9 @@ void ParameterContainer::configureFromObjectOrValues (DynamicObject* dyn,bool al
                                     }
                                 }
                                 else{
-                                    
-                                    DBG("avoid loading  preset because child properties are present");
+//                                    if(shouldLoadPreset && p.value.toString()!=""){
+//                                        LOGW("avoid loading  preset because child properties are present");
+//                                    }
                                 }
                             }
                             else

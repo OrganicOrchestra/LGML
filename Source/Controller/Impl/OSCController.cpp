@@ -678,7 +678,7 @@ void OSCController::sendOSCForAddress (const Controllable* c, const String& cAdd
 
         if (targetType == ParameterProxy::_factoryType ){
             if(((ParameterProxy*)c)->linkedParam){
-            targetType = ((ParameterProxy*)c)->linkedParam->getFactoryTypeId();
+                targetType = ((ParameterProxy*)c)->linkedParam->getFactoryTypeId();
             }
             else{
                 return;

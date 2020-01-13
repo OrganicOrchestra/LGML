@@ -188,7 +188,7 @@ void Presetable::parameterValueChanged ( ParameterBase* p, ParameterBase::Listen
             }
 
         }
-        if(currentPreset!=preset)
+       // if(currentPreset!=preset)
             loadPreset(preset);
     }
 
@@ -228,7 +228,7 @@ Preset* Presetable::addNamedPreset (const String& name,bool doLoad,void * notif)
     if(pre)pm->notifyPresetSaved((PresetManager::Listener*) notif, pre);
     if(doLoad){
         currentPreset = pre;
-        currentPresetName->setValueFrom(this, pre?pre->getPresetName():"");
+        currentPresetName->setValueFrom(this, pre?pre->getPresetName():"",false,true);// force
         presetableListeners.call (&Presetable::Listener::controllableContainerPresetLoaded, pc,currentPreset);
     }
     DBG(ts);
