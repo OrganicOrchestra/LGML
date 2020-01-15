@@ -283,7 +283,7 @@ void Engine::initAudio()
 
     graphPlayer.setProcessor (NodeManager::getInstance()->getAudioGraph());
     std::unique_ptr<XmlElement> savedAudioState (getAppProperties()->getUserSettings()->getXmlValue ("audioDeviceState"));
-    getAudioDeviceManager().initialise (64, 64, savedAudioState.get(), false);
+    getAudioDeviceManager().initialise (64, 64, savedAudioState.get(), true);
     getAudioDeviceManager().addChangeListener (&audioSettingsHandler);
     // timeManager should be the first audio Callback added to ensure that time is updated each new block
     getAudioDeviceManager().addAudioCallback (TimeManager::getInstance());
