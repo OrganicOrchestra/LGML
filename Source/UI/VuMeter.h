@@ -38,6 +38,7 @@ public:
     bool isActive;
     Colour colorHigh;
     Colour colorLow;
+    Colour backColor;
 
     explicit VuMeter (Type _type) : type (_type)
     {
@@ -48,6 +49,7 @@ public:
         startTimer (1000 / 30);
         colorHigh = Colours::red;
         colorLow = Colours::lightgreen;
+        backColor = findColour (TextButton::ColourIds::buttonColourId);
         isActive = true;
         setOpaque (true);
         setPaintingIsUnclipped(true);
@@ -66,7 +68,7 @@ public:
         Rectangle<int> r = getLocalBounds();
 
 
-        g.setColour (findColour (TextButton::ColourIds::buttonColourId));
+        g.setColour (backColor);
         //    g.fillRoundedRectangle(r.toFloat(), 2);
         g.fillRect (r.toFloat());
 
