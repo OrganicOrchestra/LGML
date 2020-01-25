@@ -95,7 +95,7 @@ nodesLayer(new NodeLayerComponent())
 
 NodeContainerViewer::~NodeContainerViewer()
 {
-    nodeContainer->removeNodeContainerListener (this);
+    if(nodeContainer.get()){nodeContainer->removeNodeContainerListener (this);};
     clear();
 
 }

@@ -35,7 +35,7 @@ public :
     NodeContainerViewer (NodeContainer* container,ParameterContainer * uiP);
     virtual ~NodeContainerViewer();
 
-    NodeContainer* nodeContainer;
+    WeakReference<NodeContainer> nodeContainer;
     
 
     BoolParameter * minimizeAll;
