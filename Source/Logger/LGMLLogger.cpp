@@ -130,7 +130,20 @@ void LGMLLogger::logMessage (const String& message)
     DBG (message);
 
 }
+bool LGMLLogger::copyToCrashLogFile() noexcept{
+#if USE_FILE_LOGGER
+    if(fileWriter)
+    {
+        auto file = fileWriter->fileLog->getLogFile();
+        if(file.exists()){
+            auto destPath = file.getFullPathName()+"_crash_"+Time::getCurrentTime().toString(true,true);
+            return file.copyFileTo(destPath);
+        }
 
+    }
+#endif
+    return false;
+}
 int LGMLLogger::getNumLogs(){
     #if CIRCULAR
     if(loggedElements.getUnchecked(loggedElements.size()-1)==nullptr){

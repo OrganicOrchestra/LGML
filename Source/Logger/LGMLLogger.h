@@ -79,10 +79,22 @@ class LGMLLogger : public Logger
         virtual void logCleared() {}
     private:
         void handleAsyncUpdate() final{
+            auto &elems = LGMLLogger::getInstance()->loggedElements;
             int end = lastIdx.get()+1;
             if(end<readIdx){logCleared();readIdx = 0;}
+            else if(readIdx==end && end==elems.size() ){
+                auto el = elems.getUnchecked(end-1);
+                auto curNumAp = el->getNumAppearances();
+                if(lastNumAp!=curNumAp){
+                    newMessage(el);
+                    lastNumAp = curNumAp;
+                }
+            }
+            else{
+                lastNumAp  = 1;
+            }
             for(int i = readIdx ; i < end ; i++){
-                newMessage(LGMLLogger::getInstance()->loggedElements.getUnchecked(i));
+                newMessage(elems.getUnchecked(i));
             }
             readIdx=jmax(0,end);
             
@@ -94,6 +106,7 @@ class LGMLLogger : public Logger
         }
 
         int readIdx;
+        int lastNumAp = 0;
         Atomic<int> lastIdx;
 
     };
@@ -140,6 +153,8 @@ class LGMLLogger : public Logger
 #if USE_FILE_LOGGER
     std::unique_ptr<FileWriter> fileWriter;
 #endif
+
+    bool copyToCrashLogFile() noexcept;
 
     static int maxLoggedElements;
     Atomic<int> writeCursor;

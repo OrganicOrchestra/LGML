@@ -24,7 +24,7 @@
 
 
 #include "Utils/CommandLineElements.hpp"
-
+#include "Logger/LGMLLogger.h"
 #if !ENGINE_HEADLESS
 #include "UI/LookAndFeelOO.h"
 #include "UI/MainWindow.h"
@@ -80,6 +80,7 @@ public:
                 if(!out->writeString(bt))
                     LOGE(juce::translate("Crash Reporter can't write to file"));
             }
+            LGMLLogger::getInstance()->copyToCrashLogFile();
         }
         LOG(bt);
 
