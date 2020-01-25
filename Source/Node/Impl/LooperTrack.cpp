@@ -46,6 +46,7 @@ isLoadingAudioFile(false),
 lastVolume (0),
 startPlayBeat (0),
 startRecBeat (0),
+shouldHaveZeroGain(false),
 logVolume (float01ToGain (DB0_FOR_01), 0.5),
 hadOnset(false)
 {
@@ -181,7 +182,7 @@ void LooperTrack::processBlock (AudioBuffer<float>& buffer, MidiBuffer&)
 
     logVolume.update();
 
-    float newVolume = ((someOneIsSolo && !solo->boolValue()) || mute->boolValue()) ? 0 : logVolume.get();
+    float newVolume = shouldHaveZeroGain ? 0 : logVolume.get();
 
     for (int i = buffer.getNumChannels() - 1; i >= 0; --i)
     {
@@ -590,6 +591,11 @@ void LooperTrack::onContainerParameterChanged ( ParameterBase* p)
         {
             t->someOneIsSolo = someOneIsSolo;
         }
+
+    }
+
+    if( p== solo || p==mute){
+        shouldHaveZeroGain = ((someOneIsSolo && !solo->boolValue()) || mute->boolValue());
     }
 }
 

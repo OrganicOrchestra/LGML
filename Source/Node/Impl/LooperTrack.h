@@ -225,7 +225,7 @@ private:
 #endif
     
     friend class LooperNode;
-    bool someOneIsSolo;
+    bool someOneIsSolo,shouldHaveZeroGain;
 
     sample_clk_t quantizedRecordEnd, quantizedRecordStart;
     sample_clk_t quantizedPlayStart, quantizedPlayEnd;
