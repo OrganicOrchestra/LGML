@@ -3,6 +3,7 @@ from pythonosc import osc_message_builder
 from pythonosc import udp_client
 from pythonosc import osc_server
 from pythonosc import dispatcher
+import mido
 import time
 from threading import Thread,Lock
 
@@ -47,6 +48,8 @@ class LGMLSession:
   OSCInPort = 11001
   LGMLIP = "127.0.0.1"
   lgmlExecPath = '../../Builds/MacOSX/build/Debug/LGML.app/Contents/MacOS/LGML'
+  LGMLMIDIOut = "Gestionnaire IAC Bus 1"
+  closeWhenEnded = True
   def  __init__(self,path):
     self.path = path;
     self.udp= udp_client.SimpleUDPClient(self.LGMLIP, self.OSCOutPort)
@@ -63,6 +66,7 @@ class LGMLSession:
     self.print_oscIn = True
     self.stats = {}
     self.startTime = time.time()*1000.0
+    self.midiOut = mido.open_output(self.LGMLMIDIOut)
 
   def __enter__(self):
     self.udpFB_thread.start()
@@ -71,12 +75,16 @@ class LGMLSession:
 
 
   def __exit__(self, exc_type, exc_value, traceback):
-    print('closing session ')
-    self.close()
+    if(self.closeWhenEnded):
+      print('closing session ')
+      self.close()
+      
+      print('session closed')
+    else:
+      print('ended with session')
     self.udpFB.shutdown()
     self.udpFB.server_close()
     self.udpFB_thread.join()
-    print('session closed')
 
   def read(self):
     print('reading')
@@ -201,7 +209,8 @@ class LGMLSession:
 
   def send_osc(self,a,m):
     self.udp.send_message(a,m)
-
+  def send_midi_cc(self,cc,v):
+    self.midiOut.send(mido.Message('control_change', control=cc,value=v))
   def set_controller_param(self,name,v):
     self.udp.send_message(self.controllerAddress+"/"+name,v)
 
@@ -229,17 +238,31 @@ def graph_stats(stats):
 if __name__ == "__main__":
   sessionPath = "/Users/Tintamar/Documents/lgml.lgml"
   with LGMLSession(sessionPath) as s:
+    s.closeWhenEnded = False
     ori = s.read()
     volParam = LGMLParam("/node/audiodevicein/volume1")
     s.run()
-    s.save()
-    newS = s.read()
-    time.sleep(2)
-    s.getTree()
-    time.sleep(4)
-    print("!!!!!!!!!!!!!!!!!compare versions")
-    assert(ori==newS)
-    print('ended')
+    rangeMax = 100000
+    startTime =  time.time();
+    for i in range(rangeMax):
+      pct = i*1.0/(rangeMax+1)
+      print(str(pct) + "\n")
+      #s.send_osc(volParam.address,pct)
+      s.send_midi_cc(25,int(pct*127))
+      # time.sleep(0.01)
+    endTime = time.time();
+    diffTime = endTime - startTime
+    print("ended loop",rangeMax*1.0/diffTime,"Msg/s")
+    time.sleep(3)
+    # exit(1)
+    # s.save()
+    # newS = s.read()
+    # time.sleep(2)
+    # s.getTree()
+    # time.sleep(4)
+    # print("!!!!!!!!!!!!!!!!!compare versions")
+    # assert(ori==newS)
+    # print('ended')
   
 
   
