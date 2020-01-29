@@ -48,6 +48,7 @@ public:
 
     Trigger* selectTrig;
     Trigger* recPlayTrig;
+    Trigger* recTrig;
     Trigger* playTrig;
     Trigger* clearTrig;
     Trigger* stopTrig;
@@ -68,7 +69,8 @@ public:
     void clear();
     void stop();
     void play();
-    void recPlay(bool preventSubsequentPlays);
+    void rec();
+    void recPlay();
     bool isBusy();
     Array<float> getNormalizedOnsets();
 

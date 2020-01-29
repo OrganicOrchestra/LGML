@@ -47,7 +47,6 @@ LooperNode::LooperNode (StringRef name) :
     playAllTrig =  addNewParameter<Trigger> ("Play all", "Tells all tracks to play it's content if got any");
     togglePlayStopAllTrig =  addNewParameter<Trigger> ("Toggle play stop", "Toggle Play/Stop all, will stop if at least one track is playing");
     isMonitoring = addNewParameter<BoolParameter> ("Monitor", "do we monitor audio input ? ", false);
-    preventSubsequentPlays = addNewParameter<BoolParameter> ("preventSubsequentPlays", "prevents playing again a recorded track", false);
     preDelayMs = addNewParameter<IntParameter> ("Pre Delay ms", "Pre process delay (in milliseconds)", 0, 0, 250);
     quantization = addNewParameter<IntParameter> ("Quantization", "quantization for this looper - 1 is global", -1, -1, 32);
     isOneShot = addNewParameter<BoolParameter> ("Is one shot", "do we play once or loop track", false);
@@ -367,10 +366,18 @@ void LooperNode::onContainerTriggerTriggered (Trigger* t)
         if (trackGroup.selectedTrack)
         {
 
-            trackGroup.selectedTrack->recPlay(preventSubsequentPlays->boolValue());
+            trackGroup.selectedTrack->recPlay();
             if (autoNextTrackAfterRecord->boolValue() && trackGroup.selectedTrack->trackState == LooperTrack::TrackState::RECORDING) selectTrack->setValue (selectTrack->intValue() + 1);
         }
 
+    }
+    else if( t == recSelectedTrig){
+        if (trackGroup.selectedTrack)
+        {
+
+            trackGroup.selectedTrack->rec();
+            if (autoNextTrackAfterRecord->boolValue() && trackGroup.selectedTrack->trackState == LooperTrack::TrackState::RECORDING) selectTrack->setValue (selectTrack->intValue() + 1);
+        }
     }
     else if (t == playSelectedTrig)
     {

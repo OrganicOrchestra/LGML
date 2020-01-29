@@ -54,6 +54,7 @@ hadOnset(false)
 
     selectTrig =  addNewParameter<Trigger> ("Select", "Select this track");
     recPlayTrig =  addNewParameter<Trigger> ("Rec Or Play", "Tells the track to wait for the next bar and then start record or play");
+    recTrig =  addNewParameter<Trigger> ("Rec", "Tells the track to wait for the next bar and then start record");
     playTrig =  addNewParameter<Trigger> ("Play", "Tells the track to wait for the next bar and then stop recording and start playing");
     stopTrig =  addNewParameter<Trigger> ("Stop", "Tells the track to stop ");
     clearTrig =  addNewParameter<Trigger> ("Clear", "Tells the track to clear it's content if got any");
@@ -604,14 +605,16 @@ void LooperTrack::onContainerTriggerTriggered (Trigger* t)
     if (t == selectTrig)
     {
         parentLooper->selectMe (this);
-
     }
     else if (t == recPlayTrig)
     {
-        recPlay(parentLooper->preventSubsequentPlays->boolValue());
+        recPlay();
         if(parentLooper->autoSelectTrack->boolValue()){
             parentLooper->selectMe (this);
         }
+    }
+    else if (t == recTrig){
+        rec();
     }
     else if (t == playTrig)
     {
@@ -648,7 +651,24 @@ void LooperTrack::play()
     setTrackState (WILL_PLAY);
 }
 
-void LooperTrack::recPlay(bool preventSubsequentPlay)
+void LooperTrack::rec()
+{
+    if (desiredState == CLEARED )
+    {
+        setTrackState (WILL_RECORD);
+
+    }
+    else  if (desiredState != WILL_RECORD)
+    {
+        if (parentLooper->isOneShot->boolValue() && desiredState == RECORDING)
+        {
+            setTrackState (WILL_STOP);
+        }
+    }
+    
+
+}
+void LooperTrack::recPlay()
 {
     if (desiredState == CLEARED )
     {
@@ -662,9 +682,9 @@ void LooperTrack::recPlay(bool preventSubsequentPlay)
             }
             else
             {
-                if(!preventSubsequentPlay || desiredState==RECORDING){
-                    setTrackState (WILL_PLAY);
-                }
+                
+                setTrackState (WILL_PLAY);
+                
             }
         }
 }
