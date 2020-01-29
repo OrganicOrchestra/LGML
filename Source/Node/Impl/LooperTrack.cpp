@@ -53,8 +53,8 @@ hadOnset(false)
     
 
     selectTrig =  addNewParameter<Trigger> ("Select", "Select this track");
-    recPlayTrig =  addNewParameter<Trigger> ("Rec Or Play", "Tells the track to wait for the next bar and then start record or play");
-    recTrig =  addNewParameter<Trigger> ("Rec", "Tells the track to wait for the next bar and then start record");
+    recPlayTrig =  addNewParameter<Trigger> ("Rec Or Play", "Tells the track start record or play it if it was recording");
+    recStopTrig =  addNewParameter<Trigger> ("Rec Or Stop", "Tells the track start record or stop it if it was recording");
     playTrig =  addNewParameter<Trigger> ("Play", "Tells the track to wait for the next bar and then stop recording and start playing");
     stopTrig =  addNewParameter<Trigger> ("Stop", "Tells the track to stop ");
     clearTrig =  addNewParameter<Trigger> ("Clear", "Tells the track to clear it's content if got any");
@@ -613,8 +613,8 @@ void LooperTrack::onContainerTriggerTriggered (Trigger* t)
             parentLooper->selectMe (this);
         }
     }
-    else if (t == recTrig){
-        rec();
+    else if (t == recStopTrig){
+        recOrStop();
     }
     else if (t == playTrig)
     {
@@ -651,7 +651,7 @@ void LooperTrack::play()
     setTrackState (WILL_PLAY);
 }
 
-void LooperTrack::rec()
+void LooperTrack::recOrStop()
 {
     if (desiredState == CLEARED )
     {
@@ -660,10 +660,11 @@ void LooperTrack::rec()
     }
     else  if (desiredState != WILL_RECORD)
     {
-        if (parentLooper->isOneShot->boolValue() && desiredState == RECORDING)
+        if (desiredState == RECORDING)
         {
             setTrackState (WILL_STOP);
         }
+
     }
     
 

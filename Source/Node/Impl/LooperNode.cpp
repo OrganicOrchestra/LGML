@@ -375,7 +375,7 @@ void LooperNode::onContainerTriggerTriggered (Trigger* t)
         if (trackGroup.selectedTrack)
         {
 
-            trackGroup.selectedTrack->rec();
+            trackGroup.selectedTrack->recOrStop();
             if (autoNextTrackAfterRecord->boolValue() && trackGroup.selectedTrack->trackState == LooperTrack::TrackState::RECORDING) selectTrack->setValue (selectTrack->intValue() + 1);
         }
     }
