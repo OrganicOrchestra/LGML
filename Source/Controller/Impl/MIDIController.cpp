@@ -32,39 +32,39 @@ REGISTER_CONTROLLER_TYPE (MIDIController,"MIDI");
 
 
 
-#define NON_BLOCKING 0
+extern ApplicationProperties *getAppProperties();
+bool MIDI_NON_BLOCKING=true; // will be overriden by settings
 template<>
 void ParameterContainer::OwnedFeedbackListener<MIDIController>::parameterFeedbackUpdate (ParameterContainer* originContainer, ParameterBase* p,ParameterBase::Listener * notifier){
 
 
     if (owner->enabledParam->boolValue() && (!owner->blockFeedback->boolValue() || notifier!=(Controller*)owner))
     {
-#if NON_BLOCKING
-        auto f = [this,c](){
-#endif
-            jassert(originContainer==&owner->userContainer);
-            if(owner->midiOutDevice.get() ){
+        auto _owner = owner;
+        jassert(originContainer==&_owner->userContainer);
+        auto f = [_owner,p](){
+            if(_owner->midiOutDevice.get() ){
 
                 if(p){
-                    auto msgToSend = MIDIHelpers::midiMessageFromParam(p, owner->channelFilter->intValue());
+                    auto msgToSend = MIDIHelpers::midiMessageFromParam(p, _owner->channelFilter->intValue());
                     if(!msgToSend.isSysEx()){
-                        owner->sendMessage(msgToSend);
+                        _owner->sendMessage(msgToSend);
                     }
                     else{
-                        NLOGW(owner->getControlAddress().toString(),"user parameter doesnt have a valid midi name to be sent to device");
+                        NLOGW(_owner->getControlAddress().toString(),"user parameter doesnt have a valid midi name to be sent to device");
                     }
                 }
             }
-#if NON_BLOCKING
+
         };
         // avoid locking other threads
-        if(MessageManager::getInstance()->isThisTheMessageThread()){
+        if(!MIDI_NON_BLOCKING || MessageManager::getInstance()->isThisTheMessageThread()){
             f();
         }
         else{
             MessageManager::callAsync(f);
         }
-#endif
+
     }
 
 
@@ -79,7 +79,7 @@ midiOutChooser(this,false,true),
 midiClock(false),
 pSync(this)
 {
-
+    MIDI_NON_BLOCKING = getAppProperties()->getUserSettings()->getBoolValue("deferControllerFB",false);
     setNamespaceName ("controllers." + shortName);
 
     logIncoming = addNewParameter<BoolParameter> ("logIncoming", "log Incoming midi message", false);
@@ -104,7 +104,7 @@ MIDIController::~MIDIController()
 
 }
 
-
+int lastCv=0;
 void MIDIController::handleIncomingMidiMessage (MidiInput*,
                                                 const MidiMessage& message)
 {
@@ -123,8 +123,11 @@ void MIDIController::handleIncomingMidiMessage (MidiInput*,
     }
     if (message.isController())
     {
-
-
+        auto cv = message.getControllerValue();
+        if(cv!=lastCv){
+            DBG(cv);
+            lastCv = cv;
+        }
         const String paramName(MIDIHelpers::midiMessageToParamName(message));
         if (Controllable* c = userContainer.getControllableByName(paramName))
         {

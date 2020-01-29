@@ -22,6 +22,9 @@
 #include "../../Utils/NetworkUtils.h"
 #include "../../Controllable/Parameter/ParameterProxy.h"
 
+#define NUM_OSC_MSG_IN_A_ROW 100
+#define OSC_QUEUE_LENGTH 6 //5000
+
 extern bool isEngineLoadingFile();
 
 HashMap<OSCController * , int> OSCController::listenedPorts{};
@@ -746,8 +749,9 @@ void OSCController::OSCMessageQueue::add (OSCMessage* m)
             jassert(startIndex1 == messages.size());
             messages.add(m);
         }
-        else
+        else{
             messages.set (startIndex1, m);
+        }
         numWritten ++;
     }
     else if (blockSize2 > 0)

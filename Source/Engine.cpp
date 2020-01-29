@@ -59,6 +59,8 @@ void initDefaultUserSettings(){
     setDefault(settings,"check for updates",true);
     setDefault(settings,"language","english");
 
+    setDefault(settings,"deferControllerFB",false);
+
     settings->saveIfNeeded();
 }
 

@@ -20,27 +20,26 @@
 #include "../../Controllable/Parameter/ParameterProxy.h"
 #include "../ControllerManager.h"
 
-#define NON_BLOCKING 0
+extern ApplicationProperties *getAppProperties();
+bool OSC_NON_BLOCKING=true; // will be overriden by settings
 template<>
 void ParameterContainer::OwnedFeedbackListener<OSCDirectController>::parameterFeedbackUpdate (ParameterContainer* /*originContainer*/, ParameterBase* c,ParameterBase::Listener * notifier){
 
 
     if (owner->enabledParam->boolValue() && (!owner->blockFeedback->boolValue() || notifier!=(Controller*)owner))
     {
-#if NON_BLOCKING
-        auto f = [this,c](){
-#endif
-            owner->sendOSCFromParam(c);
-#if NON_BLOCKING
+
+        auto _owner = owner;
+        auto f = [_owner,c](){
+            _owner->sendOSCFromParam(c);
         };
         // avoid locking other threads
-        if(MessageManager::getInstance()->isThisTheMessageThread()){
+        if(!OSC_NON_BLOCKING || MessageManager::getInstance()->isThisTheMessageThread()){
             f();
         }
         else{
             MessageManager::callAsync(f);
         }
-#endif
     }
 
 
@@ -53,7 +52,7 @@ OSCController (name),
 pSync(this)
 {
 
-
+    OSC_NON_BLOCKING = getAppProperties()->getUserSettings()->getBoolValue("deferControllerFB",false);
     sendTimeInfo = addNewParameter<BoolParameter> ("sendTimeInfo", "send time information", false);
     fullSync = addNewParameter<BoolParameter> ("syncAllParameters", "sync every parameter like stats/NodesUI/FastMap...(useful for test and hacking things around)", false);
 

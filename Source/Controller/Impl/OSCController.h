@@ -21,8 +21,7 @@
 #include <juce_osc/juce_osc.h>
 
 
-#define NUM_OSC_MSG_IN_A_ROW 100
-#define OSC_QUEUE_LENGTH 5000
+
 
 
 class OSCController :

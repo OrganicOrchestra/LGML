@@ -140,7 +140,7 @@ void PresetChooserUI::updatePresetComboBox (bool forceUpdate)
 {
     if(!container){
         LOGW("old presetChooserUI trying to refresh");
-        jassertfalse;
+//        jassertfalse;
         return ;
     }
     bool emptyFilter = getPresetable()->getPresetFilter().isEmpty();

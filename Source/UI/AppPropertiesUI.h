@@ -31,7 +31,7 @@ public:
 
 
     static String GeneralPageName;
-    static String AudioPageName,AdvancedPageName,PluginsPageName;
+    static String AudioPageName,AdvancedPageName,PluginsPageName,BetaPageName;
 
     static void showAppSettings(const String & name="");
     static void closeAppSettings();

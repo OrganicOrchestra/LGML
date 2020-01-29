@@ -37,11 +37,12 @@ String AppPropertiesUI::GeneralPageName("General");
 String AppPropertiesUI::AudioPageName("Audio");
 String AppPropertiesUI::AdvancedPageName("Advanced");
 String AppPropertiesUI::PluginsPageName("Plugins");
+String AppPropertiesUI::BetaPageName("Beta");
 
 
 class BoolPropUI : public BooleanPropertyComponent{
 public:
-    explicit BoolPropUI(const String & _name,const String  tooltip=""):BooleanPropertyComponent(juce::translate(_name),"1","0"),name(_name){
+    explicit BoolPropUI(const String & _name,const String  tooltip="",const String suffix = ""):BooleanPropertyComponent(juce::translate(_name),"1","0"),name(_name){
         jassert(getAppProperties()->getUserSettings()->containsKey(name));
         setTooltip(tooltip);
     }
@@ -323,6 +324,16 @@ class PrefPanel : public PreferencesPanel{
 
             }
         }
+        else if(pageName==juce::translate(AppPropertiesUI::BetaPageName)){
+
+            auto res =  new PropertyPanel();
+            res->addProperties(
+                               {new BoolPropUI("deferControllerFB","feedback for midi and osc is deferred to the main thread preventing lock","(restart needed)")
+                               }
+                               );
+            return res;
+
+        }
         return nullptr;
 
     }
@@ -338,17 +349,6 @@ class PrefPanel : public PreferencesPanel{
 
 static DrawableComposite *  createIcon(const String &n,PrefPanel * parent,const int color = 0){
     DrawableComposite * res = new DrawableComposite();
-
-    //    DrawablePath * border = new DrawablePath();
-    //    Path circle;
-    //    circle.addEllipse(0, 0, parent->getButtonSize(), parent->getButtonSize());
-
-    //    border->setPath(circle);
-    //    border->setFill(Colours::transparentWhite);
-    //    border->setFill(parent->findColour(TextButton::ColourIds::textColourOnId).brighter());
-
-    //    res->addAndMakeVisible(border);
-
 
     auto * text = new DrawableText();
     text->setText(n.substring(0,1));
@@ -385,6 +385,8 @@ AppPropertiesUI::AppPropertiesUI():ResizableWindow(juce::translate("Settings"),t
 
 
     createForPageName(AdvancedPageName,prefPanel.get());
+
+    createForPageName(BetaPageName,prefPanel.get());
 
 
 #ifdef JUCE_MAC
