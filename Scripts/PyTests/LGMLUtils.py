@@ -242,13 +242,14 @@ if __name__ == "__main__":
     ori = s.read()
     volParam = LGMLParam("/node/audiodevicein/volume1")
     s.run()
-    rangeMax = 100000
+    rangeMax = 127*100
     startTime =  time.time();
+
     for i in range(rangeMax):
       pct = i*1.0/(rangeMax+1)
-      print(str(pct) + "\n")
+      #print(str(pct) + "\n")
       #s.send_osc(volParam.address,pct)
-      s.send_midi_cc(25,int(pct*127))
+      s.send_midi_cc(12,i%127)
       # time.sleep(0.01)
     endTime = time.time();
     diffTime = endTime - startTime
