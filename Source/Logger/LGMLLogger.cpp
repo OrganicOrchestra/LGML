@@ -28,7 +28,8 @@ int LGMLLogger::maxLoggedElements = 5000;
 class FileWriter : public LGMLLogger::Listener,public Engine::EngineListener
 {
 public:
-    FileWriter() {fileLog.reset(FileLogger::createDefaultAppLogger ("LGML", "log", ""));}
+    FileWriter():aggregator(this) {fileLog.reset(FileLogger::createDefaultAppLogger ("LGML", "log", ""));}
+    ~FileWriter(){flush();aggregator.cancelPendingUpdate();}
     void startLoadFile(const File & sessionFile) override{
         if(!sessionFile.exists())return;// new sessions
         if(!sessionFile.getParentDirectory().exists()){jassertfalse;return;}
@@ -42,9 +43,32 @@ public:
 
     }
 
-    void newMessage(const LogElement * el)  override {if (fileLog && el) {String msg(el->toNiceString(true));fileLog->logMessage (msg);}}
-    String getFilePath() {return fileLog->getLogFile().getFullPathName();}
+    void flush(){
+        if(waitingStrings.isNotEmpty() && fileLog){
+            fileLog->logMessage (waitingStrings);
+            waitingStrings.clear();
+        }
+    }
+    struct Aggregator : public juce::AsyncUpdater{
+        Aggregator(FileWriter * o):owner(o){}
+        void handleAsyncUpdate()final{
+            owner->flush();
+        }
+        FileWriter * owner;
+    };
+    Aggregator aggregator;
+    void newMessage(const LogElement * el)  override {
+        if (fileLog && el) {
+            waitingStrings+=el->toNiceString(true)+"\n";
+            aggregator.triggerAsyncUpdate();
+        }
+    }
+    String getFilePath() {
+        return fileLog->getLogFile().getFullPathName();
+    }
     std::unique_ptr<FileLogger> fileLog;
+
+    String waitingStrings;
 };
 
 #endif
@@ -56,8 +80,9 @@ writeCursor(0)
     loggedElements.resize(maxLoggedElements);
     loggedElements.fill(nullptr);
 #endif
-
+    loggedElements.ensureStorageAllocated(maxLoggedElements);
 #if USE_FILE_LOGGER
+
     fileWriter.reset(new FileWriter());
     addLogListener (fileWriter.get());
 #endif
@@ -134,6 +159,7 @@ bool LGMLLogger::copyToCrashLogFile() noexcept{
 #if USE_FILE_LOGGER
     if(fileWriter)
     {
+        fileWriter->flush();
         auto file = fileWriter->fileLog->getLogFile();
         if(file.exists()){
             auto destPath = file.getFullPathName()+"_crash_"+Time::getCurrentTime().toString(true,true);

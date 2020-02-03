@@ -54,8 +54,8 @@ public:
 private:
     int numAppearances;
     std::unique_ptr<StringArray> _arr;
-    friend class LinkedListPointer<LogElement>;
-    LogElement * nextItem;
+//    friend class LinkedListPointer<LogElement>;
+//    LogElement * nextItem;
 };
 
 
