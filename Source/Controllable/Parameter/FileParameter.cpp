@@ -34,6 +34,7 @@ public:
         set(Audio, {StringArray {"wav","aif","aiff","mp3"},"Audio"});
         set(PdPatch, {StringArray {"pd"},"Pure-data"});
         set(PresetFile,{StringArray {"json"},"Preset"});
+        set(Text,{StringArray {"txt"},"Text"});
     }
 };
 
@@ -187,6 +188,11 @@ void FileParameter::startLoading(){
 
     if(stringValue().isEmpty()){
         loadingState = EMPTY;
+        if(parentContainer){ // hack to avoid loading on param construction
+            const File f {};
+            if(loaderFunction){loaderFunction(f);}
+            else{jassertfalse;}
+        }
         return;
     }
     if(isEngineLoadingFile()){
@@ -278,6 +284,16 @@ bool FileParameter::fileHasValidExtension(const File & f){
         return f.hasFileExtension(getAllowedExtensionsFilter(false));
     }
 
+}
+
+String FileParameter::getWithFirstValidExtension(const String & name){
+    auto fkFile = File::getCurrentWorkingDirectory().getChildFile (name);
+    if(name.isNotEmpty() && !fileHasValidExtension(fkFile)){
+        auto exts = fileTypes->getReference(fileType).extensions;
+        auto ext = exts.size()>0?exts[0]:"";
+        return fkFile.getFileNameWithoutExtension()+"."+ext;
+    }
+    return name;
 }
 
 

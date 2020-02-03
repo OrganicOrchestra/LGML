@@ -16,7 +16,8 @@ typedef enum{
     Js,
     Audio,
     PdPatch,
-    PresetFile
+    PresetFile,
+    Text
 
 } FileType;
 
@@ -44,6 +45,7 @@ public:
     static void initBaseFileTypes();
     bool fileHasValidExtension(const File & f);
     bool hasValidPath(bool ignoreEmpty);
+    String getWithFirstValidExtension(const String & name);
     FileType fileType;
     bool isWatchable = false;
     bool isReloadable = false;
