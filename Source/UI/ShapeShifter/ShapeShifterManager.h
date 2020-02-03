@@ -22,7 +22,7 @@
 
 class LastLayoutSaver;
 class ShapeShifterManager :
-    public ShapeShifterPanel::Listener,
+//    public ShapeShifterPanel::Listener,
     private LGMLLogger::CoalescedListener
 {
 public:

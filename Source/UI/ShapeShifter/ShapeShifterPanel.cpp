@@ -240,6 +240,8 @@ void ShapeShifterPanel::detachTab (ShapeShifterPanelTab* tab, bool createNewPane
         {
 
             //DBG("panel emptied, num listeners " << listeners.size());
+            // TODO this calls a deleter take care...
+            // BUG
             listeners.call (&Listener::panelEmptied, this);
         }
     }

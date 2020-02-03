@@ -99,7 +99,9 @@ void ShapeShifterPanelHeader::mouseDrag (const MouseEvent& e)
     {
         ShapeShifterPanelTab* tab = dynamic_cast<ShapeShifterPanelTab*> (e.eventComponent);
 
-        if (abs (e.getDistanceFromDragStartY()) > minDetachDistanceY && tab != nullptr){
+        if ((abs (e.getDistanceFromDragStartY()) > minDetachDistanceY) && tab != nullptr){
+            // a bug seem to appear randomly here (one of listeners gets corrupted)
+            // TODO check self deletion
 //            Component::BailOutChecker checker (this);
 //            listeners.callChecked (checker,&Listener::tabDrag, tab); // check its not self deleting
             listeners.call (&Listener::tabDrag, tab);
