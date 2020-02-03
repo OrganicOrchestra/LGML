@@ -39,6 +39,7 @@ Array<Identifier> defaultRootFunctionNames;
 JsEnvironment::JsEnvironment (const String& ns, ParameterContainer* _linkedContainer) :
 linkedContainer (_linkedContainer),
 localNamespace (ns),
+localEnv(new DynamicObject()),
 _hasValidJsFile (false),
 _isInSyncWithLGML (false),
 isLoadingFile (false),
@@ -50,7 +51,6 @@ isEnabled (true)
     linkedContainer->addChildControllableContainer (jsParameters.get());
 
     linkedContainer->nameParam->addParameterListener(this);
-    localEnv = new DynamicObject();
     clearNamespace();
     getEngine()->addControllableContainerListener (this);
     //  addToNamespace(localNamespace, localEnv, getGlobalEnv());
@@ -187,15 +187,19 @@ Result JsEnvironment::loadFile (const File& file)
 
 
     HashMap<String,var> savedState;
+    if(linkedContainer){
+
     for(auto p:  linkedContainer->getAllParameters()){
         if(p->isUserDefined){
             savedState.set(p->shortName.toString(),p->value);
         }
     }
 
+    }
+
     Result r = loadScriptContent (jsString);
 
-    if(hasValidJsFile()){
+    if(hasValidJsFile() && linkedContainer){
         HashMap<String, var>::Iterator it (savedState);
         while(it.next()){
             if(auto p = dynamic_cast<ParameterBase*>(linkedContainer->ParameterContainer::getControllableByShortName(it.getKey()))){
@@ -217,7 +221,7 @@ Result JsEnvironment::loadFile (const File& file)
     {
         isEnabled = cc->enabledParam->boolValue();
     }
-    JsGlobalEnvironment::getInstance()->setControllableContainerDirty(linkedContainer);
+    if(linkedContainer){JsGlobalEnvironment::getInstance()->setControllableContainerDirty(linkedContainer);}
     setTimerState (onUpdateTimer, isEnabled && userDefinedFunctions.contains (onUpdateFId) );
     
     return r;
@@ -239,6 +243,11 @@ Result JsEnvironment::loadScriptContent (const String& content)
     clearNamespace();
     buildLocalEnv();
     clearListeners();
+    if(content.isEmpty()){
+        _hasValidJsFile = false;
+        _isInSyncWithLGML = true;
+        return Result::ok();
+    }
     // thread safe if the  environment class is not multithreaded
     Result r = Result::fail ("can't lock environment");
     {

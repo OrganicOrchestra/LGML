@@ -37,10 +37,14 @@ private ParameterContainer::FeedbackListener
 public:
     JsEnvironment (const String& ns, ParameterContainer* linkedContainer);
     virtual ~JsEnvironment();
+private:
+    WeakReference<ParameterContainer> linkedContainer; // should be on top to be initialized before anything else
+    DynamicObject::Ptr localEnv;
+    // dot separated string representing localNamespace
+    String localNamespace;
+public:
 
 
-
-    std::unique_ptr<JSEnvContainer> jsParameters;
     FileParameter * getJsFileParameter();
 
     // should be implemented to build localenv
@@ -100,7 +104,7 @@ protected :
 
     static DynamicObject::Ptr getGlobalEnv();
     //  DynamicObject * getLocalEnv(){return localEnv;}
-    DynamicObject::Ptr localEnv;
+
 
     friend class JsContainerSync;
 
@@ -156,8 +160,7 @@ private:
     void    addToLocalNamespace (const String& elem, DynamicObject* target);
     void    removeNamespace (const String& jsNamespace);
 
-    // dot separated string representing localNamespace
-    String localNamespace;
+
 
 
     
@@ -244,7 +247,7 @@ private:
     void parameterFeedbackUpdate (ParameterContainer* originContainer, ParameterBase*,ParameterBase::Listener * notifier)     override;
     void childStructureChanged (ControllableContainer*, ControllableContainer*,bool isAdded) override;
 
-    WeakReference<ParameterContainer> linkedContainer;
+
     bool isLoadingFile;
     int triesToLoad;
     bool _isInSyncWithLGML;
@@ -258,7 +261,9 @@ private:
     void addJsParameterListener(JsParameterListenerObject * p){parameterListenerObjects.add(p);}
     friend class JsParameterListenerObject;
 
-
+public:
+    // should stay at the end to be the last member initialized 
+    std::unique_ptr<JSEnvContainer> jsParameters;
 
 };
 
