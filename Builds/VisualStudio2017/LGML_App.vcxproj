@@ -2348,6 +2348,7 @@
     <ClInclude Include="..\..\Source\Controller\UI\ControllerUI.h"/>
     <ClInclude Include="..\..\Source\Controller\Controller.h"/>
     <ClInclude Include="..\..\Source\Controller\ControllerFactory.h"/>
+    <ClInclude Include="..\..\Source\Controller\NamespaceFBFilter.h"/>
     <ClInclude Include="..\..\Source\Controller\ControllerManager.h"/>
     <ClInclude Include="..\..\Source\FastMapper\FastMap.h"/>
     <ClInclude Include="..\..\Source\FastMapper\FastMapper.h"/>

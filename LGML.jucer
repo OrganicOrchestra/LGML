@@ -242,6 +242,8 @@
               name="Controller.h" resource="0"/>
         <FILE compile="0" file="Source/Controller/ControllerFactory.h" id="S7ygKB"
               name="ControllerFactory.h" resource="0"/>
+        <FILE id="BFA059" name="NamespaceFBFilter.h" compile="0" resource="0"
+              file="Source/Controller/NamespaceFBFilter.h"/>
         <FILE compile="1" file="Source/Controller/ControllerManager.cpp" id="cSavBn"
               name="ControllerManager.cpp" resource="0"/>
         <FILE compile="0" file="Source/Controller/ControllerManager.h" id="oYmvxL"

@@ -21,9 +21,12 @@
 
 #include "../../Utils/NetworkUtils.h"
 #include "../../Controllable/Parameter/ParameterProxy.h"
+#include "../../Controllable/Parameter/FileParameter.h"
+#include "../NamespaceFBFilter.h"
+
 
 #define NUM_OSC_MSG_IN_A_ROW 100
-#define OSC_QUEUE_LENGTH 6 //5000
+#define OSC_QUEUE_LENGTH 5000
 
 extern bool isEngineLoadingFile();
 
@@ -82,6 +85,14 @@ oscMessageQueue (this)
 
     
     sendAllParameters =  addNewParameter<Trigger> ("sendAll", "send all parameter states to initialize ", true);
+    oscFBFilter = std::make_unique<NamespaceFBFilter>();
+    filterFile = addNewParameter<FileParameter> ("filterFile", "file specifying filtering rules form OSCMessages feedback","",FileType::Text,[=](const File & f){
+        auto res= oscFBFilter->processFile(f);
+        if(!res){
+            NLOGE(getControlAddress().toString(),"error parsing filter");
+        }
+        return res;
+    });
 
     
     setupReceiver();
@@ -638,6 +649,10 @@ void OSCController::sendAllControllableStates (ControllableContainer* c, int& se
     {
         for (auto& controllable : c->getAllControllables(false))
         {
+            if(!oscFBFilter->checkAddr(controllable->controlAddress)){
+                continue;
+            }
+
             sendOSCFromParam(controllable);
             sentControllable++;
 
@@ -649,6 +664,9 @@ void OSCController::sendAllControllableStates (ControllableContainer* c, int& se
 
         for (auto& container : c->controllableContainers)
         {
+            if(!oscFBFilter->includesAddr(container->controlAddress)){
+                continue;
+            }
             sendAllControllableStates (container, sentControllable);
         }
     }

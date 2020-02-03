@@ -20,7 +20,7 @@
 
 #include <juce_osc/juce_osc.h>
 
-
+class NamespaceFBFilter;
 
 
 
@@ -38,6 +38,8 @@ public:
     FloatParameter* speedLimit;
     BoolParameter* logIncomingOSC;
     BoolParameter* logOutGoingOSC;
+    ParameterBase * filterFile;
+    
     
     Trigger* sendAllParameters;
     
@@ -94,6 +96,8 @@ public:
     void sendOSCForAddress (const Controllable* c, const String& cAddress);
     void sendOSCFromParam(const Controllable* c);
 
+
+    std::unique_ptr<NamespaceFBFilter> oscFBFilter;
 private:
 
     void oscMessageReceived (const OSCMessage& message) override;

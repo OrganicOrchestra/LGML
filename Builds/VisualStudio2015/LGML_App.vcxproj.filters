@@ -3183,6 +3183,9 @@
     <ClInclude Include="..\..\Source\Controller\ControllerFactory.h">
       <Filter>LGML\Source\Controller</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Controller\NamespaceFBFilter.h">
+      <Filter>LGML\Source\Controller</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Controller\ControllerManager.h">
       <Filter>LGML\Source\Controller</Filter>
     </ClInclude>

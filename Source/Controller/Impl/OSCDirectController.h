@@ -19,6 +19,7 @@
 #include "OSCController.h"
 
 
+
 class OSCDirectController : public OSCController
 {
 public:
@@ -27,7 +28,7 @@ public:
     virtual ~OSCDirectController();
 
     BoolParameter* sendTimeInfo,*fullSync;
-
+    ParameterBase* filterFile;
 
     virtual Result processMessageInternal (const OSCMessage& msg) override;
 
@@ -40,8 +41,6 @@ public:
 
 
 private:
-
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OSCDirectController)
 
 

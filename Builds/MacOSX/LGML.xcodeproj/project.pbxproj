@@ -1352,6 +1352,13 @@
 			path = ../../Source/UI/ShapeShifter/ShapeShifterWindow.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
+		36FA4143C4BB063017E1DBEF = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = NamespaceFBFilter.h;
+			path = ../../Source/Controller/NamespaceFBFilter.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		37BCBE2D73600D2E35D92AAA = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -3668,6 +3675,7 @@
 				CD9BC804D5F97458946F8045,
 				7D6D9859215171A00D6FFE12,
 				ADADCDA5347FC8725D61B49F,
+				36FA4143C4BB063017E1DBEF,
 				6EA980178EE753B7125A9BB7,
 				737E26A3FFBB6FF8F522EB00,
 			);
