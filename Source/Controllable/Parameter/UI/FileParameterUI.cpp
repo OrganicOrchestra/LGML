@@ -198,15 +198,14 @@ void createFile(FileParameter *fp){
         {
             String sN = nameWindow.getTextEditor("Name")->getText();
             if(sN.isNotEmpty()){
-                if( sN.endsWith(".js")){
-                    sN= sN.substring(0, -2);
-                }
+
                 File scriptFile = getEngine()->getCurrentProjectFolder().getChildFile("Scripts/");
 
                 if(! scriptFile.exists()){
                     scriptFile.createDirectory();
                 }
-                scriptFile = scriptFile.getNonexistentChildFile(sN,".js",true);
+                sN = fp->getWithFirstValidExtension(sN);
+                scriptFile = scriptFile.getChildFile(sN).getNonexistentSibling(true);
                 if(! scriptFile.exists()){
                     auto r = scriptFile.create();
                     if(!r){
