@@ -36,7 +36,7 @@ QueuedNotifier<MessageClass,CriticalSectionToUse>::QueuedNotifier (int _maxSize,
 
 template<typename MessageClass, class CriticalSectionToUse >
 QueuedNotifier<MessageClass,CriticalSectionToUse>::~QueuedNotifier() {
-//    if(debugFlag){
+//    if(DBGQUEUED && debugFlag){
 //        NLOG(name,"ooooo deleting Me"+String(fifo.getNumReady()));
 //    }
     cancelPendingUpdate();
@@ -53,8 +53,8 @@ QueuedNotifier<MessageClass,CriticalSectionToUse>::~QueuedNotifier() {
 template<typename MessageClass, class CriticalSectionToUse >
 void QueuedNotifier<MessageClass,CriticalSectionToUse>::addMessage (MessageClass* msg, bool forceSendNow ,Listener * notifier)
 {
-#if DBGQUEUED
-    if(debugFlag){
+
+    if(DBGQUEUED && debugFlag){
         if(_data->tid!=Thread::getCurrentThreadId()){
             auto jt = Thread::getCurrentThread();
             auto tname = jt?jt->getThreadName():"unknown";
@@ -70,10 +70,10 @@ void QueuedNotifier<MessageClass,CriticalSectionToUse>::addMessage (MessageClass
         }
         _data->tid =Thread::getCurrentThreadId();
     }
-#endif
+
     if (listeners.size() == 0 && lastListeners.size() == 0)
     {
-//        if(debugFlag){
+//        if(DBGQUEUED && debugFlag){
 //            NLOG(name,"ooooo deleting Msg"+String(fifo.getNumReady())+","+String(_data->numSent.get()));
 //        }
         delete msg;
@@ -87,13 +87,13 @@ void QueuedNotifier<MessageClass,CriticalSectionToUse>::addMessage (MessageClass
     // fifo is full : we can drop message or wait
     while (fifo.getFreeSpace() == 0)
     {
-        if(debugFlag){
+        if(DBGQUEUED && debugFlag){
             NLOG(name,"ooooo fifo full"+String(fifo.getNumReady())+","+String(_data->numSent.get()));
         }
         if (canDropMessage)
         {
             auto rHdl = fifo.read(1);
-            if(debugFlag){
+            if(DBGQUEUED && debugFlag){
                 NLOG(name,"ooooo fifo drop"+String(fifo.getNumReady())+","+String(_data->numSent.get()));
             }
 
@@ -110,14 +110,14 @@ void QueuedNotifier<MessageClass,CriticalSectionToUse>::addMessage (MessageClass
 
     if (messageQueue.size() < maxSize) {
         jassert(start1==messageQueue.size());
-//        if(debugFlag){
+//        if(DBGQUEUED && debugFlag){
 //            NLOG(name,"ooooo adding Msg"+String(fifo.getNumReady())+","+String(_data->numSent.get()));
 //        }
         messageQueue.add (msg);
         notifierQueue.add(notifier);
     }
     else {
-//        if(debugFlag){
+//        if(DBGQUEUED && debugFlag){
 //            NLOG(name,"ooooo setting Msg"+String(fifo.getNumReady())+","+String(_data->numSent.get()));
 //        }
         messageQueue.set (start1, msg);
@@ -176,7 +176,7 @@ void QueuedNotifier<MessageClass,CriticalSectionToUse>::removeListener (Listener
 template<typename MessageClass, class CriticalSectionToUse >
 void QueuedNotifier<MessageClass,CriticalSectionToUse>::handleAsyncUpdate()
 {
-//    if(debugFlag){
+//    if(DBGQUEUED && debugFlag){
 //        NLOG(name,"ooooo update"+String(fifo.getNumReady())+","+String(_data->numSent.get()));
 //    }
 
