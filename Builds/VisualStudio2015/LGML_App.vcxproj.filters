@@ -574,6 +574,9 @@
     <ClCompile Include="..\..\Source\Controllable\ControllableUIHelpers.cpp">
       <Filter>LGML\Source\Controllable</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\MinMaxParameter.cpp">
+      <Filter>LGML\Source\Controllable\Parameter</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Controllable\Parameter\FileParameter.cpp">
       <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClCompile>
@@ -3465,6 +3468,12 @@
     <ClInclude Include="..\..\Source\UI\Inspector\InspectorEditor.h">
       <Filter>LGML\Source\UI\Inspector</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Utils\QueuedNotifierImp.hpp">
+      <Filter>LGML\Source\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Utils\QueuedNotifier.h">
+      <Filter>LGML\Source\Utils</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Utils\VersionTriplet.h">
       <Filter>LGML\Source\Utils</Filter>
     </ClInclude>
@@ -3502,9 +3511,6 @@
       <Filter>LGML\Source\Utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Utils\NetworkUtils.h">
-      <Filter>LGML\Source\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Utils\QueuedNotifier.h">
       <Filter>LGML\Source\Utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Utils\ProgressNotifier.h">

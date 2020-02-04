@@ -14,7 +14,9 @@
 
 
 #include "EnumParameter.h"
-
+#include "../../Utils/QueuedNotifierImp.hpp"
+//template<>
+//class QueuedNotifier<EnumChangeMessage>;
 #include "ParameterFactory.h"
 #include <juce_gui_basics/juce_gui_basics.h>
 

@@ -48,7 +48,7 @@ public:
     virtual void run() override;
 
     // ASYNC
-    QueuedNotifier<var> queuedNotifier;
+    std::unique_ptr<QueuedNotifier<var>> queuedNotifier;
     typedef QueuedNotifier<var>::Listener AsyncListener;
 
     class SerialThreadListener
@@ -62,8 +62,8 @@ public:
 
     void addSerialListener (SerialThreadListener* newListener) { serialThreadListeners.add (newListener); }
     void removeSerialListener (SerialThreadListener* listener) { serialThreadListeners.remove (listener); }
-    void addAsyncSerialListener (AsyncListener* newListener) { queuedNotifier.addListener (newListener); }
-    void removeAsyncSerialListener (AsyncListener* listener) { queuedNotifier.removeListener (listener); }
+    void addAsyncSerialListener (AsyncListener* newListener) ;
+    void removeAsyncSerialListener (AsyncListener* listener) ;
 
 };
 

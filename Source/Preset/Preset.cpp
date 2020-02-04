@@ -104,13 +104,17 @@ class PresetSync:public PresetManager::Listener{
 
 const Identifier Presetable::presetIdentifier ("preset");
 
+//int numPresetDBG = 0;
 Presetable::Presetable(ParameterContainer  * _pc):
 pc(_pc){
     
     currentPresetName = pc->addParameter(new StringParameter(presetIdentifier.toString(), "Current Preset", ""),-1,false);
     currentPresetName->addParameterListener(this);
-    currentPresetName->addAsyncParameterListener(this);
+//    currentPresetName->addAsyncCoalescedListener(this);
+//    currentPresetName->queuedNotifier->debugFlag = true;
+//    currentPresetName->queuedNotifier->name = currentPresetName->controlAddress.toString() + String(numPresetDBG++);
     currentPresetName->isHidenInEditor = true;
+    currentPresetName->isSavable=false;
     params.add(currentPresetName);
     savePresetTrigger = pc->addParameter(new Trigger("Save Preset", "Save current preset"),-1,false);
     savePresetTrigger->addParameterListener(this);
@@ -133,18 +137,6 @@ void Presetable::containerWillClear (ControllableContainer* c)
 }
 bool Presetable::isOneOfPresetableParam(ParameterBase * p){return params.contains(p);}
 
-void Presetable::newMessage (const ParameterBase::ParamWithValue& )
-{
-    //
-    //    if (pv.parameter == currentPresetName)
-    //    {
-    //        auto * pm = PresetManager::getInstance();
-    //        String name = pv.parameter->stringValue();
-    //        Preset* preset = pm->getPreset (getPresetFilter(), name);
-    //        currentPreset = loadPreset(preset)?preset:nullptr;
-    //    }
-
-}
 
 String getLinkInPresetName(const String & n){
     if(n.contains("(")){
@@ -157,7 +149,17 @@ String getLinkInPresetName(const String & n){
     return "";
 }
 
+void Presetable::newMessage (const ParameterBase::ParamWithValue&  pv)
+{
+    jassertfalse;
+}
 void Presetable::parameterValueChanged ( ParameterBase* p, ParameterBase::Listener * ){
+//}
+
+//    auto p = pv.parameter;
+
+
+
     if (p == savePresetTrigger)
     {
         saveCurrentPreset();
@@ -243,6 +245,7 @@ Preset* Presetable::addNamedPreset (const String& name,bool doLoad,void * notif)
 
 bool Presetable::loadPreset (Preset* preset,bool /*sendNotif*/)
 {
+
     if (preset == nullptr)
     {
         currentPresetName->setValueFrom (this,"", true);
@@ -265,6 +268,7 @@ bool Presetable::loadPreset (Preset* preset,bool /*sendNotif*/)
     if(currentPreset->getOriginContainer()!=pc){
         preName+=String("(123)").replace("123", currentPreset->getOriginUID());
     }
+    auto oldV = currentPresetName->stringValue();
     currentPresetName->setValueFrom (this,preName, false,false);
 
     presetableListeners.call (&Presetable::Listener::controllableContainerPresetLoaded, pc,preset);

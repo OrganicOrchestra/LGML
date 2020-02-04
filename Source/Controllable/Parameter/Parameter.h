@@ -108,6 +108,7 @@ public:
     class  Listener : public QueuedNotifier<ParamWithValue>::Listener
     {
     public:
+        Listener();
         /** Destructor. */
         virtual ~Listener() {
             while(linkedP.size()){
@@ -138,7 +139,7 @@ public:
 
 
 //    typedef QueuedNotifier<ParamWithValue>::Listener AsyncListener;
-    QueuedNotifier<ParamWithValue> queuedNotifier;
+    std::unique_ptr<QueuedNotifier<ParamWithValue>> queuedNotifier;
     void handleAsyncUpdate()override;
 
     void notifyValueChanged (bool defferIt = false,Listener * notifier=nullptr);

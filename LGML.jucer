@@ -64,6 +64,8 @@
         <FILE compile="0" file="Source/Controllable/ControllableUIHelpers.h"
               id="XmPrwT" name="ControllableUIHelpers.h" resource="0"/>
         <GROUP id="lRGBzB" name="Parameter">
+          <FILE id="Veywt4" name="MinMaxParameter.cpp" compile="1" resource="0"
+                file="Source/Controllable/Parameter/MinMaxParameter.cpp"/>
           <FILE id="yoeRWg" name="FileParameter.cpp" compile="1" resource="0"
                 file="Source/Controllable/Parameter/FileParameter.cpp"/>
           <FILE id="ioCHmj" name="FileParameter.h" compile="0" resource="0" file="Source/Controllable/Parameter/FileParameter.h"/>
@@ -642,6 +644,10 @@
         </GROUP>
       </GROUP>
       <GROUP id="{8DA61DCB-02FE-2339-7E79-2A3547284A18}" name="Utils">
+        <FILE id="xPGKO3" name="QueuedNotifierImp.hpp" compile="1" resource="0"
+              file="Source/Utils/QueuedNotifierImp.hpp"/>
+        <FILE compile="0" file="Source/Utils/QueuedNotifier.h" id="SYieL0"
+              name="QueuedNotifier.h" resource="0"/>
         <FILE id="b85LTY" name="VersionTriplet.cpp" compile="1" resource="0"
               file="Source/Utils/VersionTriplet.cpp"/>
         <FILE id="NB3dxj" name="VersionTriplet.h" compile="0" resource="0"
@@ -682,8 +688,6 @@
               name="NetworkUtils.cpp" resource="0"/>
         <FILE compile="0" file="Source/Utils/NetworkUtils.h" id="QRG0tI" name="NetworkUtils.h"
               resource="0"/>
-        <FILE compile="0" file="Source/Utils/QueuedNotifier.h" id="SYieL0"
-              name="QueuedNotifier.h" resource="0"/>
         <FILE compile="1" file="Source/Utils/ProgressNotifier.cpp" id="iosow9"
               name="ProgressNotifier.cpp" ressource="0"/>
         <FILE compile="0" file="Source/Utils/ProgressNotifier.h" id="syT0hu"

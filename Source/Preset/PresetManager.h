@@ -72,9 +72,6 @@ public:
     void removePreset(Preset * );
 
     void notifyPresetSaved(Listener* notif,Preset *p){presetListeners.callExcluding(notif,&Listener::presetSaved,p);}
-    
-
-
 
     ListenerList<Listener> presetListeners;
     

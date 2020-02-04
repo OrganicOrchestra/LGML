@@ -16,6 +16,8 @@
 #include "SerialPort.h"
 #include "SerialManager.h"
 
+#include "../../Utils/QueuedNotifierImp.hpp"
+// for class QueuedNotifier<var>
 #if SERIALSUPPORT
 SerialPort::SerialPort (Serial* _port, SerialPortInfo*   _info, PortMode _mode) :
     info (_info),
@@ -143,10 +145,14 @@ void SerialPort::removeSerialPortListener (SerialPortListener* listener)
     if (listeners.size() == 0) SerialManager::getInstance()->removePort (this);
 }
 
+//////////////
+// Serial Read Thread
+//////////
+
 SerialReadThread::SerialReadThread (String name, SerialPort* _port) :
     Thread (name + "_thread"),
     port (_port),
-    queuedNotifier (100)
+queuedNotifier (std::make_unique<QueuedNotifier<var>>(100))
 {
 }
 
@@ -154,6 +160,9 @@ SerialReadThread::~SerialReadThread()
 {
     stopThread (100);
 }
+
+void SerialReadThread::addAsyncSerialListener (AsyncListener* newListener) { queuedNotifier->addListener (newListener); }
+void SerialReadThread::removeAsyncSerialListener (AsyncListener* listener) { queuedNotifier->removeListener (listener); }
 
 void SerialReadThread::run()
 {
@@ -186,7 +195,7 @@ void SerialReadThread::run()
                     if (line.size() > 0)
                     {
                         serialThreadListeners.call (&SerialThreadListener::newMessage, var (line));
-                        queuedNotifier.addMessage (new var (line));
+                        queuedNotifier->addMessage (new var (line));
                     }
 
                 }
@@ -205,7 +214,7 @@ void SerialReadThread::run()
                     for(auto &b:bytes) dataVar->append(b);
                     }
 
-                    queuedNotifier.addMessage(dataVar);
+                    queuedNotifier->addMessage(dataVar);
                      */
                 }
                 break;
@@ -223,7 +232,7 @@ void SerialReadThread::run()
                             for (auto& by : byteBuffer) dataVar->append (by);
 
                             serialThreadListeners.call (&SerialThreadListener::newMessage, *dataVar);
-                            queuedNotifier.addMessage (dataVar);
+                            queuedNotifier->addMessage (dataVar);
                             byteBuffer.clear();
                         }
                         else

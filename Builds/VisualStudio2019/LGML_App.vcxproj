@@ -155,6 +155,7 @@
     <ClCompile Include="..\..\Source\Controllable\Controllable.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\ControllableContainer.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\ControllableUIHelpers.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\MinMaxParameter.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\FileParameter.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\UndoableHelper.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\ParameterContainerSync.cpp"/>
@@ -2308,6 +2309,8 @@
     <ClInclude Include="..\..\Source\UI\Inspector\InspectableComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Inspector\Inspector.h"/>
     <ClInclude Include="..\..\Source\UI\Inspector\InspectorEditor.h"/>
+    <ClInclude Include="..\..\Source\Utils\QueuedNotifierImp.hpp"/>
+    <ClInclude Include="..\..\Source\Utils\QueuedNotifier.h"/>
     <ClInclude Include="..\..\Source\Utils\VersionTriplet.h"/>
     <ClInclude Include="..\..\Source\Utils\GlobalKeyListener.h"/>
     <ClInclude Include="..\..\Source\Utils\HeadlessWrappers.h"/>
@@ -2321,7 +2324,6 @@
     <ClInclude Include="..\..\Source\Utils\CommandLineElements.hpp"/>
     <ClInclude Include="..\..\Source\Utils\DebugHelpers.h"/>
     <ClInclude Include="..\..\Source\Utils\NetworkUtils.h"/>
-    <ClInclude Include="..\..\Source\Utils\QueuedNotifier.h"/>
     <ClInclude Include="..\..\Source\Utils\ProgressNotifier.h"/>
     <ClInclude Include="..\..\Source\Engine.h"/>
     <ClInclude Include="..\..\Source\JuceHeaderAudio.h"/>

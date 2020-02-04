@@ -95,5 +95,34 @@ void  NumericParameter<T>::setPrecision(int p){
     }
 }
 
+
+// template implementation
+
+template<class T>
+floatParamType NumericParameter<T>::getNormalizedValue() const
+{
+    if(!hasFiniteBounds()){
+        return (floatParamType)value;
+    }
+    else if ((T)minimumValue == (T)maximumValue)
+    {
+        return (floatParamType)0;
+    }
+    else
+        return (floatParamType)(jmap<floatParamType> ((floatParamType)value, (floatParamType)minimumValue, (floatParamType)maximumValue, (floatParamType)0, (floatParamType)1));
+}
+
+template<class T>
+void NumericParameter<T>::setNormalizedValue (const floatParamType  normalizedValue, bool silentSet, bool force)
+{
+    if(!hasFiniteBounds()){
+        setValue ((T)(normalizedValue), silentSet,force);
+    }
+    else{
+        setValue ((T)(jmap<floatParamType> (normalizedValue, (floatParamType)minimumValue, (floatParamType)maximumValue)), silentSet,
+                  force);
+    }
+}
+
 template class NumericParameter<int>;
 template class NumericParameter<floatParamType>;

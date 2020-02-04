@@ -106,6 +106,10 @@
 			isa = PBXBuildFile;
 			fileRef = 01BA53590B5D339C2694CC01;
 		};
+		D6ABA40A5F8589946464EEE9 = {
+			isa = PBXBuildFile;
+			fileRef = F39C27AF320AD2575916201E;
+		};
 		36B2F02434055E8CD9444FDB = {
 			isa = PBXBuildFile;
 			fileRef = 5B151687DA17268304805D97;
@@ -617,6 +621,10 @@
 		FB14FE2D8522142D1D907FA6 = {
 			isa = PBXBuildFile;
 			fileRef = DEFCE8C923EC489CB8ED7DE7;
+		};
+		F6301095491F4A5CEBE003BD = {
+			isa = PBXBuildFile;
+			fileRef = 30AAC1F952700B033D4B3A15;
 		};
 		BDFFF334EB66B1E35AB0F5A6 = {
 			isa = PBXBuildFile;
@@ -1301,6 +1309,13 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = MinMaxParameter.h;
 			path = ../../Source/Controllable/Parameter/MinMaxParameter.h;
+			sourceTree = "SOURCE_ROOT";
+		};
+		30AAC1F952700B033D4B3A15 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = QueuedNotifierImp.hpp;
+			path = ../../Source/Utils/QueuedNotifierImp.hpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		30CD8A304189575D0B1EC10D = {
@@ -3396,6 +3411,13 @@
 			path = ../../Source/Node/UI/ConnectableNodeContentUI.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
+		F39C27AF320AD2575916201E = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = MinMaxParameter.cpp;
+			path = ../../Source/Controllable/Parameter/MinMaxParameter.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
 		F3FF6EDF06C99AA0B5CE32FA = {
 			isa = PBXFileReference;
 			lastKnownFileType = text.plist.xml;
@@ -3583,6 +3605,7 @@
 		9E74F7F77F049833AA1283EA = {
 			isa = PBXGroup;
 			children = (
+				F39C27AF320AD2575916201E,
 				5B151687DA17268304805D97,
 				E98B5BA80245DB01D422E4E9,
 				07BBD52759F300DABBA46635,
@@ -4019,6 +4042,8 @@
 		7467E54AD807664B6E3C7879 = {
 			isa = PBXGroup;
 			children = (
+				30AAC1F952700B033D4B3A15,
+				9BE5635A0FB8416E3C2E35B9,
 				AA42CA14665F79EE19778425,
 				958F2A57A61CE58E1C602264,
 				0F4A4F62A29DE80C5CCC72E6,
@@ -4040,7 +4065,6 @@
 				E29A657FE54890A412F4AA4F,
 				F3241AC5A47AAC0F0A7F9F34,
 				25BCE26CA101AA3EF12DE70F,
-				9BE5635A0FB8416E3C2E35B9,
 				AAF2CC88AB4EC5DDDC890C0B,
 				08FDAADECED121983A854252,
 			);
@@ -4837,6 +4861,7 @@
 				3384296D2D2F1FBB3F94717E,
 				2A288C5D2C4A12594CBB2360,
 				27FD4423B5E0A23AF45FA359,
+				D6ABA40A5F8589946464EEE9,
 				36B2F02434055E8CD9444FDB,
 				0860E6A9528B43AA711D9E5C,
 				9870EC2174EF123A69A756B1,
@@ -4965,6 +4990,7 @@
 				20DC1F03DC4C1F4881C5F757,
 				F72124BA0EDF8D9BE8BF375B,
 				FB14FE2D8522142D1D907FA6,
+				F6301095491F4A5CEBE003BD,
 				BDFFF334EB66B1E35AB0F5A6,
 				0054FC3A0E52E9D0322B0758,
 				38C50F6CDE8316ED635D77B9,

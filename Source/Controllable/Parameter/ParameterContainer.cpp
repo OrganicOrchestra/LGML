@@ -179,13 +179,10 @@ DynamicObject* ParameterContainer::createObjectFiltered(std::function<bool(Param
 
                     paramsData.getDynamicObject()->setProperty (c->niceName, ParameterFactory::createTypedObjectFromInstance ( ParameterBase::fromControllable (c)));
                 }
-                else if (c->isSavable)
-                {
+                else{
                     paramsData.getDynamicObject()->setProperty (c->niceName, c->getVarState());
-                }else{
-                    int dbg=0;
-                    dbg++;
                 }
+
             }
         }
 
@@ -351,6 +348,7 @@ void ParameterContainer::configureFromObjectOrValues (DynamicObject* dyn,bool al
             if (paramsData != nullptr)
             {
                 auto props = paramsData->getProperties();
+                
                 bool hasPresetToLoad = (props.getWithDefault(Presetable::presetIdentifier,"") != "");
                 bool hasChildConts = dyn->hasProperty(childContainerId);
                 bool shouldLoadPreset = !hasChildConts && hasPresetToLoad;
@@ -359,11 +357,12 @@ void ParameterContainer::configureFromObjectOrValues (DynamicObject* dyn,bool al
                 }
                 for (auto& p : props)
                 {
+                    
                     Controllable* c = getControllableByName (p.name.toString()); // retro compat : try both
                     if(!c){c= getControllableByShortName (p.name.toString());}
                     if (c)
                     {
-                        if (c->isSavable)
+                        if (c->isSavable || c->isPresettable)
                         {
                             if ( ParameterBase* par = ParameterBase::fromControllable (c))
                             {
@@ -404,6 +403,9 @@ void ParameterContainer::configureFromObjectOrValues (DynamicObject* dyn,bool al
                                 // we don't use custom types for now
                                 jassertfalse;
                             }
+                        }else{
+                            // non savable or presetable
+                            NLOGW(c->controlAddress.toString(),"non savable or non presetable recalled");
                         }
                     }
                     else if(allowNewChilds)

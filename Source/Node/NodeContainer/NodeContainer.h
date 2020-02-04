@@ -47,14 +47,14 @@ public:
 
 };
 
-typedef  QueuedNotifier<NodeChangeMessage> NodeChangeQueue;
 
 
-class  NodeContainerListener : public NodeChangeQueue::Listener
+
+class  NodeContainerListener : public QueuedNotifier<NodeChangeMessage>::Listener
 {
 public:
     /** Destructor. */
-    virtual ~NodeContainerListener() {}
+    virtual ~NodeContainerListener();
 
     virtual void nodeAdded (ConnectableNode*) {}
     virtual void nodeRemoved (ConnectableNode*) {}
@@ -177,8 +177,8 @@ public:
 
 
     ListenerList<NodeContainerListener> nodeContainerListeners;
-    void addNodeContainerListener (NodeContainerListener* newListener) { nodeContainerListeners.add (newListener); nodeChangeNotifier.addListener (newListener); }
-    void removeNodeContainerListener (NodeContainerListener* listener) { nodeContainerListeners.remove (listener); nodeChangeNotifier.removeListener (listener); }
+    void addNodeContainerListener (NodeContainerListener* newListener) ;
+    void removeNodeContainerListener (NodeContainerListener* listener) ;
 
 
 #ifdef MULTITHREADED_AUDIO
@@ -247,7 +247,7 @@ public:
         
     };
     RebuildTimer rebuildTimer;
-    NodeChangeQueue nodeChangeNotifier;
+    std::unique_ptr<QueuedNotifier<NodeChangeMessage>> nodeChangeNotifier;
 
     ParameterContainer userContainer;
 private:

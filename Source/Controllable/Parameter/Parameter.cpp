@@ -14,18 +14,24 @@
 
 
 #include "Parameter.h"
+
+#include "../../Utils/QueuedNotifierImp.hpp"
+//template<>
+//class QueuedNotifier<ParameterBase::ParamWithValue>;
 #include "../../Scripting/Js/JsHelpers.h"
 #include "../../Utils/DebugHelpers.h"
 #include "ParameterContainer.h" // for listener
 
 const Identifier ParameterBase::valueIdentifier ("value");
 
-
+ParameterBase::Listener::Listener(){
+    
+}
 ParameterBase::ParameterBase ( const String& niceName, const String& description, var initialValue, bool enabled) :
     Controllable ( niceName, description, enabled),
     isEditable (true),
     isOverriden (false),
-    queuedNotifier (100),
+queuedNotifier (std::make_unique<QueuedNotifier<ParamWithValue>>(100)),
     hasCommitedValue (false),
     isCommitableParameter (false),
     _isSettingValue (false),
@@ -100,6 +106,31 @@ void ParameterBase::setValueFrom(Listener * notifier,const var & _value, bool si
 
 bool ParameterBase::shouldBeDeffered (const var& _value, bool silentSet, bool force )
 {
+    if(queuedNotifier->isNotifying() && !silentSet && !force && !isReentrant ){
+        if (auto* mm = MessageManager::getInstanceWithoutCreating())
+        {
+//            if(mm->isThisTheMessageThread()){
+
+//
+//                NLOGE(controlAddress.toString(),"weird feedback from queued notifier");
+//                jassertfalse;
+//                auto newS = _value.toString();
+//                auto oldS = value.toString();
+//                int dbg;
+//                dbg++;
+//            }
+            NLOGW(controlAddress.toString(),"defer parameter as it has not fully ended to be processed");
+
+            WeakReference<ParameterBase> bailout(this);
+            mm->callAsync ([bailout, _value, silentSet, force]()mutable {
+                if(bailout.get())
+                    bailout->tryToSetValue (_value, silentSet, force);
+
+            });
+            return true;
+        }
+
+    }
     if (!MessageManager::getInstance()->isThisTheMessageThread() && !force && _isSettingValue.get())
     {
         if (!isReentrant)
@@ -213,7 +244,7 @@ void ParameterBase::notifyValueChanged (bool defferIt,Listener * notifier)
         listeners.call (&Listener::parameterValueChanged, this,notifier);
     }
 
-    queuedNotifier.addMessage (new ParamWithValue (this, value, false,notifier),false,nullptr);
+    queuedNotifier->addMessage (new ParamWithValue (this, value, false,notifier),false,nullptr);
 }
 
 
@@ -310,9 +341,9 @@ void ParameterBase::removeParameterListener (Listener* listener) {
 }
 
 
-void ParameterBase::addAsyncParameterListener (Listener* newListener) { queuedNotifier.addAsyncCoalescedListener (newListener);}//addListener (newListener); } // TODO clarify usge of non coalesced listeners
-void ParameterBase::addAsyncCoalescedListener (Listener* newListener) { queuedNotifier.addAsyncCoalescedListener (newListener); }
-void ParameterBase::removeAsyncParameterListener (Listener* listener) { queuedNotifier.removeListener (listener); }
+void ParameterBase::addAsyncParameterListener (Listener* newListener) { queuedNotifier->addAsyncCoalescedListener (newListener);}//addListener (newListener); } // TODO clarify usge of non coalesced listeners
+void ParameterBase::addAsyncCoalescedListener (Listener* newListener) { queuedNotifier->addAsyncCoalescedListener (newListener); }
+void ParameterBase::removeAsyncParameterListener (Listener* listener) { queuedNotifier->removeListener (listener); }
 
  const ParameterBase* ParameterBase::fromControllable (const Controllable* c) {return static_cast<const  ParameterBase*> (c);}
  ParameterBase* ParameterBase::fromControllable (Controllable* c) {return static_cast<ParameterBase*> (c);}

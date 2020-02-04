@@ -16,7 +16,9 @@
 #include "NodeContainer.h"
 #include "../Manager/NodeManager.h"
 #include "../Connection/NodeConnection.h"
+#include "../../Utils/QueuedNotifierImp.hpp"
 
+// for class QueuedNotifier<NodeChangeMessage>
 #include "../../Utils/DebugHelpers.h"
 #include "../../Preset/Preset.h"
 
@@ -61,7 +63,7 @@ NodeContainer::NodeContainer (StringRef name,bool _isRoot) :
 containerInNode (nullptr)
 ,containerOutNode (nullptr)
 ,NodeBase (name, false)
-,nodeChangeNotifier (10000)
+,nodeChangeNotifier (std::make_unique<QueuedNotifier<NodeChangeMessage>>(10000))
 ,rebuildTimer (this)
 ,isRoot(_isRoot)
 ,innerGraph( new AudioProcessorGraph())
@@ -181,7 +183,7 @@ ConnectableNode* NodeContainer::addNode (ConnectableNode* n, const String& nodeN
     if (nodeData) n->configureFromObject (nodeData);
 
 
-    nodeChangeNotifier.addMessage (new NodeChangeMessage (n, true));
+    nodeChangeNotifier->addMessage (new NodeChangeMessage (n, true));
     //  nodeContainerListeners.call(&NodeContainerListener::nodeAdded, n);
     return n;
 }
@@ -237,7 +239,7 @@ bool NodeContainer::removeNode (ConnectableNode* n,bool doDelete)
 
     if (n == nullptr) {jassertfalse; return false;}
 
-    nodeChangeNotifier.addMessage (new NodeChangeMessage (n, false));
+    nodeChangeNotifier->addMessage (new NodeChangeMessage (n, false));
     nodeContainerListeners.call(&NodeContainerListener::nodeRemoved, n);
 
     if(!doDelete)removeChildControllableContainer (n);
@@ -496,7 +498,7 @@ NodeConnection* NodeContainer::addConnection (ConnectableNode* sourceNode, Conne
     c->addConnectionListener (this);
     //  updateAudioGraph();
     // DBG("Dispatch connection Added from NodeManager");
-    nodeChangeNotifier.addMessage (new NodeChangeMessage (c, true));
+    nodeChangeNotifier->addMessage (new NodeChangeMessage (c, true));
     //  nodeContainerListeners.call(&NodeContainerListener::connectiosnAdded, c);
 
     return c;
@@ -510,13 +512,14 @@ bool NodeContainer::removeConnection (NodeConnection* c)
     c->removeConnectionListener (this);
 
     connections.removeObject (c);
-    nodeChangeNotifier.addMessage (new NodeChangeMessage (c, false));
+    nodeChangeNotifier->addMessage (new NodeChangeMessage (c, false));
     //  nodeContainerListeners.call(&NodeContainerListener::connectionRemoved, c);
 
     return true;
 }
 
-
+void NodeContainer::addNodeContainerListener (NodeContainerListener* newListener) { nodeContainerListeners.add (newListener); nodeChangeNotifier->addListener (newListener); }
+void NodeContainer::removeNodeContainerListener (NodeContainerListener* listener) { nodeContainerListeners.remove (listener); nodeChangeNotifier->removeListener (listener); }
 
 //From NodeBase Listener
 
@@ -622,4 +625,10 @@ void NodeContainer::removeIllegalConnections()
         c->removeIllegalConnections();
     }
     
+}
+
+
+//Listeners
+NodeContainerListener::~NodeContainerListener(){
+
 }
