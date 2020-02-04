@@ -162,7 +162,7 @@ void NodeConnectionUI::buildPath()
         float cy = (float)getBaseConnector()->getBounds().getCentreY();
         limitY1 = sourcePos.y + (pathGoUp ? -cy - 10 : getBaseConnector()->getParentComponent()->getHeight() - cy + 10);
 
-        if (getSecondConnector() != nullptr)
+        if (getSecondConnector() != nullptr && getSecondConnector()->getParentComponent()!=nullptr)
         {
             float cy2 = (float)getSecondConnector()->getBounds().getCentreY();
             limitY2 = endPos.y + (!pathGoUp ? -cy2 - 10 : getSecondConnector()->getParentComponent()->getHeight() - cy2 + 10);
