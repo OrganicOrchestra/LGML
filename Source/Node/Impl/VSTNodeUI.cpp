@@ -87,6 +87,7 @@ void VSTNodeContentUI::init()
 
 void VSTNodeContentUI::updateVSTParameters()
 {
+    showPluginWindowButton.setVisible(vstNode->innerPlugin!=nullptr);
     for (auto& p : paramSliders)
     {
         removeChildComponent (p);
@@ -149,6 +150,7 @@ void VSTNodeContentUI::newVSTSelected()
 
 void VSTNodeContentUI::handleCommandMessage (int /*cId*/)
 {
+
     updateVSTParameters();
     isDirty = false;
 }
@@ -159,7 +161,8 @@ void VSTNodeContentUI::resized()
     Rectangle<int> area = getLocalBounds().reduced (2);
     Rectangle<int> headerArea = area.removeFromTop (25);
     activityBlink->setBounds (headerArea.removeFromRight (headerArea.getHeight()/2).reduced (2));
-    showPluginWindowButton.setBounds (headerArea.removeFromRight (headerArea.getHeight()));
+    if(showPluginWindowButton.isVisible()){showPluginWindowButton.setBounds (headerArea.removeFromRight (headerArea.getHeight()));}
+
     midiDeviceChooser->setBounds (headerArea.removeFromRight (headerArea.getWidth() / 2));
     VSTListShowButton.setBounds (headerArea);
     layoutSliderParameters (area.reduced (2));
