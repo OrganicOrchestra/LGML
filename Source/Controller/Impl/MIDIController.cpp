@@ -36,15 +36,15 @@ extern ApplicationProperties *getAppProperties();
 bool MIDI_NON_BLOCKING=true; // will be overriden by settings
 template<>
 void ParameterContainer::OwnedFeedbackListener<MIDIController>::parameterFeedbackUpdate (ParameterContainer* originContainer, ParameterBase* p,ParameterBase::Listener * notifier){
-
-
+    
+    
     if (owner->enabledParam->boolValue() && (!owner->blockFeedback->boolValue() || notifier!=(Controller*)owner))
     {
         auto _owner = owner;
         jassert(originContainer==&_owner->userContainer);
         auto f = [_owner,p](){
             if(_owner->midiOutDevice.get() ){
-
+                
                 if(p){
                     auto msgToSend = MIDIHelpers::midiMessageFromParam(p, _owner->channelFilter->intValue());
                     if(!msgToSend.isSysEx()){
@@ -55,7 +55,7 @@ void ParameterContainer::OwnedFeedbackListener<MIDIController>::parameterFeedbac
                     }
                 }
             }
-
+            
         };
         // avoid locking other threads
         if(!MIDI_NON_BLOCKING || MessageManager::getInstance()->isThisTheMessageThread()){
@@ -64,11 +64,11 @@ void ParameterContainer::OwnedFeedbackListener<MIDIController>::parameterFeedbac
         else{
             MessageManager::callAsync(f);
         }
-
+        
     }
-
-
-
+    
+    
+    
 }
 
 
@@ -81,12 +81,12 @@ pSync(this)
 {
     MIDI_NON_BLOCKING = getAppProperties()->getUserSettings()->getBoolValue("deferControllerFB",false);
     setNamespaceName ("controllers." + shortName);
-
+    
     logIncoming = addNewParameter<BoolParameter> ("logIncoming", "log Incoming midi message", false);
     logIncoming->setSavable(false);
     logOutgoing = addNewParameter<BoolParameter> ("logOutgoing", "log Outgoing midi message", false);
     logOutgoing->setSavable(false);
-
+    
     sendMIDIClock = addNewParameter<BoolParameter> ("send MIDI Clock", "send MIDI Clock",false);
     sendMIDIPosition = addNewParameter<BoolParameter> ("send MIDI Position", "send MIDI Position information",false);
     sendMIDIPosition->setEnabled(sendMIDIClock->boolValue());
@@ -101,16 +101,16 @@ MIDIController::~MIDIController()
 {
     setCurrentDevice ("",false);
     setCurrentDevice ("",true);
-
+    
 }
 
 int lastCv=0;
 void MIDIController::handleIncomingMidiMessage (MidiInput*,
                                                 const MidiMessage& message)
 {
-
+    
     if (!enabledParam->boolValue()) return;
-
+    
     if (channelFilter->intValue() > 0 && message.getChannel() != channelFilter->intValue())
     {
         if (logIncoming->boolValue()){
@@ -145,12 +145,12 @@ void MIDIController::handleIncomingMidiMessage (MidiInput*,
             }
                                       );
         }
-
+        
     }
     else if (message.isNoteOnOrOff())
     {
         bool isNoteOn = message.isNoteOn();
-
+        
         const String paramName (MIDIHelpers::midiMessageToParamName(message));//+"_"+String(message.getChannel()));
         if (Controllable* c = userContainer.getControllableByName(paramName))
         {
@@ -158,7 +158,7 @@ void MIDIController::handleIncomingMidiMessage (MidiInput*,
         }
         else if(autoAddParams && isNoteOn ){
             MessageManager::callAsync([this,message,paramName](){
-               auto p =  userContainer.
+                auto p =  userContainer.
                 addNewParameter<FloatParameter>(paramName,
                                                 "MIDI Note Parameter",
                                                 message.getFloatVelocity(),
@@ -167,18 +167,18 @@ void MIDIController::handleIncomingMidiMessage (MidiInput*,
             }
                                       );
         }
-
-
+        
+        
     }
-
+    
     else if (message.isPitchWheel())
     {
-
+        
     }
     else
     {
     }
-
+    
     // call Js
     if (message.isNoteOff())
     {
@@ -188,7 +188,7 @@ void MIDIController::handleIncomingMidiMessage (MidiInput*,
     {
         callJs (message);
     }
-
+    
     if(!message.isNoteOff() && !message.isAftertouch()){
         inActivityTrigger->triggerDebounced(activityTriggerDebounceTime);
     }
@@ -206,7 +206,7 @@ void MIDIController::callJs (const MidiMessage& message)
         args.add (message.getControllerNumber());
         args.add (message.getControllerValue());
         callFunctionFromIdentifier (onCCFunctionName, args);
-
+        
         for (auto& p : jsCCListeners)
         {
             p->processMessage (message);
@@ -219,7 +219,7 @@ void MIDIController::callJs (const MidiMessage& message)
         args.add (message.getNoteNumber());
         args.add (message.isNoteOn() ? message.getVelocity() : 0);
         callFunctionFromIdentifier (onCCFunctionName, args);
-
+        
         for (auto& p : jsNoteListeners)
         {
             p->processMessage (message);
@@ -237,15 +237,15 @@ void MIDIController::callJs (const MidiMessage& message)
 void MIDIController::onContainerParameterChanged ( ParameterBase* p)
 {
     Controller::onContainerParameterChanged (p);
-
+    
     if (p == nameParam)
     {
         setNamespaceName ("controllers." + shortName);
     }
     else if(p==midiInChooser.getDeviceEnumParameter()){
         isConnected->setValue(hasValidInPort || hasValidOutPort);
-       // startMidiClockIfNeeded();
-
+        // startMidiClockIfNeeded();
+        
     }
     else if(p==midiOutChooser.getDeviceEnumParameter()){
         isConnected->setValue(hasValidInPort || hasValidOutPort);
@@ -265,7 +265,7 @@ void MIDIController::onContainerParameterChanged ( ParameterBase* p)
         midiClock.delta = -midiClockOffset->intValue();
         //midiClock.reset();
     }
-
+    
 }
 
 
@@ -278,7 +278,7 @@ void MIDIController::startMidiClockIfNeeded(){
     else {
         midiClock.stop();
     }
-
+    
 }
 void MIDIController::midiMessageSent(const MidiMessage & msg){
     if(!msg.isMidiClock()){
@@ -287,36 +287,36 @@ void MIDIController::midiMessageSent(const MidiMessage & msg){
     if(logOutgoing->boolValue()){
         OLOG("MIDI OUT : "+MIDIHelpers::midiMessageToDebugString(msg));
     }
-
+    
 };
 
 void MIDIController::buildLocalEnv()
 {
     DynamicObject obj;
-
+    
     static const Identifier jsSendNoteOnIdentifier ("sendNoteOn");
     obj.setMethod (jsSendNoteOnIdentifier, sendNoteOnFromJS);
-
+    
     static const Identifier jsSendNoteOffIdentifier ("sendNoteOff");
     obj.setMethod (jsSendNoteOffIdentifier, sendNoteOffFromJS);
-
+    
     static const Identifier jsSendCCIdentifier ("sendCC");
     obj.setMethod (jsSendCCIdentifier, sendCCFromJS);
-
+    
     static const Identifier jsSendSysExIdentifier ("sendSysEx");
     obj.setMethod (jsSendSysExIdentifier, sendSysExFromJS);
-
+    
     static const Identifier jsGetCCListenerObject ("createCCListener");
     obj.setMethod (jsGetCCListenerObject, &MIDIController::createJsCCListener);
-
+    
     static const Identifier jsGetNoteListenerObject ("createNoteListener");
     obj.setMethod (jsGetNoteListenerObject, &MIDIController::createJsNoteListener);
-
+    
     
     setLocalNamespace (obj);
-
-
-
+    
+    
+    
 };
 
 
@@ -326,15 +326,15 @@ void MIDIController::buildLocalEnv()
 
 var MIDIController::sendNoteOnFromJS (const var::NativeFunctionArgs& a )
 {
-
+    
     MIDIController* c = castPtrFromJSEnv<MIDIController> (a);
-
+    
     if (a.numArguments < 3)
     {
         NLOGE(c->getControlAddress().toString(), juce::translate("Script : Incorrect number of arguments for sendNoteOn"));
         return var (false);
     }
-
+    
     bool sent = c->sendNoteOn ((int) (a.arguments[0]), a.arguments[1], a.arguments[2]);
     if(!sent){
         NLOGE(c->getControlAddress().toString(),juce::translate("Script : MIDI Out is not set"));
@@ -345,16 +345,16 @@ var MIDIController::sendNoteOnFromJS (const var::NativeFunctionArgs& a )
 
 var MIDIController::sendNoteOffFromJS (const var::NativeFunctionArgs& a)
 {
-
+    
     MIDIController* c = castPtrFromJSEnv<MIDIController> (a);
-
+    
     if (a.numArguments < 3)
     {
         NLOGE(c->getControlAddress().toString(), juce::translate("Script : Incorrect number of arguments for sendNoteOff"));
         return var (false);
     }
-
-   bool sent  = c->sendNoteOff ((int) (a.arguments[0]), a.arguments[1], a.arguments[2]);
+    
+    bool sent  = c->sendNoteOff ((int) (a.arguments[0]), a.arguments[1], a.arguments[2]);
     if(!sent){
         NLOGE(c->getControlAddress().toString(),juce::translate("Script : MIDI Out is not set"));
     }
@@ -364,7 +364,7 @@ var MIDIController::sendNoteOffFromJS (const var::NativeFunctionArgs& a)
 var MIDIController::sendCCFromJS (const var::NativeFunctionArgs& a)
 {
     MIDIController* c = castPtrFromJSEnv<MIDIController> (a);
-
+    
     if (a.numArguments < 3)
     {
         NLOGE(c->getControlAddress().toString(), juce::translate("Script : Incorrect number of arguments for sendCC"));
@@ -385,22 +385,22 @@ var MIDIController::sendCCFromJS (const var::NativeFunctionArgs& a)
 var MIDIController::sendSysExFromJS (const var::NativeFunctionArgs& a)
 {
     MIDIController* c = castPtrFromJSEnv<MIDIController> (a);
-
+    
     if (a.numArguments > 8)
     {
         NLOGE(c->getControlAddress().toString(), juce::translate("Script : Incorrect number of arguments for sendSysEx"));
         return var (false);
     }
-
+    
     uint8 bytes[8];
-
+    
     for (int i = 0; i < a.numArguments; i++)
     {
-
+        
         bytes[i] = (uint8) (int)a.arguments[i];
         LOG ("Byte : " << String (bytes[i]));
     }
-
+    
     bool sent = c->sendSysEx (bytes, a.numArguments);
     if(!sent){
         NLOGE(c->getControlAddress().toString(),juce::translate("Script : MIDI Out is not set"));
@@ -412,35 +412,35 @@ var MIDIController::sendSysExFromJS (const var::NativeFunctionArgs& a)
 var MIDIController::createJsNoteListener (const var::NativeFunctionArgs& a)
 {
     if (a.numArguments < 2) { return var::undefined();}
-
+    
     int channel = a.arguments[0];
     int numberToListen = a.arguments[1];
     MIDIController* originEnv = dynamic_cast<MIDIController*> (a.thisObject.getDynamicObject());
-
+    
     if (originEnv)
     {
         JsMIDIMessageListener* ob = new JsMIDIMessageListener (originEnv, channel, numberToListen, true);
         originEnv->jsNoteListeners.add (ob);
         return ob->object;
     }
-
+    
     return var::undefined();
 }
 var MIDIController::createJsCCListener (const var::NativeFunctionArgs& a)
 {
     if (a.numArguments < 2) { return var::undefined();}
-
+    
     int channel = a.arguments[0];
     int numberToListen = a.arguments[1];
     MIDIController* originEnv = dynamic_cast<MIDIController*> (a.thisObject.getDynamicObject());
-
+    
     if (originEnv)
     {
         JsMIDIMessageListener* ob = new JsMIDIMessageListener (originEnv, channel, numberToListen, false);
         originEnv->jsCCListeners.add (ob);
         return ob->object;
     }
-
+    
     return var::undefined();
 }
 
