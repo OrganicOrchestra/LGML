@@ -21,6 +21,10 @@ environment:
       PTHREAD: x64
       configuration: Release
       COMPILER: "Visual Studio 14 2015 Win64"
+    - platform: x64
+      PTHREAD: x64
+      configuration: Debug
+      COMPILER: "Visual Studio 14 2015 Win64"
 
 install:
     - echo "submodule %APPVEYOR_BUILD_FOLDER%"
@@ -56,6 +60,8 @@ install:
     - cmake -G "%COMPILER%" -DPD_MULTI=ON -DPD_EXTRA=ON ..
     - msbuild libpd.sln /t:libpdstatic /nologo /verbosity:quiet /p:Configuration=Release /p:Platform=%PLATFORM%
 
+  
+
 before_build:
     - cd C:\projects\lgml\third_party\rubberband
     - echo 'building rubberband'
@@ -70,14 +76,14 @@ before_build:
     - echo 'downloading ASIOSDK'
     - curl https://www.steinberg.net/sdk_downloads/asiosdk2.3.zip -o ASIO_SDK.zip
     - 7z x ASIO_SDK.zip -o"C:\projects" -y
-
+    ##########
+    - pip install future requests
+    - cmd: python %APPVEYOR_BUILD_FOLDER%\Scripts\buildScript.py --configure --os=windows --configuration=%CONFIGURATION% --arch=%PLATFORM%  --exportpath=%APPVEYOR_BUILD_FOLDER%
 
 # after_build:
 #   cmd: 7z a %APPVEYOR_BUILD_FOLDER%\LGML_%PLATFORM%.zip %APPVEYOR_BUILD_FOLDER%\Builds\VisualStudio2015\%PLATFORM%\%CONFIGURATION%\App\*.exe
 
 deploy_script:
-  - pip install future requests
-  - cmd: python %APPVEYOR_BUILD_FOLDER%\Scripts\buildScript.py --configure --os=windows --configuration=%CONFIGURATION% --arch=%PLATFORM%  --exportpath=%APPVEYOR_BUILD_FOLDER%
   - cmd: python %APPVEYOR_BUILD_FOLDER%\Scripts\buildScript.py --package --export
 
 artifacts:
