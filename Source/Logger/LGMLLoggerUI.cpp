@@ -17,6 +17,7 @@
  */
 
 #if !ENGINE_HEADLESS
+#include "../JuceHeaderCore.h"
 #include "LGMLLoggerUI.h"
 #include "../UI/Style.h"
 

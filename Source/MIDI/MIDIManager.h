@@ -51,7 +51,7 @@ public:
     StringArray outputDevices;
 
     void enableInputDevice (const String& deviceName);
-    std::unique_ptr<MidiOutput> enableOutputDevice (const String& deviceName);
+    std::unique_ptr< MidiOutput > enableOutputDevice (const String& deviceName);
     void disableInputDevice (const String& deviceName);
     void disableOutputDevice (const String& deviceName);
 

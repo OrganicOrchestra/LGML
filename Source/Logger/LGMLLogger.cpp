@@ -15,7 +15,7 @@
 
  ==============================================================================
  */
-
+#include "../JuceHeaderCore.h"
 #include "LGMLLogger.h"
 #include "../Version.h"
 #include "../Engine.h"

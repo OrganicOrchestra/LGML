@@ -19,6 +19,7 @@
 #ifndef LGMLLOGGER_H_INCLUDED
 #define LGMLLOGGER_H_INCLUDED
 
+
 #include "../Utils/DebugHelpers.h"
 #include "../Utils/QueuedNotifier.h"
 
