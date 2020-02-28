@@ -19,7 +19,7 @@
 
 #pragma once
 
-//#include "../JuceHeaderCore.h"//keep
+#include "../JuceHeaderCore.h"//keep
 
 //template<typename MessageClass, class CriticalSectionToUse>
 //class QueuedNotifier;
@@ -41,7 +41,7 @@ public:
     virtual ~QueuedNotifier() ;
 
     using thisQueueType = QueuedNotifier<MessageClass,CriticalSectionToUse> ;
-    typename WeakReference<thisQueueType>::Master  masterReference;
+    typename WeakReference< thisQueueType >::Master  masterReference;
 
     bool isNotifying() const ;
 
@@ -50,7 +50,7 @@ public:
     public:
         virtual ~Listener() ;
         virtual void newMessage (const MessageClass&) = 0;
-        Array<WeakReference<thisQueueType>> linkedQ;
+        Array< WeakReference< thisQueueType > > linkedQ;
 
 
 
@@ -73,7 +73,7 @@ private:
     
     void handleAsyncUpdate() override;
 
-    std::unique_ptr<QNPrivateData> _data;
+    std::unique_ptr< QNPrivateData > _data;
 
 
     AbstractFifo fifo;

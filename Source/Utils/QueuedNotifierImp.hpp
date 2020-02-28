@@ -9,7 +9,7 @@
  */
 
 #include "QueuedNotifier.h"
-
+#include "DebugHelpers.h"
 
 struct QNPrivateData{
     void* tid=nullptr;

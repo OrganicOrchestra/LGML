@@ -19,8 +19,9 @@
 #ifndef LGMLLOGGER_H_INCLUDED
 #define LGMLLOGGER_H_INCLUDED
 
-#include "../Utils/QueuedNotifier.h"
 #include "../Utils/DebugHelpers.h"
+#include "../Utils/QueuedNotifier.h"
+
 
 #if JUCE_DEBUG || LGML_BETA
 #define USE_FILE_LOGGER 1
