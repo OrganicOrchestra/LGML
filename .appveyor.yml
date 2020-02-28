@@ -13,10 +13,10 @@ environment:
     secure: Ik5nxuwevIjJJtTRi3S6CA==
   image: Visual Studio 2015
   matrix:
-    - platform: Win32
-      PTHREAD: x86
-      configuration: Release32
-      COMPILER: "Visual Studio 14 2015"
+    # - platform: Win32
+    #   PTHREAD: x86
+    #   configuration: Release32
+    #   COMPILER: "Visual Studio 14 2015"
     - platform: x64
       PTHREAD: x64
       configuration: Release
