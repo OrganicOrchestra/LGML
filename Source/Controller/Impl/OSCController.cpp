@@ -88,7 +88,7 @@ oscMessageQueue (this)
     
     sendAllParameters =  addNewParameter<Trigger> ("sendAll", "send all parameter states to initialize ", true);
     oscFBFilter = std::make_unique<NamespaceFBFilter>();
-    filterFile = addNewParameter<FileParameter> ("filterFile", "file specifying filtering rules form OSCMessages feedback","",FileType::Text,[=](const File & f){
+    filterFile = addNewParameter<FileParameter> ("filterFile", "file specifying filtering rules form OSCMessages feedback \n"+NamespaceFBFilter::getSyntaxHelperInfo(),"",FileType::Text,[=](const File & f){
         auto res= oscFBFilter->processFile(f);
         if(!res){
             NLOGE(getControlAddress().toString(),"error parsing filter");

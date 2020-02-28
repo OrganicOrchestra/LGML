@@ -13,7 +13,9 @@
 #include <regex>
 #include "../JuceHeaderCore.h"
 
+
 class NamespaceFBFilter{
+
     struct NamespaceRule{
         struct FilterElement{
             virtual ~FilterElement(){}
@@ -223,6 +225,10 @@ class NamespaceFBFilter{
         int indent = 0;
     };
 public:
+    static const String & getSyntaxHelperInfo(){
+        static String h = juce::translate("a filter is a multiline text allowing to SELECT valid parameter addresses (thus ignoring non specified). \n one can specify either :\n  * full parameter name : /node/looper/enabled \n  * all parameters in container : /node/looper/** \n  * parameter having identical paths across containers with similar names : /node/looper*/tracks/0/volume \n  * go hardcore and integrate regexes with [re] prefixes : /node/[re]looper[0-9]/tracks/**");
+        return h;
+    }
     Result processFile(const File & f){
         rules.clear();
         if(!f.existsAsFile()){return Result::ok();}
