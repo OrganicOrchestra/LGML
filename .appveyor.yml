@@ -19,11 +19,11 @@ environment:
     #   COMPILER: "Visual Studio 14 2015"
     - platform: x64
       PTHREAD: x64
-      configuration: Release
+      configuration: Debug
       COMPILER: "Visual Studio 14 2015 Win64"
     - platform: x64
       PTHREAD: x64
-      configuration: Debug
+      configuration: Release
       COMPILER: "Visual Studio 14 2015 Win64"
 
 install:
