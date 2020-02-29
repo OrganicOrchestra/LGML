@@ -829,12 +829,12 @@
             extraCompilerFlags="/bigobj ">
       <CONFIGURATIONS>
         <CONFIGURATION defines="" generateManifest="1" headerPath="$(ASIOSDK)\common"
-                       isDebug="1" libraryPath="..\..\third_party\rubberband\Debug_x64&#10;..\..\third_party\libpdBuild"
+                       isDebug="1" libraryPath="..\..\third_party\rubberband\Release_x64&#10;..\..\third_party\libpdBuild"
                        name="Debug" optimisation="1" targetName="LGML" winArchitecture="x64"
                        winWarningLevel="4" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" useRuntimeLibDLL="0" enableIncrementalLinking="1"/>
         <CONFIGURATION defines="" generateManifest="1" headerPath="$(ASIOSDK)\common"
-                       isDebug="1" libraryPath="..\..\third_party\rubberband\Debug&#10;..\..\third_party\libpdBuild"
+                       isDebug="1" libraryPath="..\..\third_party\rubberband\Release&#10;..\..\third_party\libpdBuild"
                        name="Debug32" optimisation="1" targetName="LGML" winArchitecture="Win32"
                        winWarningLevel="4" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" useRuntimeLibDLL="0" enableIncrementalLinking="1"/>
