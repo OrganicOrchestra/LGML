@@ -348,13 +348,14 @@ void ParameterContainer::configureFromObjectOrValues (DynamicObject* dyn,bool al
             if (paramsData != nullptr)
             {
                 auto props = paramsData->getProperties();
-                
-                bool hasPresetToLoad = (props.getWithDefault(Presetable::presetIdentifier,"") != "");
+                auto presetName = props.getWithDefault(Presetable::presetIdentifier,"");
+                bool hasPresetToLoad = ( presetName!= "");
                 bool hasChildConts = dyn->hasProperty(childContainerId);
-                bool shouldLoadPreset = !hasChildConts && hasPresetToLoad;
-                if(hasPresetToLoad && hasChildConts){
-                    LOGW("preset will not be recalled because child props are presents");
+                if(hasPresetToLoad && (props.size()!=1 || hasChildConts)){ // preset shouldnt interfere with other controllable values
+                    props.remove(Presetable::presetIdentifier);
+                    LOGE("preset will not be recalled on because props are presents : "+getControlAddress().toString());
                 }
+
                 for (auto& p : props)
                 {
                     
@@ -367,9 +368,7 @@ void ParameterContainer::configureFromObjectOrValues (DynamicObject* dyn,bool al
                             if ( ParameterBase* par = ParameterBase::fromControllable (c))
                             {
                                 // we don't load preset when already loading a state
-                                if (((par->shortName != Presetable::presetIdentifier ) && !shouldLoadPreset)  ||
-                                    ((par->shortName == Presetable::presetIdentifier ) && shouldLoadPreset ))
-                                {
+
                                     if(par->isSavableAsObject || par->isUserDefined){
                                         if(auto d = p.value.getDynamicObject()){
                                             jassert(d->hasProperty("value"));
@@ -391,12 +390,8 @@ void ParameterContainer::configureFromObjectOrValues (DynamicObject* dyn,bool al
                                     else{
                                         par->setValue (p.value);
                                     }
-                                }
-                                else{
-//                                    if(shouldLoadPreset && p.value.toString()!=""){
-//                                        LOGW("avoid loading  preset because child properties are present");
-//                                    }
-                                }
+
+
                             }
                             else
                             {
