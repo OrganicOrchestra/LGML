@@ -115,6 +115,7 @@ pc(_pc){
 //    currentPresetName->queuedNotifier->name = currentPresetName->controlAddress.toString() + String(numPresetDBG++);
     currentPresetName->isHidenInEditor = true;
     currentPresetName->isSavable=false;
+    currentPresetName->alwaysNotify = true;
     params.add(currentPresetName);
     savePresetTrigger = pc->addParameter(new Trigger("Save Preset", "Save current preset"),-1,false);
     savePresetTrigger->addParameterListener(this);

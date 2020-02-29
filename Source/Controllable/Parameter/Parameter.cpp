@@ -96,9 +96,18 @@ void ParameterBase::setValueFrom(Listener * notifier,const var & _value, bool si
     else
     {
     // reentrancy check
-    if(notifier !=nullptr && (_valueSetter.get()==notifier)) force|=!checkValueIsTheSame(_value, value);
+        bool reentrant = notifier !=nullptr && (_valueSetter.get()==notifier);
+        if(reentrant){
+            auto vChanged = !checkValueIsTheSame(_value, value);
+            force|=vChanged;
+            if(alwaysNotify && vChanged ){
+                jassertfalse;
+                LOGE("critical error recursive setting on parameter "+getControlAddress().toString());
+                force = false;
+            } // big recursive troubles in this case..
+        }
     _valueSetter = notifier;
-     tryToSetValue (_value, silentSet, alwaysNotify || force,notifier);
+     tryToSetValue (_value, silentSet, (alwaysNotify&&!reentrant) || force,notifier);
     _valueSetter = nullptr;
     }
 
