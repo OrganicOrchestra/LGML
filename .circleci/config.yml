@@ -21,7 +21,7 @@ jobs:
             set ROOT_FOLDER=%cd%
             set ASIOSDK=%ROOT_FOLDER%\ASIOSDK2.3
             echo %LGML_FOLDER%\third_party\
-            cd %LGML_FOLDER%\third_party\
+            cd "%LGML_FOLDER%\third_party\"
             echo "start build of PTW32"
             
             mkdir PthreadWin32
@@ -48,16 +48,16 @@ jobs:
             
             echo "Compile libpd"
             
-            cd %PD_BUILD_DIR%\VisualStudio2015
+            cd "%PD_BUILD_DIR%\VisualStudio2015"
             cmake -G "%COMPILER%" -DPD_MULTI=ON -DPD_EXTRA=ON ..
             MSBuild.exe libpd.sln /t:libpdstatic /nologo /verbosity:quiet /p:Configuration=Release /p:Platform=%PLATFORM%
             
             
-            cd %LGML_FOLDER%\third_party\rubberband
+            cd "%LGML_FOLDER%\third_party\rubberband"
             echo 'building rubberband'
             MSBuild.exe %LGML_FOLDER%\third_party\rubberband\rubberband-library.sln /p:Configuration=Release /m:4
             echo 'dowloading JUCE'
-            cd %LGML_FOLDER%
+            cd "%LGML_FOLDER%"
             curl https://codeload.github.com/WeAreROLI/JUCE/zip/master -o JUCE.zip
             7z x JUCE.zip -o %ROOT_FOLDER% -y
             ren JUCE-master JUCE
@@ -68,13 +68,13 @@ jobs:
             7z x ASIO_SDK.zip -o %ROOT_FOLDER% -y
             
             pip install future requests
-            python %LGML_FOLDER%\Scripts\buildScript.py --configure --os=windows --configuration=%CONFIGURATION% --arch=%PLATFORM%  --exportpath=%LGML_FOLDER%
+            python "%LGML_FOLDER%\Scripts\buildScript.py" --configure --os=windows --configuration=%CONFIGURATION% --arch=%PLATFORM%  --exportpath=%LGML_FOLDER%
             
             echo "building lgml"
-            MSBuild.exe %LGML_FOLDER%\Builds\VisualStudio2015\LGML.sln /p:Configuration=%CONFIGURATION% /p:Platform=%PLATFORM%
+            MSBuild.exe "%LGML_FOLDER%\Builds\VisualStudio2015\LGML.sln" /p:Configuration=%CONFIGURATION% /p:Platform=%PLATFORM%
             
             echo "packing lgml"
-            python %LGML_FOLDER%\Scripts\buildScript.py --package --export
+            python "%LGML_FOLDER%\Scripts\buildScript.py" --package --export
 
 
 #######

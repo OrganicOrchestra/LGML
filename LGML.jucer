@@ -843,7 +843,7 @@
                        name="Release" optimisation="3" targetName="LGML" winArchitecture="x64"
                        winWarningLevel="4" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" linkTimeOptimisation="1" alwaysGenerateDebugSymbols="1"
-                       useRuntimeLibDLL="0"/>
+                       useRuntimeLibDLL="0" defines="LGML_BETA=1"/>
         <CONFIGURATION generateManifest="1" headerPath="$(ASIOSDK)\common" isDebug="0"
                        libraryPath="..\..\third_party\rubberband\Release&#10;..\..\third_party\libpdBuild"
                        name="Release32" optimisation="3" targetName="LGML" winArchitecture="Win32"
