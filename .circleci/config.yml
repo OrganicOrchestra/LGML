@@ -13,7 +13,7 @@ jobs:
       shell: bash.exe #ASIOSDK: C:\projects\ASIOSDK2.3
     steps:
       # Commands are run in a Windows virtual machine environment
-        - checkout
+        - git clone --recurse-submodules -j8 https://github.com/OrganicOrchestra/LGML.git .
         - run: echo 'Hello, Windows'
   #######
 # ubuntu14
