@@ -315,7 +315,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
         case CommandIDs::aboutBox:
             //TODO about box
             LOG("about : ");
-            LOG( String("LGML v@@1@@@4 (@@2):\nCompiled with love at @@5 the @@3\n by OrganicOrchestra")
+            LOG( String("LGML v@@1@@@4 (@@2):\nCompiled with love at @@5 the @@3\n by OrganicOrchestra\nMartin Hermant, Ezra Box, Ben Kuper\nBattle Tested by Black A")
                 .replace("@@1",String (VersionTriplet::getCurrentVersion().toString()))
                 .replace("@@3",String (Time::getCompilationDate()
                                        .formatted("%d/%m/%y")))
