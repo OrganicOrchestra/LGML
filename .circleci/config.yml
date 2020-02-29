@@ -12,10 +12,8 @@ jobs:
       name: win/default # executor type# Windows machine image
       shell: bash.exe #
     steps:
-      # Commands are run in a Windows virtual machine environment
-        - run: git clone --recurse-submodules -j8 https://github.com/OrganicOrchestra/LGML.git .
-        - run: 
-          command: |
+        - run: |
+            git clone --recurse-submodules -j8 https://github.com/OrganicOrchestra/LGML.git .
             set PLATFORM="Visual Studio 14 2015 Win64"
             set COMPILER=x64
             set LGML_FOLDER=%cd%
