@@ -80,15 +80,16 @@ namespace MIDIHelpers{
             return "";
 
     }
-    MidiMessage midiMessageFromParam(const ParameterBase* p,int channel){
+    bool midiMessageFromParam(const ParameterBase* p,int channel,MidiMessage & msg){
         static const Array<String> flatNoteNames ( { "C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B" });
 //        static int octaveNumForMiddleC = 0;
 
-        if(!p)return MidiMessage(); // return sysex if not defined
+        if(!p)return false;
         String pn = p->niceName;
         int truChannel = jmax(1,channel);
         if(pn.startsWith(String("CC "))){
-            return MidiMessage::controllerEvent(truChannel, pn.substring(3).getIntValue(), p->floatValue()*127);
+            msg= MidiMessage::controllerEvent(truChannel, pn.substring(3).getIntValue(), (int)(p->floatValue()*127.0f));
+            return true;
         }
         else{
             int noteIdx = flatNoteNames.indexOf(pn.substring(0, 1));
@@ -102,17 +103,19 @@ namespace MIDIHelpers{
                 int octave = pn.substring(noteNameLength).getIntValue();
                 int noteNum = noteIdx+12*(octave+5);
                 if(p->floatValue()>0){
-                    return MidiMessage::noteOn(truChannel,noteNum , p->floatValue());// normalized velocity
+                    msg =  MidiMessage::noteOn(truChannel,noteNum , p->floatValue());// normalized velocity
+                    return true;
                 }
                 else{
-                    return MidiMessage::noteOff(truChannel,noteNum );
+                    msg = MidiMessage::noteOff(truChannel,noteNum );
+                    return true;
                 }
             }
 
 
 
         }
-
+        return false;
     }
 
     class MIDIInModel : public EnumParameterModel,MIDIManager::MIDIManagerListener{

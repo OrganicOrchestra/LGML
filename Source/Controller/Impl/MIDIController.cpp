@@ -46,8 +46,9 @@ void ParameterContainer::OwnedFeedbackListener<MIDIController>::parameterFeedbac
             if(_owner->midiOutDevice.get() ){
                 
                 if(p){
-                    auto msgToSend = MIDIHelpers::midiMessageFromParam(p, _owner->channelFilter->intValue());
-                    if(!msgToSend.isSysEx()){
+                    MidiMessage msgToSend {};
+
+                    if(MIDIHelpers::midiMessageFromParam(p, _owner->channelFilter->intValue(),msgToSend)){
                         _owner->sendMessage(msgToSend);
                     }
                     else{

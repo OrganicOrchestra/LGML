@@ -27,7 +27,7 @@ EnumParameterModel * getGlobalMidiModel();
 
     String midiMessageToDebugString(const MidiMessage &);
     String midiMessageToParamName(const MidiMessage &);
-    MidiMessage midiMessageFromParam(const ParameterBase* p,int targetChannel);
+    bool midiMessageFromParam(const ParameterBase* p,int targetChannel,MidiMessage & msg);
 
 struct MIDIIOChooser : EnumParameter::EnumListener{
         MIDIIOChooser(MIDIListener *l,bool showControllers,bool isOutputDevice);
