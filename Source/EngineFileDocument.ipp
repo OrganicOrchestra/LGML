@@ -126,6 +126,12 @@ void Engine::loadDocumentAsync (const File& file)
     parseTask->start();
     var jsonData = JSON::parse (*is);
     parseTask->end();
+    if(!jsonData.getDynamicObject()){
+        LOGE("invalid session file");
+        clearTasks();
+        suspendAudio (false);
+        return;
+    }
     DynamicObject* md = jsonData.getDynamicObject()->getProperty ("metaData").getDynamicObject();
     bool versionChecked = checkFileVersion (md);
 
