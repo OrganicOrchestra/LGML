@@ -10,11 +10,74 @@ jobs:
   buildWin: # name of your job
     executor: 
       name: win/default # executor type# Windows machine image
-      shell: bash.exe #ASIOSDK: C:\projects\ASIOSDK2.3
+      shell: bash.exe #
     steps:
       # Commands are run in a Windows virtual machine environment
         - run: git clone --recurse-submodules -j8 https://github.com/OrganicOrchestra/LGML.git .
-        - run: echo 'Hello, Windows'
+        - run: 
+          command: |
+            set PLATFORM="Visual Studio 14 2015 Win64"
+            set COMPILER=x64
+            set LGML_FOLDER=%cd%
+            cd ..
+            set ROOT_FOLDER=%cd%
+            set ASIOSDK=%ROOT_FOLDER%\ASIOSDK2.3
+            cd %LGML_FOLDER%\third_party\
+            echo "start build of PTW32"
+####################
+            mkdir PthreadWin32
+            git clone -q https://github.com/GerHobbelt/pthread-win32.git PthreadWin32
+            cd PthreadWin32
+            echo "bit of magic from camomille (pierreguillot)"
+####################
+            sed -i 's/4820;4668;4255;/4820;4668;4255;4711;4100;4312;4127;4296;4456;4619;4310;4311;/' pthread_lib.2015.vcxproj
+            sed -i 's/MultiThreadedDLL/MultiThreaded/' pthread_lib.2015.vcxproj
+            sed -i 's/MultiThreadedDebugDLL/MultiThreadedDebug/' pthread_lib.2015.vcxproj
+            echo "truly building PTW32"
+####################
+            msbuild pthread.2015.sln /t:pthread_lib /nologo /verbosity:quiet /p:Configuration=Release /p:Platform=%PLATFORM% /p:OutDir=lib/
+
+            echo "Copy pthread-win32 headers and library in pure-data directory"
+####################
+            set LIBPDROOT="%LGML_FOLDER%\third_party\libpd"
+            copy pthread.h %LIBPDROOT%\pure-data\src\pthread.h
+            copy sched.h %LIBPDROOT%\pure-data\src\sched.h
+            copy semaphore.h %LIBPDROOT%\pure-data\src\semaphore.h
+            set PD_BUILD_DIR="%LGML_FOLDER%\third_party\libpdBuild"
+            copy lib\pthread_lib.lib %PD_BUILD_DIR%\VisualStudio2015\pthread.lib
+            copy lib\pthread_lib.lib %PD_BUILD_DIR%\pthread.lib
+  
+            echo "Compile libpd"
+####################
+            cd %PD_BUILD_DIR%\VisualStudio2015
+            cmake -G "%COMPILER%" -DPD_MULTI=ON -DPD_EXTRA=ON ..
+            msbuild libpd.sln /t:libpdstatic /nologo /verbosity:quiet /p:Configuration=Release /p:Platform=%PLATFORM%
+########################
+
+            cd %LGML_FOLDER%\third_party\rubberband
+            echo 'building rubberband'
+            msbuild %LGML_FOLDER%\third_party\rubberband\rubberband-library.sln /p:Configuration=Release /m:4
+            echo 'dowloading JUCE'
+            cd %LGML_FOLDER%
+            curl https://codeload.github.com/WeAreROLI/JUCE/zip/master -o JUCE.zip
+            7z x JUCE.zip -o %ROOT_FOLDER% -y
+            ren JUCE-master JUCE
+            dir
+            dir JUCE
+            echo 'downloading ASIOSDK'
+            curl https://www.steinberg.net/sdk_downloads/asiosdk2.3.zip -o ASIO_SDK.zip
+            7z x ASIO_SDK.zip -o %ROOT_FOLDER% -y
+########################
+            pip install future requests
+            python %LGML_FOLDER%\Scripts\buildScript.py --configure --os=windows --configuration=%CONFIGURATION% --arch=%PLATFORM%  --exportpath=%LGML_FOLDER%
+#################
+            echo "building lgml"
+            msbuild %LGML_FOLDER%\Builds\VisualStudio2015\LGML.sln /p:Configuration=%CONFIGURATION% /p:Platform=%PLATFORM%
+#################
+            echo "packing lgml"
+            python %LGML_FOLDER%\Scripts\buildScript.py --package --export
+
+
   #######
 # ubuntu14
 #########
