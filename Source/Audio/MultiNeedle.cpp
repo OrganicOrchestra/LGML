@@ -240,10 +240,10 @@ int FadeNeedle::getEndFadeOut()const
 
 
 
-MultiNeedle::MultiNeedle (int fIn, int fOut, int max):
+MultiNeedle::MultiNeedle (int fIn, int fOut, int _maxNeedles):
     fadeInNumSamples (fIn),
     fadeOutNumSamples (fOut),
-    maxNeedles (max)
+    maxNeedles (_maxNeedles)
 {
     needles.resize (maxNeedles);
     int idx = 0;

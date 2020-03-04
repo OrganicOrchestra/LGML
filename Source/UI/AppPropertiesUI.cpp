@@ -327,8 +327,14 @@ class PrefPanel : public PreferencesPanel{
         else if(pageName==juce::translate(AppPropertiesUI::BetaPageName)){
 
             auto res =  new PropertyPanel();
+            StringArray fadeV {"0","32","64","128","256","512"};
+            auto cb = []( const String & s){
+                getAppProperties()->getUserSettings()->setValue("defaultLoopFadeTimeInt", s.getIntValue());
+            };
+
             res->addProperties(
-                               {new BoolPropUI("deferControllerFB","feedback for midi and osc is deferred to the main thread preventing lock","(restart needed)")
+                               {new BoolPropUI("deferControllerFB","feedback for midi and osc is deferred to the main thread preventing lock","(restart needed)"),
+                                new EnumPropUI("defaultLoopFadeTime",fadeV,cb,"(restart needed)","fade time when looping" ),
                                }
                                );
             return res;
