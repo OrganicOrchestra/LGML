@@ -511,8 +511,9 @@ bool NodeContainer::removeConnection (NodeConnection* c)
 
     c->removeConnectionListener (this);
 
-    connections.removeObject (c);
+
     nodeChangeNotifier->addMessage (new NodeChangeMessage (c, false));
+    connections.removeObject (c);
     //  nodeContainerListeners.call(&NodeContainerListener::connectionRemoved, c);
 
     return true;

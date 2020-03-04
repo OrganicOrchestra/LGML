@@ -47,6 +47,7 @@ ConnectorComponent::~ConnectorComponent()
     {
         jassertfalse;
     }
+    masterReference.clear();
 }
 
 NodeBase* ConnectorComponent::getNodeBase()

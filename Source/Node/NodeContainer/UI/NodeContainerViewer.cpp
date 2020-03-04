@@ -267,7 +267,7 @@ void NodeContainerViewer::removeConnectionUI (NodeConnection* connection)
 
 NodeConnectionUI* NodeContainerViewer::getUIForConnection (NodeConnection* connection)
 {
-    for (int i = connectionsUI.size(); --i >= 0;)
+    for (int i = connectionsUI.size()-1; i >= 0; i--)
     {
         NodeConnectionUI* cui = connectionsUI.getUnchecked (i);
 

@@ -37,7 +37,7 @@ public:
     NodeConnectionUI (NodeConnection* connection = nullptr, Connector* sourceConnector = nullptr, Connector* destConnector = nullptr);
     ~NodeConnectionUI();
 
-    NodeConnection* connection;
+    WeakReference<NodeConnection> connection;
 
     class Anchor : public DrawableRectangle
     {
@@ -79,8 +79,8 @@ public:
     Anchor anchorDest;
 
 
-    Connector* sourceConnector;
-    Connector* destConnector;
+    WeakReference<Connector> sourceConnector;
+    WeakReference<Connector> destConnector;
     Connector* candidateDropConnector;
 
     void setSourceConnector (Connector* c);

@@ -91,7 +91,8 @@ public:
     void removeConnectorListener (ConnectorListener* listener) { connectorListeners.remove (listener); }
 private:
     void generateToolTip();
-
+    WeakReference<ConnectorComponent>::Master masterReference;
+    friend class WeakReference<ConnectorComponent>;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ConnectorComponent)
 };
 
