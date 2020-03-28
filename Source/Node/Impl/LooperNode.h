@@ -89,6 +89,7 @@ public:
     IntParameter* selectTrack;
     IntParameter* quantization;
     IntParameter* preDelayMs;
+    IntParameter* crossFadeMs;
     BoolParameter* isOneShot;
     BoolParameter*  firstTrackSetTempo;
     BoolParameter* waitForOnset;

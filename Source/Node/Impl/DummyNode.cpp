@@ -24,6 +24,7 @@ Identifier rlId ("Right / Left");
 Identifier mixedId ("Mixed");
 Identifier clickId ("Click");
 Identifier sineId ("Sine");
+Identifier noiseId ("Noise");
 
 REGISTER_NODE_TYPE (DummyNode)
 DummyNode::DummyNode (StringRef name) :
@@ -43,6 +44,7 @@ DummyNode::DummyNode (StringRef name) :
     enumParam->addOption (mixedId,true);
     enumParam->addOption (clickId,true);
     enumParam->addOption (sineId,true);
+    enumParam->addOption(noiseId,true);
 
     
 
@@ -52,7 +54,7 @@ DummyNode::DummyNode (StringRef name) :
     //AUDIO
     setPlayConfigDetails (2, 3, getSampleRate(), getBlockSize());
 
-    Thread::sleep(2000);
+    //Thread::sleep(2000);
 }
 
 DummyNode::~DummyNode()
@@ -80,7 +82,7 @@ void DummyNode::onContainerParameterChanged ( ParameterBase* p)
 }
 
 void DummyNode::prepareToPlay(double sr,int bs) {
-    Thread::sleep(4000);
+//    Thread::sleep(4000);
 }
 
 
@@ -189,6 +191,20 @@ void DummyNode::processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer&)
                 if (step2 > period2) { step2 = 0; }
             }
         }
+        else if(outType == noiseId){
+            for (int i = 0; i < buffer.getNumSamples(); i++)
+            {
+                buffer.addSample (0, i, (float) (amp *(Random::getSystemRandom().nextFloat()-.5f)*2.f));
+                buffer.addSample (1, i, (float) (amp  *(Random::getSystemRandom().nextFloat()-.5f)*2.f));
+                step1++;
+                step2++;
+                
+                if (step1 > period1) { step1 = 0; }
+                
+                if (step2 > period2) { step2 = 0; }
+            }
+        }
+    
 
     }
 

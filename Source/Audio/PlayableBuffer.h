@@ -64,6 +64,7 @@ public :
     void setPlayNeedle (int n);
 
     void cropEndOfRecording (int* sampletoRemove);
+    void zeroCrossAdjust();
     //  void padEndOfRecording(int sampleToAdd);
     void setRecordedLength (sample_clk_t targetSamples);
 
@@ -85,12 +86,12 @@ public :
     //  void stopRecordingTail();
 
 
-
+    
     void startRecord();
     inline void startPlay();
     void clear();
 
-
+    
 
     enum BufferState
     {
@@ -106,6 +107,8 @@ public :
 
     BufferState getState() const;
     BufferState getLastState() const;
+    
+    bool isFadingOutRec()const;
 
 
     sample_clk_t getRecordedLength() const;
@@ -131,6 +134,7 @@ public :
 
 #endif
     void setSampleRate (float sR);
+    void setFadeBufferTime(int t);
     float sampleRate;
     int blockSize;
     void setBlockSize (int bs);
@@ -178,7 +182,7 @@ private:
     BufferState lastState = BUFFER_STOPPED;
 
 
-    void fadeInOut();
+//    void fadeInOut();
 
 
 
@@ -189,10 +193,9 @@ private:
     sample_clk_t recordNeedle = 0, playNeedle = 0, globalPlayNeedle = 0;
 
 
-
-
-
-
+    int totalFadeOutSample=0;
+    int fadeWriteCount = -1;
+    int fadeBufferTimeMs = 0;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PlayableBuffer)
 
 };

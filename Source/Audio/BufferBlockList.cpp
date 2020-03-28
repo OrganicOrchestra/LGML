@@ -17,7 +17,10 @@
  */
 
 #include "BufferBlockList.h"
-
+extern ApplicationProperties* getAppProperties();
+static bool needSQRTFade(){
+    return getAppProperties()->getUserSettings()->getBoolValue("useSQRTFades",true);
+}
 
 
 BufferBlockList::BufferBlockList (int _numChannels, int  _minNumSample, int _blockSize):
@@ -180,6 +183,60 @@ void BufferBlockList::copyFrom (const AudioSampleBuffer& inBuf, int listStartSam
 
         jassert (writePosInList < getAllocatedNumSample());
 
+    }
+}
+
+
+
+void BufferBlockList::fadeFromWithRamp (const AudioSampleBuffer& inBuf, int listStartSample, float startGain,float endGain,int bufStartSample , int numSampleToCopy ){
+    if (numSampleToCopy == -1)numSampleToCopy =  inBuf.getNumSamples();
+    
+    jassert (listStartSample + numSampleToCopy < getAllocatedNumSample());
+    jassert (inBuf.getNumChannels() == getAllocatedNumChannels());
+    int numChannels = inBuf.getNumChannels();
+    int sampleProcessed = 0;
+    int readPos = bufStartSample;
+    
+    int writeBlockIdx ;
+    int writePosInList = listStartSample;
+    
+    float incGain = (endGain-startGain)/numSampleToCopy;
+    while (sampleProcessed < numSampleToCopy)
+    {
+        writeBlockIdx = (int)floor (writePosInList * 1.0 / bufferBlockSize);
+        int startWrite = writePosInList % bufferBlockSize ;
+        int blockSize =  bufferBlockSize - startWrite;
+        
+        if (sampleProcessed + blockSize > numSampleToCopy)
+            blockSize =  numSampleToCopy - sampleProcessed;
+        
+        float sG = startGain + sampleProcessed*incGain;
+        float eG = sG + blockSize*incGain;
+        jassert (blockSize > 0);
+        jassert (startWrite + blockSize <= bufferBlockSize);
+        jassert (writeBlockIdx < size());
+        auto* ref =  OwnedArray::getUnchecked (writeBlockIdx);
+        float esG = 1.0f-sG;
+        float eeG = 1.0f-eG;
+        if(needSQRTFade()){
+            sG = sqrtf(sG);
+            eG = sqrtf(eG);
+            esG = sqrtf(esG);
+            eeG = sqrtf(eeG);
+        }
+        ref->applyGainRamp(startWrite, blockSize,esG,eeG);
+        for (int i = 0 ; i < numChannels ; i++)
+        {
+            ref->addFromWithRamp(i, startWrite, inBuf.getArrayOfReadPointers()[i], blockSize, sG,eG);
+            
+        }
+        
+        readPos += blockSize;
+        writePosInList += blockSize;
+        sampleProcessed += blockSize;
+        
+        jassert (writePosInList < getAllocatedNumSample());
+        
     }
 }
 

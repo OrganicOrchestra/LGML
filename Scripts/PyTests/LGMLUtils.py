@@ -48,7 +48,7 @@ class LGMLSession:
   OSCInPort = 11001
   LGMLIP = "127.0.0.1"
   lgmlExecPath = '../../Builds/MacOSX/build/Debug/LGML.app/Contents/MacOS/LGML'
-  LGMLMIDIOut = "Gestionnaire IAC Bus 1"
+  LGMLMIDIOut = "IAC Driver Bus 1"
   closeWhenEnded = True
   def  __init__(self,path):
     self.path = path;

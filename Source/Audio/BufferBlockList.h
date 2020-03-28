@@ -33,6 +33,7 @@ public:
     void setNumSample (int numSample);
     void copyTo (AudioSampleBuffer& outBuf, int listStartSample, int bufStartSample = 0, int numSampleToCopy = -1) const;
     void copyFrom (const AudioSampleBuffer& inBuf, int listStartSample, int bufStartSample = 0, int numSampleToCopy = -1);
+    void fadeFromWithRamp (const AudioSampleBuffer& inBuf, int listStartSample, float startGain,float endGain,int bufStartSample = 0, int numSampleToCopy = -1);
     float getSample (int c, int n);
     AudioSampleBuffer& getContiguousBuffer (int sampleStart = 0, int numSamples = -1);
     AudioSampleBuffer& fillAll (AudioSampleBuffer& buf)const;

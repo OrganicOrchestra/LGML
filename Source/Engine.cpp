@@ -60,6 +60,7 @@ void initDefaultUserSettings(){
     setDefault(settings,"language","english");
     
     setDefault(settings,"deferControllerFB",false);
+    setDefault(settings,"useSQRTFades",true);
     
     settings->saveIfNeeded();
 }

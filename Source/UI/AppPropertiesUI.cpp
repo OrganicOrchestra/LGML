@@ -328,13 +328,11 @@ class PrefPanel : public PreferencesPanel{
 
             auto res =  new PropertyPanel();
             StringArray fadeV {"0","32","64","128","256","512"};
-            auto cb = []( const String & s){
-                getAppProperties()->getUserSettings()->setValue("defaultLoopFadeTimeInt", s.getIntValue());
-            };
-
+            auto cb = []( const String & ){};
             res->addProperties(
                                {new BoolPropUI("deferControllerFB","feedback for midi and osc is deferred to the main thread preventing lock","(restart needed)"),
-                                new EnumPropUI("defaultLoopFadeTime",fadeV,cb,"(restart needed)","fade time when looping" ),
+                                new EnumPropUI("defaultLoopJumpTime",fadeV,cb,"(restart needed)","fade time when jumping" ),
+                                  new BoolPropUI("useSQRTFades","use SQRT curve to fade between signals when crossfading loopers ")
                                }
                                );
             return res;

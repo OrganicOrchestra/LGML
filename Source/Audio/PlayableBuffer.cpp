@@ -43,8 +43,8 @@ using namespace RubberBand;
 #endif
 
 extern ApplicationProperties* getAppProperties();
-static int getDefaultLoopFadeTime(){
-return getAppProperties()->getUserSettings()->getIntValue("defaultLoopFadeTime",512);
+static int getDefaultMultiNeedleTime(){    
+return getAppProperties()->getUserSettings()->getIntValue("defaultLoopJumpTime",512);
 }
 
 
@@ -54,7 +54,7 @@ return getAppProperties()->getUserSettings()->getIntValue("defaultLoopFadeTime",
 
 PlayableBuffer::PlayableBuffer (int numChannels, int numSamples, float _sampleRate, int _blockSize):
 bufferBlockList (numChannels, numSamples)
-,multiNeedle (getDefaultLoopFadeTime(),getDefaultLoopFadeTime())
+,multiNeedle (getDefaultMultiNeedleTime(),getDefaultMultiNeedleTime())
 #if BUFFER_CAN_STRETCH
 , stretchJob (nullptr)
 #if RT_STRETCH
@@ -66,7 +66,7 @@ bufferBlockList (numChannels, numSamples)
 
 
 {
-
+     
     jassert (numSamples < std::numeric_limits<int>::max());
 
 #if RT_STRETCH
@@ -162,17 +162,41 @@ bool PlayableBuffer::processNextBlock (AudioBuffer<float>& buffer, sample_clk_t 
     {
         originAudioBuffer.setSize (getNumChannels(), getRecordedLength());
         bufferBlockList.setNumSample (getRecordedLength());
-        fadeInOut();
+//        fadeInOut();
         bufferBlockList.copyTo (originAudioBuffer, 0, 0, getRecordedLength());
+        fadeWriteCount = 0;
 
     }
-
+    if(fadeWriteCount>=0 && fadeWriteCount< totalFadeOutSample){
+        jassert(!buffer.hasBeenCleared());
+        int tWrite = buffer.getNumSamples();
+        bool isLast = false;
+        if(fadeWriteCount+tWrite>=totalFadeOutSample){
+            tWrite = totalFadeOutSample - fadeWriteCount;
+            isLast=true;
+        }
+        
+        
+        
+        float sG = 1.0f - fadeWriteCount*1.0f/totalFadeOutSample;
+        float eG = 1.0f - (fadeWriteCount + tWrite)*1.0f/totalFadeOutSample;
+        
+        bufferBlockList.fadeFromWithRamp(buffer,fadeWriteCount,sG,eG,0,tWrite);
+        if(isLast){
+            fadeWriteCount = -1;
+            bufferBlockList.copyTo (originAudioBuffer, 0, 0, totalFadeOutSample);
+        }
+        else{
+            fadeWriteCount+=tWrite;
+        }
+    }
+    
     buffer.clear();
 
 
 #if RT_STRETCH
 
-
+    
     processPendingRTStretch (buffer, time);
     readNextBlock (buffer, time, sampleOffsetBeforeNewState);
 
@@ -273,6 +297,7 @@ bool PlayableBuffer::writeAudioBlock (const AudioBuffer<float>& buffer, int from
     if (samplesToWrite == 0) {return true;}
 
     // allocate more if needed
+    // TODO move this on a watching thread to avoid allocation in audio thread
     if (recordNeedle + buffer.getNumSamples() >= getAllocatedNumSample())
     {
         bufferBlockList.allocateSamples (bufferBlockList.getAllocatedNumChannels(), recordNeedle + 10 * buffer.getNumSamples());
@@ -393,6 +418,39 @@ void PlayableBuffer::cropEndOfRecording (int* sampletoRemove)
 
     recordNeedle -= *sampletoRemove;
     multiNeedle.setLoopSize (recordNeedle);
+}
+
+
+bool PlayableBuffer::isFadingOutRec()const{
+    return fadeWriteCount>=0;
+}
+void PlayableBuffer::zeroCrossAdjust ()
+{
+    int maxSeekableZC = 1024;
+    if(originAudioBuffer.getNumSamples()<=maxSeekableZC ||
+       originAudioBuffer.getNumChannels()==0
+       ){
+        return;
+    }
+    int sampleToRemove = 0;
+    
+    bool wasPositive = originAudioBuffer.getSample(0,originAudioBuffer.getNumSamples()-1)>0;
+    for(int j = 1; j<maxSeekableZC ;  j++){
+        const int ai = originAudioBuffer.getNumSamples()-1-j;
+        const float v =originAudioBuffer.getSample(0,ai);
+        const bool isPositive =v>0;
+        if(isPositive != wasPositive ){
+            sampleToRemove = j;
+            break;
+        };
+    }
+    const int targetNumSample =recordNeedle-sampleToRemove;
+    
+    if(targetNumSample>getMinRecordSampleLength()){
+        DBG("removing "+ String(sampleToRemove));
+        setRecordedLength(targetNumSample);
+    }
+    
 }
 //void PlayableBuffer::padEndOfRecording(int sampleToAdd){
 //  audioBufferList.clear((int)recordNeedle, sampleToAdd);
@@ -554,47 +612,54 @@ int PlayableBuffer::getNumSampleFadeOut() const {return multiNeedle.fadeOutNumSa
 
 void PlayableBuffer::setSampleRate (float sR) {
     sampleRate = sR;
+    setFadeBufferTime(fadeBufferTimeMs);
+    
 };
 
-void PlayableBuffer::fadeInOut()
-{
-    int fadeIn = multiNeedle.fadeInNumSamples;
-    int fadeOut = multiNeedle.fadeOutNumSamples;
-    auto startBlock = bufferBlockList.getUnchecked (0);
-    startBlock->applyGainRamp ( 0, fadeIn, 0.0f, 1.f);
-
-    int lIdx = floor (bufferBlockList.getNumSamples() / bufferBlockList.bufferBlockSize);
-    auto endBlock = bufferBlockList.getUnchecked (lIdx);
-    int endPoint = bufferBlockList.getNumSamples() - (lIdx * bufferBlockList.bufferBlockSize);
-    jassert (endPoint > 0);
-
-    if (endPoint < fadeOut)
-    {
-        float ratio = endPoint * 1.0 / fadeOut;
-        int firstPart = (fadeOut - endPoint);
-
-        if (lIdx > 0)
-        {
-            auto eendBlock = bufferBlockList.getUnchecked (lIdx - 1);
-            eendBlock->applyGainRamp (bufferBlockList.bufferBlockSize - firstPart, firstPart, 1.0f, ratio);
-            endBlock->applyGainRamp (0, endPoint, ratio, 0.0f);
-        }
-        else
-        {
-            jassertfalse;
-            endBlock->applyGainRamp (0, endPoint + 1, 1.0f, 0.0f);
-            DBG ("truncate fadeOut for small buffer");
-
-        }
-
-    }
-    else
-    {
-        endBlock->applyGainRamp (endPoint - fadeOut, fadeOut + 1, 1.0f, 0.0f);
-    }
-
-
+void PlayableBuffer::setFadeBufferTime(int t){
+    fadeBufferTimeMs = t;
+    totalFadeOutSample= (int)fadeBufferTimeMs*sampleRate/1000;
 }
+//
+//void PlayableBuffer::fadeInOut()
+//{
+//    int fadeIn = multiNeedle.fadeInNumSamples;
+//    int fadeOut = multiNeedle.fadeOutNumSamples;
+//    auto startBlock = bufferBlockList.getUnchecked (0);
+//    startBlock->applyGainRamp ( 0, fadeIn, 0.0f, 1.f);
+//
+//    int lIdx = floor (bufferBlockList.getNumSamples() / bufferBlockList.bufferBlockSize);
+//    auto endBlock = bufferBlockList.getUnchecked (lIdx);
+//    int endPoint = bufferBlockList.getNumSamples() - (lIdx * bufferBlockList.bufferBlockSize);
+//    jassert (endPoint > 0);
+//
+//    if (endPoint < fadeOut)
+//    {
+//        float ratio = endPoint * 1.0 / fadeOut;
+//        int firstPart = (fadeOut - endPoint);
+//
+//        if (lIdx > 0)
+//        {
+//            auto eendBlock = bufferBlockList.getUnchecked (lIdx - 1);
+//            eendBlock->applyGainRamp (bufferBlockList.bufferBlockSize - firstPart, firstPart, 1.0f, ratio);
+//            endBlock->applyGainRamp (0, endPoint, ratio, 0.0f);
+//        }
+//        else
+//        {
+//            jassertfalse;
+//            endBlock->applyGainRamp (0, endPoint + 1, 1.0f, 0.0f);
+//            DBG ("truncate fadeOut for small buffer");
+//
+//        }
+//
+//    }
+//    else
+//    {
+//        endBlock->applyGainRamp (endPoint - fadeOut, fadeOut + 1, 1.0f, 0.0f);
+//    }
+//
+//
+//}
 #if BUFFER_CAN_STRETCH
 void PlayableBuffer::cancelStretchJob(bool waitForIt){
     if (stretchJob)

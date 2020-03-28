@@ -51,7 +51,7 @@ logVolume (float01ToGain (DB0_FOR_01), 0.5),
 hadOnset(false)
 {
     
-
+    playableBuffer.setFadeBufferTime( looperNode->crossFadeMs->intValue());
     selectTrig =  addNewParameter<Trigger> ("Select", "Select this track");
     recPlayTrig =  addNewParameter<Trigger> ("Rec Or Play", "Tells the track start record or play it if it was recording");
     recStopTrig =  addNewParameter<Trigger> ("Rec Or Stop", "Tells the track start record or stop it if it was recording");
@@ -423,6 +423,9 @@ int LooperTrack::getQuantization()
 {
     return parentLooper->getQuantization();
 }
+bool LooperTrack::needAudioIn(){
+    return playableBuffer.isOrWasRecording() || playableBuffer.isFadingOutRec();
+}
 
 void LooperTrack::handleStartOfRecording()
 {
@@ -504,13 +507,16 @@ void LooperTrack::handleEndOfRecording()
     {
         beatLength->setValue (playableBuffer.getRecordedLength() * 1.0 / tm->beatTimeInSample);
 
-        if (getQuantization() > 0)originBPM->setValue (tm->BPM->doubleValue());
+        if (getQuantization() > 0){
+            originBPM->setValue (tm->BPM->doubleValue());
+        }
         else
         {
             // non quantified
             // we assign one but obviously not related to master (avoid null bpms)
-            if(auto length = playableBuffer.getRecordedLength())
+            if(auto length = playableBuffer.getRecordedLength()){
                 originBPM->setValue (tm->findTransportTimeInfoForLength (length).bpm);
+            }
         }
     }
 

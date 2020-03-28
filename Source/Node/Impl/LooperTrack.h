@@ -72,6 +72,7 @@ public:
     void recOrStop();
     void recPlay();
     bool isBusy();
+    bool needAudioIn();
     Array<float> getNormalizedOnsets();
 
 

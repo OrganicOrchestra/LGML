@@ -50,6 +50,7 @@ LooperNode::LooperNode (StringRef name) :
     preDelayMs = addNewParameter<IntParameter> ("Pre Delay ms", "Pre process delay (in milliseconds)", 0, 0, 250);
     quantization = addNewParameter<IntParameter> ("Quantization", "quantization for this looper - 1 is global", -1, -1, 32);
     isOneShot = addNewParameter<BoolParameter> ("Is one shot", "do we play once or loop track", false);
+    crossFadeMs = addNewParameter<IntParameter> ("Crossfade", "time of the crossfade when recording (in milliseconds)", 0, 0, 200);
     firstTrackSetTempo = addNewParameter<BoolParameter> ("First track set tempo", "do the first track sets the global tempo or use quantization", true);
     waitForOnset = addNewParameter<BoolParameter> ("Wait for onset", "wait for onset before actually recording", false);
     onsetThreshold = addNewParameter<FloatParameter> ("Onset threshold", "threshold before onset", 0.01f, 0.0001f, 0.1f);
@@ -155,7 +156,7 @@ void LooperNode::processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer& m
     {
         t->updatePendingLooperTrackState ( numSample);
         // avoid each track clearing the buffer if not needed
-        needAudioIn |= t->playableBuffer.isOrWasRecording() ;//|| t->playableBuffer.isRecordingTail();
+        needAudioIn |= t->needAudioIn();
     }
 
     //
@@ -198,17 +199,24 @@ void LooperNode::processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer& m
     {
         for (auto& t : trackGroup.tracks)
         {
+            if (t->needAudioIn()){
+                for (int i = totalNumInputChannels - 1; i >= 0; --i)
+                {
+                    buffer.copyFrom (i, 0, bufferIn, i, 0, buffer.getNumSamples());
+                }
+            }
+            else{
+//                buffer.clear();
+            }
+            
             t->processBlock (buffer, midiMessages);
 
             for (int i = totalNumInputChannels - 1; i >= 0; --i)
             {
                 bufferOut.addFrom (i, 0, buffer, i, 0, buffer.getNumSamples());
-
-                if (needAudioIn)
-                    buffer.copyFrom (i, 0, bufferIn, i, 0, buffer.getNumSamples());
             }
 
-            if (!needAudioIn) { buffer.clear(); }
+            
         }
 
         for (int i = bufferOut.getNumChannels() - 1; i >= 0; --i)
@@ -634,6 +642,11 @@ void LooperNode::onContainerParameterChanged ( ParameterBase* p)
             }
             else
                 trackGroup.selectedTrack = nullptr;
+        }
+    }
+    else if(p==crossFadeMs){
+        for(auto t : trackGroup.tracks){
+            t->playableBuffer.setFadeBufferTime( crossFadeMs->intValue());
         }
     }
     else if (p == volumeSelected)
