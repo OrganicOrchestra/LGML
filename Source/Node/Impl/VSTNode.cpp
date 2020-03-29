@@ -97,6 +97,7 @@ NodeBase (name),
 blockFeedback (false),
 midiChooser(this,true,false)
 {
+    isWaitingSetVSTState.set(false);
     identifierString = addNewParameter<StringParameter> ("VST Identifier", "string that identify a VST", "");
     identifierString->setInternalOnlyFlags(false,true);
 
@@ -254,8 +255,23 @@ void VSTNode::onContainerParameterChanged ( ParameterBase* p)
 
 
 void VSTNode::setVSTState(){
+    auto mm = MessageManager::getInstanceWithoutCreating();
+    if(mm && !mm->isThisTheMessageThread()){
+        if(isWaitingSetVSTState.get()){
+            return; // discard subsequent calls
+        }
+        isWaitingSetVSTState.set(true);
+        auto wkf = WeakReference<NodeBase>(this);
+        mm->callAsync([wkf](){
+            if(wkf.get()){
+                ((VSTNode*)wkf.get())->setVSTState();
+            }
+        });
+        return;
+    }
+    isWaitingSetVSTState.set(false);
     if(innerPlugin ){
-
+        ScopedLock sl(VSTStateChangeLock);
         stateInfoPluginID = innerPlugin->getPluginDescription().createIdentifierString();
 
         bool inOutChanged = true;

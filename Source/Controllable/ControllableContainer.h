@@ -45,7 +45,7 @@ public:
     
     Uuid uid;
 
-    typedef DummyCriticalSection ControllableCriticalSection;
+    typedef CriticalSection ControllableCriticalSection;
     typedef ControllableCriticalSection::ScopedLockType ControllablesScopedLockType;
     OwnedArray<Controllable, ControllableCriticalSection> controllables;
     Array<WeakReference<ControllableContainer >, ControllableCriticalSection  > controllableContainers;

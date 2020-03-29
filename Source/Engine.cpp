@@ -61,7 +61,7 @@ void initDefaultUserSettings(){
     
     setDefault(settings,"deferControllerFB",false);
     setDefault(settings,"useSQRTFades",true);
-    
+    setDefault(settings,"defferPresetLoading",false);
     settings->saveIfNeeded();
 }
 

@@ -82,7 +82,9 @@ oscMessageQueue (this)
 
     
     logIncomingOSC = addNewParameter<BoolParameter> ("logIncomingOSC", "log the incoming OSC Messages", false);
+    logIncomingOSC->setSavable(false);
     logOutGoingOSC = addNewParameter<BoolParameter> ("logOutGoingOSC", "log the outGoing OSC Messages", false);
+    logOutGoingOSC->setSavable(false);
     speedLimit = addNewParameter<FloatParameter> ("speedLimit", "min interval (ms) between 2 series of " + String (NUM_OSC_MSG_IN_A_ROW) + " OSCMessages", 0.f, 0.f, 100.f);
 
     

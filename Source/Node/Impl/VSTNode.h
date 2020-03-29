@@ -163,7 +163,8 @@ private:
 
     
     ParameterBase * generateFromVST(const AudioProcessorParameter* param);
-
+    CriticalSection VSTStateChangeLock;
+    Atomic<bool> isWaitingSetVSTState;
     std::unique_ptr<VSTLoaderPostponer> vstLoaderPostponer;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (VSTNode)
 };

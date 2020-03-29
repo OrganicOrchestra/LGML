@@ -14,6 +14,9 @@
 
 #include "../Controllable/Parameter/ParameterFactory.h"
 #include "../Node/NodeContainer/NodeContainer.h"
+
+extern ApplicationProperties* getAppProperties();
+
 //////////////////////////////
 // Presets
 String generateName(const String & name, ParameterContainer * pc){
@@ -107,7 +110,7 @@ const Identifier Presetable::presetIdentifier ("preset");
 //int numPresetDBG = 0;
 Presetable::Presetable(ParameterContainer  * _pc):
 pc(_pc){
-    
+    isWaitingLoading.set(false);
     currentPresetName = pc->addParameter(new StringParameter(presetIdentifier.toString(), "Current Preset", ""),-1,false);
     currentPresetName->addParameterListener(this);
 //    currentPresetName->addAsyncCoalescedListener(this);
@@ -124,6 +127,7 @@ pc(_pc){
 
 }
 Presetable::~Presetable(){
+    masterReference.clear();
     if(presetSync)
         delete presetSync;
 }
@@ -168,31 +172,50 @@ void Presetable::parameterValueChanged ( ParameterBase* p, ParameterBase::Listen
     }
     else if (p== currentPresetName)
     {
-        auto * pm = PresetManager::getInstance();
-
-        String name = p->stringValue();
-        String exterUID = getLinkInPresetName(name);
-        Preset* preset = nullptr;
-        if(exterUID.isEmpty()){
-            if(presetSync){delete presetSync;presetSync = nullptr;}
-            preset = pm->getPreset (getPresetFilter(), name);
-        }
-        else{
-            name = name.substring(0, name.indexOf("("));
-            if(!presetSync){presetSync = new PresetSync(this);};
-
-
-            Uuid ui(exterUID);
-            if(auto ppp = ParameterContainer::getForUidGlobal(ui)){
-                preset = pm->getPreset(ppp->presetable->getPresetFilter(), name);
+        auto mm = MessageManager::getInstanceWithoutCreating();
+        if(mm && !mm->isThisTheMessageThread() && isWaitingLoading.get()){
+            return;
+        };
+        auto wkf = WeakReference<Presetable>(this);
+        auto loadPresetFunc = [wkf](){
+            if(!wkf.get()){return;}
+            auto inst = (Presetable*)wkf.get();
+            inst->isWaitingLoading.set(false);
+            auto * pm = PresetManager::getInstance();
+            String name = inst->currentPresetName->stringValue();
+            String exterUID = getLinkInPresetName(name);
+            Preset* preset = nullptr;
+            if(exterUID.isEmpty()){
+                if(inst->presetSync){delete inst->presetSync;inst->presetSync = nullptr;}
+                preset = pm->getPreset (inst->getPresetFilter(), name);
             }
             else{
-                jassertfalse;
+                name = name.substring(0, name.indexOf("("));
+                if(!inst->presetSync){inst->presetSync = new PresetSync(inst);};
+                
+                
+                Uuid ui(exterUID);
+                if(auto ppp = ParameterContainer::getForUidGlobal(ui)){
+                    preset = pm->getPreset(ppp->presetable->getPresetFilter(), name);
+                }
+                else{
+                    jassertfalse;
+                }
+                
             }
-
+            // if(currentPreset!=preset)
+            inst->loadPreset(preset);
+        };
+        
+        if(mm && !mm->isThisTheMessageThread()  && getAppProperties()->getUserSettings()->getBoolValue("defferPresetLoading",false)){
+            isWaitingLoading.set(true);
+            mm->callAsync(loadPresetFunc);
+            return;
         }
-       // if(currentPreset!=preset)
-            loadPreset(preset);
+        else{
+            loadPresetFunc();
+        }
+        
     }
 
 }

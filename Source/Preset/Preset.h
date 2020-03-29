@@ -112,4 +112,9 @@ private:
 
     void newMessage (const ParameterBase::ParamWithValue& pv)final;
     void parameterValueChanged ( ParameterBase* p, ParameterBase::Listener * notifier) final;
+    
+    
+    WeakReference<Presetable>::Master masterReference;
+    friend class WeakReference<Presetable>;
+    Atomic<bool> isWaitingLoading;
 };

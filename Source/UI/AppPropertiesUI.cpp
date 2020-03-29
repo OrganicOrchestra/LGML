@@ -330,7 +330,7 @@ class PrefPanel : public PreferencesPanel{
             StringArray fadeV {"0","32","64","128","256","512"};
             auto cb = []( const String & ){};
             res->addProperties(
-                               {new BoolPropUI("deferControllerFB","feedback for midi and osc is deferred to the main thread preventing lock","(restart needed)"),
+                               {new BoolPropUI("defferPresetLoading","preset loading is deferred to the main thread to avoid VST bugs"),
                                 new EnumPropUI("defaultLoopJumpTime",fadeV,cb,"(restart needed)","fade time when jumping" ),
                                   new BoolPropUI("useSQRTFades","use SQRT curve to fade between signals when crossfading loopers ")
                                }
