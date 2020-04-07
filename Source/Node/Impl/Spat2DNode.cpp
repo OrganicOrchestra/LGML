@@ -28,7 +28,7 @@ alphaFilter(1)
     //    spatMode->addOption ("Beam", BEAM);
     spatMode->addOption ("Proxy", PROXY,true);
 
-    spatMode->setValue ("Proxy");
+    
 
     shapeMode = addNewParameter<EnumParameter> ("Shape", "Predefined shape or free positioning");
     shapeMode->isEditable=false;
@@ -56,6 +56,7 @@ alphaFilter(1)
     setPreferedNumAudioOutput (numSpatOutputs->intValue() );
 
     updateIOParams();
+    spatMode->setValue ("Proxy");
     shapeMode->setValue("Circle");
     computeAllInfluences();
 }
