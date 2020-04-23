@@ -179,7 +179,7 @@ bool PlayableBuffer::processNextBlock (AudioBuffer<float>& buffer, sample_clk_t 
         
         
         float sG = 1.0f - fadeWriteCount*1.0f/totalFadeOutSample;
-        float eG = 1.0f - (fadeWriteCount + tWrite)*1.0f/totalFadeOutSample;
+        float eG = jmax(0.0f,1.0f - (fadeWriteCount + tWrite)*1.0f/totalFadeOutSample);
         
         bufferBlockList.fadeFromWithRamp(buffer,fadeWriteCount,sG,eG,0,tWrite);
         if(isLast){
