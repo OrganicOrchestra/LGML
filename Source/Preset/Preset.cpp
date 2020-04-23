@@ -203,8 +203,11 @@ void Presetable::parameterValueChanged ( ParameterBase* p, ParameterBase::Listen
                 }
                 
             }
+
             // if(currentPreset!=preset)
             inst->loadPreset(preset);
+
+
         };
         
         if(mm && !mm->isThisTheMessageThread()  && getAppProperties()->getUserSettings()->getBoolValue("defferPresetLoading",false)){
@@ -283,6 +286,11 @@ bool Presetable::loadPreset (Preset* preset,bool /*sendNotif*/)
         nc->setBuildSessionGraph(false);
 
     }
+    if(Time::currentTimeMillis()-lastLoadPresetTime<300){
+        LOGW(String("container @@1 tries to load multiple times was it on purpose?")
+        .replace("@@1",pc?pc->getControlAddress().toString():"unknown")
+        );
+    }
     lastLoadPresetTime = Time::currentTimeMillis();
     DBG("loading preset" +preset->getPresetName()+ " -> " + pc->getNiceName());
     pc->configureFromObjectOrValues(preset->getPresetValueObject(),false);
@@ -296,7 +304,16 @@ bool Presetable::loadPreset (Preset* preset,bool /*sendNotif*/)
     currentPresetName->setValueFrom (this,preName, false,false);
 
     presetableListeners.call (&Presetable::Listener::controllableContainerPresetLoaded, pc,preset);
+    auto timeToLoad = Time::currentTimeMillis()-lastLoadPresetTime;
+    if(timeToLoad>1000){
+        
+        LOGW(String("preset @@1 in @@2 took @@3 seconds")
+        .replace("@@1",preName)
+        .replace("@@2",pc?pc->getControlAddress().toString():"unknown")
+        .replace("@@3",String((Time::currentTimeMillis()-lastLoadPresetTime)/1000))
+        );
     
+    }
     return true;
 }
 
