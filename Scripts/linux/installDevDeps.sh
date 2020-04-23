@@ -68,8 +68,9 @@ cd ../../..
 
 if [ ! -d "JUCE" ]; then
   JUCEV=`curl -s https://api.github.com/repos/juce-framework/JUCE/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")'`
-  echo "downloading juce $JUCEV"
-  curl -L "https://github.com/juce-framework/JUCE/archive/$JUCEV.tar.gz" > JUCE.tar.gz
+  JUCEURL="https://codeload.github.com/juce-framework/JUCE/tar.gz/$JUCEV"
+  echo "downloading juce $JUCEV at $JUCEURL"
+  wget  $JUCEURL -O JUCE.tar.gz
   tar -xf JUCE.tar.gz
   mv JUCE-master/ JUCE
   echo "downloading JUCE"
