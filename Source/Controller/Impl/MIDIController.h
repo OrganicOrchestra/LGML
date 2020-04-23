@@ -50,7 +50,7 @@ public :
     BoolParameter* logIncoming;
     BoolParameter* logOutgoing;
     IntParameter* channelFilter;
-    BoolParameter *sendMIDIClock;
+    BoolParameter *sendMIDIClock,*MIDIClockFollowTransport;
     BoolParameter *sendMIDIPosition;
     IntParameter * midiClockOffset;
 

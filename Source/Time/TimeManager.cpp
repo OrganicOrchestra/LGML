@@ -143,9 +143,15 @@ void TimeManager::incrementClock (int block)
     hasJumped = updateAndNotifyTimeJumpedIfNeeded();
 
 
-    if (!hasJumped && timeState.isPlaying )
+    if (!hasJumped  )
     {
+        if(timeState.isPlaying){
         timeState.time += blockSize;
+        timeState.looseTime=timeState.time;
+        }
+        else{
+            timeState.looseTime+=blockSize;
+        }
     }
 
     timeState.nextTime = timeState.time + blockSize;
@@ -225,6 +231,7 @@ bool TimeManager::updateAndNotifyTimeJumpedIfNeeded()
     {
         jassert (blockSize != 0);
         timeState.time = timeState.nextTime;
+        timeState.looseTime = timeState.time;
         timeState.nextTime = timeState.time + blockSize;
         timeState.isJumping = false;
         timeManagerListeners.call (&TimeManagerListener::timeJumped, timeState.time);
@@ -755,6 +762,7 @@ sample_clk_t TimeManager::getTimeForNextBeats (int beats) {return (getBeatInt() 
 
 int     TimeManager::getBeatInt()   {return (int)floor (getBeat());}
 double  TimeManager::getBeat()      {return (double) (timeState.time * 1.0 / beatTimeInSample);}
+double  TimeManager::getLooseBeat()      {return (double) (timeState.looseTime * 1.0 / beatTimeInSample);}
 int     TimeManager::getClosestBeat() {return (int)floor (getBeat() + 0.5);}
 double  TimeManager::getBeatPercent() {return (double) (timeState.time * 1.0 / beatTimeInSample - getBeatInt());}
 double  TimeManager::getBeatInNextSamples (int numSamplesToAdd) {return ((double) (timeState.time + numSamplesToAdd) * 1.0 / beatTimeInSample);}

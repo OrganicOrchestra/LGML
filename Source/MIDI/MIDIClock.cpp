@@ -167,7 +167,10 @@ double MIDIClock::runClock()
 
 double MIDIClock::getPPQWithDelta(int multiplier){
     auto tm = TimeManager::getInstance();
-    return (tm->getBeat()+ delta*1.0*tm->BPM->doubleValue()/60000.0)*1.0*multiplier ;
+    auto beat = followGlobalTransport?tm->getBeat():tm->getLooseBeat();
+   
+    return (beat+ delta*1.0*tm->BPM->doubleValue()/60000.0)*1.0*multiplier ;
+    
 }
 
 double MIDIClock::ppqToTime(double ppq,int multiplier){
@@ -290,11 +293,12 @@ void MIDIClock::playStop (bool playStop) {
 
     }
     else{
+        if(followGlobalTransport){
         appendOneMsg(MidiMessage::midiStop());
-
+        }
 
     }
-    state.isPlaying = playStop;
+    state.isPlaying = followGlobalTransport?playStop:true;
     getClockRunner()->notify();
 }
 

@@ -91,6 +91,7 @@ pSync(this)
     sendMIDIClock = addNewParameter<BoolParameter> ("send MIDI Clock", "send MIDI Clock",false);
     sendMIDIPosition = addNewParameter<BoolParameter> ("send MIDI Position", "send MIDI Position information",false);
     sendMIDIPosition->setEnabled(sendMIDIClock->boolValue());
+    MIDIClockFollowTransport = addNewParameter<BoolParameter>("followTransport","follow play and stop from transport or keep running even when transport is stopped",false);
     midiClockOffset = addNewParameter<IntParameter>("MIDI clock offset", "offset to apply to midiclock",0, -300,300);
     channelFilter = addNewParameter<IntParameter> ("Channel", "Channel to filter message (0 = accept all channels)", 0, 0, 16);
     midiClock.setOutput(this);
@@ -259,6 +260,9 @@ void MIDIController::onContainerParameterChanged ( ParameterBase* p)
         sendMIDIPosition->setEnabled(sendMIDIClock->boolValue());
         startMidiClockIfNeeded();
     }
+    else if (p==MIDIClockFollowTransport){
+        midiClock.followGlobalTransport=MIDIClockFollowTransport->boolValue();
+    }
     else if(p==sendMIDIPosition){
         midiClock.sendSPP = sendMIDIPosition->boolValue();
     }
@@ -276,7 +280,7 @@ void MIDIController::startMidiClockIfNeeded(){
             midiClock.start();
         }
     }
-    else {
+    else if(MIDIClockFollowTransport->boolValue()){
         midiClock.stop();
     }
     

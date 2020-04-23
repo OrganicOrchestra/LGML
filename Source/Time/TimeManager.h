@@ -133,6 +133,7 @@ public :
 
     int getBeatInt();
     double getBeat();
+    double getLooseBeat();
     sample_clk_t getNextGlobalQuantifiedTime();
     sample_clk_t getNextQuantifiedTime (int barFraction);
     sample_clk_t getTimeForNextBeats (int beats);
@@ -193,6 +194,7 @@ public :
         bool isJumping;
         sample_clk_t nextTime;
         sample_clk_t time;
+        sample_clk_t looseTime;
     };
 
     TimeState timeState, desiredTimeState;

@@ -34,6 +34,7 @@ public:
 
     bool sendSPP;
     float delta;
+    bool followGlobalTransport=false;
     
     bool isRunning();
 private:
