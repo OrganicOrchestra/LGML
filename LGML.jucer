@@ -876,7 +876,7 @@
                 vstFolder="/home/tinmar/SDKs/VST3 SDK">
       <CONFIGURATIONS>
         <CONFIGURATION headerPath="../../Source&#10;" isDebug="1" libraryPath="/usr/X11R6/lib/"
-                       linuxArchitecture="" name="Debug" optimisation="5" targetName="LGML"/>
+                       linuxArchitecture="" name="Debug" optimisation="1" targetName="LGML"/>
         <CONFIGURATION headerPath="../../Source&#10;" isDebug="0" libraryPath="/usr/X11R6/lib/"
                        linuxArchitecture="" name="Release" optimisation="3" targetName="LGML"
                        linkTimeOptimisation="1"/>
@@ -899,7 +899,7 @@
         <MODULEPATH id="juce_dsp" path="../JUCE/modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
-    <CLION targetFolder="Builds/CLion" clionXcodeEnabled="1" clionMakefileEnabled="1">
+    <CLION targetFolder="Builds/CLion" clionXcodeEnabled="0" clionMakefileEnabled="1">
       <MODULEPATHS>
         <MODULEPATH id="juce_osc" path="../JUCE/modules"/>
         <MODULEPATH id="juce_opengl" path="../JUCE/modules"/>
@@ -1014,5 +1014,6 @@
   <LIVE_SETTINGS>
     <WINDOWS headerPath="..\..\External\serial\include"/>
     <OSX/>
+    <LINUX/>
   </LIVE_SETTINGS>
 </JUCERPROJECT>
