@@ -4506,6 +4506,7 @@
 				INFOPLIST_FILE = Info-App.plist;
 				INFOPLIST_PREPROCESS = NO;
 				INSTALL_PATH = "$(HOME)/Applications";
+				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				ONLY_ACTIVE_ARCH = "YES";
 				OTHER_CPLUSPLUSFLAGS = "-Wall -Wno-unknown-pragmas -Wno-inconsistent-missing-destructor-override -Wgnu-empty-initializer -Wmissing-field-initializers -Wno-zero-as-null-pointer-constant";

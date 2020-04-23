@@ -766,7 +766,7 @@
                        name="Test" osxArchitecture="32BitUniversal" osxCompatibility="10.13 SDK"
                        targetName="LGMLTest" enablePluginBinaryCopyStep="1"/>
         <CONFIGURATION binaryPath="" cppLanguageStandard="c++11" cppLibType="libc++"
-                       headerPath="" isDebug="1" linkTimeOptimisation="0" name="Beta"
+                       headerPath="" isDebug="1" linkTimeOptimisation="1" name="Beta"
                        optimisation="3" osxArchitecture="Native" osxCompatibility="10.13 SDK"
                        targetName="LGML" enablePluginBinaryCopyStep="1" customXcodeFlags="ONLY_ACTIVE_ARCH=YES,&#10;GCC_PRECOMPILE_PREFIX_HEADER=YES,&#10;GCC_PREFIX_HEADER=PrefixHeader.pch,&#10;ENABLE_TESTABILITY=YES,&#10;GCC_GENERATE_DEBUGGING_SYMBOLS=YES"
                        defines="LGML_BETA=1" stripLocalSymbols="0"/>
