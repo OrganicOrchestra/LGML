@@ -91,6 +91,8 @@ def sendToOwnCloud(originPath,destPath,session=None):
 			destPath = urllib.request.quote(destPath.strip())
 	
 	print('sending to owncloud:')
+	if not destPath.startswith('/'):
+		destPath='/'+destPath
 	print(originPath,' >> ', destPath)
 	session = getSession()
 	makeDirIfNotExistent(os.path.dirname(destPath),True,session=session)
