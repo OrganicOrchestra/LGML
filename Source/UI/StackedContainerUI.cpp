@@ -20,7 +20,7 @@
 class SwapComponents : public DrawableImage{
 public:
     SwapComponents(Component * originComp,StackedContainerBase * rootOfDrag, const Point<int> &_moffset):root(rootOfDrag),moffset(_moffset){
-        auto draggedImg = originComp->createComponentSnapshot(originComp->getLocalBounds());
+        auto draggedImg = originComp->createComponentSnapshot(originComp->getLocalBounds()).convertedToFormat(Image::PixelFormat::ARGB);
         draggedImg.multiplyAllAlphas(0.7f);
         setImage(draggedImg);
         root->addAndMakeVisible(this);
