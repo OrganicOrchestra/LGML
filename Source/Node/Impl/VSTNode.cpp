@@ -286,10 +286,13 @@ void VSTNode::setVSTState(){
 
                 DBG ("loading state for vst " + getNiceName() + (parentContainer ? "in : " + parentContainer->getNiceName() : ""));
                 MemoryBlock stateInfo (fromBase64(stateInformation->stringValue()));
+
 #if JUCE_DEBUG
                 MemoryBlock currentInfo;
                 innerPlugin->getStateInformation(currentInfo);
-                jassert(currentInfo!=stateInfo);
+                if(currentInfo==stateInfo){
+                    LOGE(String("resetting VST state on @@1").replace("@@1",getControlAddress().toString()));
+                }
 #endif
                 lastStateLoadFromLGML = Time::currentTimeMillis();
                 innerPlugin->setStateInformation (stateInfo.getData() ,(int) stateInfo.getSize());
@@ -605,7 +608,6 @@ inline void VSTNode::processBlockInternal (AudioBuffer<float>& buffer, MidiBuffe
 }
 
 bool VSTNode::shouldUpdateParamFromVST(){
-//    return Time::currentTimeMillis()-presetable->lastLoadPresetTime>5000  ;
     return Time::currentTimeMillis()-lastStateLoadFromLGML>5000  ;
 }
 void VSTNode::audioProcessorParameterChanged (AudioProcessor* p,
