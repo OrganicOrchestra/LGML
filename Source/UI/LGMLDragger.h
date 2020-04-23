@@ -16,11 +16,13 @@
  ==============================================================================
  */
 
+#pragma once
+#include "../JuceHeaderCore.h"
 #if ENGINE_HEADLESS
 #error should not include that in headless builds
-#endif
+#else
 
-#pragma once
+
 
 #include "../JuceHeaderUI.h"
 
@@ -97,3 +99,5 @@ private:
     Array<WeakReference<ParameterBase>> mappedParameters;
 
 };
+
+#endif

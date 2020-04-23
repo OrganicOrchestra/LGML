@@ -16,8 +16,8 @@
  ==============================================================================
  */
 
-#if !ENGINE_HEADLESS
 #include "LGMLDragger.h"
+#if !ENGINE_HEADLESS
 #include "../Controller/Controller.h"
 #include "MainComponent.h"
 

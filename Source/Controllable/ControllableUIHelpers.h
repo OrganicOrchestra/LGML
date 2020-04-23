@@ -16,9 +16,10 @@
  ==============================================================================
  */
 
-#ifndef CONTROLLABLEHELPERS_H_INCLUDED
-#define CONTROLLABLEHELPERS_H_INCLUDED
+#pragma once
 
+#include "../JuceHeaderCore.h"
+#if !ENGINE_HEADLESS
 #include "../JuceHeaderUI.h"//keep
 
 
@@ -92,4 +93,4 @@ bool execOrDefer (FunctionType func)
 }
 
 
-#endif  // CONTROLLABLEHELPERS_H_INCLUDED
+#endif  // ENGINE_HEADLESS

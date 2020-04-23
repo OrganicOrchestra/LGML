@@ -16,9 +16,9 @@
  ==============================================================================
  */
 
-#if !ENGINE_HEADLESS
 
 #include "AppPropertiesUI.h"
+#if !ENGINE_HEADLESS
 
 #include "../Engine.h"
 #include <juce_audio_devices/juce_audio_devices.h>

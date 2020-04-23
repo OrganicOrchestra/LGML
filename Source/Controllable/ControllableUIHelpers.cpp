@@ -16,9 +16,11 @@
  ==============================================================================
  */
 
-#if !ENGINE_HEADLESS
+
 
 #include "ControllableUIHelpers.h"
+#if !ENGINE_HEADLESS
+
 #include "../Utils/DebugHelpers.h"
 
 #include "../Node/Manager/NodeManager.h"

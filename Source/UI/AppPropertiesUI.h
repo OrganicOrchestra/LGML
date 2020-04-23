@@ -17,9 +17,10 @@
  */
 
 #pragma once
-
+#include "../JuceHeaderCore.h"
 #if !ENGINE_HEADLESS
-#include "../JuceHeaderUI.h"
+#include "../JuceHeaderUI.h"//keep
+
 
 class PrefPanel;
 class AppPropertiesUI : public ResizableWindow{

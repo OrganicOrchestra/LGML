@@ -16,8 +16,12 @@
  ==============================================================================
  */
 
-#pragma once
 
+#pragma once
+#include "../JuceHeaderCore.h"
+#if ENGINE_HEADLESS
+#error should not include that in headless builds
+#else
 #pragma warning( disable : 4505 )
 
 #include "../JuceHeaderUI.h"//keep
@@ -74,3 +78,4 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LookAndFeelOO)
 };
 
+#endif
