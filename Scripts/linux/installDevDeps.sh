@@ -67,7 +67,9 @@ cd $SCRIPTPATH
 cd ../../..
 
 if [ ! -d "JUCE" ]; then
-  curl -L https://github.com/julianstorer/JUCE/archive/master.tar.gz > JUCE.tar.gz
+  JUCEV=`curl -s https://api.github.com/repos/juce-framework/JUCE/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")'`
+  echo "downloading juce $JUCEV"
+  curl -L "https://github.com/juce-framework/JUCE/archive/$JUCEV.tar.gz" > JUCE.tar.gz
   tar -xf JUCE.tar.gz
   mv JUCE-master/ JUCE
   echo "downloading JUCE"
