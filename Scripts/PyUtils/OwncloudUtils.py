@@ -16,7 +16,7 @@ if sys.version_info < (3, 0):
 import urllib.request
 
 
-baseURL = "https://oocloud.organic-orchestra.com/remote.php/webdav/"
+baseURL = "https://oocloud.organic-orchestra.com/remote.php/dav/files/Martin"
 
 def getCredential():
 	credentials=None
