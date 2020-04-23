@@ -72,8 +72,8 @@ if [ ! -d "JUCE" ]; then
   echo "downloading juce $JUCEV at $JUCEURL"
   wget  $JUCEURL -O JUCE.tar.gz
   tar -xf JUCE.tar.gz
-  mv JUCE-master/ JUCE
-  echo "downloading JUCE"
+  mv "JUCE-$JUCEV"/ JUCE
+  echo "downloaded JUCE"
 else
   echo "using system JUCE"
 fi
