@@ -222,7 +222,7 @@ void ParameterBase::setValueInternal (const var& _value) //to override by child 
 {
 
     value = _value;
-#ifdef JUCE_DEBUG
+#if JUCE_DEBUG
     checkVarIsConsistentWithType();
 #endif
 }
