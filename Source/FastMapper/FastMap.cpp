@@ -222,8 +222,10 @@ void FastMap::process (bool toReferenceOut,bool sourceHasChanged)
                 }
                 else{
                     float targetToggleValue =outRef->boolValue()?maxIn-10e-6:minIn;// to force re update?
-                    MessageManager::callAsync([=](){
-                        (inRef)->setValueFrom (this,targetToggleValue,false,false);
+                    WeakReference<ParameterBase> wInRef(inRef);
+                    MessageManager::callAsync([this,wInRef,targetToggleValue](){
+                        if(!wInRef.get()){return;}
+                        (wInRef.get())->setValueFrom (this,targetToggleValue,false,false);
                     });
                 }
 

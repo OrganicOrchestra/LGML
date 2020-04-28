@@ -507,7 +507,7 @@ void CCInnerContainerUI::childControllableAdded (ControllableContainer*, Control
     WeakReference<Component> thisRef(this);
     WeakReference<ParameterBase> pcRef(pc);
     MessageManager::callAsync(
-                              [thisRef,pcRef](){
+                              [thisRef,pcRef]()mutable{
                                   if(thisRef && pcRef){
                                       auto *thisR = reinterpret_cast<CCInnerContainerUI*>(thisRef.get());
                                       thisR->addParameterUI (pcRef);
@@ -522,7 +522,7 @@ void CCInnerContainerUI::childControllableRemoved (ControllableContainer*, Contr
     WeakReference<Component> thisRef(this);
     WeakReference<ParameterBase> pcRef(pc);
     MessageManager::callAsync(
-                              [thisRef,pcRef](){
+                              [thisRef,pcRef]()mutable{
                                   if(thisRef && pcRef){
                                       auto *thisR = reinterpret_cast<CCInnerContainerUI*>(thisRef.get());
                                       thisR->removeParameterUI (pcRef);
@@ -542,7 +542,7 @@ void CCInnerContainerUI::controllableContainerAdded (ControllableContainer*, Con
     WeakReference<Component> thisRef(this);
     WeakReference<ParameterContainer> pcRef(pc);
     MessageManager::callAsync(
-                              [thisRef,pcRef](){
+                              [thisRef,pcRef]()mutable{
                                   if(thisRef && pcRef){
                                       auto *thisR = reinterpret_cast<CCInnerContainerUI*>(thisRef.get());
 
@@ -558,7 +558,7 @@ void CCInnerContainerUI::controllableContainerRemoved (ControllableContainer*, C
     WeakReference<Component> thisRef(this);
     WeakReference<ParameterContainer> pcRef(pc);
     MessageManager::callAsync(
-                              [thisRef,pcRef](){
+                              [thisRef,pcRef]()mutable{
                                   if(thisRef && pcRef){
                                       auto *thisR = reinterpret_cast<CCInnerContainerUI*>(thisRef.get());
                                       thisR->removeCCInnerUI (pcRef);

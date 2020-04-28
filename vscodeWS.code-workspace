@@ -10,6 +10,8 @@
 	"settings": {
 		"files.associations": {
 			"*.mm": "cpp"
-		}
+		},
+		"cmake.buildDirectory": "${workspaceFolder}/LGML/Builds/CLion/build",
+		"cmake.sourceDirectory": "${workspaceFolder}/Builds/CLion/"
 	}
 }

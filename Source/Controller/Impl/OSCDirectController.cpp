@@ -34,12 +34,13 @@ void ParameterContainer::OwnedFeedbackListener<OSCDirectController>::parameterFe
     if (owner->enabledParam->boolValue() && (!owner->blockFeedback->boolValue() || notifier!=(Controller*)owner))
     {
 
-        auto _owner = owner;
-        if(!_owner->oscFBFilter->checkAddr(c->controlAddress)){
+        auto powner = WeakReference<ParameterContainer>(owner);
+        if(!owner->oscFBFilter->checkAddr(c->controlAddress)){
             return;
         }
-        auto f = [_owner,c](){
-            _owner->sendOSCFromParam(c);
+        auto f = [powner,c](){
+            auto _owner = dynamic_cast<OSCDirectController*>(powner.get());
+           if(_owner){ _owner->sendOSCFromParam(c);}
         };
         // avoid locking other threads
         if(!OSC_NON_BLOCKING || MessageManager::getInstance()->isThisTheMessageThread()){

@@ -700,7 +700,7 @@ void JsEnvironment::parameterFeedbackUpdate (ParameterContainer* originContainer
     Array<var> argList = { var (add), v };
 
 #if NON_BLOCKING
-    auto f=[this,originContainer,argList](){
+    auto f=[wkf,originContainer,argList](){
 #endif
         callFunction ("on_" + JsHelpers::getJsFunctionNameFromStringArray (originContainer->getControlAddress().toStringArray()), argList, false);
 #if NON_BLOCKING

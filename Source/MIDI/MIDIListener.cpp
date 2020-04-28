@@ -37,14 +37,19 @@ MIDIListener::~MIDIListener()
     mm->removeMidiInputCallback (inPortName, this);
     mm->removeMIDIListener (this);
     }
+    masterReference.clear();
 }
 
 void MIDIListener::setCurrentDevice (const String& deviceName,bool output)
 {
     //if (deviceName == inPortName) return;
     if(!MessageManager::getInstance()->isThisTheMessageThread()){
+        WeakReference<MIDIListener> thisRef (this);
         MessageManager::getInstance()->callAsync(
-                                                 [this,deviceName,output](){setCurrentDevice(deviceName,output);});
+                                                 [thisRef,deviceName,output](){
+                                                     if(thisRef){
+                                                     thisRef->setCurrentDevice(deviceName,output);
+                                                     }});
         return;
     }
     auto mm = MIDIManager::getInstance();

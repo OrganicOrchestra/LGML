@@ -988,9 +988,13 @@ void LooperTrack::enumOptionSelectionChanged (EnumParameter* ep, bool _isSelecte
 
         if (!path.isEmpty())
         {
-            MessageManager::callAsync([this,path,k](){
-                if(!loadAudioSample (path)){
-                    sampleChoice->removeOption(k);
+            auto wkf = WeakReference<ParameterContainer>(this);
+
+            MessageManager::callAsync([wkf,path,k](){
+                auto thisRef = (LooperTrack*)(wkf.get());
+                if(!thisRef){return;}
+                if(!thisRef->loadAudioSample (path)){
+                    thisRef->sampleChoice->removeOption(k);
                 }
             });
             return;

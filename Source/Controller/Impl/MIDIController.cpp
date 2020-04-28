@@ -40,9 +40,13 @@ void ParameterContainer::OwnedFeedbackListener<MIDIController>::parameterFeedbac
     
     if (owner->enabledParam->boolValue() && (!owner->blockFeedback->boolValue() || notifier!=(Controller*)owner))
     {
-        auto _owner = owner;
-        jassert(originContainer==&_owner->userContainer);
-        auto f = [_owner,p](){
+        auto powner = WeakReference<ParameterContainer>(owner);
+        jassert(originContainer==&owner->userContainer);
+        auto f = [powner,p](){
+            auto _owner=dynamic_cast<MIDIController*>(powner.get());
+            if(!_owner){
+                return;
+            }
             if(_owner->midiOutDevice.get() ){
                 
                 if(p){

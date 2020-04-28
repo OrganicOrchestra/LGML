@@ -143,7 +143,8 @@ void FastMapUI::linkedParamChanged (ParameterProxy* p )
 {
     if (!MessageManager::getInstance()->isThisTheMessageThread())
     {
-        MessageManager::getInstance()->callAsync ([this, p]() {linkedParamChanged (p);});
+        WeakReference<Component> thisRef(this);
+        MessageManager::getInstance()->callAsync ([thisRef, p]() {if(thisRef){(static_cast<FastMapUI*>(thisRef.get()))->linkedParamChanged (p);}});
     }
     else
     {

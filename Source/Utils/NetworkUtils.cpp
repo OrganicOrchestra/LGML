@@ -50,7 +50,7 @@ void NetworkUtils::addOSCRecord (OSCClientRecord& oscRec)
     auto key = oscRec.getShortName();
     dnsMap.set (key, oscRec);
     DBG ("found OSC : " << oscRec.getShortName() << " (" << oscRec.name << ")");
-
+    
     MessageManager::getInstance()->callAsync ([this, oscRec]() {listeners.call (&Listener::oscClientAdded, oscRec);});
     //  }
 }

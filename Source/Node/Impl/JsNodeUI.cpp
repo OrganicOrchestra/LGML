@@ -19,48 +19,43 @@
 #include "JsNode.h"
 #include "../../Controllable/Parameter/UI/ParameterUIFactory.h"
 
-JsNodeUI::JsNodeUI() {};
+JsNodeUI::JsNodeUI(){};
 JsNodeUI::~JsNodeUI()
 {
-    if ( node.get())
+    if (node.get())
     {
-        node->removeControllableContainerListener (this);
-        ((JsNode*)node.get())->jsParameters->scriptPath->removeFileListener (this);
+        node->removeControllableContainerListener(this);
+        ((JsNode *)node.get())->jsParameters->scriptPath->removeFileListener(this);
     };
-
 };
 
 void JsNodeUI::init()
 {
-    JsNode* jsNode = (JsNode*) node.get();
-    jsUI = std::make_unique< JsEnvironmentUI> (((JsEnvironment*)jsNode)->jsParameters.get());
-    jsNode->addControllableContainerListener (this);
+    JsNode *jsNode = (JsNode *)node.get();
+    jsUI = std::make_unique<JsEnvironmentUI>(((JsEnvironment *)jsNode)->jsParameters.get());
+    jsNode->addControllableContainerListener(this);
 
-    addAndMakeVisible (jsUI.get());
+    addAndMakeVisible(jsUI.get());
 
-
-    jsNode->jsParameters->scriptPath->addFileListener (this);
+    jsNode->jsParameters->scriptPath->addFileListener(this);
 
     if (jsNode->hasValidJsFile())
     {
         loadingEnded(nullptr);
     }
 
-    setDefaultSize (350, 150);
-
+    setDefaultSize(350, 150);
 };
 
-void JsNodeUI::loadingEnded (FileParameter*)
+void JsNodeUI::loadingEnded(FileParameter *)
 {
-    JsNode* jsNode = (JsNode*) node.get();
+    JsNode *jsNode = (JsNode *)node.get();
     varUI.clear();
 
-
-    for (auto& c : jsNode->jsDynamicParameters)
+    for (auto &c : jsNode->jsDynamicParameters)
     {
-        childControllableAdded (jsNode, c);
+        childControllableAdded(jsNode, c);
     }
-
 };
 
 void JsNodeUI::resized()
@@ -70,50 +65,51 @@ void JsNodeUI::resized()
 
 void JsNodeUI::layoutUI()
 {
-    Rectangle<int> area = getLocalBounds().reduced (2);
-    jsUI->setBounds (area.removeFromTop (30));
+    Rectangle<int> area = getLocalBounds().reduced(2);
+    jsUI->setBounds(area.removeFromTop(30));
 
-    for (auto& comp : varUI)
+    for (auto &comp : varUI)
     {
-        comp->setBounds ( area.removeFromTop (20).reduced (2));
+        comp->setBounds(area.removeFromTop(20).reduced(2));
     }
-
 }
 
-void JsNodeUI::childControllableAdded (ControllableContainer*, Controllable* c)
+void JsNodeUI::childControllableAdded(ControllableContainer *, Controllable *c)
 {
-    JsNode* jsNode = (JsNode*) node.get();
+    JsNode *jsNode = (JsNode *)node.get();
 
-    if (!jsNode->jsDynamicParameters.contains ((ParameterBase*)c))return;
+    if (!jsNode->jsDynamicParameters.contains((ParameterBase *)c))
+        return;
 
-    ParameterUI* comp = new NamedParameterUI (ParameterUIFactory::createDefaultUI ( ParameterBase::fromControllable (c)), 100);
-    varUI.add (comp);
-    addAndMakeVisible (comp);
-    
+    ParameterUI *comp = new NamedParameterUI(ParameterUIFactory::createDefaultUI(ParameterBase::fromControllable(c)), 100);
+    varUI.add(comp);
+    addAndMakeVisible(comp);
+
     layoutUI();
-
-
 }
-void JsNodeUI::childControllableRemoved (ControllableContainer*, Controllable* c)
+void JsNodeUI::childControllableRemoved(ControllableContainer *, Controllable *c)
 {
-    ParameterBase* pToComp = ParameterBase::fromControllable (c);
-    MessageManager::callAsync([=](){
-    for (auto& comp : varUI)
-    {
-        if (comp->parameter == pToComp)
+    ParameterBase *pToComp = ParameterBase::fromControllable(c);
+    WeakReference<Component> thisRef(this);
+    MessageManager::callAsync([thisRef, pToComp]() {
+        auto thisUI = dynamic_cast<JsNodeUI *>(thisRef.get());
+        if (thisUI)
         {
-            removeChildComponent (comp);
-            varUI.removeObject (comp);
-            break;
+
+            for (auto &comp : thisUI->varUI)
+            {
+                if (comp->parameter == pToComp)
+                {
+                    thisUI->removeChildComponent(comp);
+                    thisUI->varUI.removeObject(comp);
+                    break;
+                }
+            }
+
+            thisUI->layoutUI();
+            
         }
-        
-    }
-    
-    
-    layoutUI();
     });
-    
-    
 };
 
 #endif
