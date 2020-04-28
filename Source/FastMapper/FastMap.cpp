@@ -18,7 +18,7 @@
 
 #include "FastMap.h"
 #include "../Node/Manager/NodeManager.h"
-#define DEBUG_SMOOTH DBG
+#define DEBUG_SMOOTH(x) 
 //#include "../Engine.h"
 extern bool isEngineLoadingFile();
 
