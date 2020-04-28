@@ -208,10 +208,10 @@ void BufferBlockList::fadeFromWithRamp (const AudioSampleBuffer& inBuf, int list
         int blockSize =  bufferBlockSize - startWrite;
         
         if (sampleProcessed + blockSize > numSampleToCopy)
-            blockSize =  numSampleToCopy - sampleProcessed;
+           { blockSize =  numSampleToCopy - sampleProcessed;}
         
-        float sG = startGain + sampleProcessed*incGain;
-        float eG = sG + blockSize*incGain;
+        float sG = jmax(0.0f,jmin(1.0f,startGain + sampleProcessed*incGain));
+        float eG = jmax(0.0f,jmin(1.0f,sG + blockSize*incGain));
         jassert (blockSize > 0);
         jassert (startWrite + blockSize <= bufferBlockSize);
         jassert (writeBlockIdx < size());
