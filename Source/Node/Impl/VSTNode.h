@@ -21,7 +21,7 @@
 
 #include "../../MIDI/MIDIListener.h"
 #include "../../MIDI/MIDIHelpers.h"
-//#define VSTLOADING_THREADED // TODO remove ref, as loading VST has to be on the main thread
+
 
 struct VSTLoaderPostponer;
 class VSTNode :

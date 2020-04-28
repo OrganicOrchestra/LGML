@@ -156,9 +156,7 @@ void VSTNode::onContainerParameterChanged ( ParameterBase* p)
 
             if (pd)
             {
-#ifdef VSTLOADING_THREADED
-                NodeManager::getInstance()->addJob (new VSTLoaderJob (pd, this), true);
-#else
+
                 suspendProcessing (true);
                 auto err = generatePluginFromDescription (pd.get());
                 if(!err.isEmpty()){
@@ -175,7 +173,6 @@ void VSTNode::onContainerParameterChanged ( ParameterBase* p)
                 suspendProcessing (false);
                 parentNodeContainer->updateAudioGraph();
 
-#endif
             }
 
             else

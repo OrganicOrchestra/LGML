@@ -92,15 +92,14 @@ Result Engine::loadDocument (const File& file)
     if (Inspector::getInstanceWithoutCreating() != nullptr) Inspector::getInstance()->shouldListen (false); //avoid creation of inspector editor while recreating all nodes, controllers, rules,etc. from file
 #endif
 
-#ifdef MULTITHREADED_LOADING
+
     // force clear on main thread, safer for ui related stuffs
-    if(getAppProperties()->getUserSettings()->getBoolValue("multiThreadedLoading",true)){
+    if(getAppProperties()->getUserSettings()->getBoolValue("multiThreadedLoading",false)){
         clear();
         fileLoader = std::make_unique<FileLoader> (this, file);
         fileLoader->startThread (10);
     }
     else
-#endif
     {
         loadDocumentAsync (file);
         triggerAsyncUpdate();
