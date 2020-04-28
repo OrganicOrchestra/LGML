@@ -41,6 +41,7 @@ public:
 
     BoolParameter* invertParam,*toggleParam;
     FloatParameter *smoothTimeIn,*smoothTimeOut;
+    BoolParameter* ignoreLowerSmooth;
 
     ParameterProxy* referenceIn;
     ParameterProxy*   referenceOut;
