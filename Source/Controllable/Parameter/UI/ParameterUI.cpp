@@ -225,6 +225,7 @@ void ParameterUI::controllableStateChanged (Controllable* c)
     MessageManager::callAsync([wkf,en](){
         if(wkf){
             wkf->setAlpha (en ? 1 : .5f);
+            wkf->setEnabled(en);
         }
     });
 
