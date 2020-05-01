@@ -1,0 +1,20 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/Source/**",
+                "${workspaceFolder}/third_party/**",
+                "${workspaceFolder}/../JUCE/modules/**",
+                "${workspaceFolder}/JuceLibraryCode"
+            ],
+            "defines": ["JUCE_DEBUG"],
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c11",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "clang-x64",
+            "configurationProvider": "vector-of-bool.cmake-tools"
+        }
+    ],
+    "version": 4
+}

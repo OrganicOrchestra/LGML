@@ -3,7 +3,7 @@
 .svn
 
 
-.vscode/*
+
 build/*
 
 doxygen/doc
