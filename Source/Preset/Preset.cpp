@@ -289,11 +289,7 @@ bool Presetable::loadPreset (Preset* preset,bool /*sendNotif*/)
         nc->setBuildSessionGraph(false);
 
     }
-    auto name = pc?pc->getControlAddress().toString():"unknown";
-    if(name=="/node/in"){
-        int a=0;
-        a++;
-    }
+    
     if(Time::currentTimeMillis()-lastLoadPresetTime<300){
         LOGW(String("container @@1 tries to load multiple times was it on purpose?")
         .replace("@@1",pc?pc->getControlAddress().toString():"unknown")
