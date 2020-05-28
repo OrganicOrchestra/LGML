@@ -433,12 +433,12 @@ bool NodeBase::setPreferedNumAudioOutput (int num)
 void NodeBase::remove()
 {
     if(parentNodeContainer)
-        parentNodeContainer->removeNode(this,false);
+       { parentNodeContainer->removeNode(this,false);}
     
     if (audioNode.get())
     {
         if(parentNodeContainer)
-            parentNodeContainer->removeFromAudioGraph(this);
+           { parentNodeContainer->removeFromAudioGraph(this);}
         jassert (audioNode.get()->getReferenceCount() == 1);
         // audioNode is owning the pointer to this AudioProcessor so triggers it's deletion instead
         audioNode = nullptr;

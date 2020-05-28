@@ -158,7 +158,7 @@ void Presetable::newMessage (const ParameterBase::ParamWithValue&  pv)
 {
     jassertfalse;
 }
-void Presetable::parameterValueChanged ( ParameterBase* p, ParameterBase::Listener * ){
+void Presetable::parameterValueChanged ( ParameterBase* p, ParameterBase::Listener * notif){
 //}
 
 //    auto p = pv.parameter;
@@ -172,6 +172,9 @@ void Presetable::parameterValueChanged ( ParameterBase* p, ParameterBase::Listen
     }
     else if (p== currentPresetName)
     {
+        if(notif==this){ // prevent feedbacks when notifying preset name change
+            return;
+        }
         auto mm = MessageManager::getInstanceWithoutCreating();
         if(mm && !mm->isThisTheMessageThread() && isWaitingLoading.get()){
             return;
@@ -286,13 +289,18 @@ bool Presetable::loadPreset (Preset* preset,bool /*sendNotif*/)
         nc->setBuildSessionGraph(false);
 
     }
+    auto name = pc?pc->getControlAddress().toString():"unknown";
+    if(name=="/node/in"){
+        int a=0;
+        a++;
+    }
     if(Time::currentTimeMillis()-lastLoadPresetTime<300){
         LOGW(String("container @@1 tries to load multiple times was it on purpose?")
         .replace("@@1",pc?pc->getControlAddress().toString():"unknown")
         );
     }
     lastLoadPresetTime = Time::currentTimeMillis();
-    DBG("loading preset" +preset->getPresetName()+ " -> " + pc->getNiceName());
+    DBG("loading preset " +preset->getPresetName()+ " -> " + pc->getNiceName());
     pc->configureFromObjectOrValues(preset->getPresetValueObject(),false);
     if(currentPreset){currentPreset->updateSubTypeName();};
     currentPreset = preset;
