@@ -32,6 +32,7 @@ juce_ImplementSingleton (MIDIManager)
 #endif
 
 
+
 #if !ENGINE_HEADLESS
 #include "../JuceHeaderUI.h" // for key listener
 class ComputerKeyboardMIDIDevice:public ReferenceCountedObject,private KeyListener {
@@ -154,12 +155,30 @@ public:
 #endif
 String ComputerKeyboardMIDIDevice::deviceName(juce::translate("Computer Keyboard"));
 
+class LGMLMIDIInCB : public MidiInputCallback{
+    public:
+    void handleIncomingMidiMessage (MidiInput* source,
+                                            const MidiMessage& message)final {
+                                                for(auto cb: midiCallbacks){
+                                                    cb->handleIncomingMidiMessage(source,message);
+                                                }
+                                            }
+    void addMidiInputCallback(MidiInputCallback * cb){ midiCallbacks.add(cb);}
+    void removeMidiInputCallback(MidiInputCallback * cb){midiCallbacks.removeAllInstancesOf(cb);}
+        Array<MidiInputCallback*> midiCallbacks;
+};
 
+LGMLMIDIInCB LGMLMIDIInCBInstance;
 constexpr int MIDICheckInterval(1000);
+const String toLGMLMIDIName = "fromLGML";
 MIDIManager::MIDIManager():computerKeyboardDevice(nullptr)
 {
-
-
+    #if JUCE_LINUX || JUCE_MAC 
+       toLGMLMidi= juce::MidiInput::createNewDevice(toLGMLMIDIName,&LGMLMIDIInCBInstance);
+       juce::MidiOutput::createNewDevice("toLGML");
+       #else
+       toLGMLMidi = nullptr;
+    #endif
 }
 
 MIDIManager::~MIDIManager()
@@ -184,6 +203,9 @@ void MIDIManager::updateDeviceList (bool updateInput)
 #if !ENGINE_HEADLESS
     if(updateInput){deviceNames.add(ComputerKeyboardMIDIDevice::deviceName);}
 #endif
+    // if(updateInput && toLGMLMidi.get()){
+    //     deviceNames.add(toLGMLMIDIName);
+    // }
     StringArray devicesToAdd;
     StringArray devicesToRemove;
 
@@ -382,6 +404,11 @@ void MIDIManager::addMidiInputCallback(const String & deviceName,MidiInputCallba
             jassertfalse;
         }
     }
+    else if(deviceName==toLGMLMIDIName){
+        if(toLGMLMidi){
+            LGMLMIDIInCBInstance.addMidiInputCallback(cb);
+        }
+    }
     else{
         getAudioDeviceManager().addMidiInputCallback(deviceName,cb);
     }
@@ -392,6 +419,11 @@ void MIDIManager::removeMidiInputCallback(const String & deviceName,MidiInputCal
             computerKeyboardDevice->removeMidiInputCallback(cb);
         }
         
+    }
+    else if(deviceName==toLGMLMIDIName){
+        if(toLGMLMidi){
+            LGMLMIDIInCBInstance.removeMidiInputCallback(cb);
+        }
     }
     else{
         getAudioDeviceManager().removeMidiInputCallback(deviceName,cb);

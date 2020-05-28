@@ -99,7 +99,7 @@ private:
 
     ComputerKeyboardMIDIDevice * computerKeyboardDevice;
     
-
+    std::unique_ptr<MidiInput> toLGMLMidi;
 
 };
 
