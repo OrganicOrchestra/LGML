@@ -161,7 +161,7 @@ jobs:
           DST_LGML_PATH: /tmp/buildRasp
           PKG_CONFIG_PATH: /usr/lib/arm-linux-gnueabihf/pkgconfig
           BUILDLGML_CMD_BASE: python3 Scripts/buildScript.py --configure --exportpath=/tmp/buildRasp/ --os=linux --build --package --export
-
+          DEBIAN_FRONTEND: noninteractive
     steps:
       - run:
           name: install git
