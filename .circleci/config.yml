@@ -173,14 +173,14 @@ jobs:
           name: install LGMLRasp dependencies
           command: |
             set -x
-            apt-get install -y g++-5-arm-linux-gnueabihf pkg-config
+            apt-get install -y g++-10-arm-linux-gnueabihf pkg-config
             . /etc/lsb-release
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports $DISTRIB_CODENAME main universe" >> /etc/apt/sources.list
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports $DISTRIB_CODENAME-updates main universe" >> /etc/apt/sources.list
             apt-get install -y git
             git submodule update --init --recursive
-            export CXX=arm-linux-gnueabihf-g++-5
-            export CC=arm-linux-gnueabihf-gcc-5
+            export CXX=arm-linux-gnueabihf-g++-10
+            export CC=arm-linux-gnueabihf-gcc-10
             sh Scripts/linux/installDevDeps.sh
             
 
@@ -189,7 +189,7 @@ jobs:
           command: |
             pip3 install -U pip
             set -x
-            export CXX=arm-linux-gnueabihf-g++-5
+            export CXX=arm-linux-gnueabihf-g++-10
             sh Scripts/linux/installExportDeps.sh
             export ARCH_FLAGS=$ARCH_FLAGS_PI4
             $BUILDLGML_CMD_BASE --configuration=Release --packagesuffix=Rpi4
