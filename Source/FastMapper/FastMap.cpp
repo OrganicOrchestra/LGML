@@ -100,9 +100,9 @@ FastMap::FastMap() : referenceIn(nullptr),
 {
 
     referenceIn = addNewParameter<ParameterProxy>("in param", "parameter for input");
-    referenceIn->addParameterProxyListener(this,true);
+    referenceIn->addParameterProxyListener(this, true);
     referenceOut = addNewParameter<ParameterProxy>("out param", "parameter for input");
-    referenceOut->addParameterProxyListener(this,true);
+    referenceOut->addParameterProxyListener(this, true);
     enabledParam = addNewParameter<BoolParameter>("Enabled", "Enabled / Disable Fast Map", true);
 
     inputRange = addNewParameter<RangeParameter>("In Range", "Input Range", 0.0f, 1.0f, 0.0f, 1.0f);
@@ -210,6 +210,10 @@ void FastMap::process(bool toReferenceOut, bool sourceHasChanged)
             {
                 ((BoolParameter *)outRef)->setValueFrom(this, !outRef->boolValue());
             }
+            else if (onValue->enabled && dynamic_cast<StringParameter *>(inRef))
+            {
+                outRef->setValueFrom(this, onValue->stringValue() == inRef->stringValue());
+            }
             else if (toggleParam->boolValue())
             { // toggles only on max for float values
                 if (sourceVal == maxIn)
@@ -229,9 +233,6 @@ void FastMap::process(bool toReferenceOut, bool sourceHasChanged)
                     });
                 }
             }
-            else if(onValue->enabled && dynamic_cast<StringParameter*>(inRef)){
-                outRef->setValueFrom(this,onValue->stringValue()==inRef->stringValue());
-            }
             else
             {
                 ((BoolParameter *)outRef)->setValueFrom(this, newIsInRange);
@@ -239,34 +240,79 @@ void FastMap::process(bool toReferenceOut, bool sourceHasChanged)
         }
         else if ((typeOut == EnumParameter::_factoryType) || (typeOut == StringParameter::_factoryType))
         {
-            if ((inRef->getFactoryTypeId() == BoolParameter::_factoryType))
+            if (inRef->isType<EnumParameter>() || inRef->isType<StringParameter>())
+            {
+                outRef->setValueFrom(this, inRef->stringValue());
+            }
+            if (inRef->isType<BoolParameter>())
             {
                 if (newIsInRange)
                 {
                     outRef->setValueFrom(this, onValue->stringValue());
                 }
             }
-            else if ((inRef->getFactoryTypeId() == Trigger::_factoryType))
+            else if (inRef->isType<Trigger>())
             {
                 outRef->setValueFrom(this, onValue->stringValue());
             }
-            else if (auto i = dynamic_cast<MinMaxParameter *>(inRef) && typeOut == EnumParameter::_factoryType)
+            else if (auto i = dynamic_cast<MinMaxParameter *>(inRef))
             {
-                auto o = static_cast<EnumParameter *>(outRef);
-                float minOut = 0;
-                float maxOut = o->getModel()->getProperties().size() - 1;
-                float targetVal = juce::jmap<float>(sourceVal, minIn, maxIn, minOut, maxOut);
-                targetVal = juce::jlimit<float>(minOut, maxOut, targetVal);
-                outRef->setValueFrom(this, targetVal);
-            }
-            else
-            {
-                outRef->setValueFrom(this, inRef->stringValue());
+                if (typeOut == EnumParameter::_factoryType) // try to map float range to each enum index
+                {
+                    auto o = static_cast<EnumParameter *>(outRef);
+                    float minOut = 0;
+                    float maxOut = o->getModel()->getProperties().size() - 1;
+                    float targetVal = juce::jmap<float>(sourceVal, minIn, maxIn, minOut, maxOut);
+                    targetVal = juce::jlimit<float>(minOut, maxOut, targetVal);
+                    outRef->setValueFrom(this, targetVal);
+                }
+                else
+                {
+                    if (newIsInRange)
+                    {
+                        outRef->setValueFrom(this, onValue->stringValue());
+                    }
+                }
             }
         }
-        else
+        else // float or int target
         {
-            if (minIn != maxIn)
+            bool hasInvalidMapping = false;
+            if (auto ep = dynamic_cast<EnumParameter *>(inRef))
+            { //  set source value on selected index
+                auto props = ep->getModel()->getProperties();
+                Identifier id = onValue->stringValue().isEmpty() ? ep->getFirstSelectedId() : Identifier(onValue->stringValue());
+
+                if (id.isValid())
+                {
+                    auto idx = props.indexOf(id);
+                    if (idx >= 0)
+                    {
+                        sourceVal = idx;
+                        minIn = 0;
+                        maxIn = props.size();
+                    }
+                    else
+                    {
+                        hasInvalidMapping = true;
+                        jassert(onValue->stringValue().isNotEmpty()); // we assert only if id came from model
+                    }
+                }
+            }
+
+            else if (inRef->isType<StringParameter>())
+            {
+                if (onValue->stringValue().isNotEmpty())
+                {
+                    sourceVal = onValue->stringValue() == inRef->stringValue() ? maxIn : minIn;
+                }
+                else
+                {
+                    hasInvalidMapping = true;
+                }
+            }
+
+            if (!hasInvalidMapping && (minIn != maxIn))
             {
 
                 auto outRange = (toReferenceOut ? outputRange : inputRange);
@@ -489,11 +535,11 @@ void FastMap::linkedParamChanged(ParameterProxy *p)
                 rangeOfChanged->setValue(newMin, newMax);
             }
         }
-        auto needOnValue = [](ParameterBase* a,ParameterBase * b){
-           return  dynamic_cast<StringParameter *>(a) != nullptr && b && (b->isType<BoolParameter>() || b->isType<Trigger>());
+        auto needOnValue = [](ParameterBase *a, ParameterBase *b) {
+            return dynamic_cast<StringParameter *>(a) != nullptr && dynamic_cast<StringParameter *>(b) == nullptr;
         };
 
         // dynamic_cast<StringParameter *>(lpar) != nullptr && otherPar && (otherPar->isType<BoolParameter>() || otherPar->isType<Trigger>())
-        onValue->setEnabled(needOnValue(lpar,otherPar) || needOnValue(otherPar,lpar));
+        onValue->setEnabled(needOnValue(lpar, otherPar) || needOnValue(otherPar, lpar));
     }
 };
