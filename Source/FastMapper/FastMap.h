@@ -38,6 +38,7 @@ public:
 
     RangeParameter* inputRange;
     RangeParameter* outputRange;
+    StringParameter * onValue;
 
     BoolParameter* invertParam,*toggleParam;
     FloatParameter *smoothTimeIn,*smoothTimeOut;

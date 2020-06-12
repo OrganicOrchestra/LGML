@@ -22,45 +22,39 @@
 
 #include "../Audio/AudioHelpers.h"
 
-NodeBase::NodeBase (const String& name, bool _hasMainAudioControl) :
-    ConnectableNode (name, _hasMainAudioControl),
-    audioNode (nullptr),
-    dryWetFader (5000, 5000, false, 1),
-    muteFader (1000, 1000, false, 1),
-    lastDryVolume (0),
-    globalRMSValueIn (0),
-    globalRMSValueOut (0),
-    wasEnabled (false),
-    logVolume (float01ToGain (DB0_FOR_01), 0.5),
-    rmsTimer (this)
+NodeBase::NodeBase(const String &name, bool _hasMainAudioControl) : ConnectableNode(name, _hasMainAudioControl),
+                                                                    audioNode(nullptr),
+                                                                    dryWetFader(5000, 5000, false, 1),
+                                                                    muteFader(1000, 1000, false, 1),
+                                                                    lastDryVolume(0),
+                                                                    globalRMSValueIn(0),
+                                                                    globalRMSValueOut(0),
+                                                                    wasEnabled(false),
+                                                                    logVolume(float01ToGain(DB0_FOR_01), 0.5),
+                                                                    rmsTimer(this)
 
 {
-    
 
-
-    lastVolume = 0;//hasMainAudioControl ? outputVolume->floatValue() : 0;
+    lastVolume = 0; //hasMainAudioControl ? outputVolume->floatValue() : 0;
     dryWetFader.setFadedIn();
     muteFader.startFadeIn();
 
+    for (int i = 0; i < 2; i++)
+        rmsValuesIn.add(0);
 
-    for (int i = 0; i < 2; i++) rmsValuesIn.add (0);
-
-    for (int i = 0; i < 2; i++) rmsValuesIn.add (0);
+    for (int i = 0; i < 2; i++)
+        rmsValuesIn.add(0);
 
     // when audioNode gets deleted, it will try to remove this instance already deleting by itself
     //  incReferenceCount();
-
 }
-
 
 NodeBase::~NodeBase()
 {
 
-
     if (audioNode.get())
     {
         jassertfalse;
-
     }
 
     rmsTimer.stopTimer();
@@ -69,9 +63,6 @@ NodeBase::~NodeBase()
 
     // avoid removing from ConnectableNodeDestructor
     parentNodeContainer = nullptr;
-
-
-
 }
 
 const String NodeBase::getName() const
@@ -91,25 +82,31 @@ bool NodeBase::hasAudioOutputs()
     return getTotalNumOutputChannels() > 0;
 }
 
-void NodeBase::onContainerParameterChanged ( ParameterBase* p)
+void NodeBase::onContainerParameterChanged(ParameterBase *p)
 {
-    if (!p)return;
+    if (!p)
+        return;
 
-    ConnectableNode::onContainerParameterChanged (p);
+    ConnectableNode::onContainerParameterChanged(p);
 
     if (p == outputVolume)
     {
-        logVolume.set ( float01ToGain (outputVolume->floatValue()));
+        logVolume.set(float01ToGain(outputVolume->floatValue()));
     }
 
     //ENABLE PARAM ACT AS A BYPASS
 
     if (p == enabledParam)
     {
-        if (enabledParam->boolValue()) {dryWetFader.startFadeIn();}
-        else {dryWetFader.startFadeOut();}
+        if (enabledParam->boolValue())
+        {
+            dryWetFader.startFadeIn();
+        }
+        else
+        {
+            dryWetFader.startFadeOut();
+        }
     }
-
 }
 
 void NodeBase::clear()
@@ -117,68 +114,52 @@ void NodeBase::clear()
     ConnectableNode::clear();
     clearInternal();
 
-
     rmsTimer.stopTimer();
 
     //removeFromAudioGraph();
 }
 
-
-
-
-
-
 /////////////////////////////////////// AUDIO
 
-
-void NodeBase::setParentNodeContainer (NodeContainer* _parentNodeContainer)
+void NodeBase::setParentNodeContainer(NodeContainer *_parentNodeContainer)
 {
-    ConnectableNode::setParentNodeContainer (_parentNodeContainer);
-    if(_parentNodeContainer)
-        _parentNodeContainer->addToAudioGraph (this);
+    ConnectableNode::setParentNodeContainer(_parentNodeContainer);
+    if (_parentNodeContainer)
+        _parentNodeContainer->addToAudioGraph(this);
 }
 
-AudioProcessorGraph::Node* NodeBase::getAudioNode()
+AudioProcessorGraph::Node *NodeBase::getAudioNode()
 {
-    jassert (audioNode->getProcessor() == getAudioProcessor());
+    jassert(audioNode->getProcessor() == getAudioProcessor());
     return audioNode.get();
 }
 
-
-
-
-
-
-AudioProcessor* NodeBase::getAudioProcessor()
+AudioProcessor *NodeBase::getAudioProcessor()
 {
     if (audioNode)
     {
-        jassert (audioNode->getProcessor() == this);
+        jassert(audioNode->getProcessor() == this);
         return audioNode->getProcessor();
     }
 
     return this;
 };
 
-void NodeBase::processBlockBypassed (AudioBuffer<float>& /*buffer*/, juce::MidiBuffer& /*midiMessages*/)
+void NodeBase::processBlockBypassed(AudioBuffer<float> & /*buffer*/, juce::MidiBuffer & /*midiMessages*/)
 {
     // no op
 }
 
-void NodeBase::processBlock (AudioBuffer<float>& buffer,
-                             MidiBuffer& midiMessages)
+void NodeBase::processBlock(AudioBuffer<float> &buffer,
+                            MidiBuffer &midiMessages)
 {
 
     // be sure to delete input if we are not enabled and a random buffer enters
     // juceAudioGraph seems to use the fact that we shouldn't process audio to pass others
     int numSample = buffer.getNumSamples();
 
-
-    int totalNumInputChannels = jmin(getTotalNumInputChannels(),buffer.getNumChannels());
-    int totalNumOutputChannels = jmin(getTotalNumOutputChannels(),buffer.getNumChannels());
-
-
-
+    int totalNumInputChannels = jmin(getTotalNumInputChannels(), buffer.getNumChannels());
+    int totalNumOutputChannels = jmin(getTotalNumOutputChannels(), buffer.getNumChannels());
 
     if (rmsListeners.size() || rmsChannelListeners.size())
     {
@@ -186,30 +167,27 @@ void NodeBase::processBlock (AudioBuffer<float>& buffer,
 
         if (curSamplesForRMSInUpdate >= samplesBeforeRMSUpdate)
         {
-            updateRMS (buffer, globalRMSValueIn, rmsValuesIn, totalNumInputChannels, rmsChannelListeners.size() == 0);
+            updateRMS(buffer, globalRMSValueIn, rmsValuesIn, totalNumInputChannels, rmsChannelListeners.size() == 0);
             curSamplesForRMSInUpdate = 0;
         }
     }
 
-
-
-    muteFader.incrementFade (numSample);
-    dryWetFader.incrementFade (numSample);
+    muteFader.incrementFade(numSample);
+    dryWetFader.incrementFade(numSample);
     logVolume.update();
     const double crossfadeValue = dryWetFader.getCurrentFade();
     const double muteFadeValue = muteFader.getCurrentFade();
     const double curLogVol = logVolume.get();
 
     // on disable
-    if (wasEnabled && crossfadeValue == 0 )
+    if (wasEnabled && crossfadeValue == 0)
     {
-
 
         wasEnabled = false;
     }
 
     // on Enable
-    if (!wasEnabled && crossfadeValue > 0 )
+    if (!wasEnabled && crossfadeValue > 0)
     {
 
         wasEnabled = true;
@@ -224,31 +202,29 @@ void NodeBase::processBlock (AudioBuffer<float>& buffer,
         if (crossfadeValue != 1)
         {
             // copy only what we are expecting
-            int maxCommonChannels = jmin (totalNumOutputChannels, totalNumInputChannels);
-            crossFadeBuffer.setSize (maxCommonChannels, numSample);
+            int maxCommonChannels = jmin(totalNumOutputChannels, totalNumInputChannels);
+            crossFadeBuffer.setSize(maxCommonChannels, numSample);
 
-            for (int i = 0 ; i < maxCommonChannels ; i++)
+            for (int i = 0; i < maxCommonChannels; i++)
             {
-                crossFadeBuffer.copyFrom (i, 0, buffer, i, 0, numSample);
+                crossFadeBuffer.copyFrom(i, 0, buffer, i, 0, numSample);
             }
         }
 
         if (lastVolume == 0 && curVolume == 0)
         {
-            processBlockBypassed (buffer, midiMessages);
+            processBlockBypassed(buffer, midiMessages);
         }
         else
         {
-            processBlockInternal (buffer, midiMessages);
+            processBlockInternal(buffer, midiMessages);
         }
 
         if ((crossfadeValue != 1 || hasMainAudioControl) &&
-            (lastVolume!=1 || curVolume!=1))
+            (lastVolume != 1 || curVolume != 1))
         {
-            buffer.applyGainRamp (0, numSample, lastVolume, (float)curVolume);
-
+            buffer.applyGainRamp(0, numSample, lastVolume, (float)curVolume);
         }
-
 
         // crossfade if we have a dry mix i.e at least one input channel
         if (totalNumInputChannels > 0 && totalNumOutputChannels > 0)
@@ -257,11 +233,10 @@ void NodeBase::processBlock (AudioBuffer<float>& buffer,
             {
                 for (int i = 0; i < totalNumOutputChannels; i++)
                 {
-                    buffer.addFromWithRamp (i, 0, crossFadeBuffer.getReadPointer (jmin (i, crossFadeBuffer.getNumChannels() - 1)), numSample, (float)lastDryVolume, (float)curDryVolume);
+                    buffer.addFromWithRamp(i, 0, crossFadeBuffer.getReadPointer(jmin(i, crossFadeBuffer.getNumChannels() - 1)), numSample, (float)lastDryVolume, (float)curDryVolume);
                 }
             }
         }
-
 
         if (muteFadeValue == 0)
         {
@@ -270,13 +245,11 @@ void NodeBase::processBlock (AudioBuffer<float>& buffer,
 
         lastVolume = (float)curVolume;
         lastDryVolume = curDryVolume;
-
     }
     else
     {
-        DBG ("suspended");
+        DBG("suspended");
     }
-
 
     // be sure to delete out if we are not enabled and a random buffer enters
     // juceAudioGraph seems to use the fact that we shouldn't process audio to pass others
@@ -290,18 +263,13 @@ void NodeBase::processBlock (AudioBuffer<float>& buffer,
 
         if (curSamplesForRMSOutUpdate >= samplesBeforeRMSUpdate)
         {
-            updateRMS (buffer, globalRMSValueOut, rmsValuesOut, totalNumOutputChannels, rmsChannelListeners.size() == 0);
+            updateRMS(buffer, globalRMSValueOut, rmsValuesOut, totalNumOutputChannels, rmsChannelListeners.size() == 0);
             curSamplesForRMSOutUpdate = 0;
         }
     }
-
-
-
-
-
 };
 
-bool NodeBase::setPreferedNumAudioInput (int num)
+bool NodeBase::setPreferedNumAudioInput(int num)
 {
 
     int oldNumChannels = getTotalNumInputChannels();
@@ -311,33 +279,31 @@ bool NodeBase::setPreferedNumAudioInput (int num)
         if (parentNodeContainer != nullptr)
         {
             {
-                const ScopedLock lk ( parentNodeContainer->innerGraph->getCallbackLock());
-                setPlayConfigDetails (num, getTotalNumOutputChannels(),
-                                      parentNodeContainer->innerGraph->getSampleRate(),
-                                      parentNodeContainer->innerGraph->getBlockSize());
+                const ScopedLock lk(parentNodeContainer->innerGraph->getCallbackLock());
+                setPlayConfigDetails(num, getTotalNumOutputChannels(),
+                                     parentNodeContainer->innerGraph->getSampleRate(),
+                                     parentNodeContainer->innerGraph->getBlockSize());
 
-
-                parentNodeContainer->updateAudioGraph (false);
+                parentNodeContainer->updateAudioGraph(false);
 
                 if (oldNumChannels != getTotalNumInputChannels())
                 {
                     // numChannelsChanged is called within the lock so that Nodes can update freely their memory used in processblock
-                    numChannelsChanged (true);
+                    numChannelsChanged(true);
                 }
             }
-
         }
         else
         {
             // here is only if the Node sets a default prefered audio Input (in its constructor)
-            setPlayConfigDetails (num, getTotalNumOutputChannels(),
-                                  getSampleRate(),
-                                  getBlockSize());
+            setPlayConfigDetails(num, getTotalNumOutputChannels(),
+                                 getSampleRate(),
+                                 getBlockSize());
 
             if (oldNumChannels != getTotalNumInputChannels())
             {
 
-                numChannelsChanged (true);
+                numChannelsChanged(true);
             }
         }
     }
@@ -345,32 +311,30 @@ bool NodeBase::setPreferedNumAudioInput (int num)
     rmsValuesIn.clear();
     int totalNumInputChannels = getTotalNumInputChannels();
 
-    for (int i = 0; i < totalNumInputChannels; i++) rmsValuesIn.add (0);
-
+    for (int i = 0; i < totalNumInputChannels; i++)
+        rmsValuesIn.add(0);
 
     if (totalNumInputChannels > oldNumChannels)
     {
         for (int i = oldNumChannels; i < totalNumInputChannels; i++)
         {
-            nodeListeners.call (&ConnectableNodeListener::audioInputAdded, this, i);
+            nodeListeners.call(&ConnectableNodeListener::audioInputAdded, this, i);
         }
     }
     else
     {
         for (int i = oldNumChannels - 1; i >= totalNumInputChannels; i--)
         {
-            nodeListeners.call (&ConnectableNodeListener::audioInputRemoved, this, i);
+            nodeListeners.call(&ConnectableNodeListener::audioInputRemoved, this, i);
         }
     }
 
-
-    nodeListeners.call (&ConnectableNodeListener::numAudioInputChanged, this, num);
+    nodeListeners.call(&ConnectableNodeListener::numAudioInputChanged, this, num);
 
     return true;
 }
 
-
-bool NodeBase::setPreferedNumAudioOutput (int num)
+bool NodeBase::setPreferedNumAudioOutput(int num)
 {
 
     int oldNumChannels = getTotalNumOutputChannels();
@@ -380,66 +344,66 @@ bool NodeBase::setPreferedNumAudioOutput (int num)
 
         if (parentNodeContainer != nullptr)
         {
-            lkp = std::make_unique<ScopedLock> (parentNodeContainer->getAudioGraph()->getCallbackLock());
+            lkp = std::make_unique<ScopedLock>(parentNodeContainer->getAudioGraph()->getCallbackLock());
         }
 
-        setPlayConfigDetails (getTotalNumInputChannels(), num,
-                              getSampleRate(),
-                              getBlockSize());
+        setPlayConfigDetails(getTotalNumInputChannels(), num,
+                             getSampleRate(),
+                             getBlockSize());
 
         if (parentNodeContainer != nullptr)
         {
-            parentNodeContainer->updateAudioGraph (false);
+            parentNodeContainer->updateAudioGraph(false);
         }
 
         if (oldNumChannels != getTotalNumOutputChannels())
         {
-            numChannelsChanged (false);
+            numChannelsChanged(false);
         }
-
     }
 
     rmsValuesOut.clear();
 
     int totalNumOutputChannels = getTotalNumOutputChannels();
 
-    for (int i = 0; i < totalNumOutputChannels; i++) rmsValuesOut.add (0);
-
+    for (int i = 0; i < totalNumOutputChannels; i++)
+        rmsValuesOut.add(0);
 
     if (totalNumOutputChannels > oldNumChannels)
     {
         for (int i = oldNumChannels; i < totalNumOutputChannels; i++)
         {
-            nodeListeners.call (&ConnectableNodeListener::audioOutputAdded, this, i);
+            nodeListeners.call(&ConnectableNodeListener::audioOutputAdded, this, i);
         }
     }
     else
     {
         for (int i = oldNumChannels - 1; i >= totalNumOutputChannels; i--)
         {
-            nodeListeners.call (&ConnectableNodeListener::audioOutputRemoved, this, i);
+            nodeListeners.call(&ConnectableNodeListener::audioOutputRemoved, this, i);
         }
     }
 
-    nodeListeners.call (&ConnectableNodeListener::numAudioOutputChanged, this, num);
+    nodeListeners.call(&ConnectableNodeListener::numAudioOutputChanged, this, num);
 
     return true;
 }
 
-
-
-
-
 void NodeBase::remove()
 {
-    if(parentNodeContainer)
-       { parentNodeContainer->removeNode(this,false);}
-    
+    if (parentNodeContainer)
+    {
+        parentNodeContainer->removeNode(this, false);
+    }
+
     if (audioNode.get())
     {
-        if(parentNodeContainer)
-           { parentNodeContainer->removeFromAudioGraph(this);}
-        jassert (audioNode.get()->getReferenceCount() == 1);
+        if (parentNodeContainer)
+        {
+            parentNodeContainer->removeFromAudioGraph(this);
+        }
+        int numRef = audioNode.get()->getReferenceCount();
+        jassert(numRef == 1);
         // audioNode is owning the pointer to this AudioProcessor so triggers it's deletion instead
         audioNode = nullptr;
     }
@@ -449,7 +413,3 @@ void NodeBase::remove()
         delete this;
     }
 }
-
-
-
-

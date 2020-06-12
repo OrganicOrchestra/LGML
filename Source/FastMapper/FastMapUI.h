@@ -48,6 +48,7 @@ public:
     ParameterProxyUI targetUI;
     RangeParameterUI outRangeUI;
     std::unique_ptr<ParameterUI> invertUI;
+    std::unique_ptr<ParameterUI> onValueUI;
     std::unique_ptr<ParameterUI> toggleUI;
 
 

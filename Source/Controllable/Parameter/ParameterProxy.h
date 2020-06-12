@@ -12,7 +12,6 @@
 *
 */
 
-
 #ifndef PARAMETERPROXY_H_INCLUDED
 #define PARAMETERPROXY_H_INCLUDED
 
@@ -20,63 +19,81 @@
 #include "StringParameter.h"
 #include "../ControllableContainer.h"
 
-
-
-class ParameterProxy :
-    public StringParameter,
-    private ParameterBase::Listener,
-    public Controllable::Listener,
-    private ControllableContainer::Listener
+class ParameterProxy : public StringParameter,
+                       private ParameterBase::Listener,
+                       public Controllable::Listener,
+                       private ControllableContainer::Listener
 {
 public:
-    ParameterProxy (const String& niceName, const String& desc = "", ParameterBase* ref = nullptr, ControllableContainer* root = nullptr);
+    ParameterProxy(const String &niceName, const String &desc = "", ParameterBase *ref = nullptr, ControllableContainer *root = nullptr);
     virtual ~ParameterProxy();
 
-
     WeakReference<ParameterBase> linkedParam;
-    ControllableContainer* rootOfProxy;
+    ControllableContainer *rootOfProxy;
 
-    void setRoot (ControllableContainer* );
-    ParameterBase* getLinkedParam();
-    void tryToSetValue (const var & _value, bool silentSet, bool force, ParameterBase::Listener * notifier=nullptr )override;
-    void setValueInternal (const var& _value) override;
+    void setRoot(ControllableContainer *);
+    ParameterBase *getLinkedParam();
+    void tryToSetValue(const var &_value, bool silentSet, bool force, ParameterBase::Listener *notifier = nullptr) override;
+    void setValueInternal(const var &_value) override;
     bool isMappable() override;
 
     // Inherited via Listener
-    void parameterValueChanged ( ParameterBase* p, ParameterBase::Listener * notifier) override;
-    void parameterRangeChanged ( ParameterBase* ) override;
-    
-    void setParamToReferTo ( ParameterBase* p);
+    void parameterValueChanged(ParameterBase *p, ParameterBase::Listener *notifier) override;
+    void parameterRangeChanged(ParameterBase *) override;
 
+    void setParamToReferTo(ParameterBase *p);
 
     class ParameterProxyListener
     {
     public:
         virtual ~ParameterProxyListener() {}
-        virtual void linkedParamValueChanged (ParameterProxy*,ParameterBase::Listener *) {}
-        virtual void linkedParamChanged (ParameterProxy*) {}
-        virtual void linkedParamRangeChanged(ParameterProxy*) {}
+        virtual void linkedParamValueChanged(ParameterProxy *, ParameterBase::Listener *) {}
+        virtual void linkedParamChanged(ParameterProxy *) {}
+        virtual void linkedParamRangeChanged(ParameterProxy *) {}
     };
 
     ListenerList<ParameterProxyListener> proxyListeners;
-    void addParameterProxyListener (ParameterProxyListener* newListener) { proxyListeners.add (newListener); }
-    void removeParameterProxyListener (ParameterProxyListener* listener) { proxyListeners.remove (listener); }
+    ParameterProxyListener *firstListener = nullptr;
+    void addParameterProxyListener(ParameterProxyListener *newListener, bool isFirst=false)
+    {
+        if (isFirst)
+        {
+            firstListener = newListener;
+        }
+        proxyListeners.add(newListener);
 
-    ControllableContainer* getRoot();
+        if (firstListener)
+        {
+            auto l = proxyListeners.getListeners();
+            auto fI = l.indexOf(firstListener);
+            if (fI >= 0 )
+            {
+                l.swap(fI, proxyListeners.size() - 1);
+                proxyListeners.clear();
+                for (auto ll : l)
+                {
+                    proxyListeners.add(ll);
+                }
+            }
+            else
+            {
+                firstListener = nullptr;
+            }
+        }
+    }
+    void removeParameterProxyListener(ParameterProxyListener *listener) { proxyListeners.remove(listener); }
 
-    DECLARE_OBJ_TYPE (ParameterProxy,"proxy parameter (can become any given parameter)")
+    ControllableContainer *getRoot();
+
+    DECLARE_OBJ_TYPE(ParameterProxy, "proxy parameter (can become any given parameter)")
 private:
-    
-    void childControllableAdded (ControllableContainer*, Controllable* /*notifier*/) override;
-    void controllableRemoved (Controllable* ) override;
-    void childStructureChanged (ControllableContainer* /*notifier*/, ControllableContainer* /*origin*/,bool /*isAdded*/)override;
-    void childAddressChanged (ControllableContainer* /*notifier*/,ControllableContainer* )override;
-        bool resolveAddress();
+    void childControllableAdded(ControllableContainer *, Controllable * /*notifier*/) override;
+    void controllableRemoved(Controllable *) override;
+    void childStructureChanged(ControllableContainer * /*notifier*/, ControllableContainer * /*origin*/, bool /*isAdded*/) override;
+    void childAddressChanged(ControllableContainer * /*notifier*/, ControllableContainer *) override;
+    bool resolveAddress();
     WeakReference<ParameterProxy>::Master masterReference;
     friend class WeakReference<ParameterProxy>;
-
 };
 
-
-
-#endif  // PARAMETERPROXY_H_INCLUDED
+#endif // PARAMETERPROXY_H_INCLUDED

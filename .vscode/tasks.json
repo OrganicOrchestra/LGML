@@ -10,8 +10,12 @@
             "args": [
                 "-j12"
             ],
+            
             "options": {
-                "cwd": "${workspaceFolder}/Builds/LinuxMakefile/"
+                "cwd": "${workspaceFolder}/Builds/LinuxMakefile/",
+                "env":{
+                    "DEBUG":"1"
+                }
             },
             "problemMatcher": {
                 "base": "$gcc",

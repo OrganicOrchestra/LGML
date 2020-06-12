@@ -162,7 +162,8 @@ public:
     static const ParameterBase* fromControllable (const Controllable* c) ;
     static ParameterBase* fromControllable (Controllable* c) ;
     template<typename T> T* getAs() {return dynamic_cast<T*> (this);}
-
+    template<typename T> bool isType() {return getFactoryTypeId()==T::_factoryType;}
+    template<typename T> bool isInheritedType() {return getAs<T>()!=nullptr;}
 
 
 protected:

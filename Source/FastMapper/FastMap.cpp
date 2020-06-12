@@ -18,7 +18,7 @@
 
 #include "FastMap.h"
 #include "../Node/Manager/NodeManager.h"
-#define DEBUG_SMOOTH(x) 
+#define DEBUG_SMOOTH(x)
 //#include "../Engine.h"
 extern bool isEngineLoadingFile();
 
@@ -39,22 +39,23 @@ struct Smoother : private Timer
     void rampUp(float time, CBTYPE _cb, float targetValue)
     {
 
-        goToValue(targetValue, time,cb);
+        goToValue(targetValue, time, cb);
     }
 
     void rampDown(float timeOut, CBTYPE _cb)
     {
- 
-        goToValue(0, timeOut,cb);
+
+        goToValue(0, timeOut, cb);
     }
 
-    void goToValue(float target, float time,CBTYPE _cb)
+    void goToValue(float target, float time, CBTYPE _cb)
     {
-               cb = _cb;
+        cb = _cb;
         incVal = (target - curValue) * granularity / jmax((float)granularity, time);
-        const float eps=0;//.00001;
-        if(abs(incVal) < eps){
-            incVal = incVal>0?eps:-eps;
+        const float eps = 0; //.00001;
+        if (abs(incVal) < eps)
+        {
+            incVal = incVal > 0 ? eps : -eps;
         }
         isGrowing = target > targetVal;
         targetVal = target;
@@ -75,7 +76,7 @@ struct Smoother : private Timer
         jassert(incVal != 0);
         DEBUG_SMOOTH("tttttt " << curValue << " => " << targetVal << " :: " << incVal);
         curValue += incVal;
-        bool hasCrossedTarget = isGrowing?curValue >= targetVal : curValue <= targetVal;
+        bool hasCrossedTarget = isGrowing ? curValue >= targetVal : curValue <= targetVal;
         if (hasCrossedTarget)
         {
             DEBUG_SMOOTH(">>>> end ");
@@ -99,9 +100,9 @@ FastMap::FastMap() : referenceIn(nullptr),
 {
 
     referenceIn = addNewParameter<ParameterProxy>("in param", "parameter for input");
-    referenceIn->addParameterProxyListener(this);
+    referenceIn->addParameterProxyListener(this,true);
     referenceOut = addNewParameter<ParameterProxy>("out param", "parameter for input");
-    referenceOut->addParameterProxyListener(this);
+    referenceOut->addParameterProxyListener(this,true);
     enabledParam = addNewParameter<BoolParameter>("Enabled", "Enabled / Disable Fast Map", true);
 
     inputRange = addNewParameter<RangeParameter>("In Range", "Input Range", 0.0f, 1.0f, 0.0f, 1.0f);
@@ -110,11 +111,12 @@ FastMap::FastMap() : referenceIn(nullptr),
     outputRange->setUnbounded();
     invertParam = addNewParameter<BoolParameter>("Invert", "Invert the output signal", false);
     toggleParam = addNewParameter<BoolParameter>("Toggle", "Toggles the output signal", false);
+    onValue = addNewParameter<StringParameter>("onValue", "string value when mapping boolean or trigger to string", "");
     fullSync = addNewParameter<BoolParameter>("FullSync", "synchronize source parameter too", true);
     smoothTimeIn = addNewParameter<FloatParameter>("smoothTimeIn", "time in ms to go to non-zero", 0.0f, 0.0f, 10.0f);
     smoothTimeOut = addNewParameter<FloatParameter>("smoothTimeOut", "time in ms to go to zero", 0.0f, 0.0f, 10.0f);
 
-    ignoreLowerSmooth = addNewParameter<BoolParameter>("ignoreLowerSmooth", "if smooth value is releasing new fadeIns won't get triggered if they are lower (usefull for volume control)",true);
+    ignoreLowerSmooth = addNewParameter<BoolParameter>("ignoreLowerSmooth", "if smooth value is releasing new fadeIns won't get triggered if they are lower (usefull for volume control)", true);
 }
 
 FastMap::~FastMap()
@@ -189,9 +191,9 @@ void FastMap::process(bool toReferenceOut, bool sourceHasChanged)
         return;
 
     fastMapIsProcessing = true;
-    auto type = outRef->getFactoryTypeId();
+    auto typeOut = outRef->getFactoryTypeId();
 
-    if (type == Trigger::_factoryType)
+    if (typeOut == Trigger::_factoryType)
     {
 
         if (inRef->getFactoryTypeId() == Trigger::_factoryType ||
@@ -202,7 +204,7 @@ void FastMap::process(bool toReferenceOut, bool sourceHasChanged)
     }
     else
     {
-        if (type == BoolParameter::_factoryType)
+        if (typeOut == BoolParameter::_factoryType)
         {
             if ((inRef->getFactoryTypeId() == Trigger::_factoryType))
             {
@@ -227,14 +229,40 @@ void FastMap::process(bool toReferenceOut, bool sourceHasChanged)
                     });
                 }
             }
+            else if(onValue->enabled && dynamic_cast<StringParameter*>(inRef)){
+                outRef->setValueFrom(this,onValue->stringValue()==inRef->stringValue());
+            }
             else
             {
                 ((BoolParameter *)outRef)->setValueFrom(this, newIsInRange);
             }
         }
-        else if ((type == EnumParameter::_factoryType) || (type == StringParameter::_factoryType))
+        else if ((typeOut == EnumParameter::_factoryType) || (typeOut == StringParameter::_factoryType))
         {
-            outRef->setValueFrom(this, inRef->stringValue());
+            if ((inRef->getFactoryTypeId() == BoolParameter::_factoryType))
+            {
+                if (newIsInRange)
+                {
+                    outRef->setValueFrom(this, onValue->stringValue());
+                }
+            }
+            else if ((inRef->getFactoryTypeId() == Trigger::_factoryType))
+            {
+                outRef->setValueFrom(this, onValue->stringValue());
+            }
+            else if (auto i = dynamic_cast<MinMaxParameter *>(inRef) && typeOut == EnumParameter::_factoryType)
+            {
+                auto o = static_cast<EnumParameter *>(outRef);
+                float minOut = 0;
+                float maxOut = o->getModel()->getProperties().size() - 1;
+                float targetVal = juce::jmap<float>(sourceVal, minIn, maxIn, minOut, maxOut);
+                targetVal = juce::jlimit<float>(minOut, maxOut, targetVal);
+                outRef->setValueFrom(this, targetVal);
+            }
+            else
+            {
+                outRef->setValueFrom(this, inRef->stringValue());
+            }
         }
         else
         {
@@ -263,15 +291,17 @@ void FastMap::process(bool toReferenceOut, bool sourceHasChanged)
                     if (sourceHasChanged)
                     {
                         bool sourceToggleState = sourceVal > minIn;
-                        float lowTargetVal = invertParam->boolValue()? maxOut:minOut; 
+                        float lowTargetVal = invertParam->boolValue() ? maxOut : minOut;
                         if (sourceToggleState)
                         {
-                            if(!ignoreLowerSmooth->boolValue()|| targetVal>smoother->curValue){
-                            smoother->goToValue(targetVal,(int)(smoothTimeIn->floatValue() * 1000.0), cb);}
+                            if (!ignoreLowerSmooth->boolValue() || targetVal > smoother->curValue)
+                            {
+                                smoother->goToValue(targetVal, (int)(smoothTimeIn->floatValue() * 1000.0), cb);
+                            }
                         }
                         else
                         {
-                            smoother->goToValue(lowTargetVal,(int)(smoothTimeOut->floatValue() * 1000.0), cb);
+                            smoother->goToValue(lowTargetVal, (int)(smoothTimeOut->floatValue() * 1000.0), cb);
                         }
                     }
                 }
@@ -419,50 +449,51 @@ void FastMap::linkedParamChanged(ParameterProxy *p)
             return;
         }
     }
-    if (p == referenceIn)
+    if (p == referenceIn || p == referenceOut)
     {
+        auto refChanged = p == referenceIn ? referenceIn : referenceOut;
+        auto otherRef = p == referenceIn ? referenceOut : referenceIn;
+        auto rangeOfChanged = p == referenceIn ? inputRange : outputRange;
+        auto otherRange = p == referenceIn ? outputRange : inputRange;
 
-        auto *lpar = referenceIn->linkedParam.get();
+        auto *lpar = refChanged->linkedParam.get();
+        auto *otherPar = otherRef ? otherRef->linkedParam.get() : nullptr;
 
         while (auto *prox = dynamic_cast<ParameterProxy *>(lpar))
         {
             lpar = prox->linkedParam;
         }
-
-        auto mmp = dynamic_cast<MinMaxParameter *>(lpar);
-        var newMin = mmp ? mmp->minimumValue : var::undefined();
-        var newMax = mmp ? mmp->maximumValue : var::undefined();
-        inputRange->setMinMax(newMin, newMax);
-        inputRange->setEnabled(mmp != nullptr && mmp->hasFiniteBounds());
-        if (inputRange->hasFiniteBounds())
+        while (auto *prox = dynamic_cast<ParameterProxy *>(otherPar))
         {
-            if (inputRange->getRangeMin() < (float)newMin || inputRange->getRangeMax() > (float)newMax)
-            { // modify only if range changed a lot
-                inputRange->setValue(newMin, newMax);
-            }
-        }
-    }
-    else if (p == referenceOut)
-    {
-
-        auto *lpar = referenceOut->linkedParam.get();
-
-        while (auto *prox = dynamic_cast<ParameterProxy *>(lpar))
-        {
-            lpar = prox->linkedParam;
+            otherPar = prox->linkedParam;
         }
 
         auto mmp = dynamic_cast<MinMaxParameter *>(lpar);
         var newMin = mmp ? mmp->minimumValue : var::undefined();
         var newMax = mmp ? mmp->maximumValue : var::undefined();
-        outputRange->setMinMax(newMin, newMax);
-        outputRange->setEnabled(mmp != nullptr && mmp->hasFiniteBounds());
-        if (outputRange->hasFiniteBounds())
+        if (!mmp)
         {
-            if (outputRange->getRangeMin() < (float)newMin || outputRange->getRangeMax() > (float)newMax)
-            { // modify only if range changed a lot
-                outputRange->setValue(newMin, newMax);
+            if (auto ep = dynamic_cast<EnumParameter *>(lpar))
+            {
+                auto numOpts = ep->getModel()->getProperties().size();
+                newMin = 0;
+                newMax = numOpts;
             }
         }
+        rangeOfChanged->setMinMax(newMin, newMax);
+        rangeOfChanged->setEnabled(mmp != nullptr && mmp->hasFiniteBounds());
+        if (rangeOfChanged->hasFiniteBounds())
+        {
+            if (rangeOfChanged->getRangeMin() < (float)newMin || rangeOfChanged->getRangeMax() > (float)newMax)
+            { // modify only if range changed a lot
+                rangeOfChanged->setValue(newMin, newMax);
+            }
+        }
+        auto needOnValue = [](ParameterBase* a,ParameterBase * b){
+           return  dynamic_cast<StringParameter *>(a) != nullptr && b && (b->isType<BoolParameter>() || b->isType<Trigger>());
+        };
+
+        // dynamic_cast<StringParameter *>(lpar) != nullptr && otherPar && (otherPar->isType<BoolParameter>() || otherPar->isType<Trigger>())
+        onValue->setEnabled(needOnValue(lpar,otherPar) || needOnValue(otherPar,lpar));
     }
 };
