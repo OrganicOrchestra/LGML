@@ -57,7 +57,7 @@ DynamicObject * Preset::getPresetValueObject(){
     return values.getDynamicObject();
 }
 
-void Preset::configurePresetValueObject(DynamicObject *v){values = v->clone();}
+void Preset::configurePresetValueObject(DynamicObject *v){values = v->clone().get();}
 
 DynamicObject* Preset::createObject() {
     DynamicObject * d =  Presetable::createPresetObject(this);

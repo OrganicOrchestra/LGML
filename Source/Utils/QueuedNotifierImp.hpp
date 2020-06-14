@@ -13,9 +13,10 @@
 
 struct QNPrivateData{
     void* tid=nullptr;
-    bool isNotifying = false;
+    Atomic<bool> isNotifying = false;
     Atomic<unsigned long> numSent=0;
 };
+
 
 #define DBGQUEUED 0
 
@@ -132,7 +133,7 @@ void QueuedNotifier<MessageClass,CriticalSectionToUse>::addMessage (MessageClass
         handleAsyncUpdate();
     }
     else{
-        triggerAsyncUpdate();
+        triggerAsyncUpdate(); // it may lock  
     }
 
 
@@ -192,7 +193,11 @@ void QueuedNotifier<MessageClass,CriticalSectionToUse>::handleAsyncUpdate()
         return;
 
     }
-    _data->isNotifying = true;
+    _data->isNotifying.set(true);
+       if(DBGQUEUED && debugFlag){
+       NLOG(name,"ooooo update"+String(fifo.getNumReady())+","+String(_data->numSent.get()));
+   }
+
     for (int i = start1 ; i < start1 + size1 ; i++)
     {
         if(messageQueue.getUnchecked (i)!=nullptr){
@@ -227,7 +232,7 @@ void QueuedNotifier<MessageClass,CriticalSectionToUse>::handleAsyncUpdate()
         else{jassertfalse;}
     }
     fifo.finishedRead (size1 + size2);
-    _data->isNotifying = false;
+    _data->isNotifying.set(false);
 
 
 
@@ -235,7 +240,7 @@ void QueuedNotifier<MessageClass,CriticalSectionToUse>::handleAsyncUpdate()
 
 template<typename MessageClass, class CriticalSectionToUse >
 bool QueuedNotifier<MessageClass,CriticalSectionToUse>::isNotifying() const {
-    return _data->isNotifying;
+    return _data->isNotifying.get();
 }
 
 

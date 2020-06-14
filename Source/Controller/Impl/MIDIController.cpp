@@ -110,7 +110,7 @@ MIDIController::~MIDIController()
     
 }
 
-int lastCv=0;
+// int lastCv=0;
 void MIDIController::handleIncomingMidiMessage (MidiInput*,
                                                 const MidiMessage& message)
 {
@@ -130,10 +130,7 @@ void MIDIController::handleIncomingMidiMessage (MidiInput*,
     if (message.isController())
     {
         auto cv = message.getControllerValue();
-        if(cv!=lastCv){
-            DBG(cv);
-            lastCv = cv;
-        }
+
         const String paramName(MIDIHelpers::midiMessageToParamName(message));
         if (Controllable* c = userContainer.getControllableByName(paramName))
         {
@@ -263,6 +260,9 @@ void MIDIController::onContainerParameterChanged ( ParameterBase* p)
     else if(p==sendMIDIClock){
         sendMIDIPosition->setEnabled(sendMIDIClock->boolValue());
         startMidiClockIfNeeded();
+//                 DO_NOT_PUSH
+//    auto  mmP =  userContainer.getControllablesOfType<ParameterBase>(false);//->queuedNotifier->debugFlag = true;
+//    std::for_each(mmP.begin(),mmP.end(),[](ParameterBase * e){e->queuedNotifier->debugFlag = true;});
     }
     else if (p==MIDIClockFollowTransport){
         midiClock.followGlobalTransport=MIDIClockFollowTransport->boolValue();

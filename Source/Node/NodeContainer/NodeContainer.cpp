@@ -215,7 +215,7 @@ void NodeContainer::removeFromAudioGraph(NodeBase * n)
     if (auto pG = getAudioGraph())
     {
         const ScopedLock lk (pG->getCallbackLock());
-        pG->removeNode(n->audioNode);
+        pG->removeNode(n->audioNode.get());
     }
 
     updateAudioGraph (true); // we need to force rebuild on deletion to avoid memory leaks

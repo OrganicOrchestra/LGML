@@ -40,9 +40,11 @@
 #define TODO(x) DO_PRAGMA(message ("TODO - " #x));
 #if LGML_BETA || DEBUG
     #define JUCE_LOG_ASSERTIONS 1
+    #define JUCE_CATCH_UNHANDLED_EXCEPTIONS 1
 #endif
 
 
+#define JUCE_STRICT_REFCOUNTEDPOINTER 1
 // TODO support simd for other platforms when truely needed
 
 //#define JUCE_USE_SIMD 1
@@ -56,10 +58,11 @@
     #define JUCE_USE_SIMD 0
 #endif
 
-#if DEBUG
-#define ONLY_DBG
+
+#if DEBUG && !defined(LGML_BETA)
+#define DO_NOT_PUSH 
 #else
-#define ONLY_DBG #error
+#define DO_NOT_PUSH #error
 #endif
 // [END_USER_CODE_SECTION]
 

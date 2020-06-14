@@ -122,7 +122,7 @@ void LGMLLogger::logMessage (const String& message)
     LogElement * lastLogged(nullptr);
 #if CIRCULAR
 
-    int lastIdx =(writePos+maxLoggedElements - 1)%maxLoggedElements;
+    int lastIdx =(writePos-1+maxLoggedElements)%maxLoggedElements;
     lastLogged =  loggedElements.getUnchecked(lastIdx);
 #else
     if(loggedElements.size()>0){lastLogged=loggedElements.getUnchecked(loggedElements.size()-1);}

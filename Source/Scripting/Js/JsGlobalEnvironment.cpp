@@ -44,13 +44,13 @@ JsGlobalEnvironment::~JsGlobalEnvironment(){
     JsHelpers::JsPtrStore::deleteInstance();
 }
 
-void JsGlobalEnvironment::removeNamespace (const String& ns) {JsHelpers::removeNamespaceFromObject (ns, getEnv());}
+void JsGlobalEnvironment::removeNamespace (const String& ns) {JsHelpers::removeNamespaceFromObject (ns, getEnv().get());}
 
 void JsGlobalEnvironment::clear(){
     if(JsHelpers::JsPtrStore::i())
         JsHelpers::JsPtrStore::i()->clear();
 }
-DynamicObject::Ptr JsGlobalEnvironment::getNamespaceObject (const String& ns) {return JsHelpers::getNamespaceFromObject (ns, getEnv());}
+DynamicObject::Ptr JsGlobalEnvironment::getNamespaceObject (const String& ns) {return JsHelpers::getNamespaceFromObject (ns, getEnv().get());}
 
 DynamicObject::Ptr JsGlobalEnvironment::getEnv() {return env.getDynamicObject();}
 

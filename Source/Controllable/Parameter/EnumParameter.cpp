@@ -675,7 +675,7 @@ const NamedValueSet EnumParameterModel::getProperties()noexcept
 }
 DynamicObject* EnumParameterModel::getObject()
 {
-    return userGenerated;
+    return userGenerated.get();
     
 }
 

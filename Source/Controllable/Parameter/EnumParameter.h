@@ -41,7 +41,7 @@ public:
     var getValueForId (const Identifier& key);
     const Identifier& getIdForValue(const var & v);
     bool isValidId (Identifier key);
-    DynamicObject* getObject();
+    DynamicObject * getObject();
     const NamedValueSet getProperties()noexcept;
 
     // can be overriden to force a refresh

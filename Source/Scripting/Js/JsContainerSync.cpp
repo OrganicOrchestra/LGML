@@ -133,7 +133,7 @@ var JsContainerSync::createDynamicObjectFromContainer (ControllableContainer* co
 
     if (auto js = dynamic_cast<JsEnvironment*> (container))
     {
-        myVar = var(js->localEnv);
+        myVar = var(js->localEnv.get());
     }
     else
     {

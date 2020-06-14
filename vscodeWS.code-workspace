@@ -76,7 +76,8 @@
 			"typeindex": "cpp",
 			"typeinfo": "cpp",
 			"variant": "cpp",
-			"bit": "cpp"
+			"bit": "cpp",
+			"*.ipp": "cpp"
 		},
 		"cmake.buildDirectory": "${workspaceFolder}/LGML/Builds/CLion/build",
 		"cmake.sourceDirectory": "${workspaceFolder}/Builds/CLion/"

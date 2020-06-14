@@ -12,7 +12,6 @@
 *
 */
 
-
 #include "Parameter.h"
 
 #include "../../Utils/QueuedNotifierImp.hpp"
@@ -22,123 +21,136 @@
 #include "../../Utils/DebugHelpers.h"
 #include "ParameterContainer.h" // for listener
 
-const Identifier ParameterBase::valueIdentifier ("value");
+const Identifier ParameterBase::valueIdentifier("value");
 
-ParameterBase::Listener::Listener(){
-    
+ParameterBase::Listener::Listener()
+{
 }
-ParameterBase::ParameterBase ( const String& niceName, const String& description, var initialValue, bool enabled) :
-    Controllable ( niceName, description, enabled),
-    isEditable (true),
-    isOverriden (false),
-queuedNotifier (std::make_unique<QueuedNotifier<ParamWithValue>>(100)),
-    hasCommitedValue (false),
-    isCommitableParameter (false),
-    _isSettingValue (false),
-    isReentrant (false),
-    defaultValue (initialValue),
-    value (initialValue),
-    mappingDisabled (false),
-    alwaysNotify(false)
+ParameterBase::ParameterBase(const String &niceName, const String &description, var initialValue, bool enabled) : Controllable(niceName, description, enabled),
+                                                                                                                  isEditable(true),
+                                                                                                                  isOverriden(false),
+                                                                                                                  queuedNotifier(std::make_unique<QueuedNotifier<ParamWithValue>>(100)),
+                                                                                                                  hasCommitedValue(false),
+                                                                                                                  isCommitableParameter(false),
+                                                                                                                  _isSettingValue(false),
+                                                                                                                  isReentrant(false),
+                                                                                                                  defaultValue(initialValue),
+                                                                                                                  value(initialValue),
+                                                                                                                  mappingDisabled(false),
+                                                                                                                  alwaysNotify(false)
 {
 
-
-
 }
 
-ParameterBase::~ParameterBase() {ParameterBase::masterReference.clear(); cancelPendingUpdate();}
+ParameterBase::~ParameterBase()
+{
+    ParameterBase::masterReference.clear();
+    cancelPendingUpdate();
+}
 
-void ParameterBase::resetValue (bool silentSet,bool force)
+void ParameterBase::resetValue(bool silentSet, bool force)
 {
     isOverriden = false;
-    setValue (defaultValue, silentSet, force);
+    setValue(defaultValue, silentSet, force);
 }
 
-void ParameterBase::setNewDefault(const var & v,bool notify){
-    defaultValue=v;
-    if(!isOverriden){
-        resetValue(!notify,false);
+void ParameterBase::setNewDefault(const var &v, bool notify)
+{
+    defaultValue = v;
+    if (!isOverriden)
+    {
+        resetValue(!notify, false);
     }
-
 }
 
-void ParameterBase::setValue (const var & _value, bool silentSet, bool force)
+void ParameterBase::setValue(const var &_value, bool silentSet, bool force)
 {
     if (isCommitableParameter && !force)
     {
-        commitValue (_value);
+        commitValue(_value);
     }
     else
     {
-        tryToSetValue (_value, silentSet, alwaysNotify || force);
+        tryToSetValue(_value, silentSet, alwaysNotify || force);
     }
-
 }
 
-void ParameterBase::setInternalOnlyFlags(bool isVisible,bool _isSavable){
-    isEditable=false;
-    isControllableExposed=false;
-    isHidenInEditor=!isVisible;
-    isSavable=_isSavable;
-    isPresettable=_isSavable;
+void ParameterBase::setInternalOnlyFlags(bool isVisible, bool _isSavable)
+{
+    isEditable = false;
+    isControllableExposed = false;
+    isHidenInEditor = !isVisible;
+    isSavable = _isSavable;
+    isPresettable = _isSavable;
 }
 
-void ParameterBase::setSavable(bool s){
-    isSavable=s;
+void ParameterBase::setSavable(bool s)
+{
+    isSavable = s;
     isPresettable = s;
 }
-void ParameterBase::setValueFrom(Listener * notifier,const var & _value, bool silentSet , bool force ){
+void ParameterBase::setValueFrom(Listener *notifier, const var &_value, bool silentSet, bool force)
+{
     if (isCommitableParameter && !force)
     {
-       // jassertfalse;// TODO may be Queue notifiers??
-        commitValue (_value);
+        // jassertfalse;// TODO may be Queue notifiers??
+        commitValue(_value);
     }
     else
     {
-    // reentrancy check
-        bool reentrant = notifier !=nullptr && (_valueSetter.get()==notifier);
-        if(reentrant){
+        // reentrancy check
+        bool reentrant = notifier != nullptr && (_valueSetter.get() == notifier);
+        if (reentrant)
+        {
             auto vChanged = !checkValueIsTheSame(_value, value);
-            force|=vChanged;
-            if(alwaysNotify && vChanged ){
+            force |= vChanged;
+            if (alwaysNotify && vChanged)
+            {
                 jassertfalse;
-                LOGE("critical error recursive setting on parameter "+getControlAddress().toString());
+                LOGE("critical error recursive setting on parameter " + getControlAddress().toString());
                 force = false;
             } // big recursive troubles in this case..
         }
-    _valueSetter = notifier;
-     tryToSetValue (_value, silentSet, (alwaysNotify&&!reentrant) || force,notifier);
-    _valueSetter = nullptr;
+        _valueSetter = notifier;
+        tryToSetValue(_value, silentSet, (alwaysNotify && !reentrant) || force, notifier);
+        _valueSetter = nullptr;
     }
-
 }
 
-bool ParameterBase::shouldBeDeffered (const var& _value, bool silentSet, bool force )
+bool ParameterBase::shouldBeDeffered(const var &_value, bool silentSet, bool force)
 {
-    if(queuedNotifier->isNotifying() && !silentSet && !force && !isReentrant ){
-        if (auto* mm = MessageManager::getInstanceWithoutCreating())
+    if (queuedNotifier->isNotifying() && !silentSet && !force && !isReentrant)
+    {
+        // if (auto *mm = MessageManager::getInstanceWithoutCreating())
+        if(!MessageManager::getInstance()->isThisTheMessageThread())
         {
-//            if(mm->isThisTheMessageThread()){
+            //            if(mm->isThisTheMessageThread()){
 
-//
-//                NLOGE(controlAddress.toString(),"weird feedback from queued notifier");
-//                jassertfalse;
-//                auto newS = _value.toString();
-//                auto oldS = value.toString();
-//                int dbg;
-//                dbg++;
-//            }
-            NLOGW(controlAddress.toString(),"defer parameter as it has not fully ended to be processed");
+            //
+            //                NLOGE(controlAddress.toString(),"weird feedback from queued notifier");
+            //                jassertfalse;
+            //                auto newS = _value.toString();
+            //                auto oldS = value.toString();
+            //                int dbg;
+            //                dbg++;
+            //            }
+            // if (queuedNotifier->isNotifying())
+            // {
+            //     NLOGW(controlAddress.toString(), "defer parameter as it has not fully ended to be processed");
 
-            WeakReference<ParameterBase> bailout(this);
-            mm->callAsync ([bailout, _value, silentSet, force]()mutable {
-                if(bailout.get())
-                    bailout->tryToSetValue (_value, silentSet, force);
-
-            });
-            return true;
+            //     WeakReference<ParameterBase> bailout(this);
+            //     mm->callAsync([bailout, _value, silentSet, force]() mutable {
+            //         if (bailout.get())
+            //             bailout->tryToSetValue(_value, silentSet, force);
+            //     });
+            //     return true;
+            // }
+             NLOGW(controlAddress.toString(), "parameter flooding may mix values up");
+            //  return true;
         }
-
+        else{
+            jassertfalse;
+        }
     }
     if (!MessageManager::getInstance()->isThisTheMessageThread() && !force && _isSettingValue.get())
     {
@@ -163,13 +175,12 @@ bool ParameterBase::shouldBeDeffered (const var& _value, bool silentSet, bool fo
         // force defering if locking too long or not locking
         if (_isSettingValue.get())
         {
-            if (auto* mm = MessageManager::getInstanceWithoutCreating())
+            if (auto *mm = MessageManager::getInstanceWithoutCreating())
             {
                 WeakReference<ParameterBase> bailout(this);
-                mm->callAsync ([bailout, _value, silentSet, force]()mutable {
-                    if(bailout.get())
-                        bailout->tryToSetValue (_value, silentSet, force);
-
+                mm->callAsync([bailout, _value, silentSet, force]() mutable {
+                    if (bailout.get())
+                        bailout->tryToSetValue(_value, silentSet, force);
                 });
                 return true;
             }
@@ -180,45 +191,44 @@ bool ParameterBase::shouldBeDeffered (const var& _value, bool silentSet, bool fo
 
     return false;
 }
-void ParameterBase::tryToSetValue (const var & _value, bool silentSet, bool force,Listener * notifier )
+void ParameterBase::tryToSetValue(const var &_value, bool silentSet, bool force, Listener *notifier)
 {
 
-    if (!force && checkValueIsTheSame (_value, value)) return;
+    if (!force && checkValueIsTheSame(_value, value))
+        return;
 
-    if (!shouldBeDeffered (_value, silentSet, force))
+    if (!shouldBeDeffered(_value, silentSet, force))
     {
-        _isSettingValue.set( true);
+        _isSettingValue.set(true);
         lastValue = value.clone();
-        setValueInternal (_value);
+        setValueInternal(_value);
 
-        if (!isOverriden && !checkValueIsTheSame (defaultValue, value)) isOverriden = true;
+        if (!isOverriden && !checkValueIsTheSame(defaultValue, value))
+            isOverriden = true;
 
-        if (!silentSet && (force || !checkValueIsTheSame (lastValue, value)))
-            notifyValueChanged (false,notifier);
+        if (!silentSet && (force || !checkValueIsTheSame(lastValue, value)))
+            notifyValueChanged(false, notifier);
 
         _isSettingValue.set(false);
     }
-
 }
 
-
-void ParameterBase::commitValue (var _value)
+void ParameterBase::commitValue(var _value)
 {
     hasCommitedValue = value != _value;
-    commitedValue  = _value.clone();
-
+    commitedValue = _value.clone();
 }
 
-void ParameterBase::pushValue (bool force)
+void ParameterBase::pushValue(bool force)
 {
-    if (!hasCommitedValue && !force)return;
+    if (!hasCommitedValue && !force)
+        return;
 
-    tryToSetValue (commitedValue, false, true);
+    tryToSetValue(commitedValue, false, true);
     hasCommitedValue = false;
 }
 
-
-void ParameterBase::setValueInternal (const var& _value) //to override by child classes
+void ParameterBase::setValueInternal(const var &_value) //to override by child classes
 {
 
     value = _value;
@@ -227,9 +237,9 @@ void ParameterBase::setValueInternal (const var& _value) //to override by child 
 #endif
 }
 
-bool ParameterBase::checkValueIsTheSame (const var& v1, const var& v2)
+bool ParameterBase::checkValueIsTheSame(const var &v1, const var &v2)
 {
-    return v1.hasSameTypeAs (v2) && (v1 == v2);
+    return v1.hasSameTypeAs(v2) && (v1 == v2);
 }
 
 void ParameterBase::checkVarIsConsistentWithType()
@@ -242,41 +252,43 @@ void ParameterBase::checkVarIsConsistentWithType()
     //  else if (type == Type::POINT3D && !value.isArray()) { value = Array<var>{0,0,0};}
 }
 
-
-
-void ParameterBase::notifyValueChanged (bool defferIt,Listener * notifier)
+void ParameterBase::notifyValueChanged(bool defferIt, Listener *notifier)
 {
     if (defferIt)
         triggerAsyncUpdate();
-    else{
+    else
+    {
         // call all listeners as they still need to dispatch feedback
-        listeners.call (&Listener::parameterValueChanged, this,notifier);
+        listeners.call(&Listener::parameterValueChanged, this, notifier);
     }
 
-    queuedNotifier->addMessage (new ParamWithValue (this, value, false,notifier),false,nullptr);
+    queuedNotifier->addMessage(new ParamWithValue(this, value, false, notifier), false, nullptr);
 }
-
 
 //JS Helper
 
-
-DynamicObject* ParameterBase::createDynamicObject()
+DynamicObject *ParameterBase::createDynamicObject()
 {
     auto dObject = Controllable::createDynamicObject();
-    static const Identifier _jsSetIdentifier ("set");
-    dObject->setMethod (_jsSetIdentifier,
-                        setControllableValueFromJS
-                        );
+    static const Identifier _jsSetIdentifier("set");
+    dObject->setMethod(_jsSetIdentifier,
+                       setControllableValueFromJS);
     return dObject;
 }
 
-void ParameterBase::configureFromObject (DynamicObject* ob)
+void ParameterBase::configureFromObject(DynamicObject *ob)
 {
     if (ob)
     {
-        if (ob->hasProperty ("initialValue")) {defaultValue = ob->getProperty ("initialValue");}
+        if (ob->hasProperty("initialValue"))
+        {
+            defaultValue = ob->getProperty("initialValue");
+        }
 
-        if (ob->hasProperty ("value")) {setValue (ob->getProperty ("value"));}
+        if (ob->hasProperty("value"))
+        {
+            setValue(ob->getProperty("value"));
+        }
     }
     else
     {
@@ -284,10 +296,10 @@ void ParameterBase::configureFromObject (DynamicObject* ob)
     }
 }
 
-DynamicObject* ParameterBase::createObject()
+DynamicObject *ParameterBase::createObject()
 {
-    DynamicObject* res = new DynamicObject();
-    res->setProperty (valueIdentifier, value);
+    DynamicObject *res = new DynamicObject();
+    res->setProperty(valueIdentifier, value);
     return res;
 }
 
@@ -296,63 +308,64 @@ var ParameterBase::getVarState()
     return value;
 }
 
-
-
 void ParameterBase::handleAsyncUpdate()
 {
-    listeners.call (&Listener::parameterValueChanged, this,nullptr);
+    listeners.call(&Listener::parameterValueChanged, this, nullptr);
 };
 
 bool ParameterBase::isMappable()
 {
-    return isEditable && !mappingDisabled ;
+    return isEditable && !mappingDisabled;
 }
 
-void ParameterBase::setStateFromVar (const var& v)
+void ParameterBase::setStateFromVar(const var &v)
 {
-    setValue (v);
+    setValue(v);
 }
 
-bool ParameterBase::isSettingValue(){
+bool ParameterBase::isSettingValue()
+{
     return _isSettingValue.get();
 }
 
-
 float ParameterBase::floatValue() const { return (float)value; }
-double ParameterBase::doubleValue() const {return (double)value;}
+double ParameterBase::doubleValue() const { return (double)value; }
 int ParameterBase::intValue() const { return (int)value; }
 bool ParameterBase::boolValue() const { return (bool)value; }
 String ParameterBase::stringValue() const { return value.toString(); }
 
-void ParameterBase::addParameterListener (Listener* newListener) {
-    listeners.add (newListener);
+void ParameterBase::addParameterListener(Listener *newListener)
+{
+    listeners.add(newListener);
 
-    auto parentCont = dynamic_cast<ParameterContainer*>(parentContainer.get());
-    bool isParent = parentCont && (newListener==parentCont);
-    if(!isParent){ // keep parent first notified listener (callback are in reverse order)
+    auto parentCont = dynamic_cast<ParameterContainer *>(parentContainer.get());
+    bool isParent = parentCont && (newListener == parentCont);
+    if (!isParent)
+    { // keep parent first notified listener (callback are in reverse order)
         auto curListeners = listeners.getListeners();
         int parentIdx = curListeners.indexOf(parentCont);
-        if(parentIdx>=0){
-            curListeners.swap(parentIdx, curListeners.size()-1);
+        if (parentIdx >= 0)
+        {
+            curListeners.swap(parentIdx, curListeners.size() - 1);
         }
         listeners.clear();
-        for(auto cl : curListeners){
+        for (auto cl : curListeners)
+        {
             listeners.add(cl);
         }
     }
 
-
     newListener->linkedP.add(this);
 }
-void ParameterBase::removeParameterListener (Listener* listener) {
-    listeners.remove (listener);
+void ParameterBase::removeParameterListener(Listener *listener)
+{
+    listeners.remove(listener);
     listener->linkedP.removeAllInstancesOf(this);
 }
 
+void ParameterBase::addAsyncParameterListener(Listener *newListener) { queuedNotifier->addAsyncCoalescedListener(newListener); } //addListener (newListener); } // TODO clarify usge of non coalesced listeners
+void ParameterBase::addAsyncCoalescedListener(Listener *newListener) { queuedNotifier->addAsyncCoalescedListener(newListener); }
+void ParameterBase::removeAsyncParameterListener(Listener *listener) { queuedNotifier->removeListener(listener); }
 
-void ParameterBase::addAsyncParameterListener (Listener* newListener) { queuedNotifier->addAsyncCoalescedListener (newListener);}//addListener (newListener); } // TODO clarify usge of non coalesced listeners
-void ParameterBase::addAsyncCoalescedListener (Listener* newListener) { queuedNotifier->addAsyncCoalescedListener (newListener); }
-void ParameterBase::removeAsyncParameterListener (Listener* listener) { queuedNotifier->removeListener (listener); }
-
- const ParameterBase* ParameterBase::fromControllable (const Controllable* c) {return static_cast<const  ParameterBase*> (c);}
- ParameterBase* ParameterBase::fromControllable (Controllable* c) {return static_cast<ParameterBase*> (c);}
+const ParameterBase *ParameterBase::fromControllable(const Controllable *c) { return static_cast<const ParameterBase *>(c); }
+ParameterBase *ParameterBase::fromControllable(Controllable *c) { return static_cast<ParameterBase *>(c); }

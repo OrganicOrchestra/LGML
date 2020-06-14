@@ -95,6 +95,11 @@ class LGMLLogger : public Logger
             else{
                 lastNumAp  = 1;
             }
+            const int maxMsgBeforeFlood = 2000;
+            if(end-readIdx > maxMsgBeforeFlood){
+                readIdx = jmax(0,end-50);
+                elems.set(readIdx,new LogElement("!!! too many message to log dumping messages"));
+            }
             for(int i = readIdx ; i < end ; i++){
                 newMessage(elems.getUnchecked(i));
             }

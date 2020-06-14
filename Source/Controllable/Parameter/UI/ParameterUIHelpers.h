@@ -41,14 +41,19 @@ public:
     ~DefferTimer(){stopTimer();}
     void timerCallback()override{
         stopTimer();
+        if(pui.get()){
         pui->valueChanged(v);
+        }
+        else{
+            jassertfalse;
+        }
 
     }
     void trigger(var value){
         v = value;
         if(!isTimerRunning())startTimer(50);
     }
-    ParameterUI * pui;
+    WeakReference<ParameterUI>  pui;
     var v;
 };
 

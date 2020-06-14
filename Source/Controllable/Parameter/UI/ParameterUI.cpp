@@ -22,23 +22,19 @@
 #include "../../../FastMapper/FastMapper.h"
 #include "../UndoableHelper.h"
 #include "../../../UI/Inspector/Inspector.h"
-#include "ParameterUIHelpers.h" 
-
-
+#include "ParameterUIHelpers.h"
 
 //==============================================================================
 
 //-------------------
-ParameterUI::ParameterUI ( ParameterBase* _parameter) :
-    InspectableComponent(_parameter,"ParameterUI"),
-    parameter (_parameter),
-    showLabel (true),
-    showValue (true),
-    customTextDisplayed (""),
-    isMappingDest (false),
-    isDraggable (true),
-    wasShowing(true)
-,defferTimer  (new DefferTimer(this))
+ParameterUI::ParameterUI(ParameterBase *_parameter) : InspectableComponent(_parameter, "ParameterUI"),
+                                                      parameter(_parameter),
+                                                      showLabel(true),
+                                                      showValue(true),
+                                                      customTextDisplayed(""),
+                                                      isMappingDest(false),
+                                                      isDraggable(true),
+                                                      wasShowing(true), defferTimer(new DefferTimer(this))
 {
 
     LGMLUIUtils::optionallySetBufferedToImage(this);
@@ -48,10 +44,9 @@ ParameterUI::ParameterUI ( ParameterBase* _parameter) :
     if (parameter.get())
     {
 
-        parameter->addAsyncCoalescedListener (this);
-        parameter->addParameterListener (this);
-        controllableStateChanged (parameter.get());
-        
+        parameter->addAsyncCoalescedListener(this);
+        parameter->addParameterListener(this);
+        controllableStateChanged(parameter.get());
     }
     else
     {
@@ -59,85 +54,87 @@ ParameterUI::ParameterUI ( ParameterBase* _parameter) :
     }
 
     hasValidControllable = (parameter.get() != nullptr);
-    jassert (hasValidControllable);
-    setName (parameter->niceName);
-    parameter->addControllableListener (this);
+    jassert(hasValidControllable);
+    setName(parameter->niceName);
+    parameter->addControllableListener(this);
     mappingState = NOMAP;
-    LGMLDragger::getInstance()->applyMappingState (this);
-
-
-
+    LGMLDragger::getInstance()->applyMappingState(this);
 }
 
 ParameterUI::~ParameterUI()
 {
     AllParamType::getAllParameterUIs().removeAllInstancesOf(this);
-    if(auto * draggerI = LGMLDragger::getInstanceWithoutCreating()){
-        draggerI->unRegisterDragCandidate (this);
+    if (auto *draggerI = LGMLDragger::getInstanceWithoutCreating())
+    {
+        draggerI->unRegisterDragCandidate(this);
     }
 
     if (parameter.get())
     {
-        parameter->removeControllableListener (this);
-        parameter->removeParameterListener (this);
-        parameter->removeAsyncParameterListener (this);
+        parameter->removeControllableListener(this);
+        parameter->removeParameterListener(this);
+        parameter->removeAsyncParameterListener(this);
     }
 
     ParameterUI::masterReference.clear();
 }
 
-
-
-
-void ParameterUI::setCustomText (const String text)
+void ParameterUI::setCustomText(const String text)
 {
-    String newText =juce::translate(text);
-    if(newText!=customTextDisplayed){
-        customTextDisplayed =newText;
+    String newText = juce::translate(text);
+    if (newText != customTextDisplayed)
+    {
+        customTextDisplayed = newText;
         displayedTextChangedInternal();
-        paramUIListeners.call(&ParameterUI::Listener::displayedTextChanged,this);
+        paramUIListeners.call(&ParameterUI::Listener::displayedTextChanged, this);
         repaint();
     }
 }
 
-String  ParameterUI::getDisplayedText () const{
-    return customTextDisplayed.isNotEmpty() ? customTextDisplayed : parameter.get()?parameter->niceName:"No Parameter";
+String ParameterUI::getDisplayedText() const
+{
+    return customTextDisplayed.isNotEmpty() ? customTextDisplayed : parameter.get() ? parameter->niceName : "No Parameter";
 }
-const ParameterUI::UICommandType & ParameterUI::getUICommands() const{
+const ParameterUI::UICommandType &ParameterUI::getUICommands() const
+{
     static UICommandType dummy;
     return dummy;
 }
-void ParameterUI::mouseDown (const MouseEvent& e)
+void ParameterUI::mouseDown(const MouseEvent &e)
 {
-    UndoableHelpers::startNewTransaction(parameter,true);
+    UndoableHelpers::startNewTransaction(parameter, true);
     if (e.mods.isRightButtonDown())
     {
         PopupMenu p;
-        p.addItem (1, juce::translate("Select Parameter (Alt+click)"));
-        p.addItem (2, juce::translate("Copy control address"));
-        p.addItem (5, juce::translate("Copy control value"));
-        p.addItem (3, juce::translate("Add FastMap To"));
-        p.addItem (4, juce::translate("Add FastMap From"));
+        p.addItem(1, juce::translate("Select Parameter (Alt+click)"));
+        p.addItem(2, juce::translate("Copy control address"));
+        p.addItem(5, juce::translate("Copy control value"));
+        p.addItem(3, juce::translate("Add FastMap To"));
+        p.addItem(4, juce::translate("Add FastMap From"));
         Array<Identifier> typeSwitch;
-        if(parameter->isUserDefined && parameter->isSavableAsObject){
+        if (parameter->isUserDefined && parameter->isSavableAsObject)
+        {
             typeSwitch = ParameterFactory::getCompatibleTypes(parameter);
-            if(typeSwitch.size()){
+            if (typeSwitch.size())
+            {
                 PopupMenu tp;
                 int i = 50;
-                for( auto & t : typeSwitch){
-                    tp.addItem(i,ParameterFactory::typeToNiceName(t.toString()));
+                for (auto &t : typeSwitch)
+                {
+                    tp.addItem(i, ParameterFactory::typeToNiceName(t.toString()));
                     i++;
                 }
                 p.addSubMenu(juce::translate("change parameter type"), tp);
             }
-
         }
-        const UICommandType & cmds(getUICommands());
-        if(cmds.size()){
-        p.addSeparator();
+        const UICommandType &cmds(getUICommands());
+        if (cmds.size())
+        {
+            p.addSeparator();
             auto it = UICommandType::Iterator(cmds);
-            while (it.next()){
-                p.addItem (it.getKey()+100, juce::translate(it.getValue()));
+            while (it.next())
+            {
+                p.addItem(it.getKey() + 100, juce::translate(it.getValue()));
             }
         }
         bool oldFocus = getWantsKeyboardFocus();
@@ -147,56 +144,58 @@ void ParameterUI::mouseDown (const MouseEvent& e)
 
         switch (result)
         {
-            case 1:
-                Inspector::getInstance()->selectOnly(this);
-                break;
+        case 1:
+            Inspector::getInstance()->selectOnly(this);
+            break;
 
-            case 2:
-                SystemClipboard::copyTextToClipboard (parameter->controlAddress.toString());
-                break;
+        case 2:
+            SystemClipboard::copyTextToClipboard(parameter->controlAddress.toString());
+            break;
 
-            case 3:
-                FastMapper::getInstance()->addFastMap()->referenceOut->setParamToReferTo ( ParameterBase::fromControllable (parameter));
-                break;
+        case 3:
+            FastMapper::getInstance()->addFastMap()->referenceOut->setParamToReferTo(ParameterBase::fromControllable(parameter));
+            break;
 
-            case 4:
-                FastMapper::getInstance()->addFastMap()->referenceIn->setParamToReferTo ( ParameterBase::fromControllable (parameter));
-                break;
-            case 5:
-                SystemClipboard::copyTextToClipboard (parameter->value.toString());
-            default:
-                if(result>=100){
-                    processUICommand(result-100);
+        case 4:
+            FastMapper::getInstance()->addFastMap()->referenceIn->setParamToReferTo(ParameterBase::fromControllable(parameter));
+            break;
+        case 5:
+            SystemClipboard::copyTextToClipboard(parameter->value.toString());
+        default:
+            if (result >= 100)
+            {
+                processUICommand(result - 100);
+            }
+            else if (result >= 50)
+            {
+                ParameterContainer *parentC = dynamic_cast<ParameterContainer *>(parameter->parentContainer.get());
+
+                if (parentC)
+                {
+                    int oriIdx = parentC->controllables.indexOf(parameter);
+                    auto niceName = parameter->niceName;
+                    var obj(parameter->createObject());
+                    parentC->removeControllable(parameter);
+                    auto np = ParameterFactory::createFromTypeID(typeSwitch.getUnchecked(result - 50), niceName, nullptr);
+                    np->isSavableAsObject = true;
+                    np->isUserDefined = true;
+                    parentC->addParameter(np, oriIdx, true);
+                    np->configureFromObject(obj.getDynamicObject());
                 }
-                else if(result>=50){
-                    ParameterContainer * parentC = dynamic_cast<ParameterContainer *>(parameter->parentContainer.get());
-
-
-                    if(parentC){
-                        int oriIdx = parentC->controllables.indexOf(parameter);
-                        auto niceName = parameter->niceName;
-                        var obj (parameter->createObject());
-                        parentC->removeControllable(parameter);
-                        auto np = ParameterFactory::createFromTypeID(typeSwitch.getUnchecked(result-50),niceName,nullptr);
-                        np->isSavableAsObject = true;
-                        np->isUserDefined = true;
-                        parentC->addParameter(np,oriIdx,true);
-                        np->configureFromObject(obj.getDynamicObject());
-                    }
-                    else{
-                        jassertfalse;
-                    }
+                else
+                {
+                    jassertfalse;
                 }
-                break;
-
+            }
+            break;
         }
     }
-    if(e.mods.isAltDown()){
+    if (e.mods.isAltDown())
+    {
         Inspector::getInstance()->selectOnly(this);
     }
-
 }
-void ParameterUI::mouseUp (const MouseEvent& ) {
+void ParameterUI::mouseUp(const MouseEvent &){
 
 };
 
@@ -213,94 +212,106 @@ bool ParameterUI::shouldBailOut()
     }
 
     return bailOut;
-
 }
 
-
-
-void ParameterUI::controllableStateChanged (Controllable* c)
+void ParameterUI::controllableStateChanged(Controllable *c)
 {
     WeakReference<ParameterUI> wkf(this);
     bool en = c->enabled;
-    MessageManager::callAsync([wkf,en](){
-        if(wkf){
-            wkf->setAlpha (en ? 1 : .5f);
+    MessageManager::callAsync([wkf, en]() {
+        if (wkf)
+        {
+            wkf->setAlpha(en ? 1 : .5f);
             wkf->setEnabled(en);
         }
     });
-
 }
 
-void ParameterUI::controllableControlAddressChanged (Controllable*)
-{   
-//repaint();
+void ParameterUI::controllableControlAddressChanged(Controllable *)
+{
+    //repaint();
 }
 
-void ParameterUI::controllableNameChanged (Controllable*) {
-    if(customTextDisplayed.isEmpty()){
-        paramUIListeners.call(&ParameterUI::Listener::displayedTextChanged,this);
+void ParameterUI::controllableNameChanged(Controllable *)
+{
+    if (customTextDisplayed.isEmpty())
+    {
+        paramUIListeners.call(&ParameterUI::Listener::displayedTextChanged, this);
     }
     repaint();
 }
 
-
-String ParameterUI::getTooltip(){
-    if(parameter.get())
-        return juce::translate(parameter->description) + "\n"+juce::translate("Control Address")+" : " + parameter->controlAddress.toString();//"\nValue : "+parameter->value.toString();
+String ParameterUI::getTooltip()
+{
+    if (parameter.get())
+        return juce::translate(parameter->description) + "\n" + juce::translate("Control Address") + " : " + parameter->controlAddress.toString(); //"\nValue : "+parameter->value.toString();
     return "parameter is now deleted";
 }
 
-void ParameterUI::visibilityChanged(){
+void ParameterUI::visibilityChanged()
+{
     bool _isShowing = isShowing();
     // do nothing if already in appropriate state
-    if(_isShowing==wasShowing) return;
+    if (_isShowing == wasShowing)
+        return;
     // do nothing if detached
-    if(getParentComponent()==nullptr) return;
-    if (parameter.get()){
-        if(_isShowing){
-            parameter->addAsyncCoalescedListener (this);
-            parameter->addParameterListener (this);
-            parameter->addControllableListener (this);
+    if (getParentComponent() == nullptr)
+        return;
+    if (parameter.get())
+    {
+        if (_isShowing)
+        {
+            parameter->addAsyncCoalescedListener(this);
+            parameter->addParameterListener(this);
+            parameter->addControllableListener(this);
             // don't trigger
-            if(!dynamic_cast<Trigger*>(parameter.get()))
-                if(!parameter->checkValueIsTheSame(lastValuePainted,parameter->value))
+            if (!dynamic_cast<Trigger *>(parameter.get()))
+                if (!parameter->checkValueIsTheSame(lastValuePainted, parameter->value))
                     valueChanged(parameter->value);
         }
-        else{
-            parameter->removeAsyncParameterListener (this);
-            parameter->removeParameterListener (this);
-            parameter->removeControllableListener (this);
+        else
+        {
+            parameter->removeAsyncParameterListener(this);
+            parameter->removeParameterListener(this);
+            parameter->removeControllableListener(this);
             lastValuePainted = parameter->value;
         }
     }
     if (auto ld = LGMLDragger::getInstanceWithoutCreating())
         ld->applyMappingState(this);
-    wasShowing =_isShowing;
-
+    wasShowing = _isShowing;
 }
 
-void ParameterUI::paint(Graphics & g){
-    LGMLUIUtils::fillBackground(this,g);
+void ParameterUI::paint(Graphics &g)
+{
+    LGMLUIUtils::fillBackground(this, g);
 }
-void ParameterUI::parentHierarchyChanged(){
+void ParameterUI::parentHierarchyChanged()
+{
     visibilityChanged();
     InspectableComponent::parentHierarchyChanged();
 };
 
-void ParameterUI::setHasMappedParameter(bool s){
+void ParameterUI::setHasMappedParameter(bool s)
+{
 
     hasMappedParameter = s;
-    updateOverlayEffect();
+    WeakReference<ParameterUI> wkp(this);
+    MessageManager::callAsync([wkp]() {
+        if (wkp.get())
+        {
+            wkp->updateOverlayEffect();
+        }
+    });
 }
 
 class MapEffect : public ImageEffectFilter
 {
 public:
-    MapEffect (const Colour& colour, uint32 _amount, String _text,bool _isMapped):
-        amount (_amount),
-        pRef (colour.getAlpha(), colour.getRed(), colour.getGreen(), colour.getBlue()),
-        text (_text),
-        isMapped(_isMapped)
+    MapEffect(const Colour &colour, uint32 _amount, String _text, bool _isMapped) : amount(_amount),
+                                                                                    pRef(colour.getAlpha(), colour.getRed(), colour.getGreen(), colour.getBlue()),
+                                                                                    text(_text),
+                                                                                    isMapped(_isMapped)
     {
     }
     PixelARGB pRef;
@@ -309,63 +320,61 @@ public:
     uint32 trueAmount;
     bool isMapped;
 
-    template<typename T>
-    void  applyFunction (Image::BitmapData& data)
+    template <typename T>
+    void applyFunction(Image::BitmapData &data)
     {
         for (int y = 0; y < data.height; ++y)
         {
-            uint8* p = data.getLinePointer (y);
+            uint8 *p = data.getLinePointer(y);
 
             for (int x = 0; x < data.width; ++x)
             {
-                T* pp = ((T*) p);
+                T *pp = ((T *)p);
 
                 pp->desaturate();
-                pp->tween (pRef, trueAmount);
+                pp->tween(pRef, trueAmount);
 
                 p += data.pixelStride;
             }
         }
     }
-    void applyEffect (Image& image, Graphics& g, float /*scaleFactor*/, float alpha)
+    void applyEffect(Image &image, Graphics &g, float /*scaleFactor*/, float alpha)
     {
         //  Image temp (image.getFormat(), image.getWidth(), image.getHeight(), true);
-        trueAmount = (uint32) (alpha * alpha * amount);
+        trueAmount = (uint32)(alpha * alpha * amount);
 
-        Image::BitmapData data (image, 0, 0, image.getWidth(), image.getHeight(), Image::BitmapData::readWrite);
+        Image::BitmapData data(image, 0, 0, image.getWidth(), image.getHeight(), Image::BitmapData::readWrite);
 
         if (image.getFormat() == Image::PixelFormat::ARGB)
         {
-            applyFunction<PixelARGB> (data);
+            applyFunction<PixelARGB>(data);
         }
         else if (image.getFormat() == Image::PixelFormat::RGB)
         {
-            applyFunction<PixelRGB> (data);
+            applyFunction<PixelRGB>(data);
         }
         else
         {
             jassertfalse;
         }
 
-
-        g.drawImage (image, image.getBounds().toFloat());
-        if(isMapped){
+        g.drawImage(image, image.getBounds().toFloat());
+        if (isMapped)
+        {
             auto r = image.getBounds();
             g.setColour(Colours::red);
             int side = 8;
             g.fillRect(r.removeFromBottom(side).removeFromRight(side));
         }
-//        g.setColour (Colours::white);
-//        g.drawFittedText (text, 0, 0, image.getWidth(), image.getHeight(), Justification::centred, 2);
-
+        //        g.setColour (Colours::white);
+        //        g.drawFittedText (text, 0, 0, image.getWidth(), image.getHeight(), Justification::centred, 2);
     }
 };
 
-
-
-void  ParameterUI::setMappingState (const bool  b)
+void ParameterUI::setMappingState(const bool b)
 {
-    if ( parameter && !parameter->isMappable())return;
+    if (parameter && !parameter->isMappable())
+        return;
 
     MappingState s = b ? (isMappingDest ? MAPDEST : MAPSOURCE) : NOMAP;
 
@@ -373,39 +382,37 @@ void  ParameterUI::setMappingState (const bool  b)
     {
         if (s == NOMAP)
         {
-            setInterceptsMouseClicks (true, true);
-
+            setInterceptsMouseClicks(true, true);
         }
         else
         {
-            setInterceptsMouseClicks (true, false);
+            setInterceptsMouseClicks(true, false);
         }
     }
-    
 
     mappingState = s;
     updateOverlayEffect();
-
 }
 
-void ParameterUI::updateOverlayEffect(){
-    if (mappingState!=NOMAP)
+void ParameterUI::updateOverlayEffect()
+{
+    if (mappingState != NOMAP)
     {
-        Colour c =isMappingDest ? Colours::red : Colours::blue;
-        if (isSelected) c = Colours::green;
-        mapEffect  = std::make_unique<MapEffect> (c, isSelected? 100:50, getName(),FastMapper::getInstance()->isParameterMapped(parameter));
+        Colour c = isMappingDest ? Colours::red : Colours::blue;
+        if (isSelected)
+            c = Colours::green;
+        mapEffect = std::make_unique<MapEffect>(c, isSelected ? 100 : 50, getName(), FastMapper::getInstance()->isParameterMapped(parameter));
     }
     else
     {
         mapEffect = nullptr;
     }
 
-    setComponentEffect (mapEffect.get());
+    setComponentEffect(mapEffect.get());
     //repaint();
-
 }
 
-void ParameterUI::setMappingDest (bool _isMappingDest)
+void ParameterUI::setMappingDest(bool _isMappingDest)
 {
     isMappingDest = _isMappingDest;
 
@@ -413,89 +420,81 @@ void ParameterUI::setMappingDest (bool _isMappingDest)
     {
         mappingState = isMappingDest ? MAPDEST : MAPSOURCE;
     }
-
 }
 
-void ParameterUI::newMessage (const ParameterBase::ParamWithValue& p)
+void ParameterUI::newMessage(const ParameterBase::ParamWithValue &p)
 {
     if (p.isRange())
     {
-        rangeChanged (p.parameter);
+        rangeChanged(p.parameter);
     }
     else
-    {   defferTimer->trigger(p.value);
-//        valueChanged (p.value);
+    {
+        defferTimer->trigger(p.value);
+        //        valueChanged (p.value);
     }
 };
-
-
-
 
 //////////////////
 // NamedParameterUI
 
-
-NamedParameterUI::NamedParameterUI (std::unique_ptr<ParameterUI>  ui_, int _labelWidth, bool labelA):
-    ParameterUI (ui_->parameter)
-,ownedParameterUI (std::move(ui_))
-    ,labelWidth (_labelWidth)
-    ,labelAbove (labelA)
-    ,controllableLabel(new LabelLinkedTooltip(ownedParameterUI.get()))
+NamedParameterUI::NamedParameterUI(std::unique_ptr<ParameterUI> ui_, int _labelWidth, bool labelA) : ParameterUI(ui_->parameter), ownedParameterUI(std::move(ui_)), labelWidth(_labelWidth), labelAbove(labelA), controllableLabel(new LabelLinkedTooltip(ownedParameterUI.get()))
 {
     ownedParameterUI->showLabel = false;
     // prevent mapping state for named parameterUI -> inner will handle it
     setMappingState(false);
     setPaintingIsUnclipped(true);
-    addAndMakeVisible (controllableLabel.get());
+    addAndMakeVisible(controllableLabel.get());
 
-
-    controllableLabel->setText (ownedParameterUI->visibleName, dontSendNotification);
+    controllableLabel->setText(ownedParameterUI->visibleName, dontSendNotification);
 
     if (ownedParameterUI->parameter->isUserDefined)
     {
-        controllableLabel->setEditable (true);
-        controllableLabel->addListener (this);
+        controllableLabel->setEditable(true);
+        controllableLabel->addListener(this);
     }
     LGMLUIUtils::optionallySetBufferedToImage(controllableLabel.get());
 
-    addAndMakeVisible (ownedParameterUI.get());
-    ownedParameterUI->toFront (false);
-//    setBounds (ownedParameterUI->getBounds()
-//               .withTrimmedRight (-labelWidth)
-//               .withHeight (jmax ((int)controllableLabel.getFont().getHeight() + 4, ownedParameterUI->getHeight())));
+    addAndMakeVisible(ownedParameterUI.get());
+    ownedParameterUI->toFront(false);
+    //    setBounds (ownedParameterUI->getBounds()
+    //               .withTrimmedRight (-labelWidth)
+    //               .withHeight (jmax ((int)controllableLabel.getFont().getHeight() + 4, ownedParameterUI->getHeight())));
 }
 
 void NamedParameterUI::resized()
 {
-    Rectangle<int> area  = getLocalBounds();
+    Rectangle<int> area = getLocalBounds();
 
     if (controllableLabel->getText().isNotEmpty())
     {
         if (labelAbove)
         {
-            controllableLabel->setBounds (area.removeFromTop (jmin (18, area.getHeight() / 2)));
+            controllableLabel->setBounds(area.removeFromTop(jmin(18, area.getHeight() / 2)));
         }
         else
         {
-            controllableLabel->setBounds (area.removeFromLeft (labelWidth));
-            area.removeFromLeft (10);
+            controllableLabel->setBounds(area.removeFromLeft(labelWidth));
+            area.removeFromLeft(10);
         }
     }
 
-    ownedParameterUI->setBounds (area);
+    ownedParameterUI->setBounds(area);
 }
 
-void NamedParameterUI::labelTextChanged (Label* labelThatHasChanged)
+void NamedParameterUI::labelTextChanged(Label *labelThatHasChanged)
 {
     if (ownedParameterUI.get())
     {
-        ownedParameterUI->parameter->setNiceName (labelThatHasChanged->getText());
+        ownedParameterUI->parameter->setNiceName(labelThatHasChanged->getText());
     }
 };
 
-void  NamedParameterUI::controllableControlAddressChanged (Controllable* c){
-    if(c && c==parameter){
-    controllableLabel->setText (juce::translate(parameter->niceName), dontSendNotification);
+void NamedParameterUI::controllableControlAddressChanged(Controllable *c)
+{
+    if (c && c == parameter)
+    {
+        controllableLabel->setText(juce::translate(parameter->niceName), dontSendNotification);
     }
 }
 

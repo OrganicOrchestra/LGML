@@ -141,7 +141,7 @@ void JsEnvironment::clearNamespace()
 {
     const  ScopedLock lk (engineLock);
 
-    JsHelpers::clearRefsFromObj(localEnv);
+    JsHelpers::clearRefsFromObj(localEnv.get());
     localEnv->clear();
 
     jsEngine.reset(new JavascriptEngine());
@@ -154,8 +154,8 @@ void JsEnvironment::clearNamespace()
         linkedContainer->clearUserDefinedParameters();
         localEnv->setMethod("getLocal",&getLocal );
     }
-    jsEngine->registerNativeObject (JsHelpers::jsLocalIdentifier, localEnv);
-    jsEngine->registerNativeObject (JsHelpers::jsGlobalIdentifier, getGlobalEnv());
+    jsEngine->registerNativeObject (JsHelpers::jsLocalIdentifier, localEnv.get());
+    jsEngine->registerNativeObject (JsHelpers::jsGlobalIdentifier, getGlobalEnv().get());
 
 
 
@@ -166,7 +166,7 @@ void JsEnvironment::clearNamespace()
 
 void JsEnvironment::removeNamespace (const String& jsNamespace)
 {
-    JsHelpers::removeNamespaceFromObject (jsNamespace, localEnv);
+    JsHelpers::removeNamespaceFromObject (jsNamespace, localEnv.get());
 }
 
 String JsEnvironment::getParentName()
@@ -459,7 +459,7 @@ const NamedValueSet& JsEnvironment::getRootObjectProperties()
 
 void JsEnvironment::addToLocalNamespace (const String& elem, DynamicObject* target)
 {
-    JsHelpers::addToNamespace (elem, target, localEnv);
+    JsHelpers::addToNamespace (elem, target, localEnv.get());
 }
 
 void JsEnvironment::setLocalNamespace (DynamicObject& target)
@@ -473,7 +473,7 @@ void JsEnvironment::setLocalNamespace (DynamicObject& target)
         localEnv->setProperty (n, target.getProperty (n));
     }
 
-    JsHelpers::assignPtrToObject(this,localEnv);
+    JsHelpers::assignPtrToObject(this,localEnv.get());
 
 }
 
@@ -481,7 +481,7 @@ void JsEnvironment::setNamespaceName (const String& s)
 {
     if (s != localNamespace)
     {
-        DynamicObject* d = JsHelpers::getNamespaceFromObject (getParentName(), getGlobalEnv());
+        DynamicObject* d = JsHelpers::getNamespaceFromObject (getParentName(), getGlobalEnv().get());
         jassert (d != nullptr);
 
         if (localEnv.get())
