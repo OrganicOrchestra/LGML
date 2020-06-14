@@ -125,8 +125,11 @@ protected :
     static var createParameterListenerObject (const var::NativeFunctionArgs& a);
 
 
-
-    typedef HashMap<String ,WeakReference<ParameterBase> > ListenedParameterType ;
+    struct ListenedParamElem{
+        Identifier id;
+        WeakReference<ParameterBase> param;
+    };
+    typedef HashMap<String ,ListenedParamElem > ListenedParameterType ;
     ListenedParameterType listenedParameters;
     Array<WeakReference<ParameterContainer> > listenedContainers;
     void sendAllParametersToJS();

@@ -296,7 +296,7 @@ void JsEnvironment::clearListeners()
     while (it.next())
     {
         auto c = it.getValue();
-        if (c.get()) c->removeParameterListener (this);
+        if (c.param.get()) c.param->removeParameterListener (this);
     }
 
     listenedParameters.clear();
@@ -576,7 +576,8 @@ Result JsEnvironment::checkUserControllableEventFunction()
 
                     if ( ParameterBase* p = dynamic_cast <ParameterBase*> (c))
                     {
-                        listenedParameters.set(f->splitedName.joinIntoString("_"),p);
+                        auto fname = f->splitedName.joinIntoString("_");
+                        listenedParameters.set(fname,{Identifier(fname),p});
                         found = true;
                         break;
                     }
@@ -618,7 +619,7 @@ Result JsEnvironment::checkUserControllableEventFunction()
     ListenedParameterType::Iterator it(listenedParameters);
     while (it.next())
     {
-        it.getValue()->addParameterListener (this);
+        it.getValue().param->addParameterListener (this);
     }
 
     for (auto& cont : listenedContainers)
@@ -672,8 +673,9 @@ void JsEnvironment::parameterValueChanged ( ParameterBase* p, ParameterBase::Lis
         ListenedParameterType::Iterator it(listenedParameters);
         while (it.next())
         {
-            if(it.getValue().get()==p){
-                callFunction (it.getKey(),p->value, false);
+            auto v = it.getValue();
+            if(v.param.get()==p && functionIdentifierIsDefined(v.id)){
+                callFunctionFromIdentifier (v.id,p->value, false);
             }
         }
     }
@@ -732,7 +734,7 @@ void JsEnvironment::sendAllParametersToJS()
     while (it.next())
     {
         auto t = it.getValue();
-        if (t.get())parameterValueChanged (t);
+        if (t.param.get())parameterValueChanged (t.param);
     }
 
     for (auto& t : listenedContainers)
