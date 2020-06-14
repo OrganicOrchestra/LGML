@@ -22,7 +22,7 @@ REGISTER_PARAM_TYPE (StringParameter)
 StringParameter::StringParameter (const String& niceName, const String& description, const String& initialValue, bool enabled) :
    ParameterBase (niceName, description, initialValue, enabled)
 {
-
+    tryToKeepOrderingWhenFlooded = true; // we assume that string tends ton control higher level , so inform to
 }
 
 
