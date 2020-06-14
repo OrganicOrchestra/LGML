@@ -39,7 +39,6 @@ ParameterBase::ParameterBase(const String &niceName, const String &description, 
                                                                                                                   mappingDisabled(false),
                                                                                                                   alwaysNotify(false)
 {
-
 }
 
 ParameterBase::~ParameterBase()
@@ -122,7 +121,7 @@ bool ParameterBase::shouldBeDeffered(const var &_value, bool silentSet, bool for
     if (queuedNotifier->isNotifying() && !silentSet && !force && !isReentrant)
     {
         // if (auto *mm = MessageManager::getInstanceWithoutCreating())
-        if(!MessageManager::getInstance()->isThisTheMessageThread())
+        if (!MessageManager::getInstance()->isThisTheMessageThread())
         {
             //            if(mm->isThisTheMessageThread()){
 
@@ -136,19 +135,31 @@ bool ParameterBase::shouldBeDeffered(const var &_value, bool silentSet, bool for
             //            }
             // if (queuedNotifier->isNotifying())
             // {
-            //     NLOGW(controlAddress.toString(), "defer parameter as it has not fully ended to be processed");
 
-            //     WeakReference<ParameterBase> bailout(this);
-            //     mm->callAsync([bailout, _value, silentSet, force]() mutable {
-            //         if (bailout.get())
-            //             bailout->tryToSetValue(_value, silentSet, force);
-            //     });
-            //     return true;
-            // }
-             NLOGW(controlAddress.toString(), "parameter flooding may mix values up");
+            // }1
+            if (tryToKeepOrderingWhenFlooded)
+            {
+                if (auto *mm = MessageManager::getInstanceWithoutCreating())
+                {
+                    NLOGW(controlAddress.toString(), "defer parameter as it has not fully ended to be processed");
+
+                    WeakReference<ParameterBase> bailout(this);
+                    mm->callAsync([bailout, _value, silentSet, force]() mutable {
+                        if (bailout.get())
+                            bailout->tryToSetValue(_value, silentSet, force);
+                    });
+                    return true;
+                }
+            }
+            else
+            {
+                NLOGE(controlAddress.toString(), "parameter flooding may mix values up");
+            }
+
             //  return true;
         }
-        else{
+        else
+        {
             jassertfalse;
         }
     }

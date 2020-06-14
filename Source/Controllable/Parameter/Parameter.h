@@ -170,6 +170,7 @@ protected:
     bool shouldBeDeffered (const var& _value, bool silentSet, bool force);
     Atomic<bool> _isSettingValue;
     Atomic<ParameterBase::Listener * > _valueSetter;
+    bool tryToKeepOrderingWhenFlooded = false; // float that are flooded are not that of a big deal, but presets... 
     
 private:
 
