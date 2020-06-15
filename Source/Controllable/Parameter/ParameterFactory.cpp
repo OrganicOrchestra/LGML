@@ -15,24 +15,23 @@
 #include "ParameterFactory.h"
 #include "ParameterContainer.h"
 
-
-ParameterBase* ParameterFactory::createBaseFromVar (StringRef n, const var& v)
+ParameterBase *ParameterFactory::createBaseFromVar(StringRef n, const var &v)
 {
     if (v.isDouble())
     {
-        return createFromTypeID (Identifier ("t_NumericParameter_floatParamType"), n);
+        return createFromTypeID(Identifier("t_NumericParameter_floatParamType"), n);
     }
     else if (v.isInt())
     {
-        return createFromTypeID (Identifier ("t_NumericParameter_int"), n);
+        return createFromTypeID(Identifier("t_NumericParameter_int"), n);
     }
     else if (v.isBool())
     {
-        return createFromTypeID (Identifier ("t_BoolParameter"), n);
+        return createFromTypeID(Identifier("t_BoolParameter"), n);
     }
     else if (v.isString())
     {
-        return createFromTypeID (Identifier ("t_StringParameter"), n);
+        return createFromTypeID(Identifier("t_StringParameter"), n);
     }
     else
     {
@@ -42,16 +41,16 @@ ParameterBase* ParameterFactory::createBaseFromVar (StringRef n, const var& v)
     }
 }
 
-Array<Identifier> ParameterFactory::getCompatibleTypes(ParameterBase* p ){
-    static  Array<Identifier> AllGroup {Trigger::_factoryType,BoolParameter::_factoryType,FloatParameter::_factoryType,IntParameter::_factoryType,EnumParameter::_factoryType,StringParameter::_factoryType,Point2DParameter<floatParamType>::_factoryType};
-    Array<Identifier>    res;
-    for(auto & a : AllGroup){
-        if(a!=p->getFactoryTypeId()){
+Array<Identifier> ParameterFactory::getCompatibleTypes(ParameterBase *p)
+{
+    static Array<Identifier> AllGroup{Trigger::_factoryType, BoolParameter::_factoryType, FloatParameter::_factoryType, IntParameter::_factoryType, EnumParameter::_factoryType, StringParameter::_factoryType, Point2DParameter<floatParamType>::_factoryType};
+    Array<Identifier> res;
+    for (auto &a : AllGroup)
+    {
+        if (a != p->getFactoryTypeId())
+        {
             res.add(a);
         }
     }
     return res;
 }
-
-
-

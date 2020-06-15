@@ -27,66 +27,56 @@
 //#include "../UI/Inspector/Inspector.h"
 #endif
 
-
-
-
-class FastMapper :
-    public ParameterContainer,
+class FastMapper : public ParameterContainer,
 #if !ENGINE_HEADLESS
-    private LGMLDragger::Listener,
+                   private LGMLDragger::Listener,
 #endif
-    private ParameterProxy::ParameterProxyListener
+                   private ParameterProxy::ParameterProxyListener
 
 {
 public:
-    juce_DeclareSingleton (FastMapper, true)
-    DECLARE_OBJ_TYPE (FastMapper,"map all parameters together in LGML")
+    juce_DeclareSingleton(FastMapper, true)
+        DECLARE_OBJ_TYPE(FastMapper, "map all parameters together in LGML")
 
-
-    virtual ~FastMapper();
+            virtual ~FastMapper();
 
     OwnedArray<FastMap> maps;
-    ParameterProxy* potentialIn;
-    ParameterProxy* potentialOut;
+    ParameterProxy *potentialIn;
+    ParameterProxy *potentialOut;
     bool autoAddFastMaps;
 
     void clear();
 
-    void setPotentialInput ( ParameterBase*);
-    void setPotentialOutput ( ParameterBase*);
+    void setPotentialInput(ParameterBase *);
+    void setPotentialOutput(ParameterBase *);
 
-    FastMap* addFastMap(bool warnDups=true);
-    void removeFastmap (FastMap* f);
+    FastMap *addFastMap(bool warnDups = true);
+    void removeFastmap(FastMap *f);
     bool removeMappingIncluding(ParameterBase *);
 
+    ParameterContainer *addContainerFromObject(const String &name, DynamicObject *fData) override;
 
-    ParameterContainer*   addContainerFromObject (const String& name, DynamicObject*   fData) override;
-
-
-    bool isParameterMapped (ParameterBase * p);
+    bool isParameterMapped(ParameterBase *p);
 
 private:
-
 #if !ENGINE_HEADLESS
     // LGMLDragger Listener
-    void selectionChanged ( ParameterBase*) override;
+    void selectionChanged(ParameterBase *) override;
     void mappingModeChanged(bool) override;
 #endif
     uint32 lastFMAddedTime;
 
     // proxy listener
-    void linkedParamChanged (ParameterProxy*) override;
+    void linkedParamChanged(ParameterProxy *) override;
 
     // ControllableContainer::Listener
-    typedef  ParameterContainer::OwnedFeedbackListener<FastMapper> PSync;
+    typedef ParameterContainer::OwnedFeedbackListener<FastMapper> PSync;
     PSync pSync;
     friend class ParameterContainer::OwnedFeedbackListener<FastMapper>;
 
     void createNewFromPotentials();
-    bool checkValidNewFastMap (ParameterBase* referenceInParam,ParameterBase* referenceOutParam,bool warnDups);
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FastMapper)
-
+    bool checkValidNewFastMap(ParameterBase *referenceInParam, ParameterBase *referenceOutParam, bool warnDups);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FastMapper)
 };
 
-
-#endif  // FASTMAPPER_H_INCLUDED
+#endif // FASTMAPPER_H_INCLUDED

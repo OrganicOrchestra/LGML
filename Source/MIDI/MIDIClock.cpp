@@ -19,49 +19,52 @@
 #include "MIDIClock.h"
 #include "../Engine.h"
 #include "../Time/TimeManager.h"
-static Array<MIDIClock*,CriticalSection> allClocks={};
+static Array<MIDIClock *, CriticalSection> allClocks = {};
 
-class MIDIClockRunner : public Thread,public DeletedAtShutdown,public Engine::EngineListener{
+class MIDIClockRunner : public Thread, public DeletedAtShutdown, public Engine::EngineListener
+{
 public:
+    void startEngine() override { startThread(Thread::realtimeAudioPriority); }
+    void stopEngine() override
+    {
+        signalThreadShouldExit();
+        notify();
+    }
+    MIDIClockRunner() : Thread("MIDIClockRunner") { startThread(Thread::realtimeAudioPriority); }
+    ~MIDIClockRunner() { stopThread(100); }
 
-
-         void startEngine() override{startThread(Thread::realtimeAudioPriority);}
-    void stopEngine() override{signalThreadShouldExit();notify();}
-    MIDIClockRunner():Thread("MIDIClockRunner"){startThread(Thread::realtimeAudioPriority); }
-    ~MIDIClockRunner(){stopThread(100);}
-
-    void run()override{
-        while(!threadShouldExit()){
-            if(allClocks.size()==0 ){ // long polling if empty
+    void run() override
+    {
+        while (!threadShouldExit())
+        {
+            if (allClocks.size() == 0)
+            { // long polling if empty
                 wait(1000);
             }
-            else{
-                int waitTime = (int)( MIDIClock::sendAllClocks() );
-                waitTime = jmax(waitTime,1); // avoid too many useless calls by keeping a granularity of 1ms
+            else
+            {
+                int waitTime = (int)(MIDIClock::sendAllClocks());
+                waitTime = jmax(waitTime, 1); // avoid too many useless calls by keeping a granularity of 1ms
                 wait((int)waitTime);
-
-
             }
         }
     }
-
-
-
 };
 
-MIDIClockRunner * getClockRunner(){
-    static MIDIClockRunner * inst=nullptr;
-    if(!inst){
+MIDIClockRunner *getClockRunner()
+{
+    static MIDIClockRunner *inst = nullptr;
+    if (!inst)
+    {
         inst = new MIDIClockRunner();
     }
     return inst;
 }
 
-
 constexpr int MIDIClockPPQNRes = 24;
 
 MIDIClock::MIDIClock(bool _sendSPP)
-:midiFifo(MIDI_SYNC_QUEUE_SIZE)
+    : midiFifo(MIDI_SYNC_QUEUE_SIZE)
 {
     TimeManager::getInstance()->addTimeManagerListener(this);
     delta = 0.0;
@@ -71,18 +74,17 @@ MIDIClock::MIDIClock(bool _sendSPP)
 MIDIClock::~MIDIClock()
 {
     stop();
-    if(auto tm  =TimeManager::getInstanceWithoutCreating()){
+    if (auto tm = TimeManager::getInstanceWithoutCreating())
+    {
         tm->removeTimeManagerListener(this);
     }
-
-
 }
 
-bool MIDIClock::setOutput(MIDIListener * _midiOut)
+bool MIDIClock::setOutput(MIDIListener *_midiOut)
 {
 
     midiOut = _midiOut;
-    if(!midiOut)
+    if (!midiOut)
         return false;
 
     reset();
@@ -96,7 +98,6 @@ bool MIDIClock::start()
     _isRunning = true;
     getClockRunner()->notify(); // instanciate or wake if in long polling
     return midiOut != nullptr;
-
 }
 
 void MIDIClock::stop()
@@ -104,38 +105,42 @@ void MIDIClock::stop()
     _isRunning = false;
     allClocks.removeAllInstancesOf(this);
 
-    if(!midiOut)
+    if (!midiOut)
         return;
-
-
 }
 
-bool MIDIClock::isRunning(){return _isRunning.get();}
+bool MIDIClock::isRunning() { return _isRunning.get(); }
 #define DEBUG_USELESS_THREAD_CALLS 0
-double MIDIClock::sendAllClocks(){
+double MIDIClock::sendAllClocks()
+{
 #if DEBUG_USELESS_THREAD_CALLS
     static int numUselessCalls = 0;
     bool sentOneMessage = false;
 #endif
     double nextTime = 1000; // long poll if no active
     //auto tm = TimeManager::getInstance();
-   // if(!tm->isPlaying() || tm->isSettingTempo->boolValue())return  nextTime;
+    // if(!tm->isPlaying() || tm->isSettingTempo->boolValue())return  nextTime;
 
-    for(auto & c:allClocks){
-        if(c->_isRunning.get()){
+    for (auto &c : allClocks)
+    {
+        if (c->_isRunning.get())
+        {
             double cTime = c->runClock();
-            if(c->state.isPlaying){nextTime = jmin(nextTime,cTime);};
+            if (c->state.isPlaying)
+            {
+                nextTime = jmin(nextTime, cTime);
+            };
 #if DEBUG_USELESS_THREAD_CALLS
-            sentOneMessage|=c->hasSentMessage;
+            sentOneMessage |= c->hasSentMessage;
 #endif
-
-
         }
     }
 #if DEBUG_USELESS_THREAD_CALLS
-    if(!sentOneMessage){
+    if (!sentOneMessage)
+    {
         numUselessCalls++;
-        if(numUselessCalls%100==0){
+        if (numUselessCalls % 100 == 0)
+        {
             DBG("uselessCalls :" << numUselessCalls << " :: " << nextTime);
         }
     }
@@ -146,94 +151,101 @@ double MIDIClock::runClock()
 {
     double timeToNext = -1;
     addClockIfNeeded(timeToNext);
-    int numR =midiFifo.getNumReady();
+    int numR = midiFifo.getNumReady();
     hasSentMessage = false;
-    if((numR>0) && midiOut){
+    if ((numR > 0) && midiOut)
+    {
         hasSentMessage = true;
-        int st1,st2,bs1,bs2,i;
+        int st1, st2, bs1, bs2, i;
         midiFifo.prepareToRead(numR, st1, bs1, st2, bs2);
-        for( i = 0;i< bs1 ; i++){
-            midiOut->sendMessage(messagesToSend[st1+i]);
+        for (i = 0; i < bs1; i++)
+        {
+            midiOut->sendMessage(messagesToSend[st1 + i]);
         }
-        for( i = 0;i< bs2 ; i++){midiOut->sendMessage(messagesToSend[st2+i]);}
-        midiFifo.finishedRead(bs1+bs2);
+        for (i = 0; i < bs2; i++)
+        {
+            midiOut->sendMessage(messagesToSend[st2 + i]);
+        }
+        midiFifo.finishedRead(bs1 + bs2);
     }
-    jassert(timeToNext>=0);
+    jassert(timeToNext >= 0);
 
     return timeToNext;
 }
 
-
-
-double MIDIClock::getPPQWithDelta(int multiplier){
+double MIDIClock::getPPQWithDelta(int multiplier)
+{
     auto tm = TimeManager::getInstance();
-    auto beat = followGlobalTransport?tm->getBeat():tm->getLooseBeat();
-   
-    return (beat+ delta*1.0*tm->BPM->doubleValue()/60000.0)*1.0*multiplier ;
-    
+    auto beat = followGlobalTransport ? tm->getBeat() : tm->getLooseBeat();
+
+    return (beat + delta * 1.0 * tm->BPM->doubleValue() / 60000.0) * 1.0 * multiplier;
 }
 
-double MIDIClock::ppqToTime(double ppq,int multiplier){
+double MIDIClock::ppqToTime(double ppq, int multiplier)
+{
     auto tm = TimeManager::getInstance();
-    return  ppq/tm->BPM->doubleValue()*60000.0/multiplier ;
+    return ppq / tm->BPM->doubleValue() * 60000.0 / multiplier;
 }
 
-void MIDIClock::addClockIfNeeded(double & timeToNextMessage){
+void MIDIClock::addClockIfNeeded(double &timeToNextMessage)
+{
 
     double newT = (getPPQWithDelta(MIDIClockPPQNRes));
     int curPPQN = state.ppqn.get();
-     int maxClockMsg = jmax(0,midiFifo.getFreeSpace() - 4);
-    double diff =newT - curPPQN ;
-    int numClocksToAdd  = (int)floor(diff);//+1.0/(2*MIDIClockPPQNRes));//  center error  ?
-    if(numClocksToAdd<0){
+    int maxClockMsg = jmax(0, midiFifo.getFreeSpace() - 4);
+    double diff = newT - curPPQN;
+    int numClocksToAdd = (int)floor(diff); //+1.0/(2*MIDIClockPPQNRes));//  center error  ?
+    if (numClocksToAdd < 0)
+    {
         timeToNextMessage = -numClocksToAdd;
         //DBG(String("waiting clk : ")+ String(numClocksToAdd));
-        return ;
+        return;
     }
 
-
-    if(numClocksToAdd > maxClockMsg){
+    if (numClocksToAdd > maxClockMsg)
+    {
         //jassertfalse;
         numClocksToAdd = maxClockMsg;
-
     }
 
     appendClocks(numClocksToAdd);
     curPPQN = state.ppqn.get();
-    if(newT<curPPQN){ // should wait to catch the clock back
-        timeToNextMessage = curPPQN-newT;
+    if (newT < curPPQN)
+    { // should wait to catch the clock back
+        timeToNextMessage = curPPQN - newT;
     }
-    else if(newT<curPPQN+1){ // should wait nextPPQN
-        timeToNextMessage = (curPPQN+1) -newT ;
+    else if (newT < curPPQN + 1)
+    { // should wait nextPPQN
+        timeToNextMessage = (curPPQN + 1) - newT;
     }
-    else{ // we didn't manage to catch the clock in this call
+    else
+    { // we didn't manage to catch the clock in this call
         timeToNextMessage = 0;
     }
-    jassert(timeToNextMessage>=0);
-    timeToNextMessage=ppqToTime(timeToNextMessage,MIDIClockPPQNRes);
-    jassert(timeToNextMessage>=0);
-
-
+    jassert(timeToNextMessage >= 0);
+    timeToNextMessage = ppqToTime(timeToNextMessage, MIDIClockPPQNRes);
+    jassert(timeToNextMessage >= 0);
 }
 
-int MIDIClock::appendCurrentSPP(){
-    if(sendSPP){
-//        jassert(!state.isPlaying);
+int MIDIClock::appendCurrentSPP()
+{
+    if (sendSPP)
+    {
+        //        jassert(!state.isPlaying);
         //        int64 MIDIBeat = (int64)getPPQWithDelta(4);
         auto tm = TimeManager::getInstance();
-        int MIDIBeat = (int)((tm->getBeat() )*4.0);
-        if(MIDIBeat<0){
-//            jassertfalse;
+        int MIDIBeat = (int)((tm->getBeat()) * 4.0);
+        if (MIDIBeat < 0)
+        {
+            //            jassertfalse;
         }
         // SPP Msg
-       appendOneMsg(MidiMessage::songPositionPointer(MIDIBeat));
+        appendOneMsg(MidiMessage::songPositionPointer(MIDIBeat));
 
         return MIDIBeat;
     }
     return 0;
-    
 }
-
 
 void MIDIClock::reset()
 {
@@ -242,87 +254,93 @@ void MIDIClock::reset()
     start();
 }
 
+void MIDIClock::BPMChanged(double /*BPM*/) {}
 
-
-void MIDIClock::BPMChanged (double /*BPM*/) {}
-
-void MIDIClock::timeJumped (sample_clk_t /*time*/) {
-    if(sendSPP){
+void MIDIClock::timeJumped(sample_clk_t /*time*/)
+{
+    if (sendSPP)
+    {
         int curPPQN = state.ppqn.get();
         auto tm = TimeManager::getInstance();
-        int nextMIDIBeat = (int)(tm->getBeat() *4.0 );
-        int curMIDIBeat = (int)(curPPQN*4.0/MIDIClockPPQNRes );
-        if(curMIDIBeat==nextMIDIBeat){
-//        if(abs(curMIDIBeat-nextMIDIBeat)<=1 ){
+        int nextMIDIBeat = (int)(tm->getBeat() * 4.0);
+        int curMIDIBeat = (int)(curPPQN * 4.0 / MIDIClockPPQNRes);
+        if (curMIDIBeat == nextMIDIBeat)
+        {
+            //        if(abs(curMIDIBeat-nextMIDIBeat)<=1 ){
             return; // avoid flooding with little jumps
         }
         DBG(curMIDIBeat << " to " << nextMIDIBeat);
         bool shouldReset = tm->isPlaying(); // pasted on ableton behaviour
-        if( shouldReset){appendOneMsg(MidiMessage::midiStop());}
+        if (shouldReset)
+        {
+            appendOneMsg(MidiMessage::midiStop());
+        }
         int MIDIBeat = appendCurrentSPP();
-        jassert(nextMIDIBeat==MIDIBeat);
-        if(shouldReset){
-            bool sendContinue = MIDIBeat>0;
-            appendOneMsg(sendContinue?MidiMessage::midiContinue():MidiMessage::midiStart());
+        jassert(nextMIDIBeat == MIDIBeat);
+        if (shouldReset)
+        {
+            bool sendContinue = MIDIBeat > 0;
+            appendOneMsg(sendContinue ? MidiMessage::midiContinue() : MidiMessage::midiStart());
         }
 
-        state.ppqn = (int)(MIDIBeat*MIDIClockPPQNRes/4.0);
+        state.ppqn = (int)(MIDIBeat * MIDIClockPPQNRes / 4.0);
         //getClockRunner()->notify(); // avoid notifying in time critical situations
     }
-
-
-
 }
 
-void MIDIClock::playStop (bool playStop) {
+void MIDIClock::playStop(bool playStop)
+{
 
-    if(playStop){
+    if (playStop)
+    {
         state.ppqn = (int)getPPQWithDelta(MIDIClockPPQNRes);
-        if(state.ppqn.get()<0){
+        if (state.ppqn.get() < 0)
+        {
             appendClocks(-state.ppqn.get());
         }
         int MIDIBeat = 0;
-        if(sendSPP){
+        if (sendSPP)
+        {
             MIDIBeat = appendCurrentSPP();
         }
-        bool sendContinue = MIDIBeat>0;
-        appendOneMsg(sendContinue?MidiMessage::midiContinue():MidiMessage::midiStart());
-        state.ppqn =(int)(MIDIBeat*MIDIClockPPQNRes/4.0);
-
-
-
+        bool sendContinue = MIDIBeat > 0;
+        appendOneMsg(sendContinue ? MidiMessage::midiContinue() : MidiMessage::midiStart());
+        state.ppqn = (int)(MIDIBeat * MIDIClockPPQNRes / 4.0);
     }
-    else{
-        if(followGlobalTransport){
-        appendOneMsg(MidiMessage::midiStop());
+    else
+    {
+        if (followGlobalTransport)
+        {
+            appendOneMsg(MidiMessage::midiStop());
         }
-
     }
-    state.isPlaying = followGlobalTransport?playStop:true;
+    state.isPlaying = followGlobalTransport ? playStop : true;
     getClockRunner()->notify();
 }
 
-
-void MIDIClock::appendClocks(const int numClocksToAdd){
-    int st1,st2,bs1,bs2;
-    midiFifo.prepareToWrite(numClocksToAdd, st1, bs1, st2,bs2);
-    for(int i = st1 ; i < st1+bs1 ; i++){
+void MIDIClock::appendClocks(const int numClocksToAdd)
+{
+    int st1, st2, bs1, bs2;
+    midiFifo.prepareToWrite(numClocksToAdd, st1, bs1, st2, bs2);
+    for (int i = st1; i < st1 + bs1; i++)
+    {
         messagesToSend[i] = MidiMessage::midiClock();
     }
-    for(int i = st2 ; i < st2+bs2 ; i++){messagesToSend[i] = MidiMessage::midiClock();}
-    midiFifo.finishedWrite(bs1+bs2);
-    state.ppqn+=numClocksToAdd;
-
-
+    for (int i = st2; i < st2 + bs2; i++)
+    {
+        messagesToSend[i] = MidiMessage::midiClock();
+    }
+    midiFifo.finishedWrite(bs1 + bs2);
+    state.ppqn += numClocksToAdd;
 }
 
-
-void MIDIClock::appendOneMsg(const MidiMessage & msg){
-    int st1,st2,bs1,bs2;
-    midiFifo.prepareToWrite(1,st1,bs1,st2,bs2);
-    if(bs1>0){
+void MIDIClock::appendOneMsg(const MidiMessage &msg)
+{
+    int st1, st2, bs1, bs2;
+    midiFifo.prepareToWrite(1, st1, bs1, st2, bs2);
+    if (bs1 > 0)
+    {
         messagesToSend[st1] = msg;
     }
     midiFifo.finishedWrite(1);
 }
-

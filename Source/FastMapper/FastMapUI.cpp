@@ -110,16 +110,19 @@ void FastMapUI::resized()
     }
 
     targetUI.setBounds(targetRect.reduced(6, 0));
-    const Array<  ParameterUI* > btnStack { invertUI.get(),onValueUI.get(),toggleUI.get(),fullSyncUI.get()};
-    int numB = std::count_if(btnStack.begin(),btnStack.end(),[]( ParameterUI* a){return a->isVisible();});
-    if(numB==0){numB= 1;}
-    auto elemHeight = r.getHeight()/numB;
-    std::for_each(btnStack.begin(),btnStack.end(),[&r,elemHeight]( ParameterUI* e){
-        if(e->isVisible()){
+    const Array<ParameterUI *> btnStack{invertUI.get(), onValueUI.get(), toggleUI.get(), fullSyncUI.get()};
+    int numB = std::count_if(btnStack.begin(), btnStack.end(), [](ParameterUI *a) { return a->isVisible(); });
+    if (numB == 0)
+    {
+        numB = 1;
+    }
+    auto elemHeight = r.getHeight() / numB;
+    std::for_each(btnStack.begin(), btnStack.end(), [&r, elemHeight](ParameterUI *e) {
+        if (e->isVisible())
+        {
             e->setBounds(r.removeFromTop(elemHeight).reduced(1));
         };
     });
-
 }
 
 void FastMapUI::buttonClicked(Button *b)

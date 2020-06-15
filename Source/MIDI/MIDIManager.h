@@ -20,13 +20,11 @@
 #define MIDIMANAGER_H_INCLUDED
 #pragma once
 
-
-#include "../JuceHeaderAudio.h"//keep
+#include "../JuceHeaderAudio.h" //keep
 
 class MIDIListener;
 class ComputerKeyboardMIDIDevice;
-extern AudioDeviceManager& getAudioDeviceManager();
-
+extern AudioDeviceManager &getAudioDeviceManager();
 
 class MIDIManager : private Timer
 {
@@ -34,74 +32,64 @@ public:
     struct DeviceUsageCount
     {
     public:
-        explicit DeviceUsageCount (String name) : deviceName (std::move(name)), usageCount (0) {}
+        explicit DeviceUsageCount(String name) : deviceName(std::move(name)), usageCount(0) {}
         String deviceName;
         int usageCount;
     };
 
-    juce_DeclareSingleton (MIDIManager, true)
+    juce_DeclareSingleton(MIDIManager, true)
 
-    MIDIManager();
+        MIDIManager();
     ~MIDIManager();
 
     void init();
     void updateLists();
-    
+
     StringArray inputDevices;
     StringArray outputDevices;
 
-    void enableInputDevice (const String& deviceName);
-    std::unique_ptr< MidiOutput > enableOutputDevice (const String& deviceName);
-    void disableInputDevice (const String& deviceName);
-    void disableOutputDevice (const String& deviceName);
+    void enableInputDevice(const String &deviceName);
+    std::unique_ptr<MidiOutput> enableOutputDevice(const String &deviceName);
+    void disableInputDevice(const String &deviceName);
+    void disableOutputDevice(const String &deviceName);
 
-    void addMidiInputCallback(const String & deviceName,MidiInputCallback * cb);
-    void removeMidiInputCallback(const String & deviceName,MidiInputCallback * cb);
+    void addMidiInputCallback(const String &deviceName, MidiInputCallback *cb);
+    void removeMidiInputCallback(const String &deviceName, MidiInputCallback *cb);
 
-    class  MIDIManagerListener
+    class MIDIManagerListener
     {
     public:
-
         virtual ~MIDIManagerListener() {}
-        virtual void midiInputAdded (String&) {}
-        virtual void midiInputRemoved (String&) {}
+        virtual void midiInputAdded(String &) {}
+        virtual void midiInputRemoved(String &) {}
 
-
-        virtual void midiOutputAdded (String&) {}
-        virtual void midiOutputRemoved (String&) {}
-        
-
+        virtual void midiOutputAdded(String &) {}
+        virtual void midiOutputRemoved(String &) {}
     };
 
     ListenerList<MIDIManagerListener> listeners;
-    void addMIDIManagerListener (MIDIManagerListener* newListener) { listeners.add (newListener); }
-    void removeMIDIManagerListener (MIDIManagerListener* listener) { listeners.remove (listener); }
+    void addMIDIManagerListener(MIDIManagerListener *newListener) { listeners.add(newListener); }
+    void removeMIDIManagerListener(MIDIManagerListener *listener) { listeners.remove(listener); }
 
-
-    void addMIDIListener(MIDIListener * l);
-    void removeMIDIListener(MIDIListener * l);
-    Array<MIDIListener* > MIDIListeners;
+    void addMIDIListener(MIDIListener *l);
+    void removeMIDIListener(MIDIListener *l);
+    Array<MIDIListener *> MIDIListeners;
     void checkMIDIListenerStates();
+
 private:
     OwnedArray<DeviceUsageCount> inputCounts;
     OwnedArray<DeviceUsageCount> outputCounts;
 
-    void updateDeviceList (bool updateInput);
+    void updateDeviceList(bool updateInput);
 
-
-
-
-    DeviceUsageCount* getDUCForInputDeviceName (const String& deviceName);
-    DeviceUsageCount* getDUCForOutputDeviceName (const String& deviceName);
+    DeviceUsageCount *getDUCForInputDeviceName(const String &deviceName);
+    DeviceUsageCount *getDUCForOutputDeviceName(const String &deviceName);
 
     void timerCallback() override;
 
+    ComputerKeyboardMIDIDevice *computerKeyboardDevice;
 
-    ComputerKeyboardMIDIDevice * computerKeyboardDevice;
-    
     std::unique_ptr<MidiInput> toLGMLMidi;
-
 };
 
-
-#endif  // MIDIMANAGER_H_INCLUDED
+#endif // MIDIMANAGER_H_INCLUDED

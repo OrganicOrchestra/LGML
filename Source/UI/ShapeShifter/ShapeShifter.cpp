@@ -17,53 +17,51 @@
 #include "ShapeShifter.h"
 #include "ShapeShifterContainer.h"
 
-
 const int ShapeShifter::minSize(50);
 
-ShapeShifter::ShapeShifter (Type _type) :
-shifterType (_type),
-preferredWidth (300), preferredHeight (300),
-parentShifterContainer (nullptr),
-isMini( false)
+ShapeShifter::ShapeShifter(Type _type) : shifterType(_type),
+                                         preferredWidth(300), preferredHeight(300),
+                                         parentShifterContainer(nullptr),
+                                         isMini(false)
 {
 
     addMouseListener(this, true);
 }
 
 ShapeShifter::~ShapeShifter()
-{ masterReference.clear();
-}
-
-void ShapeShifter::setPreferredWidth (int newWidth)
 {
-    preferredWidth = jmax<int> (minSize, newWidth);
+    masterReference.clear();
 }
 
-void ShapeShifter::setPreferredHeight (int newHeight)
+void ShapeShifter::setPreferredWidth(int newWidth)
 {
-    preferredHeight = jmax<int> (minSize, newHeight);
-
+    preferredWidth = jmax<int>(minSize, newWidth);
 }
 
-
+void ShapeShifter::setPreferredHeight(int newHeight)
+{
+    preferredHeight = jmax<int>(minSize, newHeight);
+}
 
 int ShapeShifter::getPreferredWidth()
 {
-    jassert(preferredWidth>0);
+    jassert(preferredWidth > 0);
     return preferredWidth;
 }
 
 int ShapeShifter::getPreferredHeight()
 {
-    jassert(preferredHeight>0);
+    jassert(preferredHeight > 0);
     return preferredHeight;
 }
 
-int ShapeShifter::getMinWidth(){
+int ShapeShifter::getMinWidth()
+{
     return minSize;
 }
 
-int ShapeShifter::getMinHeight(){
+int ShapeShifter::getMinHeight()
+{
     return minSize;
 }
 bool ShapeShifter::isDetached()
@@ -71,102 +69,125 @@ bool ShapeShifter::isDetached()
     return parentShifterContainer == nullptr;
 }
 
-void ShapeShifter::setParentContainer (ShapeShifterContainer* _parent)
+void ShapeShifter::setParentContainer(ShapeShifterContainer *_parent)
 {
-    if (_parent == parentShifterContainer) return;
+    if (_parent == parentShifterContainer)
+        return;
 
     parentShifterContainer = _parent;
 }
 
-
 var ShapeShifter::getCurrentLayout()
 {
 
-    auto * dob = new DynamicObject();
-    dob->setProperty ("type", (int)shifterType);
-    dob->setProperty ("width", preferredWidth);
-    dob->setProperty ("height", preferredHeight);
-    dob->setProperty("isMini",isMini || (miniTimer!=nullptr));
-    var layout (dob);
+    auto *dob = new DynamicObject();
+    dob->setProperty("type", (int)shifterType);
+    dob->setProperty("width", preferredWidth);
+    dob->setProperty("height", preferredHeight);
+    dob->setProperty("isMini", isMini || (miniTimer != nullptr));
+    var layout(dob);
     return layout;
 }
 
-void ShapeShifter::loadLayout (var layout)
+void ShapeShifter::loadLayout(var layout)
 {
     auto dob = layout.getDynamicObject();
-    setPreferredWidth (dob->getProperty ("width"));
-    setPreferredHeight (dob->getProperty ("height"));
-    setMini(dob->getProperty("isMini"),false);
-    loadLayoutInternal (layout);
+    setPreferredWidth(dob->getProperty("width"));
+    setPreferredHeight(dob->getProperty("height"));
+    setMini(dob->getProperty("isMini"), false);
+    loadLayoutInternal(layout);
     resized();
 }
 
-
-void ShapeShifter::mouseUp(const MouseEvent & ){
-    if(isMini){
+void ShapeShifter::mouseUp(const MouseEvent &)
+{
+    if (isMini)
+    {
         setMini(false);
     }
-
 }
 #define HAS_MINI_TIMER 0
-class MiniTimer : private MultiTimer{
+class MiniTimer : private MultiTimer
+{
 public:
-    MiniTimer(ShapeShifter * _s):s(_s){
+    MiniTimer(ShapeShifter *_s) : s(_s)
+    {
         mouseTruelyOutTime = 0;
-        startTimer(1,200);
+        startTimer(1, 200);
     }
-    void requestEnd(){
+    void requestEnd()
+    {
         stopTimer(1);
         mouseTruelyOutTime = 0;
-        startTimer(2,200);
+        startTimer(2, 200);
     }
-    bool isRunning(){
+    bool isRunning()
+    {
         return (HAS_MINI_TIMER) && (isTimerRunning(1) || isTimerRunning(2));
     }
 
-    void stopTimers(){
-        stopTimer(1) ;
+    void stopTimers()
+    {
+        stopTimer(1);
         stopTimer(2);
         mouseTruelyOutTime = 0;
     }
-    void setMini(){
-        for(auto o:s->parentShifterContainer->shifters){
-            if(o->miniTimer && o->miniTimer.get()!=this){
-                o->setMini(true,false);
+    void setMini()
+    {
+        for (auto o : s->parentShifterContainer->shifters)
+        {
+            if (o->miniTimer && o->miniTimer.get() != this)
+            {
+                o->setMini(true, false);
                 o->miniTimer = nullptr;
             }
         }
-        s->setMini(false,false);
+        s->setMini(false, false);
         s->parentShifterContainer->resized();
     }
-    void timerCallback(int ) override{
+    void timerCallback(int) override
+    {
 #if HAS_MINI_TIMER
-        if(s.get()){
-            if(id==1){
+        if (s.get())
+        {
+            if (id == 1)
+            {
                 setMini();
                 stopTimer(1);
                 mouseTruelyOutTime = 0;
             }
-            if(id==2){
+            if (id == 2)
+            {
                 bool mouseHasExitedGrabber = true;
-                for (auto& ms : Desktop::getInstance().getMouseSources()){
-                    if (auto* underMouse = ms.getComponentUnderMouse()){
-                        if(dynamic_cast<GapGrabber*>(underMouse) || dynamic_cast<GapGrabber*>(underMouse->getParentComponent())){
+                for (auto &ms : Desktop::getInstance().getMouseSources())
+                {
+                    if (auto *underMouse = ms.getComponentUnderMouse())
+                    {
+                        if (dynamic_cast<GapGrabber *>(underMouse) || dynamic_cast<GapGrabber *>(underMouse->getParentComponent()))
+                        {
                             mouseHasExitedGrabber = false;
                             break;
                         }
                     }
                 }
-                if(mouseHasExitedGrabber){mouseTruelyOutTime+=getTimerInterval(2);}
-                else{mouseTruelyOutTime = 0;}
-                if(mouseTruelyOutTime>=1000){
-                stopTimer(2);
-                s->setMini(true);
-                s->miniTimer = nullptr;
+                if (mouseHasExitedGrabber)
+                {
+                    mouseTruelyOutTime += getTimerInterval(2);
+                }
+                else
+                {
+                    mouseTruelyOutTime = 0;
+                }
+                if (mouseTruelyOutTime >= 1000)
+                {
+                    stopTimer(2);
+                    s->setMini(true);
+                    s->miniTimer = nullptr;
                 }
             }
         }
-        else{
+        else
+        {
             stopTimers();
         }
 #endif
@@ -175,56 +196,82 @@ public:
     WeakReference<ShapeShifter> s;
 };
 
-void ShapeShifter::setMini(bool s,bool resizeNow){
+void ShapeShifter::setMini(bool s, bool resizeNow)
+{
     //    DBG(String(s?"":"not")+" mini : "+ getName());
 
-    if(miniTimer){
+    if (miniTimer)
+    {
 
-        if(!s ){
-            if(!miniTimer->isRunning()){miniTimer=nullptr;} // be sure to delete it if stopped
-            else{miniTimer->stopTimers();}
+        if (!s)
+        {
+            if (!miniTimer->isRunning())
+            {
+                miniTimer = nullptr;
+            } // be sure to delete it if stopped
+            else
+            {
+                miniTimer->stopTimers();
+            }
         }
-
     }
     isMini = s;
 
-    ShapeShifterContainer * parent = parentShifterContainer;
-    if(parent){
+    ShapeShifterContainer *parent = parentShifterContainer;
+    if (parent)
+    {
         bool allMinimized = true;
-        for(auto & sh:parent->shifters){allMinimized&=sh->isMini;}
-        if (resizeNow && allMinimized){jassert(!isMini);return;}
+        for (auto &sh : parent->shifters)
+        {
+            allMinimized &= sh->isMini;
+        }
+        if (resizeNow && allMinimized)
+        {
+            jassert(!isMini);
+            return;
+        }
 
-        if(auto * sp = dynamic_cast<ShapeShifterPanel*>(this)){
-            if(sp->currentContent && sp->currentContent->contentComponent){
+        if (auto *sp = dynamic_cast<ShapeShifterPanel *>(this))
+        {
+            if (sp->currentContent && sp->currentContent->contentComponent)
+            {
                 sp->currentContent->contentComponent->setVisible(!isMini);
             }
         }
-        else{
-            for(auto & c:getChildren()){ // we keep this component visible to recieve mouse events
+        else
+        {
+            for (auto &c : getChildren())
+            { // we keep this component visible to recieve mouse events
                 c->setVisible(!isMini);
             }
         }
 
-        if(resizeNow)parent->resized();
-
+        if (resizeNow)
+            parent->resized();
     }
 }
 
-bool ShapeShifter::isInAutoMiniMode(){
-    return (miniTimer!=nullptr && miniTimer->isRunning()) || isMini;
-
+bool ShapeShifter::isInAutoMiniMode()
+{
+    return (miniTimer != nullptr && miniTimer->isRunning()) || isMini;
 }
 
-void ShapeShifter::mouseEnter(const juce::MouseEvent &){
-    if(miniTimer){miniTimer->stopTimers();}
-    if(isMini){
-        miniTimer = std::make_unique< MiniTimer>(this);
+void ShapeShifter::mouseEnter(const juce::MouseEvent &)
+{
+    if (miniTimer)
+    {
+        miniTimer->stopTimers();
     }
-
+    if (isMini)
+    {
+        miniTimer = std::make_unique<MiniTimer>(this);
+    }
 }
 
-void ShapeShifter::mouseExit(const MouseEvent & ){
-    if(miniTimer){
+void ShapeShifter::mouseExit(const MouseEvent &)
+{
+    if (miniTimer)
+    {
         miniTimer->requestEnd();
     }
 }

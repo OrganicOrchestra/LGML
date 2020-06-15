@@ -21,7 +21,7 @@
 #include "../Time/TimeManagerListener.h"
 
 constexpr int MIDI_SYNC_QUEUE_SIZE = 100;
-class MIDIClock:  private TimeManagerListener
+class MIDIClock : private TimeManagerListener
 {
 public:
     MIDIClock(bool sendSPP);
@@ -29,57 +29,50 @@ public:
 
     bool start();
     void stop();
-    bool setOutput(MIDIListener * _midiOut);
+    bool setOutput(MIDIListener *_midiOut);
     void reset();
 
     bool sendSPP;
     float delta;
-    bool followGlobalTransport=false;
-    
+    bool followGlobalTransport = false;
+
     bool isRunning();
+
 private:
     static double sendAllClocks();
     double runClock();
 
     MidiMessage nextMidiMsg;
-    MIDIListener* midiOut;
+    MIDIListener *midiOut;
 
     bool hasSentMessage = false;
-    
+
     friend class MIDIClockRunner;
     Atomic<bool> _isRunning = false;
     // TimeManager Listener
 
-     void BPMChanged (double /*BPM*/) override ;
-     void timeJumped (sample_clk_t /*time*/) override ;
-     void playStop (bool /*playStop*/) override ;
+    void BPMChanged(double /*BPM*/) override;
+    void timeJumped(sample_clk_t /*time*/) override;
+    void playStop(bool /*playStop*/) override;
     // info for stopping manager if needed;
-     bool isBoundToTime() override {return false;}
-    void addClockIfNeeded(double & timeToNextMessage);
+    bool isBoundToTime() override { return false; }
+    void addClockIfNeeded(double &timeToNextMessage);
     int appendCurrentSPP();
 
-
-
-    
     double getPPQWithDelta(int multiplier);
-    static double ppqToTime(double ppq,int multiplier);
-    void appendOneMsg(const MidiMessage & msg);
+    static double ppqToTime(double ppq, int multiplier);
+    void appendOneMsg(const MidiMessage &msg);
     void appendClocks(const int num);
-    MidiMessage  messagesToSend[MIDI_SYNC_QUEUE_SIZE];
+    MidiMessage messagesToSend[MIDI_SYNC_QUEUE_SIZE];
     AbstractFifo midiFifo;
 
-    private :
-    struct MIDIClockState{
-        MIDIClockState():isPlaying(false),ppqn(0){}
+private:
+    struct MIDIClockState
+    {
+        MIDIClockState() : isPlaying(false), ppqn(0) {}
         bool isPlaying;
         Atomic<int> ppqn; // has to be an integer type (same resolution as device)
-
-
     };
     MIDIClockState state;
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MIDIClock)
-    
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MIDIClock)
 };
-
-
-

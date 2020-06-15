@@ -22,55 +22,51 @@
 #include "../Controllable/Parameter/ParameterContainer.h"
 #include "../Controllable/Parameter/ParameterProxy.h"
 
-
 struct Smoother;
 
-class FastMap :
-    public ParameterContainer,
-    public ParameterProxy::ParameterProxyListener
+class FastMap : public ParameterContainer,
+                public ParameterProxy::ParameterProxyListener
 {
 public:
     FastMap();
     virtual ~FastMap();
 
-    BoolParameter* enabledParam;
-    BoolParameter* fullSync;
+    BoolParameter *enabledParam;
+    BoolParameter *fullSync;
 
-    RangeParameter* inputRange;
-    RangeParameter* outputRange;
-    StringParameter * onValue;
+    RangeParameter *inputRange;
+    RangeParameter *outputRange;
+    StringParameter *onValue;
 
-    BoolParameter* invertParam,*toggleParam;
-    FloatParameter *smoothTimeIn,*smoothTimeOut;
-    BoolParameter* ignoreLowerSmooth;
+    BoolParameter *invertParam, *toggleParam;
+    FloatParameter *smoothTimeIn, *smoothTimeOut;
+    BoolParameter *ignoreLowerSmooth;
 
-    ParameterProxy* referenceIn;
-    ParameterProxy*   referenceOut;
+    ParameterProxy *referenceIn;
+    ParameterProxy *referenceOut;
 
-    ParameterProxy * getProxyForParameter(ParameterBase*,bool recursive=false) const;
-
+    ParameterProxy *getProxyForParameter(ParameterBase *, bool recursive = false) const;
 
 private:
-    void onContainerParameterChanged ( ParameterBase*)override;
+    void onContainerParameterChanged(ParameterBase *) override;
 
-    
     std::unique_ptr<Smoother> smoother;
     bool smoothingEnabled();
-    
+
     bool isInRange; //memory for triggering
     bool fastMapIsProcessing;
 
-    void process (bool toReferenceOut = true,bool sourceHasChanged = true);
+    void process(bool toReferenceOut = true, bool sourceHasChanged = true);
     // inherited from proxy listener
-    void linkedParamValueChanged (ParameterProxy*,ParameterBase::Listener *) override;
-    void linkedParamRangeChanged(ParameterProxy*) override;
-    void linkedParamChanged (ParameterProxy*) override;
+    void linkedParamValueChanged(ParameterProxy *, ParameterBase::Listener *) override;
+    void linkedParamRangeChanged(ParameterProxy *) override;
+    void linkedParamChanged(ParameterProxy *) override;
+
 private:
-    WeakReference< FastMap >::Master masterReference;
+    WeakReference<FastMap>::Master masterReference;
     friend class WeakReference<FastMap>;
-    
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FastMap)
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FastMap)
 };
 
-
-#endif  // FASTMAP_H_INCLUDED
+#endif // FASTMAP_H_INCLUDED

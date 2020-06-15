@@ -22,27 +22,24 @@
 #include "MainComponent.h"
 #include "../Engine.h"
 
-
 #include "../Utils/AutoUpdater.h"
 
-
-MainContentComponent* createMainContentComponent (Engine* e);
-MainWindow::~MainWindow(){
+MainContentComponent *createMainContentComponent(Engine *e);
+MainWindow::~MainWindow()
+{
     LGMLDragger::deleteInstance();
     stopTimer();
     latestVChecker = nullptr;
     getAppUndoManager().removeChangeListener(this);
 }
 
-
-MainWindow::MainWindow (String name, Engine* e)  :
-DocumentWindow (name,Colours::lightgrey,DocumentWindow::allButtons),
-latestVChecker(nullptr)
+MainWindow::MainWindow(String name, Engine *e) : DocumentWindow(name, Colours::lightgrey, DocumentWindow::allButtons),
+                                                 latestVChecker(nullptr)
 {
 
     getAppUndoManager().addChangeListener(this);
-    mainComponent = createMainContentComponent (e);
-    setContentOwned (mainComponent, false);
+    mainComponent = createMainContentComponent(e);
+    setContentOwned(mainComponent, false);
     // shapeshifter does'nt handle well if size are really small (under its min Size)
     setResizeLimits(200, 200, 4096, 4096);
     getConstrainer()->setMinimumOnscreenAmounts(100, 100, 100, 100);
@@ -53,63 +50,53 @@ latestVChecker(nullptr)
      - wrong rebuilding of windows position / size
      - double clicks sent to titlebar
      */
-    setUsingNativeTitleBar (false);
+    setUsingNativeTitleBar(false);
 
 #else
-    setUsingNativeTitleBar (true);
+    setUsingNativeTitleBar(true);
 #endif
-    setResizable (true, false);
+    setResizable(true, false);
 
-#if ! JUCE_MAC
-    setMenuBar (mainComponent);
+#if !JUCE_MAC
+    setMenuBar(mainComponent);
 #endif
 
 #if USE_GL
-    openGLContext.setContinuousRepainting (false);
-    openGLContext.attachTo (*getTopLevelComponent());
+    openGLContext.setContinuousRepainting(false);
+    openGLContext.attachTo(*getTopLevelComponent());
 #endif
-
 
     // need to stay after ll init function for linux
 #ifndef JUCE_LINUX
-    String winSetting ( "fs 0 0 800 600");
+    String winSetting("fs 0 0 800 600");
 #else
     // weird behaviour of fullscreen in ubuntu (can't get out of fs mode and wrong windows coords)
-    String winSetting ( "0 0 800 600");
+    String winSetting("0 0 800 600");
 #endif
 
-
-    if (auto prop = getAppProperties()->getCommonSettings (true))
+    if (auto prop = getAppProperties()->getCommonSettings(true))
     {
-        winSetting = prop->getValue ("winSettings", winSetting);
+        winSetting = prop->getValue("winSettings", winSetting);
     }
 
-    ResizableWindow::restoreWindowStateFromString (winSetting);
+    ResizableWindow::restoreWindowStateFromString(winSetting);
 
-
-
-    setVisible (true);
-
-
+    setVisible(true);
 
     ShapeShifterManager::getInstance()->loadDefaultLayoutFile();
-    LGMLDragger::getInstance()->setMainComponent (mainComponent);
+    LGMLDragger::getInstance()->setMainComponent(mainComponent);
 
-
-    startTimer (4000);
-
-
+    startTimer(4000);
 }
-void MainWindow::focusGained (FocusChangeType /*cause*/)
+void MainWindow::focusGained(FocusChangeType /*cause*/)
 {
     //mainComponent->grabKeyboardFocus();
-
 }
 
-void MainWindow::changeListenerCallback (ChangeBroadcaster* /*source*/) {
+void MainWindow::changeListenerCallback(ChangeBroadcaster * /*source*/)
+{
     getEngine()->setChangedFlag(getAppUndoManager().canUndo());
 };
-
 
 void MainWindow::closeButtonPressed()
 {
@@ -117,59 +104,57 @@ void MainWindow::closeButtonPressed()
     // ask the app to quit when this happens, but you can change this to do
     // whatever you need.
 
-    if(getEngine()->hasChangedSinceSaved()){
-        int result = AlertWindow::showYesNoCancelBox (AlertWindow::QuestionIcon, juce::translate("Save document"), juce::translate("Do you want to save the document before quitting ?"));
+    if (getEngine()->hasChangedSinceSaved())
+    {
+        int result = AlertWindow::showYesNoCancelBox(AlertWindow::QuestionIcon, juce::translate("Save document"), juce::translate("Do you want to save the document before quitting ?"));
 
-        if (result == 0)  return; //prevent exit
+        if (result == 0)
+            return; //prevent exit
 
         if (result == 1)
         {
-            juce::FileBasedDocument::SaveResult sr = getEngine()->save (true, true);
+            juce::FileBasedDocument::SaveResult sr = getEngine()->save(true, true);
 
             switch (sr)
             {
-                case juce::FileBasedDocument::SaveResult::userCancelledSave:
-                case juce::FileBasedDocument::SaveResult::failedToWriteToFile:
-                    return;
+            case juce::FileBasedDocument::SaveResult::userCancelledSave:
+            case juce::FileBasedDocument::SaveResult::failedToWriteToFile:
+                return;
 
-                case FileBasedDocument::SaveResult::savedOk:
-                    break;
+            case FileBasedDocument::SaveResult::savedOk:
+                break;
             }
         }
     }
 
-    var boundsVar = var (new DynamicObject());
+    var boundsVar = var(new DynamicObject());
 
-
-    getAppProperties()->getCommonSettings (true)->setValue ("winSettings", getWindowStateAsString());
-    getAppProperties()->getCommonSettings (true)->saveIfNeeded();
-
+    getAppProperties()->getCommonSettings(true)->setValue("winSettings", getWindowStateAsString());
+    getAppProperties()->getCommonSettings(true)->saveIfNeeded();
 
 #if USE_GL
     openGLContext.detach();
 #endif
     JUCEApplication::getInstance()->systemRequestedQuit();
-
 }
 
 void MainWindow::timerCallback()
 {
-    const int timeToUpdate = getAppProperties()->getUserSettings()->getBoolValue("check for updates",true)?60000:-1;
+    const int timeToUpdate = getAppProperties()->getUserSettings()->getBoolValue("check for updates", true) ? 60000 : -1;
     const int curT = getEngine()->getElapsedMillis();
-    if(latestVChecker==nullptr && curT < timeToUpdate){
-        latestVChecker = std::make_unique< LatestVersionChecker>();
+    if (latestVChecker == nullptr && curT < timeToUpdate)
+    {
+        latestVChecker = std::make_unique<LatestVersionChecker>();
     }
-    if(latestVChecker && curT>timeToUpdate){
-        if(latestVChecker->end()){
+    if (latestVChecker && curT > timeToUpdate)
+    {
+        if (latestVChecker->end())
+        {
             latestVChecker = nullptr;
         }
-
     }
-    setName (getEngine()->getDocumentTitle() + " : LGML "
-             + VersionTriplet::getCurrentVersion().toString() + String (" (CPU : ") +
-             String ((int) getEngine()->engineStats->getAudioCPU()) + String ("%)"));
+    setName(getEngine()->getDocumentTitle() + " : LGML " + VersionTriplet::getCurrentVersion().toString() + String(" (CPU : ") +
+            String((int)getEngine()->engineStats->getAudioCPU()) + String("%)"));
 }
-
-
 
 #endif

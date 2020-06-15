@@ -19,37 +19,36 @@
 #include "MIDIListener.h"
 #include "../Utils/DebugHelpers.h"
 
+int commonNamePartWithInName(String &s, const String &midiPortName);
 
-
-int commonNamePartWithInName (String& s,const String & midiPortName);
-
-MIDIListener::MIDIListener():hasValidInPort(true),hasValidOutPort(true)
+MIDIListener::MIDIListener() : hasValidInPort(true), hasValidOutPort(true)
 {
     inPortName = "";
     outPortName = "";
-    MIDIManager::getInstance()->addMIDIListener (this);
-
+    MIDIManager::getInstance()->addMIDIListener(this);
 }
 
 MIDIListener::~MIDIListener()
 {
-    if(auto mm  = MIDIManager::getInstanceWithoutCreating()){
-    mm->removeMidiInputCallback (inPortName, this);
-    mm->removeMIDIListener (this);
+    if (auto mm = MIDIManager::getInstanceWithoutCreating())
+    {
+        mm->removeMidiInputCallback(inPortName, this);
+        mm->removeMIDIListener(this);
     }
     masterReference.clear();
 }
 
-void MIDIListener::setCurrentDevice (const String& deviceName,bool output)
+void MIDIListener::setCurrentDevice(const String &deviceName, bool output)
 {
     //if (deviceName == inPortName) return;
-    if(!MessageManager::getInstance()->isThisTheMessageThread()){
-        WeakReference<MIDIListener> thisRef (this);
+    if (!MessageManager::getInstance()->isThisTheMessageThread())
+    {
+        WeakReference<MIDIListener> thisRef(this);
         MessageManager::getInstance()->callAsync(
-                                                 [thisRef,deviceName,output](){
+            [thisRef, deviceName, output]() {
                                                      if(thisRef){
                                                      thisRef->setCurrentDevice(deviceName,output);
-                                                     }});
+                                                     } });
         return;
     }
     auto mm = MIDIManager::getInstance();
@@ -57,182 +56,200 @@ void MIDIListener::setCurrentDevice (const String& deviceName,bool output)
     if (deviceName.isNotEmpty())
     {
         mm->updateLists();
-        auto deviceList = output?mm->outputDevices:mm->inputDevices;
-        if (deviceList.indexOf (deviceName) == -1)
+        auto deviceList = output ? mm->outputDevices : mm->inputDevices;
+        if (deviceList.indexOf(deviceName) == -1)
         {
-            if(output){
+            if (output)
+            {
                 ghostOutPortName = deviceName;
-            }else{
+            }
+            else
+            {
                 ghostInPortName = deviceName;
             }
-            setCurrentDevice ("",output);
+            setCurrentDevice("", output);
             return;
         }
     }
-    if(outPortName.isNotEmpty() && output){
-        mm->disableOutputDevice (outPortName);
+    if (outPortName.isNotEmpty() && output)
+    {
+        mm->disableOutputDevice(outPortName);
         hasValidOutPort = false;
     }
     if (inPortName.isNotEmpty() && !output)
     {
-        mm->disableInputDevice (inPortName);
-        mm->removeMidiInputCallback (inPortName, this);
+        mm->disableInputDevice(inPortName);
+        mm->removeMidiInputCallback(inPortName, this);
         hasValidInPort = false;
     }
 
-    if(output){
+    if (output)
+    {
         outPortName = deviceName;
         if (outPortName.isNotEmpty())
         {
-            midiOutDevice = mm->enableOutputDevice (outPortName);
+            midiOutDevice = mm->enableOutputDevice(outPortName);
             hasValidOutPort = true;
         }
     }
-    else{
+    else
+    {
         inPortName = deviceName;
         if (inPortName.isNotEmpty())
         {
-            mm->enableInputDevice (inPortName);
-            mm->addMidiInputCallback (inPortName, this);
+            mm->enableInputDevice(inPortName);
+            mm->addMidiInputCallback(inPortName, this);
             hasValidInPort = true;
         }
     }
 
-
-
     mm->checkMIDIListenerStates();
-    
 }
 
-bool MIDIListener::sendNoteOn (int channel, int pitch, int velocity)
+bool MIDIListener::sendNoteOn(int channel, int pitch, int velocity)
 {
-    if(channel==0){channel = 1;jassertfalse;}
-    return sendMessage(MidiMessage::noteOn (channel, pitch, (uint8)velocity));
+    if (channel == 0)
+    {
+        channel = 1;
+        jassertfalse;
+    }
+    return sendMessage(MidiMessage::noteOn(channel, pitch, (uint8)velocity));
 }
 
-bool MIDIListener::sendNoteOff (int channel, int pitch, int velocity)
+bool MIDIListener::sendNoteOff(int channel, int pitch, int velocity)
 {
-    if(channel==0){channel = 1;jassertfalse;}
-    return sendMessage(MidiMessage::noteOff (channel, pitch, (uint8)velocity));
-
+    if (channel == 0)
+    {
+        channel = 1;
+        jassertfalse;
+    }
+    return sendMessage(MidiMessage::noteOff(channel, pitch, (uint8)velocity));
 }
 
-bool  MIDIListener::sendMessage(const MidiMessage & msg){
+bool MIDIListener::sendMessage(const MidiMessage &msg)
+{
     if (midiOutDevice == nullptr)
     {
-        return false ;
+        return false;
     }
 
-    midiOutDevice->sendMessageNow (msg);
+    midiOutDevice->sendMessageNow(msg);
     midiMessageSent(msg);
     return true;
 }
 
-bool MIDIListener::sendCC (int channel, int number, int value)
+bool MIDIListener::sendCC(int channel, int number, int value)
 {
     //LOG("Send CC");
-    if(channel==0){channel = 1;jassertfalse;}
-    return sendMessage(MidiMessage::controllerEvent (channel, number, value));
-
+    if (channel == 0)
+    {
+        channel = 1;
+        jassertfalse;
+    }
+    return sendMessage(MidiMessage::controllerEvent(channel, number, value));
 }
 
-bool  MIDIListener::sendSysEx (uint8* data, int dataCount)
+bool MIDIListener::sendSysEx(uint8 *data, int dataCount)
 {
-    return sendMessage(MidiMessage::createSysExMessage (data, dataCount));
-    
+    return sendMessage(MidiMessage::createSysExMessage(data, dataCount));
 }
 
-void MIDIListener::midiInputAdded (String& s)
+void MIDIListener::midiInputAdded(String &s)
 {
-    DBG ("MIDIListener :: inputAdded " << s << ",portName = " << inPortName << ", ghost = " << ghostInPortName);
+    DBG("MIDIListener :: inputAdded " << s << ",portName = " << inPortName << ", ghost = " << ghostInPortName);
 
     if (s == inPortName)
     {
-        setCurrentDevice (inPortName,false);
+        setCurrentDevice(inPortName, false);
         ghostInPortName = "";
     }
     else if (s == ghostInPortName)
     {
-        setCurrentDevice (ghostInPortName,false);
+        setCurrentDevice(ghostInPortName, false);
         ghostInPortName = "";
     }
 }
 
-void MIDIListener::midiInputRemoved (String& s)
+void MIDIListener::midiInputRemoved(String &s)
 {
     if (s == inPortName)
     {
         ghostInPortName = s;
-        setCurrentDevice ("",false);
+        setCurrentDevice("", false);
     }
 }
 
-
-
-
-
-void MIDIListener::midiOutputAdded (String& s)
+void MIDIListener::midiOutputAdded(String &s)
 {
-    if(s==outPortName){
+    if (s == outPortName)
+    {
         setCurrentDevice(outPortName, true);
         ghostOutPortName = "";
     }
-    else if(s==ghostOutPortName){
+    else if (s == ghostOutPortName)
+    {
         setCurrentDevice(ghostOutPortName, true);
         ghostOutPortName = "";
     }
 
-//    else if (commonNamePartWithInName (s,inPortName) > 0)
-//    {
-//        setCurrentDevice (inPortName,true);
-//    }
+    //    else if (commonNamePartWithInName (s,inPortName) > 0)
+    //    {
+    //        setCurrentDevice (inPortName,true);
+    //    }
 }
 
-void MIDIListener::midiOutputRemoved (String& s)
+void MIDIListener::midiOutputRemoved(String &s)
 {
     if (s == outPortName)
     {
         ghostOutPortName = s;
-        setCurrentDevice ("",true);
+        setCurrentDevice("", true);
     }
     //
 }
-
 
 /////////////////////
 // Utility
 //////////////////
 
-int commonNamePartWithInName (String& s,const String & midiPortName)
+int commonNamePartWithInName(String &s, const String &midiPortName)
 {
-    StringArray arrOut ;
-    arrOut.addTokens (s, true);
-    StringArray arrIn ;
-    arrIn.addTokens (midiPortName, true);
-    int max = jmin (arrOut.size(), arrIn.size());
+    StringArray arrOut;
+    arrOut.addTokens(s, true);
+    StringArray arrIn;
+    arrIn.addTokens(midiPortName, true);
+    int max = jmin(arrOut.size(), arrIn.size());
     int res = 0;
 
-    for (int i = 0 ; i < max ; i++)
+    for (int i = 0; i < max; i++)
     {
-        if (arrIn[i] == arrOut[i]) {res++;}
-        
+        if (arrIn[i] == arrOut[i])
+        {
+            res++;
+        }
     }
 
     return res;
 }
 
-String MIDIListener::getClosestOutName(const String & midiPortName )
+String MIDIListener::getClosestOutName(const String &midiPortName)
 {
-    
+
     int best = 0;
     String bestName = midiPortName;
     MIDIManager::getInstance()->updateLists();
-    for (auto& outName : MIDIManager::getInstance()->outputDevices)
+    for (auto &outName : MIDIManager::getInstance()->outputDevices)
     {
 
-        if (outName == midiPortName) {return midiPortName;}
-        if(outName.startsWith("from ") && midiPortName.startsWith("to ") && midiPortName.substring(3)==outName.substring(5)){return outName;}
-        int n = commonNamePartWithInName (outName,midiPortName);
+        if (outName == midiPortName)
+        {
+            return midiPortName;
+        }
+        if (outName.startsWith("from ") && midiPortName.startsWith("to ") && midiPortName.substring(3) == outName.substring(5))
+        {
+            return outName;
+        }
+        int n = commonNamePartWithInName(outName, midiPortName);
 
         if (n > best)
         {
@@ -242,7 +259,4 @@ String MIDIListener::getClosestOutName(const String & midiPortName )
     }
 
     return bestName;
-
-
 }
-

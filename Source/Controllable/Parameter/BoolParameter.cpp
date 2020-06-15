@@ -12,18 +12,12 @@
 *
 */
 
-
 #include "BoolParameter.h"
 #include "ParameterFactory.h"
-REGISTER_PARAM_TYPE (BoolParameter)
+REGISTER_PARAM_TYPE(BoolParameter)
 
-
-BoolParameter::BoolParameter (const String& niceName, const String& description, bool initialValue, bool enabled) :
-   ParameterBase ( niceName, description, initialValue, enabled),
-    invertVisuals (false)
+BoolParameter::BoolParameter(const String &niceName, const String &description, bool initialValue, bool enabled) : ParameterBase(niceName, description, initialValue, enabled),
+                                                                                                                   invertVisuals(false)
 {
-    setValue (initialValue);
+    setValue(initialValue);
 }
-
-
-

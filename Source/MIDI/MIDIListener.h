@@ -23,49 +23,43 @@
 
 // abstract base class that provide midi callback handle and keeps MIDIManager in sync
 
-class MIDIListener :
-public MidiInputCallback,
-public MIDIManager::MIDIManagerListener
+class MIDIListener : public MidiInputCallback,
+                     public MIDIManager::MIDIManagerListener
 {
-public :
+public:
     MIDIListener();
     virtual ~MIDIListener();
 
-
     String inPortName;
-    String ghostInPortName,ghostOutPortName;
+    String ghostInPortName, ghostOutPortName;
     String outPortName;
     bool hasValidInPort;
     bool hasValidOutPort;
 
-    void setCurrentDevice (const String& deviceName,bool output);
+    void setCurrentDevice(const String &deviceName, bool output);
 
     //Output
     std::unique_ptr<MidiOutput> midiOutDevice;
-    bool sendNoteOn (int channel, int pitch, int velocity);
-    bool sendNoteOff (int channel, int pitch, int velocity);
-    bool sendCC (int channel, int number, int value);
-    bool sendSysEx (uint8* data, int dataCount);
-    bool sendMessage(const MidiMessage & msg);
-    virtual void midiMessageSent(const MidiMessage & ){}
-    virtual void midiInputAdded (String& s) override;
-    virtual void midiInputRemoved (String& s) override;
+    bool sendNoteOn(int channel, int pitch, int velocity);
+    bool sendNoteOff(int channel, int pitch, int velocity);
+    bool sendCC(int channel, int number, int value);
+    bool sendSysEx(uint8 *data, int dataCount);
+    bool sendMessage(const MidiMessage &msg);
+    virtual void midiMessageSent(const MidiMessage &) {}
+    virtual void midiInputAdded(String &s) override;
+    virtual void midiInputRemoved(String &s) override;
     //    virtual void midiInputsChanged() {}
 
-    virtual void midiOutputAdded (String& s) override;
-    virtual void midiOutputRemoved (String& s) override;
+    virtual void midiOutputAdded(String &s) override;
+    virtual void midiOutputRemoved(String &s) override;
     //    virtual void midiOutputsChanged() {}
 
-    
     String getClosestOutName(const String &);
 
-    
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MIDIListener)
-    private:
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MIDIListener)
+private:
     WeakReference<MIDIListener>::Master masterReference;
     friend class WeakReference<MIDIListener>;
 };
 
-
-
-#endif  // MIDILISTENER_H_INCLUDED
+#endif // MIDILISTENER_H_INCLUDED

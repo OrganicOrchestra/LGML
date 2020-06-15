@@ -18,99 +18,98 @@
 #include "../Style.h"
 #include "ShapeShifterManager.h"
 
-
-ShapeShifterPanelTab::ShapeShifterPanelTab (ShapeShifterContent* _content) : content (_content), selected (false)
+ShapeShifterPanelTab::ShapeShifterPanelTab(ShapeShifterContent *_content) : content(_content), selected(false)
 {
-    panelLabel.setInterceptsMouseClicks (false, false);
+    panelLabel.setInterceptsMouseClicks(false, false);
     panelLabel.setPaintingIsUnclipped(true);
 
-    panelLabel.setFont (12);
-    panelLabel.setJustificationType (Justification::centred);
-    panelLabel.setText (juce::translate(content == nullptr ? "[No content]" : content->contentName), NotificationType::dontSendNotification);
+    panelLabel.setFont(12);
+    panelLabel.setJustificationType(Justification::centred);
+    panelLabel.setText(juce::translate(content == nullptr ? "[No content]" : content->contentName), NotificationType::dontSendNotification);
 
-    addAndMakeVisible (&panelLabel);
+    addAndMakeVisible(&panelLabel);
 
-    Image removeImage = ImageCache::getFromMemory (BinaryData::removeBT_png, BinaryData::removeBT_pngSize);
+    Image removeImage = ImageCache::getFromMemory(BinaryData::removeBT_png, BinaryData::removeBT_pngSize);
 
-    closePanelBT.setImages (false, true, true, removeImage,
-                            0.7f, Colours::transparentBlack,
-                            removeImage, 1.0f, Colours::transparentBlack,
-                            removeImage, 1.0f, Colours::white.withAlpha (.7f),
-                            0.5f);
-    closePanelBT.addListener (this);
+    closePanelBT.setImages(false, true, true, removeImage,
+                           0.7f, Colours::transparentBlack,
+                           removeImage, 1.0f, Colours::transparentBlack,
+                           removeImage, 1.0f, Colours::white.withAlpha(.7f),
+                           0.5f);
+    closePanelBT.addListener(this);
     closePanelBT.setPaintingIsUnclipped(true);
 
+    addAndMakeVisible(closePanelBT);
 
-    addAndMakeVisible (closePanelBT);
-
-
-    setSize (getLabelWidth(), 20);
-    setOpaque (true);
+    setSize(getLabelWidth(), 20);
+    setOpaque(true);
     setPaintingIsUnclipped(true);
     setTooltip(content->info);
-   LGMLUIUtils::optionallySetBufferedToImage(this);
-
+    LGMLUIUtils::optionallySetBufferedToImage(this);
 }
 
 ShapeShifterPanelTab::~ShapeShifterPanelTab()
 {
-    
 }
 
-void ShapeShifterPanelTab::setSelected (bool value)
+void ShapeShifterPanelTab::setSelected(bool value)
 {
     selected = value;
     repaint();
 }
 
-void ShapeShifterPanelTab::paint (Graphics& g)
+void ShapeShifterPanelTab::paint(Graphics &g)
 {
-    if(isTimerRunning()){
-        auto pct =  (Time::getCurrentTime() - blinkStartTime).inMilliseconds()*1.0/notificationDurationMs;
-        g.setColour(blinkColour.interpolatedWith(Colours::white, (1+sinf((float)pct * MathConstants<float>::twoPi * 2))/2));
-
+    if (isTimerRunning())
+    {
+        auto pct = (Time::getCurrentTime() - blinkStartTime).inMilliseconds() * 1.0 / notificationDurationMs;
+        g.setColour(blinkColour.interpolatedWith(Colours::white, (1 + sinf((float)pct * MathConstants<float>::twoPi * 2)) / 2));
     }
-    else{
+    else
+    {
         auto baseC = LGMLUIUtils::getCurrentBackgroundColor(this);
-        if(!selected)baseC = baseC.darker(1.f);
-        g.setColour (baseC);
+        if (!selected)
+            baseC = baseC.darker(1.f);
+        g.setColour(baseC);
     }
     Rectangle<int> r = getLocalBounds();
 
     //  if (!selected) r.reduce(1,1);
-    g.fillRect (r);
+    g.fillRect(r);
 }
 
 void ShapeShifterPanelTab::resized()
 {
     Rectangle<int> r = getLocalBounds();
-    closePanelBT.setBounds (r.removeFromRight (r.getHeight()).reduced (3));
-    panelLabel.setBounds (r);
+    closePanelBT.setBounds(r.removeFromRight(r.getHeight()).reduced(3));
+    panelLabel.setBounds(r);
 }
 
 int ShapeShifterPanelTab::getLabelWidth()
 {
-    return panelLabel.getFont().getStringWidth (panelLabel.getText()) + 30;
+    return panelLabel.getFont().getStringWidth(panelLabel.getText()) + 30;
 }
 
-void ShapeShifterPanelTab::buttonClicked (Button* b)
+void ShapeShifterPanelTab::buttonClicked(Button *b)
 {
-    if (b == &closePanelBT) tabListeners.call (&TabListener::askForRemoveTab, this);
+    if (b == &closePanelBT)
+        tabListeners.call(&TabListener::askForRemoveTab, this);
 }
 
-void ShapeShifterPanelTab::blink(const Colour & c) {
+void ShapeShifterPanelTab::blink(const Colour &c)
+{
     startTimer(30);
     blinkColour = c;
     blinkStartTime = Time::getCurrentTime();
-
 }
 
-void ShapeShifterPanelTab::timerCallback() {
-    if((Time::getCurrentTime() - blinkStartTime).inMilliseconds() > notificationDurationMs){
+void ShapeShifterPanelTab::timerCallback()
+{
+    if ((Time::getCurrentTime() - blinkStartTime).inMilliseconds() > notificationDurationMs)
+    {
         stopTimer();
     };
     repaint();
-    
 }
 
 #endif

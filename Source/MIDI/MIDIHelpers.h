@@ -21,34 +21,35 @@
 #include "../Controllable/Parameter/EnumParameter.h"
 #include "MIDIListener.h"
 
-namespace MIDIHelpers{
+namespace MIDIHelpers
+{
 
-EnumParameterModel * getGlobalMidiModel();
+    EnumParameterModel *getGlobalMidiModel();
 
     String midiMessageToDebugString(const MidiMessage &);
     String midiMessageToParamName(const MidiMessage &);
-    bool midiMessageFromParam(const ParameterBase* p,int targetChannel,MidiMessage & msg);
+    bool midiMessageFromParam(const ParameterBase *p, int targetChannel, MidiMessage &msg);
 
-struct MIDIIOChooser : EnumParameter::EnumListener{
-        MIDIIOChooser(MIDIListener *l,bool showControllers,bool isOutputDevice);
-        EnumParameter * getDeviceEnumParameter();
+    struct MIDIIOChooser : EnumParameter::EnumListener
+    {
+        MIDIIOChooser(MIDIListener *l, bool showControllers, bool isOutputDevice);
+        EnumParameter *getDeviceEnumParameter();
+
     private:
-        EnumParameter * inP;
-//        EnumParameter *outP;
-        EnumParameter * listenedIn;
-//        EnumParameter *listenedOut;
-        MIDIListener * owner;
+        EnumParameter *inP;
+        //        EnumParameter *outP;
+        EnumParameter *listenedIn;
+        //        EnumParameter *listenedOut;
+        MIDIListener *owner;
         bool showController;
 
-        void enumOptionAdded (EnumParameter*, const Identifier&) override;
-        void enumOptionRemoved (EnumParameter*, const Identifier&) override;
-        void enumOptionSelectionChanged (EnumParameter*, bool /*isSelected*/, bool /*isValid*/, const Identifier&) override;
-    bool isOutputDevice;
-    bool autoOut=true;
-
+        void enumOptionAdded(EnumParameter *, const Identifier &) override;
+        void enumOptionRemoved(EnumParameter *, const Identifier &) override;
+        void enumOptionSelectionChanged(EnumParameter *, bool /*isSelected*/, bool /*isValid*/, const Identifier &) override;
+        bool isOutputDevice;
+        bool autoOut = true;
     };
 
-}
+} // namespace MIDIHelpers
 
-
-#endif  // MIDIHELPERS_H_INCLUDED
+#endif // MIDIHELPERS_H_INCLUDED

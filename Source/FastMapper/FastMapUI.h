@@ -25,25 +25,20 @@
 #include "../Controllable/Parameter/UI/ParameterProxyUI.h"
 #include "../Controllable/Parameter/UI/RangeParameterUI.h"
 
-class FastMapUI :
-    public InspectableComponent,
-    private  ControllableReferenceUI::Listener,
-    private Button::Listener,
-    private ParameterProxy::ParameterProxyListener
+class FastMapUI : public InspectableComponent,
+                  private ControllableReferenceUI::Listener,
+                  private Button::Listener,
+                  private ParameterProxy::ParameterProxyListener
 
 {
 public:
-    FastMapUI (FastMap* f);
+    FastMapUI(FastMap *f);
     virtual ~FastMapUI();
 
-
-
-
-    std::unique_ptr<ParameterUI> enabledUI,fullSyncUI;
+    std::unique_ptr<ParameterUI> enabledUI, fullSyncUI;
 
     ParameterProxyUI refUI;
     RangeParameterUI inRangeUI;
-
 
     ParameterProxyUI targetUI;
     RangeParameterUI outRangeUI;
@@ -51,34 +46,26 @@ public:
     std::unique_ptr<ParameterUI> onValueUI;
     std::unique_ptr<ParameterUI> toggleUI;
 
-
-
-    FastMap* fastMap;
+    FastMap *fastMap;
     ImageButton removeBT;
 
-
-    void paint (Graphics& g) override;
+    void paint(Graphics &g) override;
     void resized() override;
 
     //  virtual void choosedControllableChanged(ControllableReferenceUI*,Controllable *) override;
     //  virtual void fastMapTargetChanged(FastMap *) override;
 
+    void buttonClicked(Button *b) override;
 
-    
-    void buttonClicked (Button* b) override;
+    void linkedParamChanged(ParameterProxy *) override;
+    void updateRefAndTargetVisibility(bool ref, bool target);
 
-    void linkedParamChanged (ParameterProxy*) override;
-    void updateRefAndTargetVisibility(bool ref,bool target);
 private:
-   void  updateComponentsVisibility();
+    void updateComponentsVisibility();
     bool displayRef;
     bool displayTarget;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FastMapUI)
-
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FastMapUI)
 };
 
-
-
-
-#endif  // FASTMAPUI_H_INCLUDED
+#endif // FASTMAPUI_H_INCLUDED

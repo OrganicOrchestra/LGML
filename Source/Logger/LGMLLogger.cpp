@@ -20,50 +20,66 @@
 #include "../Version.h"
 #include "../Engine.h"
 // #include "../../third_party/farbot/fifo.hpp"
-juce_ImplementSingleton (LGMLLogger);
+juce_ImplementSingleton(LGMLLogger);
 int LGMLLogger::maxLoggedElements = 5000;
 #define CIRCULAR 0
 
 #if USE_FILE_LOGGER
-class FileWriter : public LGMLLogger::Listener,public Engine::EngineListener
+class FileWriter : public LGMLLogger::Listener, public Engine::EngineListener
 {
 public:
-    FileWriter():aggregator(this) {fileLog.reset(FileLogger::createDefaultAppLogger ("LGML", "log", ""));}
-    ~FileWriter(){flush();aggregator.cancelPendingUpdate();}
-    void startLoadFile(const File & sessionFile) override{
-        if(!sessionFile.exists())return;// new sessions
-        if(!sessionFile.getParentDirectory().exists()){jassertfalse;return;}
+    FileWriter() : aggregator(this) { fileLog.reset(FileLogger::createDefaultAppLogger("LGML", "log", "")); }
+    ~FileWriter()
+    {
+        flush();
+        aggregator.cancelPendingUpdate();
+    }
+    void startLoadFile(const File &sessionFile) override
+    {
+        if (!sessionFile.exists())
+            return; // new sessions
+        if (!sessionFile.getParentDirectory().exists())
+        {
+            jassertfalse;
+            return;
+        }
         File logFile = sessionFile.getParentDirectory().getChildFile("log");
-        if(logFile.exists()){
+        if (logFile.exists())
+        {
             logFile.deleteFile();
         }
 
-        fileLog.reset(new FileLogger(logFile,LGMLLogger::getInstance()->getWelcomeMessage()));
-
-
+        fileLog.reset(new FileLogger(logFile, LGMLLogger::getInstance()->getWelcomeMessage()));
     }
 
-    void flush(){
-        if(waitingStrings.isNotEmpty() && fileLog){
-            fileLog->logMessage (waitingStrings);
+    void flush()
+    {
+        if (waitingStrings.isNotEmpty() && fileLog)
+        {
+            fileLog->logMessage(waitingStrings);
             waitingStrings.clear();
         }
     }
-    struct Aggregator : public juce::AsyncUpdater{
-        Aggregator(FileWriter * o):owner(o){}
-        void handleAsyncUpdate()final{
+    struct Aggregator : public juce::AsyncUpdater
+    {
+        Aggregator(FileWriter *o) : owner(o) {}
+        void handleAsyncUpdate() final
+        {
             owner->flush();
         }
-        FileWriter * owner;
+        FileWriter *owner;
     };
     Aggregator aggregator;
-    void newMessage(const LogElement * el)  override {
-        if (fileLog && el) {
-            waitingStrings+=el->toNiceString(true)+"\n";
+    void newMessage(const LogElement *el) override
+    {
+        if (fileLog && el)
+        {
+            waitingStrings += el->toNiceString(true) + "\n";
             aggregator.triggerAsyncUpdate();
         }
     }
-    String getFilePath() {
+    String getFilePath()
+    {
         return fileLog->getLogFile().getFullPathName();
     }
     std::unique_ptr<FileLogger> fileLog;
@@ -73,8 +89,7 @@ public:
 
 #endif
 
-LGMLLogger::LGMLLogger():
-writeCursor(0)
+LGMLLogger::LGMLLogger() : writeCursor(0)
 {
 #if CIRCULAR
     loggedElements.resize(maxLoggedElements);
@@ -84,114 +99,111 @@ writeCursor(0)
 #if USE_FILE_LOGGER
 
     fileWriter.reset(new FileWriter());
-    addLogListener (fileWriter.get());
+    addLogListener(fileWriter.get());
 #endif
-
 }
 
-LGMLLogger::~LGMLLogger(){
-    
+LGMLLogger::~LGMLLogger()
+{
 }
 
-const String LGMLLogger::getWelcomeMessage(){
-    static String welcome = String ("LGML v@@1@@@4 (@@2):\nCompiled with love at @@5 the @@3\n by OrganicOrchestra\n@@6").replace("@@1",String (VersionTriplet::getCurrentVersion().toString()))
-    .replace("@@3",String (Time::getCompilationDate()
-                           .formatted("%d/%m/%y")))
-    .replace("@@5",String (Time::getCompilationDate()
-                           .formatted("%R")))
-    .replace("@@2",BUILD_VERSION_UID)
-    .replace("@@4",GIT_SHA)
-    .replace("@@6",
+const String LGMLLogger::getWelcomeMessage()
+{
+    static String welcome = String("LGML v@@1@@@4 (@@2):\nCompiled with love at @@5 the @@3\n by OrganicOrchestra\n@@6").replace("@@1", String(VersionTriplet::getCurrentVersion().toString())).replace("@@3", String(Time::getCompilationDate().formatted("%d/%m/%y"))).replace("@@5", String(Time::getCompilationDate().formatted("%R"))).replace("@@2", BUILD_VERSION_UID).replace("@@4", GIT_SHA).replace("@@6",
 #if USE_FILE_LOGGER
-    juce::translate("please provide logFile for any bug report :\nlogFile are located in session folder")
+                                                                                                                                                                                                                                                                                                                                                                                                              juce::translate("please provide logFile for any bug report :\nlogFile are located in session folder")
 #else
-             ""
+                                                                                                                                                                                                                                                                                                                                                                                                              ""
 #endif
-             );
+    );
 
     return welcome;
 }
 
-
-void LGMLLogger::logMessage (const String& message)
+void LGMLLogger::logMessage(const String &message)
 {
-
 
     // get last to check for doublons
     int writePos = writeCursor.get();
-    LogElement * lastLogged(nullptr);
+    LogElement *lastLogged(nullptr);
 #if CIRCULAR
 
-    int lastIdx =(writePos-1+maxLoggedElements)%maxLoggedElements;
-    lastLogged =  loggedElements.getUnchecked(lastIdx);
+    int lastIdx = (writePos - 1 + maxLoggedElements) % maxLoggedElements;
+    lastLogged = loggedElements.getUnchecked(lastIdx);
 #else
-    if(loggedElements.size()>0){lastLogged=loggedElements.getUnchecked(loggedElements.size()-1);}
+    if (loggedElements.size() > 0)
+    {
+        lastLogged = loggedElements.getUnchecked(loggedElements.size() - 1);
+    }
 
 #endif
 
-    LogElement * el = new LogElement(message);
-    if(lastLogged && *lastLogged==*el){
+    LogElement *el = new LogElement(message);
+    if (lastLogged && *lastLogged == *el)
+    {
         delete el;
         lastLogged->incrementNumAppearances();
         el = lastLogged;
-        writePos = jmax(0,loggedElements.size()-1);
+        writePos = jmax(0, loggedElements.size() - 1);
     }
-    else{
+    else
+    {
 #if CIRCULAR
-        writeCursor.set((writePos+1)%maxLoggedElements);
+        writeCursor.set((writePos + 1) % maxLoggedElements);
         auto overriden = loggedElements.getUnchecked(writePos);
-        if(overriden){delete overriden;}
+        if (overriden)
+        {
+            delete overriden;
+        }
         loggedElements.set(writePos, el);
 #else
         writePos = loggedElements.size();
         loggedElements.add(el);
-        writeCursor .set( writePos);
-
+        writeCursor.set(writePos);
 
 #endif
     }
-    listeners.call (&Listener::newMessageAtIdx, writePos);
+    listeners.call(&Listener::newMessageAtIdx, writePos);
 
-    DBG (message);
-
+    DBG(message);
 }
-bool LGMLLogger::copyToCrashLogFile() noexcept{
+bool LGMLLogger::copyToCrashLogFile() noexcept
+{
 #if USE_FILE_LOGGER
-    if(fileWriter)
+    if (fileWriter)
     {
         fileWriter->flush();
         auto file = fileWriter->fileLog->getLogFile();
-        if(file.exists()){
-            auto destPath = file.getFullPathName()+"_crash_"+Time::getCurrentTime().toString(true,true);
+        if (file.exists())
+        {
+            auto destPath = file.getFullPathName() + "_crash_" + Time::getCurrentTime().toString(true, true);
             return file.copyFileTo(destPath);
         }
-
     }
 #endif
     return false;
 }
-int LGMLLogger::getNumLogs(){
-    #if CIRCULAR
-    if(loggedElements.getUnchecked(loggedElements.size()-1)==nullptr){
+int LGMLLogger::getNumLogs()
+{
+#if CIRCULAR
+    if (loggedElements.getUnchecked(loggedElements.size() - 1) == nullptr)
+    {
         return writeCursor.get();
     }
-    #endif
+#endif
     return loggedElements.size();
 }
 
-void LGMLLogger::clearLog(){
+void LGMLLogger::clearLog()
+{
     writeCursor.set(0);
     loggedElements.clearQuick(true);
-    listeners.call (&Listener::newMessageAtIdx, -1);
+    listeners.call(&Listener::newMessageAtIdx, -1);
 }
 
-
-
-LogElement::LogElement(const String& log):
-source (DebugHelpers::getLogSource (log)),
-content (DebugHelpers::getLogContent (log)),
-numAppearances(1)
-,_arr (new StringArray(StringArray::fromTokens(content, StringRef ("\r\n"), StringRef("\""))))
+LogElement::LogElement(const String &log) : source(DebugHelpers::getLogSource(log)),
+                                            content(DebugHelpers::getLogContent(log)),
+                                            numAppearances(1), _arr(new StringArray(StringArray::fromTokens(content, StringRef("\r\n"), StringRef("\""))))
 {
 
     time = Time::getCurrentTime();
@@ -199,25 +211,24 @@ numAppearances(1)
 
     if (_arr->size())
     {
-        String* s = &_arr->getReference (0);
+        String *s = &_arr->getReference(0);
         auto cp = s->getCharPointer();
         severity = LOG_NONE;
 
         while (cp.getAndAdvance() == '!' && severity < LOG_ERR)
         {
-            severity = (Severity) (severity + 1);
+            severity = (Severity)(severity + 1);
         }
 
-        if (severity == LOG_NONE && s->startsWith ("JUCE Assertion"))
+        if (severity == LOG_NONE && s->startsWith("JUCE Assertion"))
         {
             severity = LOG_ERR;
         }
         else
         {
-            if(severity!=LOG_NONE)
-                _arr->set (0, _arr->getReference (0).substring ((int)severity + 2));
+            if (severity != LOG_NONE)
+                _arr->set(0, _arr->getReference(0).substring((int)severity + 2));
         }
-
     }
     else
     {
@@ -225,28 +236,36 @@ numAppearances(1)
         severity = LOG_NONE;
     }
     numLines = _arr->size();
-
 }
-String LogElement::toNiceString(bool includeSeverity) const{
-    String s ;
-    int leftS =0;
-    if(!includeSeverity){
-        leftS =  source.length() + 3;
-        s+=source+" : ";
+String LogElement::toNiceString(bool includeSeverity) const
+{
+    String s;
+    int leftS = 0;
+    if (!includeSeverity)
+    {
+        leftS = source.length() + 3;
+        s += source + " : ";
     }
-    else{
-        int numMarks = jmax((int)severity,0);
-        leftS =  source.length() + 2 + numMarks;
-        s+=source+"::";
-        for(int i = 0 ; i < numMarks;i++){s+="!";}
+    else
+    {
+        int numMarks = jmax((int)severity, 0);
+        leftS = source.length() + 2 + numMarks;
+        s += source + "::";
+        for (int i = 0; i < numMarks; i++)
+        {
+            s += "!";
+        }
     }
-    for(int k = 0 ; k < getNumLines() ; k++){
-        if (k!=0){
-            for ( int j = 0; j < leftS ; j++){
-                s+=" ";
+    for (int k = 0; k < getNumLines(); k++)
+    {
+        if (k != 0)
+        {
+            for (int j = 0; j < leftS; j++)
+            {
+                s += " ";
             }
         }
-        s+=getLine(k)+"\n";
+        s += getLine(k) + "\n";
     }
     return s;
 }

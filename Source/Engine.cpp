@@ -330,9 +330,8 @@ void Engine::closeAudio()
     if (auto nm = NodeManager::getInstanceWithoutCreating())
     {
         nm->getAudioGraph()->clear();
-        nm->getAudioGraph()->prepareToPlay(44100,64);
+        nm->getAudioGraph()->prepareToPlay(44100, 64);
     }
-    
 }
 
 void Engine::clear()

@@ -261,7 +261,7 @@ bool FastMapper::checkValidNewFastMap(ParameterBase *referenceInParam, Parameter
 
     if (refInConflicts.size() || refOutConflicts.size())
     {
-        auto checkConflicts = [](ParameterBase* refParam, Array<ParameterProxy*> conflicts) {
+        auto checkConflicts = [](ParameterBase *refParam, Array<ParameterProxy *> conflicts) {
             String fromAddr = refParam ? refParam->getControlAddress().toString() : "None";
             StringArray addrList;
             std::for_each(conflicts.begin(), conflicts.end(), [&addrList](auto e) { addrList.add(e->getLinkedParam() ? e->getLinkedParam()->getControlAddress().toString() : "None"); });
@@ -293,12 +293,18 @@ bool FastMapper::checkValidNewFastMap(ParameterBase *referenceInParam, Parameter
             return cancelAddReplace;
         };
         int cancelAddReplace = checkConflicts(referenceInParam, refInConflicts);
-        if(cancelAddReplace==0){return false;}
-        bool shouldAdd = cancelAddReplace==1;
+        if (cancelAddReplace == 0)
+        {
+            return false;
+        }
+        bool shouldAdd = cancelAddReplace == 1;
 
         cancelAddReplace = checkConflicts(referenceOutParam, refOutConflicts);
-        if(cancelAddReplace==0){return false;}
-        shouldAdd &= cancelAddReplace==1;
+        if (cancelAddReplace == 0)
+        {
+            return false;
+        }
+        shouldAdd &= cancelAddReplace == 1;
         return shouldAdd;
     }
 

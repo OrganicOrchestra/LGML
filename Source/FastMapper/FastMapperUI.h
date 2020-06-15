@@ -28,73 +28,64 @@
 
 #include "FastMapper.h"
 
-class FastMapperUI :
-    public InspectableComponent,
-    public ShapeShifterContent,
-    private ControllableContainerListener,
-    private Button::Listener,
-    private Inspector::InspectorListener,
-    private LGMLDragger::Listener
-
+class FastMapperUI : public InspectableComponent,
+                     public ShapeShifterContent,
+                     private ControllableContainerListener,
+                     private Button::Listener,
+                     private Inspector::InspectorListener,
+                     private LGMLDragger::Listener
 
 {
 public:
     typedef ParameterContainer ContainerType;
     typedef ParameterBase ControllableType;
 
-    FastMapperUI (const String& contentName, FastMapper* fastMapper);
+    FastMapperUI(const String &contentName, FastMapper *fastMapper);
     virtual ~FastMapperUI();
 
-    FastMapper* fastMapper;
+    FastMapper *fastMapper;
     TextButton linkToSelection;
     Label candidateLabel;
     AddElementButton addFastMapButton;
     void addFastMapUndoable();
-    
-    std::unique_ptr<Component> potentialIn, potentialOut;
-    StackedContainerViewport<FastMapUI,FastMap> mapsUI;
 
-    Array<WeakReference<ContainerType> > viewFilterContainers;
+    std::unique_ptr<Component> potentialIn, potentialOut;
+    StackedContainerViewport<FastMapUI, FastMap> mapsUI;
+
+    Array<WeakReference<ContainerType>> viewFilterContainers;
     Array<WeakReference<ControllableType>> viewFilterControllables;
 
     void clear();
 
-    void addFastMapUI (FastMap*);
-    void removeFastMapUI (FastMapUI*);
+    void addFastMapUI(FastMap *);
+    void removeFastMapUI(FastMapUI *);
 
     void resetAndUpdateView();
-    void setViewFilter (const Array<WeakReference<ContainerType> > & filterContainer);
-    void setViewFilter (const Array<WeakReference<ControllableType>> & filterControllable);
+    void setViewFilter(const Array<WeakReference<ContainerType>> &filterContainer);
+    void setViewFilter(const Array<WeakReference<ControllableType>> &filterControllable);
     void resetViewFilter();
-    bool mapPassViewFilter (FastMap*);
-
-
+    bool mapPassViewFilter(FastMap *);
 
     const int mapHeight = 35;
     const int gap = 5;
     int getContentHeight() const;
 
     void resized() override;
-    void mouseDown (const MouseEvent& e) override;
+    void mouseDown(const MouseEvent &e) override;
 
-    virtual void controllableContainerAdded (ControllableContainer*, ControllableContainer*) override;
-    virtual void controllableContainerRemoved (ControllableContainer*, ControllableContainer*) override;
+    virtual void controllableContainerAdded(ControllableContainer *, ControllableContainer *) override;
+    virtual void controllableContainerRemoved(ControllableContainer *, ControllableContainer *) override;
 
-    
 private:
-
-    void buttonClicked (Button*) override;
+    void buttonClicked(Button *) override;
     // Inspector Listener
-    void selectionChanged (Inspector* ) override;
+    void selectionChanged(Inspector *) override;
 
     // LGMLDrager
     void mappingModeChanged(bool) override;
-    void selectionChanged ( ParameterBase*) override{}
+    void selectionChanged(ParameterBase *) override {}
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FastMapperUI)
-
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FastMapperUI)
 };
 
-
-
-#endif  // FASTMAPPERUI_H_INCLUDED
+#endif // FASTMAPPERUI_H_INCLUDED

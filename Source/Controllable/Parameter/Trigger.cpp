@@ -12,61 +12,54 @@
 *
 */
 
-
 #include "Trigger.h"
-
-
 
 #include "../../Scripting/Js/JsHelpers.h"
 #include "ParameterFactory.h"
 
-const var Trigger::triggerVar (true);
+const var Trigger::triggerVar(true);
 
+REGISTER_PARAM_TYPE(Trigger);
 
-REGISTER_PARAM_TYPE (Trigger);
-
-Trigger::Trigger (const String& niceName, const String& description = "", bool enabled) :
-   ParameterBase ( niceName, description, triggerVar, enabled)
+Trigger::Trigger(const String &niceName, const String &description = "", bool enabled) : ParameterBase(niceName, description, triggerVar, enabled)
 {
     setSavable(false);
     lastTime = 0;
 }
 
+void Trigger::tryToSetValue(const var &_value, bool silentSet, bool force, Listener *notifier)
+{
 
-void Trigger::tryToSetValue (const var & _value, bool silentSet, bool force,Listener * notifier){
-
-    if (!shouldBeDeffered (_value, silentSet, force))
+    if (!shouldBeDeffered(_value, silentSet, force))
     {
-        if ( _value.isUndefined() || (bool) _value) // undefined are set from script
+        if (_value.isUndefined() || (bool)_value) // undefined are set from script
         {
 
             _isSettingValue = true;
 
-            if (!silentSet) notifyValueChanged(false,notifier);
+            if (!silentSet)
+                notifyValueChanged(false, notifier);
 
             _isSettingValue = false;
         }
     }
-
 }
 
-
-
-DynamicObject* Trigger::createDynamicObject()
+DynamicObject *Trigger::createDynamicObject()
 {
     auto dObject = Controllable::createDynamicObject();
-    dObject->setMethod (JsHelpers::jsTriggerIdentifier, setControllableValueFromJS);
+    dObject->setMethod(JsHelpers::jsTriggerIdentifier, setControllableValueFromJS);
 
     return dObject;
 }
 
-DynamicObject* Trigger::createObject()
+DynamicObject *Trigger::createObject()
 {
     return new DynamicObject();
 }
 var Trigger::getVarState()
 {
     // isSavable should be false
-//    jassertfalse;
+    //    jassertfalse;
     return var::undefined();
 }

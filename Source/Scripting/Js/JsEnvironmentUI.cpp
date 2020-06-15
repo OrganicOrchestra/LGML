@@ -19,21 +19,16 @@
 #include "../../Controllable/Parameter/UI/StringParameterUI.h"
 #include "../../Controllable/Parameter/FileParameter.h"
 
-JsEnvironmentUI::JsEnvironmentUI (JSEnvContainer* _cont) : cont (_cont)
+JsEnvironmentUI::JsEnvironmentUI(JSEnvContainer *_cont) : cont(_cont)
 {
     env = cont->jsEnv;
-    jassert (env);
+    jassert(env);
 
-    
+    logEnvB = ParameterUIFactory::createDefaultUI(cont->logT);
+    addAndMakeVisible(logEnvB.get());
 
-    
-    logEnvB = ParameterUIFactory::createDefaultUI (cont->logT);
-    addAndMakeVisible (logEnvB.get());
-
-    filePathUI = ParameterUIFactory::createDefaultUI (cont->scriptPath);
-    addAndMakeVisible (filePathUI.get());
-
-
+    filePathUI = ParameterUIFactory::createDefaultUI(cont->scriptPath);
+    addAndMakeVisible(filePathUI.get());
 }
 JsEnvironmentUI::~JsEnvironmentUI()
 {
@@ -41,22 +36,21 @@ JsEnvironmentUI::~JsEnvironmentUI()
 
 void JsEnvironmentUI::resized()
 {
-    Rectangle<int> area = getLocalBounds().reduced (2);
+    Rectangle<int> area = getLocalBounds().reduced(2);
     const int logEnvSize = 40;
-    if(auto * fp = dynamic_cast<FileParameter*>(filePathUI->parameter.get())){
-        if(fp->hasValidPath(false)){
+    if (auto *fp = dynamic_cast<FileParameter *>(filePathUI->parameter.get()))
+    {
+        if (fp->hasValidPath(false))
+        {
             logEnvB->setVisible(true);
-            logEnvB->setBounds (area.removeFromLeft (logEnvSize).reduced (2, 0));
+            logEnvB->setBounds(area.removeFromLeft(logEnvSize).reduced(2, 0));
         }
-        else{
+        else
+        {
             logEnvB->setVisible(false);
         }
     }
-    filePathUI->setBounds (area.reduced (2,0));
-
-
-
+    filePathUI->setBounds(area.reduced(2, 0));
 }
-
 
 #endif
