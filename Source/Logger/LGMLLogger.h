@@ -41,7 +41,7 @@ public:
     String source;
     enum Severity {LOG_NONE = -1, LOG_DBG = 0, LOG_WARN = 1, LOG_ERR = 2};
     Severity severity;
-    int getNumLines() const {return  _arr->size();}
+    int getNumLines() const {return numLines;}// _arr->size();}
     const String& getLine (int i) const {return _arr->getReference (i); }
     void incrementNumAppearances(){numAppearances++; time=Time::getCurrentTime();}
     int getNumAppearances() const{return numAppearances;}
@@ -56,6 +56,7 @@ public:
 private:
     int numAppearances;
     std::unique_ptr<StringArray> _arr;
+    int numLines;
 //    friend class LinkedListPointer<LogElement>;
 //    LogElement * nextItem;
 };
@@ -98,7 +99,7 @@ class LGMLLogger : public Logger
             const int maxMsgBeforeFlood = 2000;
             if(end-readIdx > maxMsgBeforeFlood){
                 readIdx = jmax(0,end-50);
-                elems.set(readIdx,new LogElement("!!! too many message to log dumping messages"));
+                LOGE("too many message to log dumping messages");
             }
             for(int i = readIdx ; i < end ; i++){
                 newMessage(elems.getUnchecked(i));

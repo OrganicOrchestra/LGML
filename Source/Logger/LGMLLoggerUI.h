@@ -91,7 +91,7 @@ public:
     
     void newMessages (int from, int to ) override;
 private:
-
+    bool firstScrollToBottom = true;
 
     bool keyPressed (const KeyPress&) override;
     
@@ -102,7 +102,7 @@ private:
     
 
     Atomic<int> totalLogRow;
-    void updateTotalLogRow();
+
     const LogElement * getElementForRow(const int r) const;
     const String& getSourceForRow  (const int r) const;
     const bool isPrimaryRow  (const int r) const;

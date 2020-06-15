@@ -26,89 +26,103 @@
 
 int LGMLLoggerUI::maxDisplayedLogs = 5000;
 
-const OwnedArray<LogElement,CriticalSection> & loggedElements(){return LGMLLogger::getInstance()->loggedElements;}
+const OwnedArray<LogElement, CriticalSection> &loggedElements() { return LGMLLogger::getInstance()->loggedElements; }
+
 static String EmptyString;
-void LGMLLoggerUI::newMessages (int from , int to)
+void LGMLLoggerUI::newMessages(int from, int to)
 {
     //bool overFlow = false;
-    int delta = (to - startDisplayedIdx)-maxDisplayedLogs;
-    if(delta>0){
-        startDisplayedIdx+=delta;
-    }
-    totalLogRow = 0;
-    for(int i = startDisplayedIdx ; i < to ; i++){
-        auto el = loggedElements().getUnchecked(i);
-//        if(!(el->getNumAppearances()>1))
-            totalLogRow += el->getNumLines();
+    int delta = (to - startDisplayedIdx) - maxDisplayedLogs;
+    if (delta > 0)
+    {
+        startDisplayedIdx += delta;
     }
 
-        logListComponent->updateContent();
-        logListComponent->scrollToEnsureRowIsOnscreen (totalLogRow.get() - 1);
+    // Check for sticky scrollbar befor updating
+    float thresh = (totalLogRow.get() - 3) * 1.0 / totalLogRow.get();
+    ScrollBar &sb = logListComponent->getVerticalScrollBar();
+    double cur = sb.getCurrentRange().getEnd() / sb.getRangeLimit().getEnd();
+    bool needSticky = cur >= thresh || firstScrollToBottom;
+
+
+
+    totalLogRow = 0;
+    for (int i = startDisplayedIdx; i < to; i++)
+    {
+        auto el = loggedElements().getUnchecked(i);
+        //        if(!(el->getNumAppearances()>1))
+        totalLogRow += el->getNumLines();
+    }
+
+    logListComponent->updateContent();
+
+    if (needSticky)
+    {
+        logListComponent->scrollToEnsureRowIsOnscreen(totalLogRow.get() - 1);
+        firstScrollToBottom = false;
+    }
+    else
+    {
+        int a;
+        a++;
+    }
 #if USE_CACHED_GLYPH
-        logList.cleanUnusedGlyphs();
+    logList.cleanUnusedGlyphs();
 #endif
 
+    repaint();
 
-        repaint();
-
-
-//    }
+    //    }
 }
 
-LGMLLoggerUI::LGMLLoggerUI (const String& contentName, LGMLLogger* l) :
-logger (l),
-ShapeShifterContentComponent (contentName,
-                              "See events occuring in LGML"),
-CoalescedListener(100),
-logList (this),
-maxNumElement (100),
-totalLogRow (0),
-startDisplayedIdx(0)
+LGMLLoggerUI::LGMLLoggerUI(const String &contentName, LGMLLogger *l) : logger(l),
+                                                                       ShapeShifterContentComponent(contentName,
+                                                                                                    "See events occuring in LGML"),
+                                                                       CoalescedListener(100),
+                                                                       logList(this),
+                                                                       maxNumElement(100),
+                                                                       totalLogRow(0),
+                                                                       startDisplayedIdx(0),
+                                                                       firstScrollToBottom(true)
 {
 
+    TableHeaderComponent *thc = new TableHeaderComponent();
+    thc->addColumn(juce::translate("Time"), 1, 60);
+    thc->addColumn(juce::translate("Source"), 2, 80);
+    thc->addColumn(juce::translate("Content"), 3, 400);
 
-    TableHeaderComponent* thc = new TableHeaderComponent();
-    thc->addColumn (juce::translate("Time"), 1, 60);
-    thc->addColumn (juce::translate("Source"), 2, 80);
-    thc->addColumn (juce::translate("Content"), 3, 400);
-
-
-    logListComponent = std::make_unique< TableListBox> ("LGMLLogger", &logList);
+    logListComponent = std::make_unique<TableListBox>("LGMLLogger", &logList);
     logListComponent->setOpaque(true);
-    logListComponent->setRowHeight (13);
-    logListComponent->setHeaderHeight (20);
-    logListComponent->getViewport()->setScrollBarThickness (10);
+    logListComponent->setRowHeight(13);
+    logListComponent->setHeaderHeight(20);
+    logListComponent->getViewport()->setScrollBarThickness(10);
 
-    logListComponent->setColour (TableListBox::backgroundColourId, findColour (ResizableWindow::backgroundColourId));
-    logListComponent->setHeader (thc);
+    logListComponent->setColour(TableListBox::backgroundColourId, findColour(ResizableWindow::backgroundColourId));
+    logListComponent->setHeader(thc);
     logListComponent->setMouseCursor(MouseCursor::IBeamCursor);
     logListComponent->setMultipleSelectionEnabled(true);
-    addAndMakeVisible (logListComponent.get());
+    addAndMakeVisible(logListComponent.get());
 
-    LOG (l->getWelcomeMessage());
+    LOG(l->getWelcomeMessage());
 
-    clearB.setButtonText (juce::translate("Clear"));
-    clearB.addListener (this);
-    addAndMakeVisible (clearB);
+    clearB.setButtonText(juce::translate("Clear"));
+    clearB.addListener(this);
+    addAndMakeVisible(clearB);
 
     copyB.setButtonText(juce::translate("Copy All to Clipboard"));
     copyB.addListener(this);
     addAndMakeVisible(copyB);
 
-    setInterceptsMouseClicks(true,false);
+    setInterceptsMouseClicks(true, false);
     addMouseListener(this, true);
 
-
-
-    logger->addLogCoalescedListener (this);
-
+    logger->addLogCoalescedListener(this);
 }
-
 
 LGMLLoggerUI::~LGMLLoggerUI()
 {
     //        logListComponent.setModel(nullptr);
-    logger->removeLogListener (this);
+    logger->removeLogListener(this);
 }
 
 void LGMLLoggerUI::resized()
@@ -116,76 +130,69 @@ void LGMLLoggerUI::resized()
 
     ShapeShifterContentComponent::resized();
     Rectangle<int> area = getLocalBounds().withTop(5);
-    auto footer =area.removeFromBottom (30).reduced (5);
-    clearB.setBounds (footer.removeFromLeft(footer.getWidth()/2).reduced(2));
+    auto footer = area.removeFromBottom(30).reduced(5);
+    clearB.setBounds(footer.removeFromLeft(footer.getWidth() / 2).reduced(2));
     copyB.setBounds(footer.reduced(2));
-    logListComponent->setBounds (area);
-    bool firstVisible  = area.getWidth() > 400;
-    logListComponent->getHeader().setColumnVisible (1, firstVisible);
+    logListComponent->setBounds(area);
+    bool firstVisible = area.getWidth() > 400;
+    logListComponent->getHeader().setColumnVisible(1, firstVisible);
     bool secondVisible = area.getWidth() > 300;
-    logListComponent->getHeader().setColumnVisible (2, secondVisible);
+    logListComponent->getHeader().setColumnVisible(2, secondVisible);
 
     int tw = getWidth();
 
-    if (firstVisible)tw -= logListComponent->getHeader().getColumnWidth (1);
+    if (firstVisible)
+        tw -= logListComponent->getHeader().getColumnWidth(1);
 
-    if (secondVisible)tw -= logListComponent->getHeader().getColumnWidth (2);
+    if (secondVisible)
+        tw -= logListComponent->getHeader().getColumnWidth(2);
 
     tw -= logListComponent->getViewport()->getScrollBarThickness();
-    tw = jmax (tw, 100);
-    logListComponent->getHeader().setColumnWidth (3, tw);
+    tw = jmax(tw, 100);
+    logListComponent->getHeader().setColumnWidth(3, tw);
 }
 
-
-
-void LGMLLoggerUI::updateTotalLogRow()
+const String &LGMLLoggerUI::getSourceForRow(const int r) const
 {
-    totalLogRow = 0;
-
-    for (int i = startDisplayedIdx ; i< LGMLLogger::getInstance()->getNumLogs() ; i++)
+    if (auto el = getElementForRow(r))
     {
-        totalLogRow += loggedElements().getUnchecked(i)->getNumLines();
+        return el->source;
     }
-
-}
-const String& LGMLLoggerUI::getSourceForRow (const int r) const
-{
-    if(auto el = getElementForRow(r)){ return el->source; }
 
     return EmptyString;
 }
-const bool LGMLLoggerUI::isPrimaryRow (const int r) const
+const bool LGMLLoggerUI::isPrimaryRow(const int r) const
 {
     int count = 0;
     int idx = startDisplayedIdx;
 
     while (count <= r && idx < LGMLLogger::getInstance()->getNumLogs())
     {
-        if (count== r)
+        if (count == r)
         {
             return true;
         }
-        count += loggedElements().getUnchecked(idx)->getNumLines();
+         count += loggedElements().getUnchecked(idx)->getNumLines();
+      
         idx++;
-
     }
 
     return false;
 }
 
-const String&   LGMLLoggerUI::getContentForRow (const int r) const
+const String &LGMLLoggerUI::getContentForRow(const int r) const
 {
     int count = 0;
     int idx = startDisplayedIdx;
 
-    while (idx < LGMLLogger::getInstance()->getNumLogs())
+    while (idx <LGMLLogger::getInstance()->getNumLogs())
     {
-
-        int nl = loggedElements().getUnchecked(idx)->getNumLines();
+        auto el = loggedElements().getUnchecked(idx);
+        int nl = el->getNumLines();
 
         if (count + nl > r)
         {
-            return loggedElements().getUnchecked(idx)->getLine (r - count);
+            return loggedElements().getUnchecked(idx)->getLine(r - count);
         }
 
         count += nl;
@@ -195,12 +202,14 @@ const String&   LGMLLoggerUI::getContentForRow (const int r) const
     return EmptyString;
 };
 
-const LogElement* LGMLLoggerUI::getElementForRow(const int r) const{
+const LogElement *LGMLLoggerUI::getElementForRow(const int r) const
+{
     int count = 0;
     int idx = startDisplayedIdx;
 
     while (idx < LGMLLogger::getInstance()->getNumLogs())
     {
+
         auto el = loggedElements().getUnchecked(idx);
 
         int nl = el->getNumLines();
@@ -215,67 +224,71 @@ const LogElement* LGMLLoggerUI::getElementForRow(const int r) const{
     }
 
     return nullptr;
-
 }
 
-const String  LGMLLoggerUI::getTimeStringForRow (const int r) const
+const String LGMLLoggerUI::getTimeStringForRow(const int r) const
 {
-    if(auto el = getElementForRow(r)){
-        return String (el->time.toString (false, true, true, true));
+    if (auto el = getElementForRow(r))
+    {
+        return String(el->time.toString(false, true, true, true));
     }
 
     return "";
 };
 
-const Colour& LGMLLoggerUI::getSeverityColourForRow (const int r) const
+const Colour &LGMLLoggerUI::getSeverityColourForRow(const int r) const
 {
 
-    if(auto el = getElementForRow(r))
+    if (auto el = getElementForRow(r))
     {
         LogElement::Severity s = el->severity;
 
         switch (s)
         {
-            case LogElement::LOG_NONE:
-                return Colours::darkgrey;
+        case LogElement::LOG_NONE:
+            return Colours::darkgrey;
 
-            case LogElement::LOG_DBG:
-                return Colours::black;
+        case LogElement::LOG_DBG:
+            return Colours::black;
 
-            case LogElement::LOG_WARN:
-                return Colours::orange;
+        case LogElement::LOG_WARN:
+            return Colours::orange;
 
-            case LogElement::LOG_ERR:
-                return Colours::red;
+        case LogElement::LOG_ERR:
+            return Colours::red;
 
-            default:
-                return Colours::pink;
-
+        default:
+            return Colours::pink;
         }
-
     }
 
     return Colours::pink;
 };
 
+bool LGMLLoggerUI::keyPressed(const KeyPress &k)
+{
 
-bool LGMLLoggerUI::keyPressed (const KeyPress& k)            {
-    
-    if(k == KeyPress('c',ModifierKeys::commandModifier,0)){
+    if (k == KeyPress('c', ModifierKeys::commandModifier, 0))
+    {
         String textToCopy;
         Array<Range<int>> ranges = logListComponent->getSelectedRows().getRanges();
-        for(auto &r:ranges){
-            for(int i = r.getStart() ; i < r.getEnd() ;i++){
+        for (auto &r : ranges)
+        {
+            for (int i = r.getStart(); i < r.getEnd(); i++)
+            {
                 StringArray arr;
-                for(int c = 1 ; c <= 3 ; c++){
-                    if(logListComponent->getHeader().isColumnVisible(c)){
+                for (int c = 1; c <= 3; c++)
+                {
+                    if (logListComponent->getHeader().isColumnVisible(c))
+                    {
                         arr.add(logList.getTextAt(i, c));
                     }
                 }
-                textToCopy+=arr.joinIntoString("\t")+"\n";
+                textToCopy += arr.joinIntoString("\t") + "\n";
             }
         }
-        if(textToCopy.isNotEmpty()){
+        if (textToCopy.isNotEmpty())
+        {
             SystemClipboard::copyTextToClipboard(textToCopy);
             return true;
         }
@@ -283,32 +296,35 @@ bool LGMLLoggerUI::keyPressed (const KeyPress& k)            {
     return false;
 }
 
-void LGMLLoggerUI::mouseDown  (const MouseEvent& me) {
+void LGMLLoggerUI::mouseDown(const MouseEvent &me)
+{
     auto pos = me.getEventRelativeTo(logListComponent.get());
-    auto rowUnderMouse =  logListComponent->getRowContainingPosition(pos.x,pos.y);
+    auto rowUnderMouse = logListComponent->getRowContainingPosition(pos.x, pos.y);
     logListComponent->selectRow(rowUnderMouse);
     grabKeyboardFocus();
-
 };
 
-void LGMLLoggerUI::mouseDrag  (const MouseEvent& me) {
-    if(dynamic_cast<TableHeaderComponent*>(me.originalComponent)){return;}
+void LGMLLoggerUI::mouseDrag(const MouseEvent &me)
+{
+    if (dynamic_cast<TableHeaderComponent *>(me.originalComponent))
+    {
+        return;
+    }
     auto pos = me.getEventRelativeTo(logListComponent.get());
-    auto rowUnderMouse =  logListComponent->getRowContainingPosition(pos.x,pos.y);
-    auto rowStart =logListComponent->getRowContainingPosition(pos.getMouseDownX(),pos.getMouseDownY());
+    auto rowUnderMouse = logListComponent->getRowContainingPosition(pos.x, pos.y);
+    auto rowStart = logListComponent->getRowContainingPosition(pos.getMouseDownX(), pos.getMouseDownY());
     logListComponent->selectRangeOfRows(rowStart, rowUnderMouse);
-
 };
 
-MouseCursor  LGMLLoggerUI::getMouseCursor(){
+MouseCursor LGMLLoggerUI::getMouseCursor()
+{
     return MouseCursor::IBeamCursor;
 }
-
 
 //////////////
 // logList
 
-LGMLLoggerUI::LogList::LogList (LGMLLoggerUI* o) : owner (o)
+LGMLLoggerUI::LogList::LogList(LGMLLoggerUI *o) : owner(o)
 {
 }
 
@@ -318,174 +334,182 @@ int LGMLLoggerUI::LogList::getNumRows()
     return owner->totalLogRow.get();
 };
 
-void LGMLLoggerUI::LogList::paintRowBackground (Graphics& g,
-                                                int rowNumber,
-                                                int width, int height,
-                                                bool isSelected)
+void LGMLLoggerUI::LogList::paintRowBackground(Graphics &g,
+                                               int rowNumber,
+                                               int width, int height,
+                                               bool isSelected)
 {
-    auto c = owner->getSeverityColourForRow (rowNumber).withAlpha ((rowNumber % 2 == 0 ? 0.7f : 0.6f));
-    if(isSelected){
+    auto c = owner->getSeverityColourForRow(rowNumber).withAlpha((rowNumber % 2 == 0 ? 0.7f : 0.6f));
+    if (isSelected)
+    {
         c = c.brighter();
     }
-    g.setColour (c);
-    g.fillRect (0, 0, width, height);
+    g.setColour(c);
+    g.fillRect(0, 0, width, height);
 };
 
-
 // use as function to prevent juce leak detection
-const Font  getLogFont(){
-    static Font  f(12);
+const Font getLogFont()
+{
+    static Font f(12);
     return f;
 }
 
-String LGMLLoggerUI::LogList::getTextAt(int rowNumber,int columnId){
+String LGMLLoggerUI::LogList::getTextAt(int rowNumber, int columnId)
+{
     String text;
-
 
     switch (columnId)
     {
-        case 1:
-            text = owner->isPrimaryRow(rowNumber)?owner->getTimeStringForRow (rowNumber):"";
-            break;
+    case 1:
+        text = owner->isPrimaryRow(rowNumber) ? owner->getTimeStringForRow(rowNumber) : "";
+        break;
 
-        case 2:
-            text = owner->isPrimaryRow(rowNumber)?owner->getSourceForRow (rowNumber):"";
-            break;
+    case 2:
+        text = owner->isPrimaryRow(rowNumber) ? owner->getSourceForRow(rowNumber) : "";
+        break;
 
-        case 3:
-            text = owner->getContentForRow (rowNumber);
-            break;
+    case 3:
+        text = owner->getContentForRow(rowNumber);
+        break;
     }
-    if(columnId==2 ){
+    if (columnId == 2)
+    {
         auto el = owner->getElementForRow(rowNumber);
-        if(el->getNumAppearances()>1){
+        if (el->getNumAppearances() > 1)
+        {
             text = String("(") + String(el->getNumAppearances()) + ") " + text;
         }
     }
     return text;
-
 }
 #if LOGGER_USE_LABEL
-Component * LGMLLoggerUI::LogList::refreshComponentForCell (int rowNumber, int columnId, bool isRowSelected,
-                                     Component* existingComponentToUpdate){
-    Colour color = owner->findColour (Label::textColourId);
+Component *LGMLLoggerUI::LogList::refreshComponentForCell(int rowNumber, int columnId, bool isRowSelected,
+                                                          Component *existingComponentToUpdate)
+{
+    Colour color = owner->findColour(Label::textColourId);
     String text = getTextAt(rowNumber, columnId);
-    Label * lp=nullptr;
+    Label *lp = nullptr;
 
-    if(existingComponentToUpdate){
-        lp = dynamic_cast<Label*>(existingComponentToUpdate);
-
+    if (existingComponentToUpdate)
+    {
+        lp = dynamic_cast<Label *>(existingComponentToUpdate);
     }
-    else{
+    else
+    {
         lp = new Label();
         lp->setFont(getLogFont());
         lp->setEditable(true);
-//        lp->showEditor();
-
+        //        lp->showEditor();
     }
     jassert(lp);
-    if(lp){
-        lp->setText(text,dontSendNotification);
+    if (lp)
+    {
+        lp->setText(text, dontSendNotification);
     }
     return lp;
 }
 #endif
-void LGMLLoggerUI::LogList::paintCell (Graphics& g,
-                                       int rowNumber,
-                                       int columnId,
-                                       int width, int height,
-                                       bool )
+void LGMLLoggerUI::LogList::paintCell(Graphics &g,
+                                      int rowNumber,
+                                      int columnId,
+                                      int width, int height,
+                                      bool)
 {
 
-    Colour c =owner->findColour (Label::textColourId);
-    g.setColour (c);
+    Colour c = owner->findColour(Label::textColourId);
+    g.setColour(c);
 #if !LOGGER_USE_LABEL
-    String text=getTextAt(rowNumber,columnId);
+    String text = getTextAt(rowNumber, columnId);
 
 #if USE_CACHED_GLYPH
-    if(cachedG.contains(text)){
-        auto & cg  = cachedG.getReference(text);
+    if (cachedG.contains(text))
+    {
+        auto &cg = cachedG.getReference(text);
         cg.paint(g);
         return;
     }
 
-
-    auto & cg  = cachedG.getReference(text);
+    auto &cg = cachedG.getReference(text);
     cg.setFont(getLogFont());
     cg.setText(text);
     cg.setSize(width, height);
     cg.paint(g);
 #else
-    g.setFont (getLogFont());
+    g.setFont(getLogFont());
 
-    g.drawText(text, 0, 0, width,height, Justification::left,true);
+    g.drawText(text, 0, 0, width, height, Justification::left, true);
 #endif
 
 #endif
 };
 
-String LGMLLoggerUI::LogList::getCellTooltip (int rowNumber, int /*columnId*/)
+String LGMLLoggerUI::LogList::getCellTooltip(int rowNumber, int /*columnId*/)
 {
     auto el = owner->getElementForRow(rowNumber);
 
     String sR = el->source;
-    return
-    (sR.isNotEmpty()?
-     sR +" ("+el->time.toString(false, true, true, true)+")"+ "\n":"")
-    +(el->getNumLines()< 10?el->content:owner->getSourceForRow(rowNumber));
-
-
+    return (sR.isNotEmpty() ? sR + " (" + el->time.toString(false, true, true, true) + ")" + "\n" : "") + (el->getNumLines() < 10 ? el->content : owner->getSourceForRow(rowNumber));
 };
 
 #if USE_CACHED_GLYPH
-void LGMLLoggerUI::LogList::cleanUnusedGlyphs(){
-    int nminRow = owner->logListComponent->getRowContainingPosition (1,1);
-    int nmaxRow = owner->logListComponent->getRowContainingPosition (1, owner->logListComponent->getHeight());
-    if(nminRow==-1)return;
-    if(nmaxRow==-1)nmaxRow = owner->totalLogRow.get();
+void LGMLLoggerUI::LogList::cleanUnusedGlyphs()
+{
+    int nminRow = owner->logListComponent->getRowContainingPosition(1, 1);
+    int nmaxRow = owner->logListComponent->getRowContainingPosition(1, owner->logListComponent->getHeight());
+    if (nminRow == -1)
+        return;
+    if (nmaxRow == -1)
+        nmaxRow = owner->totalLogRow.get();
 
-    int min=0,max=0;
-    if(nminRow>minRow){
-        min = minRow;max=nminRow;
+    int min = 0, max = 0;
+    if (nminRow > minRow)
+    {
+        min = minRow;
+        max = nminRow;
     }
-    if(nmaxRow<maxRow){
-        min = nmaxRow;max = maxRow;
+    if (nmaxRow < maxRow)
+    {
+        min = nmaxRow;
+        max = maxRow;
     }
 
-    for(int i = min; i < max ; i++){
-        cachedG.remove(owner->getContentForRow (i));
-        if(owner->isPrimaryRow(i)){
-            cachedG.remove(owner->getSourceForRow (i));
+    for (int i = min; i < max; i++)
+    {
+        cachedG.remove(owner->getContentForRow(i));
+        if (owner->isPrimaryRow(i))
+        {
+            cachedG.remove(owner->getSourceForRow(i));
             cachedG.remove(owner->getTimeStringForRow(i));
         }
     }
 
     minRow = nminRow;
     maxRow = nmaxRow;
-
-
 }
 #endif
 
-void LGMLLoggerUI::buttonClicked (Button* b)
+void LGMLLoggerUI::buttonClicked(Button *b)
 {
 
     if (b == &clearB)
     {
-//        startDisplayedIdx = LGMLLogger::getInstance()->getNumLogs();
+        //        startDisplayedIdx = LGMLLogger::getInstance()->getNumLogs();
         LGMLLogger::getInstance()->clearLog();
         totalLogRow = 0;
         logListComponent->updateContent();
-        LOG (juce::translate("Cleared."));
+        LOG(juce::translate("Cleared."));
     }
-    
-    else if (b == &copyB){
+
+    else if (b == &copyB)
+    {
         String s;
-        for(int i = startDisplayedIdx ; i< LGMLLogger::getInstance()->getNumLogs() ; i++){
-            const LogElement  * el = loggedElements().getUnchecked(i);
-            s+=el->toNiceString(false);
+        for (int i = startDisplayedIdx; i < LGMLLogger::getInstance()->getNumLogs(); i++)
+        {
+            const LogElement *el = loggedElements().getUnchecked(i);
+            s += el->toNiceString(false);
         }
-        SystemClipboard::copyTextToClipboard (s);
+        SystemClipboard::copyTextToClipboard(s);
     }
 }
 #endif

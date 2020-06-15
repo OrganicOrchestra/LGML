@@ -19,7 +19,7 @@
 #include "LGMLLogger.h"
 #include "../Version.h"
 #include "../Engine.h"
-
+// #include "../../third_party/farbot/fifo.hpp"
 juce_ImplementSingleton (LGMLLogger);
 int LGMLLogger::maxLoggedElements = 5000;
 #define CIRCULAR 0
@@ -191,11 +191,11 @@ LogElement::LogElement(const String& log):
 source (DebugHelpers::getLogSource (log)),
 content (DebugHelpers::getLogContent (log)),
 numAppearances(1)
-,_arr (new StringArray())
+,_arr (new StringArray(StringArray::fromTokens(content, StringRef ("\r\n"), StringRef("\""))))
 {
 
     time = Time::getCurrentTime();
-    _arr->addTokens (content, StringRef ("\r\n"), StringRef("\""));
+    // _arr->addTokens (content, StringRef ("\r\n"), StringRef("\""));
 
     if (_arr->size())
     {
@@ -221,8 +221,10 @@ numAppearances(1)
     }
     else
     {
+        jassertfalse;
         severity = LOG_NONE;
     }
+    numLines = _arr->size();
 
 }
 String LogElement::toNiceString(bool includeSeverity) const{
